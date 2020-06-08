@@ -1,5 +1,5 @@
 <template>
-    <q-page v-if="currentUser" padding>
+    <q-page v-if="currentUser">
         <q-card class="q-my-md">
             <q-card-section class="bg-primary text-h5 text-white justify-center col">
                 <q-item>
@@ -17,16 +17,16 @@
                     </q-item-section>
                 </q-item>
                 <div class="absolute-bottom-right q-pr-md" style="transform: translateY(50%);">
-                    <q-btn v-ripple @click.native="setEditUserDialog(true); setBlur()" fab label="Edit Profile" color="secondary" />
+                    <q-btn v-ripple @click.native="setEditUserDialog(true); setBlur()" fab label="Perfil" color="secondary" />
+                    <q-btn @click="logoutUser()" fab label="Cerrar Sesión" color="secondary" >  </q-btn>
+                    <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
+                        <user-settings></user-settings>
+                    </q-dialog>
                 </div>
             </q-card-section>
             <q-separator spaced color="transparent" />
             <q-separator spaced color="transparent" />
         </q-card>
-        <q-btn @click="logoutUser()"> logout </q-btn>
-        <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
-            <user-settings></user-settings>
-        </q-dialog>
     </q-page>
 </template>
 

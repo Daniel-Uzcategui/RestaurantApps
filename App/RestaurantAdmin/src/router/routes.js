@@ -43,6 +43,20 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/home',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: () => import('pages/home.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 
