@@ -10,6 +10,20 @@ const routes = [
     ]
   },
   {
+    path: '/',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: () => import('pages/home.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
     path: '/auth',
     component: () => import('layouts/Basic.vue'),
     children: [
@@ -38,20 +52,6 @@ const routes = [
         path: 'profile',
         name: 'UserProfile',
         component: () => import('pages/user/Profile.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/home',
-    component: () => import('layouts/User.vue'),
-    children: [
-      {
-        path: 'home',
-        name: 'Home',
-        component: () => import('pages/home.vue'),
         meta: {
           requiresAuth: true
         }
