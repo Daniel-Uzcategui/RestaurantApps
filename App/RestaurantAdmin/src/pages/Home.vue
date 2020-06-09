@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center q-gutter-md q-pa-lg" >
    <q-card class="my-card text-white" horizontal>
-      <q-card-section class="bg-green-3">
+      <q-card-section class="bg-primary">
         <div class="text-h5">98</div>
         <div class="text-subtitle2">Ordenes Pendientes </div>
       </q-card-section>
@@ -11,7 +11,7 @@
       </q-card-actions>
        </q-card>
       <q-card class="my-card text-white" horizontal>
-        <q-card-section  class="bg-green-3">
+        <q-card-section  class="bg-primary">
         <div class="text-h5">13</div>
         <div class="text-subtitle2">Ordenes en Progreso</div>
       </q-card-section>
@@ -21,7 +21,7 @@
       </q-card-actions>
        </q-card>
        <q-card class="my-card text-white" horizontal>
-        <q-card-section  class="bg-green-3">
+        <q-card-section  class="bg-primary">
         <div class="text-h5">3</div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
       </q-card-section>
