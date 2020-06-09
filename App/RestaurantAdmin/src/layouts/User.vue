@@ -67,19 +67,19 @@ export default {
         {
           title: 'Inicio',
           caption: '',
-          icon: 'home',
+          icon: 'fa fa-home',
           link: '#/home'
         },
         {
           title: 'Sedes',
           caption: '',
-          icon: 'location_on',
+          icon: 'fa fa-globe',
           link: '/'
         },
         {
           title: 'Categorias',
           caption: '',
-          icon: 'list',
+          icon: 'fa fa-bars',
           link: '/'
         },
         {
@@ -97,31 +97,31 @@ export default {
         {
           title: 'Pagos',
           caption: '',
-          icon: 'card_travel',
+          icon: 'fa fa-briefcase',
           link: '/'
         },
         {
           title: 'Clientes',
           caption: '',
-          icon: 'people_outline',
+          icon: 'fa fa-user',
           link: '/'
         },
         {
           title: 'Perfil',
           caption: '',
-          icon: 'person',
+          icon: 'fa fa-address-card',
           link: '/'
         },
         {
           title: 'Usuarios',
           caption: '',
-          icon: 'people',
+          icon: 'fa fa-users',
           link: '/'
         },
         {
           title: 'Configuración',
           caption: '',
-          icon: 'settings',
+          icon: 'fa fa-cog',
           link: '/'
         }
       ]
