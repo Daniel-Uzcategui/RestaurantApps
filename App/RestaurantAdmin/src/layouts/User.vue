@@ -74,7 +74,7 @@ export default {
           title: 'Sedes',
           caption: '',
           icon: 'fa fa-globe',
-          link: '/'
+          link: '#/localization/index'
         },
         {
           title: 'Categorias',
@@ -110,7 +110,7 @@ export default {
           title: 'Perfil',
           caption: '',
           icon: 'fa fa-address-card',
-          link: '/'
+          link: '#/user/profile'
         },
         {
           title: 'Usuarios',

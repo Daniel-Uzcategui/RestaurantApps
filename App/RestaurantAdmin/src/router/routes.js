@@ -57,6 +57,20 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/localization',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('pages/localization/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 
