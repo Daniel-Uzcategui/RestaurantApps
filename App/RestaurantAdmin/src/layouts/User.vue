@@ -68,7 +68,7 @@ export default {
           title: 'Inicio',
           caption: '',
           icon: 'home',
-          link: '/'
+          link: '#/home'
         },
         {
           title: 'Sedes',
