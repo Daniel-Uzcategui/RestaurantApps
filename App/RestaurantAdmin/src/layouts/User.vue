@@ -1,62 +1,100 @@
 <template>
-  <q-layout class="main bg-green-1" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-        <q-toolbar-title>Nombre de aplicacion</q-toolbar-title>
-        <div>botones y nombre de usuario</div>
-      </q-toolbar>
-    </q-header>
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1">
-      <q-list>
-        <Nav
-          v-for="link in nav"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
-    <q-page-container>
-      <transition
-              name="transitions"
-              enter-active-class="animated slideInUp"
-              leave-active-class="animated slideOutDown"
-              mode="out-in">
-      <router-view @setBlur="setBlur" />
-      </transition>
-    </q-page-container>
-  </q-layout>
+   <q-layout class="main bg-green-1" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
+      <q-header v-if="currentUser" elevated>
+         <q-toolbar>
+            <q-btn
+               flat
+               dense
+               round
+               icon="menu"
+               aria-label="Menu"
+               @click="leftDrawerOpen = !leftDrawerOpen"
+               />
+            <q-toolbar-title class="text-caption">
+               <q-avatar>
+                  <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
+               </q-avatar>
+               {{getUserData('nombre')}} {{getUserData('apellido')}}
+            </q-toolbar-title>
+            <div>
+               <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
+               <q-btn class="text-caption" flat @click="logoutUser()" label="Cerrar Sesión" >  </q-btn>
+               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
+                  <user-settings></user-settings>
+               </q-dialog>
+            </div>
+         </q-toolbar>
+      </q-header>
+      <q-drawer
+         v-model="leftDrawerOpen"
+         show-if-above
+         bordered
+         content-class="bg-grey-1">
+         <q-list>
+            <Nav
+               v-for="link in nav"
+               :key="link.title"
+               v-bind="link"
+               />
+         </q-list>
+      </q-drawer>
+      <q-page-container>
+         <transition
+            name="transitions"
+            enter-active-class="animated slideInUp"
+            leave-active-class="animated slideOutDown"
+            mode="out-in">
+            <router-view @setBlur="setBlur" />
+         </transition>
+      </q-page-container>
+   </q-layout>
 </template>
 
 <script>
 import Nav from 'components/nav'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { QSpinnerGears, QSpinnerRadio } from 'quasar'
+
 export default {
   name: 'UserLayout',
   components: {
-    Nav
+    Nav,
+    'user-settings': () => import('../pages/user/profile/UserSettings.vue')
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
     productName () {
       return window.sessionStorage.productName
+    },
+    editUserDialog: {
+      get () {
+        return this.$store.state.user.editUserDialog
+      },
+      set (val) {
+        this.setEditUserDialog(val)
+      }
     }
   },
   created () {
     // Check that our app has access to the user id
     // from Firebase before the page renders
     console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
+    const online = window.navigator.onLine
+    this.$q.loading.show({
+      message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
+      backgroundColor: online ? 'grey' : 'red-6',
+      spinner: online ? QSpinnerGears : QSpinnerRadio,
+      customClass: 'loader'
+    })
+  },
+  async mounted () {
+    const { currentUser } = this
+    if (currentUser) {
+      // Hide the loading screen if currentUser
+      // is available before the page renders
+      console.log(this.currentUser)
+      this.$q.loading.hide()
+    }
   },
   data () {
     return {
@@ -129,8 +167,12 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),
+    ...mapMutations('user', ['setEditUserDialog']),
     setBlur () {
       this.blurLayout = !this.blurLayout
+    },
+    getUserData (attr) {
+      return (this.currentUser[attr]) ? this.currentUser[attr] : 'Please update your profile'
     }
   },
   watch: {
