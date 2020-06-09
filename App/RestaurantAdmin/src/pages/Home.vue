@@ -115,40 +115,34 @@ export default {
           sortable: true
         },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
-        { name: 'status', label: 'Estado', field: 'status' },
-        { name: 'order_date', label: 'Fecha', field: 'order_date' }
+        { name: 'status', label: 'Estado', field: 'status' }
       ],
 
       data: [
         {
           descrip: 'Frozen Yogurt',
           typePayment: 'Efectivo',
-          status: 'En progreso',
-          order_date: '19/05/2000 10:50'
+          status: 'En progreso'
         },
         {
           descrip: 'Frozen Yogurt',
           typePayment: 'Efectivo',
-          status: 'En progreso',
-          order_date: '19/05/2000 10:50'
+          status: 'En progreso'
         },
         {
           descrip: 'Frozen Yogurt',
           typePayment: 'Efectivo',
-          status: 'En progreso',
-          order_date: '19/05/2000 10:50'
+          status: 'En progreso'
         },
         {
           descrip: 'Frozen Yogurt',
           typePayment: 'Efectivo',
-          status: 'En progreso',
-          order_date: '19/05/2000 10:50'
+          status: 'En progreso'
         },
         {
           descrip: 'Frozen Yogurt',
           typePayment: 'Efectivo',
-          status: 'En progreso',
-          order_date: '19/05/2000 10:50'
+          status: 'En progreso'
         }
       ]
     }
