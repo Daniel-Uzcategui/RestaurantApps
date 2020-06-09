@@ -1,6 +1,5 @@
 <template>
-  <q-page class="flex flex-center" >
-  <div class="q-pa-md row items-start q-gutter-md" >
+  <q-page class="flex flex-center q-gutter-md q-pa-lg" >
    <q-card class="my-card text-white" horizontal>
       <q-card-section class="bg-green-3">
         <div class="text-h5">98</div>
@@ -22,7 +21,7 @@
       </q-card-actions>
        </q-card>
        <q-card class="my-card text-white" horizontal>
-            <q-card-section  class="bg-green-3">
+        <q-card-section  class="bg-green-3">
         <div class="text-h5">3</div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
       </q-card-section>
@@ -31,8 +30,7 @@
         <q-btn flat icon-right="arrow_right_alt" label="más info" />
       </q-card-actions>
     </q-card>
-      <div class="separator"></div>
-     <q-table class="orders"
+     <q-table class="orders "
       :dense="$q.screen.lt.md"
       title="Ordenes"
       :data="data"
@@ -50,7 +48,6 @@
         />
       </template>
     </q-table>
-  </div>
   </q-page>
 </template>
 
