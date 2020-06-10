@@ -2,7 +2,7 @@
   "name": "uploader",
   "version": "0.0.1",
   "description": "User profile using Firebase, Vuexfire, and Google Cloud Storage",
-  "productName": "Unico Wallet",
+  "productName": "ECRA",
   "cordovaId": "org.unico.wallet.app",
   "capacitorId": "",
   "author": "Adam K. Purdy <admin@kpapro.com>",

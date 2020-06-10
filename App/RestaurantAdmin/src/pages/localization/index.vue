@@ -1,16 +1,21 @@
 <template>
   <q-page class="flex flex-center q-gutter-md q-pa-lg" >
-    <div class="row">
+    <div>
     <h4>Administración de Sedes</h4>
+     <q-card >
+       <q-card-section  class="bg-primary text-white" >
+        <div class="text-h5">Sedes</div>
+      </q-card-section>
      <q-table class="localization"
       :dense="$q.screen.lt.md"
       title="Sedes"
       :data="data"
       :columns="columns"
       color="primary"
-      row-key="name"
-    >
-      <template v-slot:top-right>
+      row-key="id"
+      no-data-label="No se encontraron registros"
+      >
+     <template v-slot:top>
         <q-btn
           color="primary"
           icon-right="archive"
@@ -18,9 +23,42 @@
           no-caps
           @click="exportTable"
         />
+         <q-btn class="q-ml-sm"
+          color="primary"
+          label="Crear"
+          no-caps
+          @click="exportTable"
+        />
+      </template>
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
+            {{ col.label }}
+          </q-th>
+          <q-th auto-width />
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/localization/show', query: { tripId: props.row._id } })">
+           <q-td
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
+            {{ col.value }}
+          </q-td>
+          <q-td auto-width>
+            <q-btn size="sm" color="green" round dense  icon="edit"/>
+          </q-td>
+        </q-tr>
       </template>
     </q-table>
-  </div>
+    </q-card>
+ </div>
 </q-page>
 </template>
 
@@ -87,18 +125,46 @@ export default {
           field: 'name',
           sortable: true
         },
-        { name: 'address', align: 'center', label: 'Ubicación', field: 'address' },
-        { name: 'status', label: 'Estado', field: 'status' },
-        { name: 'localization_date', label: 'Fecha', field: 'localization_date' },
-        { name: 'status', label: 'Estado', field: 'status' }
+        { name: 'smallAddress', align: 'center', label: 'Ubicación', field: 'smallAddress' },
+        { name: 'status', label: 'Estatus', field: 'status' },
+        { name: 'localization_date', label: 'Fecha', field: 'localization_date' }
       ],
 
       data: [
         {
           name: 'Frozen Yogurt',
-          address: 'Efectivo',
+          smallAddress: 'Caracas',
           localization_date: '01/02/2020',
-          status: 'En progreso'
+          status: 'En progreso',
+          address: 'Caracas'
+        },
+        {
+          name: 'Frozen Yogurt',
+          smallAddress: 'Caracas',
+          localization_date: '01/02/2020',
+          status: 'En progreso',
+          address: 'Caracas'
+        },
+        {
+          name: 'Frozen Yogurt',
+          smallAddress: 'Caracas',
+          localization_date: '01/02/2020',
+          status: 'En progreso',
+          address: 'Caracas'
+        },
+        {
+          name: 'Frozen Yogurt',
+          smallAddress: 'Caracas',
+          localization_date: '01/02/2020',
+          status: 'En progreso',
+          address: 'Caracas'
+        },
+        {
+          name: 'Frozen Yogurt',
+          smallAddress: 'Caracas',
+          localization_date: '01/02/2020',
+          status: 'En progreso',
+          Address: 'Caracas'
         }
       ]
     }
@@ -106,6 +172,7 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-.localization
+ .localization
   width: 100%
+  margin-bottom: 50%
  </style>

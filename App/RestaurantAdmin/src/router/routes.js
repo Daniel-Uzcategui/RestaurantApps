@@ -69,6 +69,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'show',
+        name: 'show',
+        component: () => import('pages/localization/show.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   }

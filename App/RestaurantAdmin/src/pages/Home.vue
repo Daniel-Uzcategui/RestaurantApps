@@ -1,44 +1,65 @@
 <template>
   <q-page class="flex flex-center q-gutter-md q-pa-lg" >
-   <q-card class="my-card text-white" horizontal>
+    <div class="row header-container">
+    <div class="header-cell">
+     <q-card class="totalCard text-white" horizontal>
       <q-card-section class="bg-primary">
-        <div class="text-h5">98</div>
+        <div class="text-h5">
+          <i class="fa fa-bell" aria-hidden="true"></i>
+          <span class="separate">98</span>
+        </div>
         <div class="text-subtitle2">Ordenes Pendientes </div>
       </q-card-section>
       <q-separator dark />
-      <q-card-actions class="bg-green-2" vertical>
-        <q-btn flat icon-right="arrow_right_alt" label="más info" />
+      <q-card-actions class="bg-primary" vertical>
+       <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
       </q-card-actions>
        </q-card>
-      <q-card class="my-card text-white" horizontal>
+       </div>
+       <div class="header-cell" >
+      <q-card class="totalCard text-white" horizontal>
         <q-card-section  class="bg-primary">
-        <div class="text-h5">13</div>
+        <div class="text-h5">
+          <i class="fa fa-bell" aria-hidden="true"></i>
+          <span class="separate">12</span>
+        </div>
         <div class="text-subtitle2">Ordenes en Progreso</div>
       </q-card-section>
        <q-separator dark />
-      <q-card-actions  class="bg-green-2" vertical>
-        <q-btn flat icon-right="arrow_right_alt" label="más info" />
+      <q-card-actions  class="bg-primary" vertical>
+        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
       </q-card-actions>
        </q-card>
-       <q-card class="my-card text-white" horizontal>
+        </div>
+        <div class="header-cell">
+       <q-card class="totalCard text-white" horizontal>
         <q-card-section  class="bg-primary">
-        <div class="text-h5">3</div>
+        <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
+        <span class="separate">12</span>
+        </div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
-      </q-card-section>
+     </q-card-section>
        <q-separator dark />
-      <q-card-actions class="bg-green-2" vertical>
-        <q-btn flat icon-right="arrow_right_alt" label="más info" />
+      <q-card-actions class="bg-primary" vertical>
+        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
       </q-card-actions>
     </q-card>
+    </div>
+     <div class="flex-break q-py-md "></div>
+     <div class="header-cell col-12" tabindex="0">
+      <q-card >
+       <q-card-section  class="bg-primary text-white" >
+        <div class="text-h5">Ordenes</div>
+      </q-card-section>
      <q-table class="orders "
       :dense="$q.screen.lt.md"
-      title="Ordenes"
       :data="data"
       :columns="columns"
       color="primary"
       row-key="name"
+      no-data-label="No se encontraron registros"
     >
-      <template v-slot:top-right>
+      <template v-slot:top>
         <q-btn
           color="primary"
           icon-right="archive"
@@ -48,6 +69,9 @@
         />
       </template>
     </q-table>
+    </q-card>
+    </div>
+    </div>
   </q-page>
 </template>
 
@@ -150,12 +174,13 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-.my-card
-  width: 100%
-  max-width: 250px
-.orders
-  width: 100%
-  max-width: 780px
-.separator
-  margin-bottom: 20%
+.separate
+ padding-left: 50%
+.flex-break
+  flex: 1 0 100% !important
+  height: 0 !important
+.header-container
+  .header-cell
+    margin: 2px
+    padding: 4px 8px
  </style>
