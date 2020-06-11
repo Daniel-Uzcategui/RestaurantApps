@@ -1,8 +1,8 @@
 <template>
-  <q-page class="flex flex-center q-gutter-md q-pa-lg" >
+  <q-page class="q-pa-lg" >
     <div class="row header-container">
-    <div class="header-cell">
-     <q-card class="totalCard text-white" horizontal>
+    <div class="header-cell col-md-3 col-sm-4" >
+     <q-card class="text-white" horizontal>
       <q-card-section class="bg-primary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
@@ -16,8 +16,8 @@
       </q-card-actions>
        </q-card>
        </div>
-       <div class="header-cell" >
-      <q-card class="totalCard text-white" horizontal>
+       <div class="header-cell col-md-3 col-sm-4"  >
+      <q-card class=" text-white" horizontal>
         <q-card-section  class="bg-primary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
@@ -31,11 +31,11 @@
       </q-card-actions>
        </q-card>
         </div>
-        <div class="header-cell">
-       <q-card class="totalCard text-white" horizontal>
+        <div class="header-cell col-md-3 col-sm-4">
+       <q-card class="text-white" horizontal>
         <q-card-section  class="bg-primary">
         <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
-        <span class="separate">12</span>
+        <span class="separate">42</span>
         </div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
      </q-card-section>
@@ -48,7 +48,7 @@
      <div class="flex-break q-py-md "></div>
      <div class="header-cell col-12" tabindex="0">
       <q-card >
-       <q-card-section  class="bg-primary text-white" >
+       <q-card-section  class="bg-secondary text-white" >
         <div class="text-h5">Ordenes</div>
       </q-card-section>
      <q-table class="orders "
@@ -61,7 +61,7 @@
     >
       <template v-slot:top>
         <q-btn
-          color="primary"
+         color="secondary"
           icon-right="archive"
           label="Exportar a csv"
           no-caps
@@ -175,7 +175,7 @@ export default {
 </script>
 <style lang="sass" scoped>
 .separate
- padding-left: 50%
+ padding-left: 70%
 .flex-break
   flex: 1 0 100% !important
   height: 0 !important
@@ -183,4 +183,6 @@ export default {
   .header-cell
     margin: 2px
     padding: 4px 8px
- </style>
+.totalCard
+   width: 30%
+</style>

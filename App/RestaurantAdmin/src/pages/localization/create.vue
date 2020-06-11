@@ -3,7 +3,7 @@
      <div class="q-gutter-md">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
-        <div class="text-h5">Editar Sedes</div>
+        <div class="text-h5">Crear Sedes</div>
       </q-card-section>
         <cp_localization></cp_localization>
      </q-card>

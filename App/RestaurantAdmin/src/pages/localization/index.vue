@@ -1,15 +1,14 @@
 <template>
-  <q-page class="flex flex-center q-gutter-md q-pa-lg" >
+  <q-page class=" q-pa-lg" >
     <div>
-    <h4>Administración de Sedes</h4>
      <q-card >
-       <q-card-section  class="bg-primary text-white" >
+       <q-card-section  class="bg-secondary text-white" >
         <div class="text-h5">Sedes</div>
       </q-card-section>
      <q-table class="localization"
       :dense="$q.screen.lt.md"
       title="Sedes"
-      :data="data"
+      :data="localizations"
       :columns="columns"
       color="primary"
       row-key="id"
@@ -17,17 +16,17 @@
       >
      <template v-slot:top>
         <q-btn
-          color="primary"
+          color="secondary"
           icon-right="archive"
           label="Exportar a csv"
           no-caps
           @click="exportTable"
         />
          <q-btn class="q-ml-sm"
-          color="primary"
+          color="secondary"
           label="Crear"
           no-caps
-          @click="exportTable"
+          @click="$router.push({ path: '/localization/show'"
         />
       </template>
       <template v-slot:header="props">
@@ -64,6 +63,7 @@
 
 <script>
 import { exportFile } from 'quasar'
+import { mapGetters } from 'vuex'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== void 0
@@ -86,6 +86,9 @@ function wrapCsvValue (val, formatFn) {
 }
 
 export default {
+  computed: {
+    ...mapGetters('localization', ['localizations'])
+  },
   methods: {
     exportTable () {
       // naive encoding to csv format
@@ -117,55 +120,10 @@ export default {
   data () {
     return {
       columns: [
-        {
-          name: 'Name',
-          required: true,
-          label: 'Nombre',
-          align: 'left',
-          field: 'name',
-          sortable: true
-        },
+        { name: 'Name', required: true, label: 'Nombre', align: 'left', field: 'name', sortable: true },
         { name: 'smallAddress', align: 'center', label: 'Ubicación', field: 'smallAddress' },
         { name: 'status', label: 'Estatus', field: 'status' },
         { name: 'localization_date', label: 'Fecha', field: 'localization_date' }
-      ],
-
-      data: [
-        {
-          name: 'Frozen Yogurt',
-          smallAddress: 'Caracas',
-          localization_date: '01/02/2020',
-          status: 'En progreso',
-          address: 'Caracas'
-        },
-        {
-          name: 'Frozen Yogurt',
-          smallAddress: 'Caracas',
-          localization_date: '01/02/2020',
-          status: 'En progreso',
-          address: 'Caracas'
-        },
-        {
-          name: 'Frozen Yogurt',
-          smallAddress: 'Caracas',
-          localization_date: '01/02/2020',
-          status: 'En progreso',
-          address: 'Caracas'
-        },
-        {
-          name: 'Frozen Yogurt',
-          smallAddress: 'Caracas',
-          localization_date: '01/02/2020',
-          status: 'En progreso',
-          address: 'Caracas'
-        },
-        {
-          name: 'Frozen Yogurt',
-          smallAddress: 'Caracas',
-          localization_date: '01/02/2020',
-          status: 'En progreso',
-          Address: 'Caracas'
-        }
       ]
     }
   }

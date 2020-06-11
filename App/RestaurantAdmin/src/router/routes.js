@@ -64,15 +64,23 @@ const routes = [
     children: [
       {
         path: 'index',
-        name: 'index',
+        name: 'Index',
         component: () => import('pages/localization/index.vue'),
         meta: {
           requiresAuth: true
         }
       },
       {
+        path: 'create',
+        name: 'Create',
+        component: () => import('pages/localization/create.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: 'show',
-        name: 'show',
+        name: 'Show',
         component: () => import('pages/localization/show.vue'),
         meta: {
           requiresAuth: true
@@ -87,7 +95,7 @@ const routes = [
       {
         path: 'categorias',
         name: 'Categorias',
-        component: () => import('pages/Menu/Categorias.vue'),
+        component: () => import('pages/menu/categorias.vue'),
         meta: {
           requiresAuth: true
         }

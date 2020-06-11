@@ -145,12 +145,6 @@ export default {
           link: '/'
         },
         {
-          title: 'Perfil',
-          caption: '',
-          icon: 'fa fa-address-card',
-          link: '#/user/profile'
-        },
-        {
           title: 'Usuarios',
           caption: '',
           icon: 'fa fa-users',
