@@ -118,7 +118,7 @@ export default {
           title: 'Categorias',
           caption: '',
           icon: 'fa fa-bars',
-          link: '/'
+          link: '#/menu/categorias'
         },
         {
           title: 'Menus',

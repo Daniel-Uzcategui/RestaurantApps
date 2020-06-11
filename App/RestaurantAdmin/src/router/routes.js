@@ -79,6 +79,20 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/menu',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'categorias',
+        name: 'Categorias',
+        component: () => import('pages/Menu/Categorias.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 
