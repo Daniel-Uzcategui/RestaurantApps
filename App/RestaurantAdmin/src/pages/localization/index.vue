@@ -1,4 +1,4 @@
-<template>
+ <template>
   <q-page class=" q-pa-lg" >
     <div>
      <q-card >
@@ -26,7 +26,7 @@
           color="secondary"
           label="Crear"
           no-caps
-          @click="$router.push({ path: '/localization/show'"
+          @click="exportTable"
         />
       </template>
       <template v-slot:header="props">
