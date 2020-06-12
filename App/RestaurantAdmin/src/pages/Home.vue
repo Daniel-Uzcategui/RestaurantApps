@@ -3,7 +3,7 @@
     <div class="row header-container">
     <div class="header-cell col-md-3 col-sm-4" >
      <q-card class="text-white" horizontal>
-      <q-card-section class="bg-primary">
+      <q-card-section class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
           <span class="separate">98</span>
@@ -18,7 +18,7 @@
        </div>
        <div class="header-cell col-md-3 col-sm-4"  >
       <q-card class=" text-white" horizontal>
-        <q-card-section  class="bg-primary">
+        <q-card-section  class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
           <span class="separate">12</span>
@@ -33,7 +33,7 @@
         </div>
         <div class="header-cell col-md-3 col-sm-4">
        <q-card class="text-white" horizontal>
-        <q-card-section  class="bg-primary">
+        <q-card-section  class="bg-secondary">
         <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
         <span class="separate">42</span>
         </div>

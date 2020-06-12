@@ -1,9 +1,9 @@
 <template>
   <div class="q-pa-md">
    <q-table
-      :data="categorias"
+      :data="menu"
       :columns="columns"
-      title="Categorias"
+      title="Menu"
       :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"
@@ -46,6 +46,16 @@
             </q-popup-edit>
           </q-td>
 
+          <q-td key="categoria" :props="props">
+              <q-select
+                @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
+                :options="listcategorias"
+                :value="plaincategorias[props.row.categoria] ? plaincategorias[props.row.categoria].name : 'N/A'"
+                color="green"
+                emit-value
+              />
+          </q-td>
+
           <q-td key="estatus" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
@@ -73,8 +83,9 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Nombre', field: 'name' },
-  { name: 'descripcion', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'desc', style: 'min-width: 80px; width: 100px', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'descripcion', style: 'min-width: 80px; width: 120px', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' }
 ]
@@ -82,7 +93,7 @@ const columns = [
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('menu', ['categorias'])
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias'])
   },
   data () {
     return {
@@ -92,7 +103,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.Vue, 'VUE?')
+    console.log(this.listcategorias, 'VUE?')
   },
   methods: {
     showPopup (row, col) {
@@ -100,24 +111,24 @@ export default {
     },
     saved (value, initialValue, id, key) {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.setCategory({ value, id, key })
+      this.setMenu({ value, id, key })
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setCategory', 'addCategory', 'saveCategory']),
+    ...mapActions('menu', ['setMenu', 'addMenu', 'saveMenu']),
     delrow () {
-      this.saveCategory(this.categorias.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+      this.saveMenu(this.menu.filter(a => !this.selected.some(b => b['id'] === a['id'])))
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.categorias.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.menu.length}`
     },
     saveData () {
-      this.saveCategory(this.categorias)
+      this.saveMenu(this.menu)
     },
     addrow () {
       const key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
-      this.addCategory(key)
+      this.addMenu(key)
     }
   }
 }

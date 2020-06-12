@@ -3,7 +3,7 @@
    <q-table
       :data="categorias"
       :columns="columns"
-      title="Categorias"
+      title="Extras"
       :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"

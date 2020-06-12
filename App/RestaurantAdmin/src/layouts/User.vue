@@ -1,6 +1,6 @@
 <template>
    <q-layout class="main bg-green-1" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
-      <q-header v-if="currentUser" elevated>
+      <q-header class="bg-primary text-white" v-if="currentUser" elevated>
          <q-toolbar>
             <q-btn
                flat
@@ -121,10 +121,16 @@ export default {
           link: '#/menu/categorias'
         },
         {
+          title: 'Extras',
+          caption: '',
+          icon: 'fas fa-utensils',
+          link: '#/menu/extras'
+        },
+        {
           title: 'Menus',
           caption: '',
           icon: 'menu_book',
-          link: '/'
+          link: '#/menu/menu'
         },
         {
           title: 'Ordenes',

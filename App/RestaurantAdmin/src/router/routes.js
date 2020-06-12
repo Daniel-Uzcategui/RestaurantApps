@@ -99,6 +99,22 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'menu',
+        name: 'Menu',
+        component: () => import('pages/menu/menu.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'extras',
+        name: 'Extras',
+        component: () => import('pages/menu/extras.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   }

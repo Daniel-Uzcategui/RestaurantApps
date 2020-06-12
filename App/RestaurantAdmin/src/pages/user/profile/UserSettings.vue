@@ -18,8 +18,8 @@
             </div>
         </section>
         <div class="row justify-between q-my-lg q-px-md ">
-            <q-btn color="primary" label="CANCEL" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
-            <q-btn color="primary" type="submit" label="SAVE" style="min-width:6em;"></q-btn>
+            <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
+            <q-btn color="primary" type="submit" label="GUARDAR" style="min-width:6em;"></q-btn>
         </div>
     </q-form>
 </div>
