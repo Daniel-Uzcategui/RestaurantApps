@@ -66,6 +66,19 @@
               />
             </q-popup-edit>
           </q-td>
+
+          <q-td key="categorias" :props="props">
+            <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
+            <q-popup-edit v-model.number="props.row.FechaAct">
+              <q-input
+                readonly
+                @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
+                :value="props.row.FechaAct"
+                dense
+                autofocus
+              />
+            </q-popup-edit>
+          </q-td>
         </q-tr>
       </template>
     </q-table>

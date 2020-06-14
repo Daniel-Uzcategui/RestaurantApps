@@ -64,6 +64,17 @@
               />
           </q-td>
 
+          <q-td key="photo" :props="props">
+            <div class="text-center" @click="showPhotoUpload('props')">
+            <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
+                <q-avatar rounded class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="110px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
+            <div class="column items-center" v-else>
+                <q-avatar rounded class="q-mb-sm shadow-5" size="130px" @click="showPhotoUpload('props')">
+                    <q-img :src="props.row.photo"></q-img>
+                </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </div>
+          </q-td>
+
           <q-td key="FechaAct" :props="props">
             <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
             <q-popup-edit v-model.number="props.row.FechaAct">
@@ -76,9 +87,50 @@
               />
             </q-popup-edit>
           </q-td>
+
+          <q-td key="price" :props="props">
+            <div class="text-pre-wrap">{{ props.row.price }}</div>
+            <q-popup-edit :value="props.row.price">
+              <q-input
+                @input="(e) => saved(e, props.row.price, props.row.id, 'price')"
+                :value="props.row.price"
+                dense
+                autofocus
+                type="number"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="extras" :props="props">
+              <q-select
+                filled
+                :value="props.row.extras"
+                @input="(e) => saved(e, props.row.extras, props.row.id, 'extras')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                @new-value="createValue"
+                :options="listextras"
+                @filter="filterFn"
+                style="width: 250px"
+                map-options
+                emit-value
+                stack-label
+              />
+          </q-td>
         </q-tr>
       </template>
     </q-table>
+    <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
+        <fbq-uploader
+          class="q-my-lg"
+          label="Please Upload a Photo"
+          :meta="meta"
+          :prefixPath="prefixPath"
+          @uploaded="uploadComplete"
+        ></fbq-uploader>
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -87,25 +139,49 @@ const columns = [
   { name: 'descripcion', style: 'min-width: 80px; width: 120px', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
-  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' }
+  { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
+  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
+  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'extras', align: 'center', label: 'Extras', field: 'extras' }
 ]
-
+import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
 export default {
+  mixins: [ QUploaderBase ],
+  components: {
+    'fbq-uploader': () => import('../../components/FBQUploader.vue')
+  },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias'])
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
+    ...mapGetters('user', ['currentUser']),
+    meta () {
+      return {
+        id: this.currentUser.id,
+        photoType: this.photoType
+      }
+    },
+    prefixPath () {
+      const id = this.currentUser.id,
+        path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
+      return path
+    }
   },
   data () {
     return {
       columns,
       selected: [],
-      popupEditData: ''
+      popupEditData: '',
+      photoType: '',
+      photoUpload: false
     }
   },
   mounted () {
     console.log(this.listcategorias, 'VUE?')
   },
   methods: {
+    resetPhotoType () {
+      this.photoType = ''
+    },
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
@@ -129,6 +205,68 @@ export default {
     addrow () {
       const key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
       this.addMenu(key)
+    },
+    showPhotoUpload (type) {
+      this.photoUpload = true
+      this.photoType = type
+    },
+    showDefaultPhoto (e) {
+      return e === '' ||
+        e === null ||
+        e === undefined
+    },
+    uploadComplete (info) {
+      console.log(this.prefixPath)
+      console.log(this.currentUser)
+      let fileNames = []
+      info.files.forEach(file => fileNames.push(file))
+      this.photoUpload = false
+      this.$q.notify({
+        message: `Successfully uploaded your photo: ${fileNames}`,
+        color: 'positive'
+      })
+    },
+    createValue (val, done) {
+      // Calling done(var) when new-value-mode is not set or "add", or done(var, "add") adds "var" content to the model
+      // and it resets the input textbox to empty string
+      // ----
+      // Calling done(var) when new-value-mode is "add-unique", or done(var, "add-unique") adds "var" content to the model
+      // only if is not already set
+      // and it resets the input textbox to empty string
+      // ----
+      // Calling done(var) when new-value-mode is "toggle", or done(var, "toggle") toggles the model with "var" content
+      // (adds to model if not already in the model, removes from model if already has it)
+      // and it resets the input textbox to empty string
+      // ----
+      // If "var" content is undefined/null, then it doesn't tampers with the model
+      // and only resets the input textbox to empty string
+
+      if (val.length > 0) {
+        if (!this.listextras.includes(val)) {
+          this.listextras.push(val)
+        }
+        done(val, 'toggle')
+      }
+    },
+    getExtras (e) {
+      console.log('GetExtras1', e, this.plainExtras)
+      // if (Array.isArray(e) && e.length) { return [] }
+      const ret = e.map(x => {
+        return this.plainExtras[x].name
+      })
+      return ret
+    },
+    filterFn (val, update) {
+      update(() => {
+        if (val === '') {
+          this.filterOptions = this.listextras
+        } else {
+          const needle = val.toLowerCase()
+          this.filterOptions = this.listextras.filter(
+            v => v.toLowerCase().indexOf(needle) > -1
+          )
+        }
+      })
     }
   }
 }

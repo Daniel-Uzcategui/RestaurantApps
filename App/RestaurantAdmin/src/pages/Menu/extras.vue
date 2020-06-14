@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
    <q-table
-      :data="categorias"
+      :data="listext"
       :columns="columns"
       title="Extras"
       :rows-per-page-options="[]"
@@ -76,13 +76,14 @@ const columns = [
   { name: 'desc', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
-  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' }
+  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
+  { name: 'price', label: 'Precio', field: 'price' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('menu', ['categorias'])
+    ...mapGetters('menu', ['listext'])
   },
   data () {
     return {
@@ -91,33 +92,30 @@ export default {
       popupEditData: ''
     }
   },
-  mounted () {
-    console.log(this.Vue, 'VUE?')
-  },
   methods: {
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.setCategory({ value, id, key })
+      this.setExtras({ value, id, key })
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setCategory', 'addCategory', 'saveCategory']),
+    ...mapActions('menu', ['setExtras', 'addExtras', 'saveExtras']),
     delrow () {
-      this.saveCategory(this.categorias.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+      this.saveExtras(this.listext.filter(a => !this.selected.some(b => b['id'] === a['id'])))
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.categorias.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.listext.length}`
     },
     saveData () {
-      this.saveCategory(this.categorias)
+      this.saveExtras(this.listext)
     },
     addrow () {
       const key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
-      this.addCategory(key)
+      this.addExtras(key)
     }
   }
 }

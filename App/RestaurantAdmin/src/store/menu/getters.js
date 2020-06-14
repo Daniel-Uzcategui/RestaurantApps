@@ -29,3 +29,30 @@ export const listcategorias = ({ categorias }) => {
     return obj
   })
 }
+
+export const listextras = ({ extras }) => {
+  const keys = Object.keys(extras)
+  var arr = []
+  for (const i in keys) {
+    arr.push(extras[keys[i]])
+  }
+  const arr2 = arr.map(x => {
+    return {
+      value: x.id,
+      label: x.name
+    }
+  })
+  console.log('Extras', arr2)
+  return arr2
+}
+
+export const plainExtras = ({ extras }) => extras
+
+export const listext = ({ extras }) => {
+  const keys = Object.keys(extras)
+  var arr = []
+  for (const i in keys) {
+    arr.push(extras[keys[i]])
+  }
+  return arr
+}

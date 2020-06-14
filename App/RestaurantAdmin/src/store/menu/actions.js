@@ -24,3 +24,16 @@ export const addMenu = async function ({ commit }, payload) {
   return commit('addMenuMut', payload)
 }
 /// ////// END MENU Action ////////
+/// ////// START Extras Action ////////
+export const setExtras = async function ({ commit }, payload) {
+  return commit('editExtras', payload)
+}
+
+export const saveExtras = async function ({ commit }, payload) {
+  return commit('saveExtras', payload)
+}
+
+export const addExtras = async function ({ commit }, payload) {
+  return commit('addExtras', payload)
+}
+/// ////// END Extras Action ////////

@@ -43,3 +43,25 @@ export function addMenuMut (state, payload) {
 }
 
 /// ////// END Menu Mutations ////////
+/// ////// START Extras Mutations ////////
+export function editExtras (state, payload) {
+  state.extras[payload.id][payload.key] = payload.value
+}
+
+export function saveExtras (state, payload) {
+  console.log(payload)
+  state.extras = payload
+}
+
+export function addExtras (state, payload) {
+  console.log(payload)
+  Vue.set(state.extras, payload, {
+    id: payload,
+    name: '',
+    descripcion: ``,
+    estatus: false,
+    FechaAct: '19/04/20'
+  })
+}
+
+/// ////// END Extras Mutations ////////
