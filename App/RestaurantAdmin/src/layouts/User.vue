@@ -148,7 +148,7 @@ export default {
           title: 'Clientes',
           caption: '',
           icon: 'fa fa-user',
-          link: '/'
+          link: '#/clients/index'
         },
         {
           title: 'Usuarios',

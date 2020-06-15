@@ -64,7 +64,7 @@ const routes = [
     children: [
       {
         path: 'index',
-        name: 'Index',
+        name: 'localizationIndex',
         component: () => import('pages/localization/index.vue'),
         meta: {
           requiresAuth: true
@@ -112,6 +112,20 @@ const routes = [
         path: 'extras',
         name: 'Extras',
         component: () => import('pages/menu/extras.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/clients',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'listClients',
+        component: () => import('pages/clients/index.vue'),
         meta: {
           requiresAuth: true
         }

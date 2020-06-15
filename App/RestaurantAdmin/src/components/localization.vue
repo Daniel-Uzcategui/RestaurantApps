@@ -1,36 +1,21 @@
 <template>
  <div class="row header-container">
-       <div class="header-cell col-12">
-         <q-btn
-          color="secondary"
-          icon="fas fa-save"
-          label="Guardar"
-          no-caps
-        />
-       </div>
         <div class="header-cell col-6">
-          <q-input v-model="text" type="text" float-label="Float Label" placeholder="Sede" />
+          <label>Sede</label>
+          <q-input  v-model="$attrs.sede" type="text" float-label="Float Label" placeholder="Sede" />
         </div>
         <div class="header-cell col-4">
-          <q-select standout="bg-teal text-white" v-model="estatus" :options="estatus_options" label="Estatus" />
+          <q-select standout="bg-teal text-white" v-model="$attrs.estatus_options" :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
-         <q-select standout="bg-teal text-white" v-model="country" label="Pais" />
-        </div>
-        <div class="header-cell col-3">
-         <q-select standout="bg-teal text-white" v-model="state"  label="Estado" />
-        </div>
-         <div class="header-cell col-3">
-         <q-select standout="bg-teal text-white" v-model="city"  label="Ciudad" />
-        </div>
-         <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-3">
-          <q-input v-model="text" type="text" float-label="Float Label" placeholder="Localización" />
+          <label>Localización</label>
+          <q-input v-model="$attrs.localizacion_sede" type="text" float-label="Float Label" placeholder="Localización" />
         </div>
          <div class="header-cell col-8">
+          <label>Dirección</label>
          <q-input
-          v-model="text"
+          v-model="$attrs.address"
           filled
           type="textarea"
           placeholder="Dirección"
@@ -43,8 +28,11 @@ export default {
   data () {
     return {
       estatus: null,
+      country: null,
+      state: null,
+      city: null,
       estatus_options: [
-        'Activo', 'Inactivo', 'Fuera de Servicio'
+        'En Espera', 'En progreso', 'Completado'
       ]
     }
   }

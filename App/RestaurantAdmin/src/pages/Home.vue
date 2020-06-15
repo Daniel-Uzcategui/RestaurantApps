@@ -60,13 +60,7 @@
       no-data-label="No se encontraron registros"
     >
       <template v-slot:top>
-        <q-btn
-         color="secondary"
-          icon-right="archive"
-          label="Exportar a csv"
-          no-caps
-          @click="exportTable"
-        />
+          <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
     </q-table>
     </q-card>

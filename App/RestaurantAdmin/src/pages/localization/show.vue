@@ -3,17 +3,35 @@
      <div class="q-gutter-md">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
-        <div class="text-h5">Editar Sedes</div>
-      </q-card-section>
-        <cp_localization></cp_localization>
+          <div class="text-h5">Editar Sedes
+            <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" @click="saveLocationAc({id : 1})"/>
+            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+          </div>
+       </q-card-section>
+        <cp_localization
+        :sede=localizations[this.$route.query.Localization_Id].name
+        :address=localizations[this.$route.query.Localization_Id].address
+        :localizacion_sede=localizations[this.$route.query.Localization_Id].localizacion_sede
+        :estatus_options=localizations[this.$route.query.Localization_Id].status
+        >
+        </cp_localization>
      </q-card>
   </div>
+
 </q-page>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
+  props: [ 'localization', 'id' ],
+  computed: {
+    ...mapGetters('localization', ['localizations'])
+  },
   components: {
     cp_localization: require('components/localization.vue').default
+  },
+  methods: {
+    ...mapActions('localization', ['saveLocationAc'])
   }
 }
 </script>
@@ -21,4 +39,8 @@ export default {
 .flex-break
   flex: 1 0 100% !important
   height: 0 !important
- </style>
+.header-btn
+  position: absolute; right: 10px !important
+.header-btn-back
+  position: absolute; right:120px !important
+</style>
