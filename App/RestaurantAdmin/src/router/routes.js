@@ -64,7 +64,7 @@ const routes = [
     children: [
       {
         path: 'index',
-        name: 'localizationIndex',
+        name: 'listLocalization',
         component: () => import('pages/localization/index.vue'),
         meta: {
           requiresAuth: true
@@ -72,7 +72,7 @@ const routes = [
       },
       {
         path: 'create',
-        name: 'Create',
+        name: 'createlocalization',
         component: () => import('pages/localization/create.vue'),
         meta: {
           requiresAuth: true
@@ -80,7 +80,7 @@ const routes = [
       },
       {
         path: 'show',
-        name: 'Show',
+        name: 'showlocalization',
         component: () => import('pages/localization/show.vue'),
         meta: {
           requiresAuth: true
@@ -126,6 +126,22 @@ const routes = [
         path: 'index',
         name: 'listClients',
         component: () => import('pages/clients/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'create',
+        name: 'createClient',
+        component: () => import('pages/clients/create.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'show',
+        name: 'showClient',
+        component: () => import('pages/clients/show.vue'),
         meta: {
           requiresAuth: true
         }

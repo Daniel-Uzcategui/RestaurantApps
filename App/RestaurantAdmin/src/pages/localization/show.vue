@@ -2,18 +2,14 @@
   <q-page class="q-pa-lg" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="bg-secondary text-white" >
-          <div class="text-h5">Editar Sedes
-            <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" @click="saveLocationAc({id : 1})"/>
+       <q-card-section  class="bg-secondary text-white header" >
+          <div class="text-h5">Editar Sedes</div>
+          <div> <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update"/>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
         <cp_localization
-        :sede=localizations[this.$route.query.Localization_Id].name
-        :address=localizations[this.$route.query.Localization_Id].address
-        :localizacion_sede=localizations[this.$route.query.Localization_Id].localizacion_sede
-        :estatus_options=localizations[this.$route.query.Localization_Id].status
-        >
+        :localization=localizations[this.$route.query.Localization_Id]>
         </cp_localization>
      </q-card>
   </div>
@@ -43,4 +39,6 @@ export default {
   position: absolute; right: 10px !important
 .header-btn-back
   position: absolute; right:120px !important
+.header
+ padding-bottom: 50px
 </style>

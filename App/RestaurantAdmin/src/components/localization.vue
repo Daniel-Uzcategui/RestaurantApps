@@ -2,35 +2,27 @@
  <div class="row header-container">
         <div class="header-cell col-6">
           <label>Sede</label>
-          <q-input  v-model="$attrs.sede" type="text" float-label="Float Label" placeholder="Sede" />
+          <q-input v-model="localization.name"  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
         </div>
         <div class="header-cell col-4">
-          <q-select standout="bg-teal text-white" v-model="$attrs.estatus_options" :options="estatus_options" label="Estatus" />
+          <q-select standout="bg-teal text-white"  v-model="localization.status" :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
           <label>Localización</label>
-          <q-input v-model="$attrs.localizacion_sede" type="text" float-label="Float Label" placeholder="Localización" />
+          <q-input v-model="localization.localizacion_sede" type="text" float-label="Float Label" placeholder="Localización" />
         </div>
          <div class="header-cell col-8">
           <label>Dirección</label>
-         <q-input
-          v-model="$attrs.address"
-          filled
-          type="textarea"
-          placeholder="Dirección"
-        />
+         <q-input v-model="localization.address" filled type="textarea" placeholder="Dirección"  />
       </div>
      </div>
 </template>
 <script>
 export default {
+  props: [ 'localization', 'id' ],
   data () {
     return {
-      estatus: null,
-      country: null,
-      state: null,
-      city: null,
       estatus_options: [
         'En Espera', 'En progreso', 'Completado'
       ]
@@ -52,4 +44,6 @@ export default {
    padding-bottom: 24px
 .btn-right
    box-shadow: inset 0 0 0 2px $grey-6
+.header-cell
+  padding-left: 30px
  </style>

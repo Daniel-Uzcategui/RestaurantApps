@@ -12,10 +12,10 @@
       >
      <template v-slot:top-right>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
-        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" />
+        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/clients/create')"/>
       </template>
        <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" >
+          <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/clients/show' })">
            <q-td
             v-for="col in props.cols"
             :key="col.name"

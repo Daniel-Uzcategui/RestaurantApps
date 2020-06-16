@@ -3,24 +3,30 @@
      <div class="q-gutter-md">
       <q-card >
        <q-card-section  class="bg-secondary text-white header" >
-          <div class="text-h5">Agregar Sedes</div>
+          <div class="text-h5">Agregar Clientes</div>
           <div>
             <q-btn class="header-btn" flat color="white" push label="Agregar" icon="fas fa-plus"/>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/clients/index')"/>
           </div>
        </q-card-section>
         <div class="row header-container">
-        <div class="header-cell col-6">
-          <q-input  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
+         <div class="header-cell col-4">
+          <q-input  type="text" float-label="Float Label" placeholder="Identificación" />
         </div>
         <div class="header-cell col-4">
-          <q-select standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-input  type="text" float-label="Float Label" placeholder="Nombre" />
         </div>
-         <div class="flex-break q-py-md "></div>
+        <div class="header-cell col-4">
+          <q-input  type="text" float-label="Float Label" placeholder="Apellido" />
+        </div>
+        <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
-            <q-input  type="text" float-label="Float Label" placeholder="Localización" />
+           <q-input  type="text" float-label="Float Label" placeholder="Correo Electrónico" />
         </div>
-         <div class="header-cell col-6">
+        <div class="header-cell col-3">
+            <q-input  type="text" float-label="Float Label" placeholder="Telefono" />
+        </div>
+         <div class="header-cell col-4">
             <q-input  filled type="textarea" placeholder="Dirección"  />
       </div>
      </div>
