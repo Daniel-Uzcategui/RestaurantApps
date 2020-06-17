@@ -8,23 +8,23 @@
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
-       <div v-if="typeof localization!== 'undefined'">
+       <div v-if="typeof localization !== 'undefined'">
        <div class="row header-container">
         <div class="header-cell col-6">
           <label>Sede</label>
           <q-input :value="localization.name"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'name')"  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
         </div>
         <div class="header-cell col-4">
-          <q-select standout="bg-teal text-white"  :value="localization.status" :options="estatus_options" label="Estatus" />
+          <q-select standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')" :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
           <label>Localización</label>
-          <q-input :value="localization.localizacion_sede" type="text" float-label="Float Label" placeholder="Localización" />
+          <q-input :value="localization.localizacion_sede"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
         </div>
          <div class="header-cell col-8">
           <label>Dirección</label>
-         <q-input :value="localization.address" filled type="textarea" placeholder="Dirección"  />
+         <q-input :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
       </div>
       </div>
      </div>
