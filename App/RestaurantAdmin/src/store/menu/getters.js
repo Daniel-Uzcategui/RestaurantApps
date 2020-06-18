@@ -2,7 +2,7 @@ export const categorias = ({ categorias }) => {
   const keys = Object.keys(categorias)
   var arr = []
   for (const i in keys) {
-    arr.push(categorias[keys[i]])
+    arr.unshift(categorias[keys[i]])
   }
   return arr
 }
@@ -11,7 +11,7 @@ export const menu = ({ menu }) => {
   const keys = Object.keys(menu)
   var arr = []
   for (const i in keys) {
-    arr.push(menu[keys[i]])
+    arr.unshift(menu[keys[i]])
   }
   return arr
 }
@@ -19,7 +19,7 @@ export const listcategorias = ({ categorias }) => {
   const keys = Object.keys(categorias)
   var arr = []
   for (const i in keys) {
-    arr.push(categorias[keys[i]])
+    arr.unshift(categorias[keys[i]])
   }
   return arr.map(x => {
     var obj = {
@@ -34,7 +34,7 @@ export const listextras = ({ extras }) => {
   const keys = Object.keys(extras)
   var arr = []
   for (const i in keys) {
-    arr.push(extras[keys[i]])
+    arr.unshift(extras[keys[i]])
   }
   const arr2 = arr.map(x => {
     return {
@@ -52,7 +52,7 @@ export const listext = ({ extras }) => {
   const keys = Object.keys(extras)
   var arr = []
   for (const i in keys) {
-    arr.push(extras[keys[i]])
+    arr.unshift(extras[keys[i]])
   }
   return arr
 }

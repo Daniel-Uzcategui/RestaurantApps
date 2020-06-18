@@ -66,6 +66,19 @@
               />
             </q-popup-edit>
           </q-td>
+
+          <q-td key="price" :props="props">
+            <div class="text-pre-wrap">{{ props.row.price }}</div>
+            <q-popup-edit v-model.number="props.row.price">
+              <q-input
+                @input="(e) => saved(e, props.row.price, props.row.id, 'price')"
+                :value="props.row.price"
+                dense
+                autofocus
+                type="number"
+              />
+            </q-popup-edit>
+          </q-td>
         </q-tr>
       </template>
     </q-table>
