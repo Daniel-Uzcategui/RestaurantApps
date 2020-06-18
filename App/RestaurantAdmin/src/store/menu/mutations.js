@@ -35,8 +35,10 @@ export function addMenuMut (state, payload) {
   console.log(payload)
   Vue.set(state.menu, payload, {
     id: payload,
+    categoria: [],
     name: '',
     descripcion: ``,
+    extras: [],
     estatus: false,
     FechaAct: '19/04/20'
   })
