@@ -11,14 +11,14 @@
        </q-card-section>
         <div class="row header-container">
          <div class="header-cell col-4">
-          <q-input  type="text" float-label="Float Label" placeholder="Identificación" />
-          <q-input  type="text" float-label="Float Label" placeholder="Nombre" />
-          <q-input  type="text" float-label="Float Label" placeholder="Apellido" />
-          <q-input  type="text" float-label="Float Label" placeholder="Correo Electrónico" />
-          <q-input  type="text" float-label="Float Label" placeholder="Telefono" />
-          <q-input  filled type="textarea" placeholder="Dirección"  />
+          <q-input :value="client.identification" @input="(e) => saved(e, this.$route.query.client_Id, 'identification')" type="text" float-label="Float Label" placeholder="Identificación" />
+          <q-input :value="client.name"     @input="(e) => saved(e, this.$route.query.client_Id, 'name')"  type="text" float-label="Float Label" placeholder="Nombre" />
+          <q-input :value="client.lastname" @input="(e) => saved(e, this.$route.query.client_Id, 'lastname')" type="text" float-label="Float Label" placeholder="Apellido" />
+          <q-input :value="client.email"    @input="(e) => saved(e, this.$route.query.client_Id, 'email')" type="text" float-label="Float Label" placeholder="Correo Electrónico" />
+          <q-input :value="client.phone"    @input="(e) => saved(e, this.$route.query.client_Id, 'phone')" type="text" float-label="Float Label" placeholder="Telefono" />
+          <q-input :value="client.address"  @input="(e) => saved(e, this.$route.query.client_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
         </div>
-        <div class="header-cell col-4 filled">
+        <div class="header-cell col-6 filled">
           <q-table
           title="Ordenes"
           color="primary"
@@ -37,9 +37,6 @@
           >
             {{ col.value }}
           </q-td>
-          <q-td auto-width>
-            <q-btn size="sm" color="green" round dense  icon="edit"/>
-          </q-td>
         </q-tr>
       </template>
     </q-table>
@@ -52,14 +49,29 @@
 </q-page>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
       columns: [
         { name: 'delivered', required: true, label: 'Entregado', align: 'left', field: 'delivered', sortable: true },
-        { name: 'Responsable', required: true, align: 'center', label: 'Responsable de la Entrega', field: 'Responsable' },
+        { name: 'responsable', required: true, align: 'center', label: 'Responsable de la Entrega', field: 'responsable' },
         { name: 'paid', label: 'Pago Realizado', field: 'paid' }
       ]
+    }
+  },
+  computed: {
+    ...mapGetters('client', ['clients']),
+    ...mapGetters('order', ['orders']),
+    client () {
+      return this.clients[this.$route.query.client_Id]
+    }
+  },
+  methods: {
+    ...mapActions('client', ['saveClient']),
+    saved (value, id, key) {
+      console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
+      this.saveClient({ value, id, key })
     }
   }
 }

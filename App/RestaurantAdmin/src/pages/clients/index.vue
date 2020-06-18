@@ -9,22 +9,26 @@
       :dense="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
+      :selected-rows-label="getSelectedString"
+      selection="multiple"
+      :selected.sync="selected"
       >
      <template v-slot:top-right>
-        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
         <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/clients/create')"/>
+        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
+        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:body="props">
-          <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/clients/show' })">
+          <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/clients/show', query: { client_Id: props.row.id } })">
+           <q-td  auto-width>
+            <q-checkbox v-model="props.selected" />
+           </q-td>
            <q-td
             v-for="col in props.cols"
             :key="col.name"
             :props="props"
           >
             {{ col.value }}
-          </q-td>
-          <q-td auto-width>
-            <q-btn size="sm" color="green" round dense  icon="edit"/>
           </q-td>
         </q-tr>
       </template>
@@ -36,7 +40,7 @@
 
 <script>
 import { exportFile } from 'quasar'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== void 0
@@ -60,7 +64,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('clients', ['clients'])
+    ...mapGetters('client', ['clients'])
   },
   methods: {
     exportTable () {
@@ -87,11 +91,19 @@ export default {
           icon: 'warning'
         })
       }
+    },
+    getSelectedString () {
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.clients.length}`
+    },
+    ...mapActions('client', ['deleteClient']),
+    deleted () {
+      this.deleteClient(this.clients.filter(a => !this.selected.some(b => b['id'] === a['id'])))
     }
   },
 
   data () {
     return {
+      selected: [],
       columns: [
         { name: 'name', label: 'Nombre', align: 'left', field: 'name', sortable: true },
         { name: 'email', align: 'center', label: 'Correo Electrónico', field: 'email' },

@@ -9,6 +9,7 @@
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
+       <div class='filled'></div>
         <div class="row header-container">
         <div class="header-cell col-6">
           <q-input  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
@@ -17,10 +18,10 @@
           <q-select standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-3">
+        <div class="header-cell col-6">
             <q-input  type="text" float-label="Float Label" placeholder="Localización" />
         </div>
-         <div class="header-cell col-6">
+         <div class="header-cell col-5">
             <q-input  filled type="textarea" placeholder="Dirección"  />
       </div>
      </div>

@@ -5,7 +5,8 @@ import { vuexfireMutations } from 'vuexfire'
 import auth from './auth'
 import user from './user'
 import menu from './menu'
-import clients from './client'
+import client from './client'
+import order from './order'
 import localization from './localization'
 Vue.use(Vuex)
 
@@ -20,7 +21,8 @@ export default function (/* { ssrContext } */) {
       auth,
       user,
       menu,
-      clients,
+      client,
+      order,
       localization
     },
     mutations: {

@@ -19,6 +19,7 @@
      </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: [ 'localization', 'id' ],
   data () {
@@ -27,6 +28,9 @@ export default {
         'En Espera', 'En progreso', 'Completado'
       ]
     }
+  },
+   methods: {
+    ...mapActions('localization', ['saveLocationAc'])
   }
 }
 </script>

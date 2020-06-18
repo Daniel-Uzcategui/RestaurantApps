@@ -155,12 +155,6 @@ export default {
           caption: '',
           icon: 'fa fa-users',
           link: '/'
-        },
-        {
-          title: 'Configuración',
-          caption: '',
-          icon: 'fa fa-cog',
-          link: '/'
         }
       ]
     }

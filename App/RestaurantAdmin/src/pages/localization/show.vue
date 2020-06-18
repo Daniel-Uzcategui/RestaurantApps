@@ -4,10 +4,11 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Sedes</div>
-          <div> <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" @click="saveLocationAc"/>
+          <div> <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" @click="saveLocation"/>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
+         <div class='filled'></div>
        <div v-if="typeof localization !== 'undefined'">
        <div class="row header-container">
         <div class="header-cell col-6">
@@ -18,16 +19,17 @@
           <q-select standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')" :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-3">
+        <div class="header-cell col-6">
           <label>Localización</label>
           <q-input :value="localization.localizacion_sede"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
         </div>
-         <div class="header-cell col-8">
+         <div class="header-cell col-5">
           <label>Dirección</label>
          <q-input :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
       </div>
       </div>
      </div>
+      <div class='filled'></div>
      </q-card>
   </div>
 
@@ -50,10 +52,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('localization', ['saveLocationAc']),
+    ...mapActions('localization', ['saveLocation']),
     saved (value, id, key) {
       console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
-      this.saveLocationAc({ value, id, key })
+      this.saveLocation({ value, id, key })
     }
   }
 }
@@ -68,4 +70,8 @@ export default {
   position: absolute; right:120px !important
 .header
  padding-bottom: 50px
+.header-cell
+  padding-left: 30px
+.filled
+  padding-top: 50px
 </style>

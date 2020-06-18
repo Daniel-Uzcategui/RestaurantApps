@@ -5,7 +5,7 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Agregar Clientes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" icon="fas fa-plus"/>
+            <q-btn class="header-btn" flat color="white" push label="Agregar" icon="fas fa-plus" @click="create" />
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/clients/index')"/>
           </div>
        </q-card-section>
@@ -37,12 +37,20 @@
 </q-page>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   data () {
     return {
       estatus_options: [
         'En Espera', 'En progreso', 'Completado'
       ]
+    }
+  },
+  methods: {
+    ...mapActions('client', ['saveClient']),
+    create (value, id, key) {
+      console.log('create')
+      console.log(this)
     }
   }
 }
