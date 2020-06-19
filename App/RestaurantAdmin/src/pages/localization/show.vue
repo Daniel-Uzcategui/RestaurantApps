@@ -21,7 +21,12 @@
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-6">
           <label>Localización</label>
-          <q-input :value="localization.localizacion_sede"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
+          <q-input :value="JSON.stringify(markers)"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
+          <q-popup-edit :value="localization.localizacion_sede" buttons>
+              <google-map
+                :center="center"
+                :markers="markers" />
+            </q-popup-edit>
         </div>
          <div class="header-cell col-5">
           <label>Dirección</label>
@@ -32,17 +37,23 @@
       <div class='filled'></div>
      </q-card>
   </div>
-
 </q-page>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
 export default {
+  components: {
+    GoogleMap: require('../../components/GoogleMap.vue').default
+  },
   data () {
     return {
       estatus_options: [
         'En Espera', 'En progreso', 'Completado'
-      ]
+      ],
+      center: { lat: 45.508, lng: -73.587 },
+      markers: [],
+      places: [],
+      currentPlace: null
     }
   },
   computed: {
