@@ -69,7 +69,7 @@
 
           <q-td key="price" :props="props">
             <div class="text-pre-wrap">{{ props.row.price }}</div>
-            <q-popup-edit v-model.number="props.row.price">
+            <q-popup-edit :value="props.row.price">
               <q-input
                 @input="(e) => saved(e, props.row.price, props.row.id, 'price')"
                 :value="props.row.price"
@@ -105,6 +105,9 @@ export default {
       popupEditData: ''
     }
   },
+  mounted () {
+    this.bindExtras()
+  },
   methods: {
     showPopup (row, col) {
       this.popupEditData = row[col]
@@ -116,7 +119,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setExtras', 'addExtras', 'saveExtras']),
+    ...mapActions('menu', ['setExtras', 'addExtras', 'saveExtras', 'bindExtras']),
     delrow () {
       this.saveExtras(this.listext.filter(a => !this.selected.some(b => b['id'] === a['id'])))
     },

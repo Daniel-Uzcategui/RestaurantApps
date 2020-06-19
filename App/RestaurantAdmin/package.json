@@ -19,10 +19,10 @@
     "axios": "^0.19.2",
     "cross-env": "^7.0.2",
     "eosjs": "^20.0.3",
-    "firebase": "^7.5.0",
+    "firebase": "^7.15.3",
     "quasar": "^1.9.9",
     "vue2-google-maps": "^0.10.7",
-    "vuexfire": "^3.2.0"
+    "vuexfire": "^3.2.2"
   },
   "devDependencies": {
     "@quasar/app": "^1.6.0",

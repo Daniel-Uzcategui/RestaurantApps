@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import { firestoreAction } from 'vuexfire'
+import { firestore } from '../../services/firebase/db.js'
 /// ////// START Category Mutations ////////
 export function editCategory (state, payload) {
   state.categorias[payload.id][payload.key] = payload.value
@@ -46,9 +48,15 @@ export function addMenuMut (state, payload) {
 
 /// ////// END Menu Mutations ////////
 /// ////// START Extras Mutations ////////
-export function editExtras (state, payload) {
-  state.extras[payload.id][payload.key] = payload.value
-}
+export const editExtras = firestoreAction((state, payload) => {
+  return firestore()
+    .collection('extras')
+    .doc(payload.id)
+    .update({ [payload.key]: payload.value })
+    .then(() => {
+      console.log('extras updated!')
+    })
+})
 
 export function saveExtras (state, payload) {
   console.log(payload)

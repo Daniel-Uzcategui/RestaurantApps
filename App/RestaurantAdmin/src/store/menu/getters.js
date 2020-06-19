@@ -48,11 +48,4 @@ export const listextras = ({ extras }) => {
 
 export const plainExtras = ({ extras }) => extras
 
-export const listext = ({ extras }) => {
-  const keys = Object.keys(extras)
-  var arr = []
-  for (const i in keys) {
-    arr.unshift(extras[keys[i]])
-  }
-  return arr
-}
+export const listext = ({ extras }) => extras
