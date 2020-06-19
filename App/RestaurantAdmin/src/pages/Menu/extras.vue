@@ -105,9 +105,6 @@ export default {
       popupEditData: ''
     }
   },
-  mounted () {
-    this.bindExtras()
-  },
   methods: {
     showPopup (row, col) {
       this.popupEditData = row[col]
@@ -119,9 +116,9 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setExtras', 'addExtras', 'saveExtras', 'bindExtras']),
+    ...mapActions('menu', ['setExtras', 'addExtras', 'saveExtras', 'bindExtras', 'delExtras']),
     delrow () {
-      this.saveExtras(this.listext.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+      this.delExtras(this.selected)
     },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.listext.length}`

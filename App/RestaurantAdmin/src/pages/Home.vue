@@ -91,9 +91,15 @@ function wrapCsvValue (val, formatFn) {
 
   return `"${formatted}"`
 }
-
+import { mapActions } from 'vuex'
 export default {
+  mounted () {
+    this.bindExtras()
+    this.bindMenu()
+    this.bindCategorias()
+  },
   methods: {
+    ...mapActions('menu', ['bindExtras', 'bindMenu', 'bindCategorias']),
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(

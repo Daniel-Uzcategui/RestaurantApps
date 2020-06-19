@@ -48,11 +48,20 @@
 
           <q-td key="categoria" :props="props">
               <q-select
+                filled
+                :value="props.row.categoria"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                @new-value="createValue"
                 :options="listcategorias"
-                :value="plaincategorias[props.row.categoria] ? plaincategorias[props.row.categoria].name : 'N/A'"
-                color="green"
+                @filter="filterFn"
+                style="width: 250px"
+                map-options
                 emit-value
+                stack-label
               />
           </q-td>
 
@@ -65,11 +74,11 @@
           </q-td>
 
           <q-td key="photo" :props="props">
-            <div class="text-center" @click="showPhotoUpload('props')">
+            <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar rounded class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="110px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
+                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
             <div class="column items-center" v-else>
-                <q-avatar rounded class="q-mb-sm shadow-5" size="130px" @click="showPhotoUpload('props')">
+                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
                 </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
                 </div>
@@ -227,20 +236,6 @@ export default {
       })
     },
     createValue (val, done) {
-      // Calling done(var) when new-value-mode is not set or "add", or done(var, "add") adds "var" content to the model
-      // and it resets the input textbox to empty string
-      // ----
-      // Calling done(var) when new-value-mode is "add-unique", or done(var, "add-unique") adds "var" content to the model
-      // only if is not already set
-      // and it resets the input textbox to empty string
-      // ----
-      // Calling done(var) when new-value-mode is "toggle", or done(var, "toggle") toggles the model with "var" content
-      // (adds to model if not already in the model, removes from model if already has it)
-      // and it resets the input textbox to empty string
-      // ----
-      // If "var" content is undefined/null, then it doesn't tampers with the model
-      // and only resets the input textbox to empty string
-
       if (val.length > 0) {
         if (!this.listextras.includes(val)) {
           this.listextras.push(val)

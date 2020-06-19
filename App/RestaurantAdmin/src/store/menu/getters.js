@@ -21,13 +21,14 @@ export const listcategorias = ({ categorias }) => {
   for (const i in keys) {
     arr.unshift(categorias[keys[i]])
   }
-  return arr.map(x => {
-    var obj = {
-      label: x.name,
-      value: x.id
+  const arr2 = arr.map(x => {
+    return {
+      value: x.id,
+      label: x.name
     }
-    return obj
   })
+  console.log('categorias', arr2)
+  return arr2
 }
 
 export const listextras = ({ extras }) => {
