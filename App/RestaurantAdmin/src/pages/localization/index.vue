@@ -65,6 +65,10 @@ export default {
   computed: {
     ...mapGetters('localization', ['localizations'])
   },
+  mounted () {
+    this.bindLocalizations()
+    console.log(this.localizations)
+  },
   methods: {
     exportTable () {
       // naive encoding to csv format
@@ -94,9 +98,9 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.localizations.length}`
     },
-    ...mapActions('localization', ['deleteLocation']),
+    ...mapActions('localization', ['deleteLocation', 'bindLocalizations']),
     deleted () {
-      this.deleteLocation(this.localizations.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+      this.deleteLocation(this.selected)
     }
   },
   data () {

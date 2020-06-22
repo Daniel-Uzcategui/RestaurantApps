@@ -14,7 +14,6 @@
         <q-btn-group flat push >
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
-          <q-btn flat color="white" push label="Guardar" icon="update" @click="saveData"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
@@ -105,7 +104,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.Vue, 'VUE?')
+    this.bindCategorias()
   },
   methods: {
     showPopup (row, col) {
@@ -113,24 +112,20 @@ export default {
     },
     saved (value, initialValue, id, key) {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.setCategory({ value, id, key })
+      this.setValue({ payload: { value, id, key }, collection: 'categorias' })
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setCategory', 'addCategory', 'saveCategory']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindCategorias']),
     delrow () {
-      this.saveCategory(this.categorias.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+      this.delrows({ payload: this.selected, collection: 'categorias' })
     },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.categorias.length}`
     },
-    saveData () {
-      this.saveCategory(this.categorias)
-    },
     addrow () {
-      const key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
-      this.addCategory(key)
+      this.addRow({ collection: 'categorias' })
     }
   }
 }

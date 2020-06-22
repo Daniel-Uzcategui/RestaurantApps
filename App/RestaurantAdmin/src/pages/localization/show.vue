@@ -4,8 +4,9 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Sedes</div>
-          <div> <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" @click="saveLocation"/>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+          <div>
+            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+            <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" v-if="false" @click="saveLocation"/>
           </div>
        </q-card-section>
          <div class='filled'></div>
@@ -22,7 +23,7 @@
         <div class="header-cell col-6">
           <label>Localización</label>
           <q-input :value="JSON.stringify(markers)"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
-          <q-popup-edit :value="localization.localizacion_sede" buttons>
+          <q-popup-edit :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')" buttons>
               <google-map
                 :center="center"
                 :markers="markers" />
@@ -41,6 +42,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { GeoPoint } from '../../services/firebase/db.js'
 export default {
   components: {
     GoogleMap: require('../../components/GoogleMap.vue').default
@@ -59,12 +61,21 @@ export default {
   computed: {
     ...mapGetters('localization', ['localizations']),
     localization () {
-      return this.localizations[this.$route.query.Localization_Id]
+      return this.localizations.find(obj => {
+        return obj.id === this.$route.query.Localization_Id
+      })
     }
   },
   methods: {
     ...mapActions('localization', ['saveLocation']),
     saved (value, id, key) {
+      console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
+      this.saveLocation({ value, id, key })
+    },
+    saveGeoPoint (valu, id, key) {
+      const loc = JSON.parse(JSON.stringify(valu[0]))
+      const value = new GeoPoint(loc.position.lat, loc.position.lng)
+      console.log(value)
       console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveLocation({ value, id, key })
     }
