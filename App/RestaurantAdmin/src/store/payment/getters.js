@@ -1,1 +1,1 @@
-export const payments = ({ Payments }) => payments
+export const payments = ({ payments }) => payments

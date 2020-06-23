@@ -22,7 +22,7 @@ export default {
       birthdate: '01/02/1980',
       status: 'Activo',
       address: 'Caracas',
-      rol: 'administrado'
+      rol: 'administrador'
     }
   ]
 }

@@ -7,6 +7,7 @@ import user from './user'
 import menu from './menu'
 import client from './client'
 import order from './order'
+import payment from './payment'
 import localization from './localization'
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ export default function (/* { ssrContext } */) {
       menu,
       client,
       order,
+      payment,
       localization
     },
     mutations: {

@@ -1,5 +1,5 @@
 import { firestoreAction } from 'vuexfire'
-import { userRef, docGet } from '../../services/firebase/db.js'
+import { userRef, docGet, firestore } from '../../services/firebase/db.js'
 /** Get current user from the firestore collection user's
  * via firebase uid
  *
@@ -53,3 +53,21 @@ export const GetUserHistory = async function ({ commit }, payload) {
       return response.data.data
     })
 }
+
+export const bindusers = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindusers')
+  return bindFirestoreRef('users', firestore().collection('users'))
+})
+
+export const deleteUsers = firestoreAction((context, payload) => {
+  console.log(payload)
+  for (const i in payload) {
+    firestore().collection('orders')
+      .doc(payload[i].id)
+      .delete().then(() => {
+        console.log('orders removed!')
+      }).catch((e) => {
+        console.log('error removing orders!')
+      })
+  }
+})

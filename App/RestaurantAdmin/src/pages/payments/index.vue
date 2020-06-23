@@ -33,6 +33,7 @@
       </template>
     </q-table>
  </div>
+ {{payments}}
 </q-page>
 </template>
 
@@ -99,7 +100,7 @@ export default {
     },
     ...mapActions('payment', ['deletePayments', 'bindpayments']),
     deleted () {
-      this.deleteLocation(this.selected)
+      this.deletePayments(this.selected)
     }
   },
   data () {
@@ -107,11 +108,9 @@ export default {
       selected: [],
       columns: [
         { name: 'invoice', required: true, label: 'Factura', align: 'left', field: 'invoice', sortable: true },
-        { name: 'order', required: true, align: 'center', label: 'Orden', field: 'order' },
-        { name: 'Description_order', required: true, align: 'center', label: 'Descripción de la orden', field: 'Description_order' },
-        { name: 'Status', required: true, label: 'Estatus', field: 'status' },
-        { name: 'order_date', label: 'Fecha', field: 'order_date' },
-        { name: 'Paid', label: 'Monto', field: 'paid' }
+        { name: 'status', required: true, label: 'Estatus', field: 'status' },
+        { name: 'typePayment', label: 'Tipo de Pago', field: 'typePayment' },
+        { name: 'amount', label: 'Monto', field: 'amount' }
       ]
     }
   }

@@ -15,7 +15,7 @@ export const savePayment = firestoreAction((state, payload) => {
       console.log('payments updated!')
     })
 })
-export const deletePayment = firestoreAction((context, payload) => {
+export const deletePayments = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload) {
     firestore().collection('payments')

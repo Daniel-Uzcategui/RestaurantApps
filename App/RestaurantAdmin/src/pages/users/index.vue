@@ -98,17 +98,17 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.users.length}`
     },
-    ...mapActions('user', ['deleteuser', 'bindusers']),
+    ...mapActions('user', ['deleteUsers', 'bindusers']),
     deleted () {
-      this.deleteuser(this.selected)
+      this.deleteUsers(this.selected)
     }
   },
   data () {
     return {
       selected: [],
       columns: [
-        { name: 'Name', required: true, label: 'Nombre', align: 'left', field: 'name', sortable: true },
-        { name: 'LastName', required: true, label: 'Apellido', field: 'lastname' },
+        { name: 'Name', required: true, label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
+        { name: 'LastName', required: true, label: 'Apellido', field: 'apellido' },
         { name: 'Rol', required: true, label: 'Rol', field: 'rol' },
         { name: 'Status', required: true, label: 'Estatus', field: 'status' }
       ]
