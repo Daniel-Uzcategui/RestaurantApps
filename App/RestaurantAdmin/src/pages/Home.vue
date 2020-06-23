@@ -93,7 +93,7 @@ function wrapCsvValue (val, formatFn) {
 }
 import { mapActions } from 'vuex'
 export default {
-  mounted () {
+  created () {
     this.bindExtras()
     this.bindMenu()
     this.bindCategorias()
