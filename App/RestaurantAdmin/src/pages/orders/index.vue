@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { exportFile } from 'quasar'
+import { exportFile, date } from 'quasar'
 import { mapGetters, mapActions } from 'vuex'
 
 function wrapCsvValue (val, formatFn) {
@@ -108,10 +108,10 @@ export default {
       selected: [],
       columns: [
         { name: 'description', required: true, label: 'Descripción', align: 'left', field: 'description', sortable: true },
-        { name: 'TypePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
-        { name: 'Status', required: true, label: 'Estatus', field: 'status' },
+        { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
+        { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'paid', label: 'Monto', field: 'paid' },
-        { name: 'order_date', label: 'Fecha', field: 'order_date' }
+        { name: 'order_date', label: 'Fecha', field: 'order_date', format: val => date.formatDate(val, 'DD-MM-YYYY') }
       ]
     }
   }

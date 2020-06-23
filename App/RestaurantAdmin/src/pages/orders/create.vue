@@ -32,8 +32,11 @@
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
-            <q-input v-model="address" filled type="textarea" placeholder="Dirección"  />
-      </div>
+            <q-input v-model="delivered" filled type="textarea" placeholder="Dirección de entrega"  />
+         </div>
+         <div class="header-cell col-3">
+            <q-input v-model="description" type="text" float-label="Float Label"  placeholder="Descripción del plato"  />
+         </div>
      </div>
        <diV class='filled'></diV>
      </q-card>
@@ -53,8 +56,9 @@ export default {
       name: '',
       smallAddress: '',
       status: 'En Espera',
+      delivered: '',
       address: '',
-      localizacion_sede: [],
+      description: '',
       estatus_options: [
         'En Espera', 'En progreso', 'Completado'
       ],
@@ -71,11 +75,16 @@ export default {
       this.$q.loading.show()
       const payload = {
         name: this.name,
-        smallAddress: this.smallAddress,
         status: this.status,
-        address: this.address
+        typePayment: this.typePayment,
+        responsable: this.responsable,
+        delivered: this.delivered,
+        sede: this.sede,
+        paid: this.paid,
+        description: this.description
+
       }
-      this.addLoc(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/orders/index') })
+      this.addOrder(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/orders/index') })
     }
   }
 }
