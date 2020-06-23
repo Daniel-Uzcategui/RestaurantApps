@@ -63,13 +63,9 @@
       dense
         class="bg-primary text-white shadow-2"
       >
-        <q-tab name="cart" icon="fas fa-shopping-cart" label="Carrito">
+        <q-route-tab name="cart" icon="fas fa-shopping-cart" to="/menu/carrito" exact label="Carrito">
           <q-badge color="red" floating>{{getCartQ}}</q-badge>
-        </q-tab>
-        <q-tab name="alarms" icon="alarm" label="Alarms">
-          <q-badge color="red" floating>10+</q-badge>
-        </q-tab>
-        <q-tab alert name="movies" icon="movie" label="Movies" />
+        </q-route-tab>
       </q-tabs>
     </q-footer>
    </q-layout>

@@ -1,6 +1,6 @@
 <template>
       <div>
-         <q-input class="q-pa-lg" rounded outlined label="Buscar en el Menu" >
+         <q-input class="q-pa-lg" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
            <template v-slot:prepend>
           <q-icon name="fas fa-search" />
         </template>
@@ -12,11 +12,12 @@
           class="bg-white"
         >
           <q-tab v-for="(tabs, index) in categorias"
-          :key="index">
+          :key="index"
+          @click="selectedCat=tabs.id; search()">
           {{tabs.name.toLowerCase()}}
           </q-tab>
         </q-tabs>
-         <q-list v-for="item in menu" class="bg-white" :key="item.id" style="width: 100%">
+         <q-list v-for="item in filteredMenu" class="bg-white" :key="item.id" style="width: 100%">
               <q-item>
                 <q-item-section avatar top>
                   <q-img :src=item.photo width="80px" color="primary" text-color="white" class="rounded-borders" />
@@ -75,7 +76,6 @@
                 label="Extras"
                 filled
                 v-model="disExtras"
-                use-input
                 use-chips
                 multiple
                 input-debounce="0"
@@ -107,6 +107,7 @@ export default {
   },
   data () {
     return {
+      searchBar: '',
       maximizedToggle: true,
       display: false,
       disExtras: [],
@@ -115,14 +116,43 @@ export default {
       photoType: '',
       photoUpload: false,
       displayVal: {},
-      quantity: 1
+      quantity: 1,
+      filteredMenu: [],
+      origMenu: [],
+      selectedCat: ''
     }
   },
   mounted () {
-    this.bindMenu()
+    this.bindMenu().then(() => {
+      this.origMenu = this.filteredMenu = this.menu.map(x => {
+        return {
+          categoria: x.categoria,
+          estatus: x.estatus,
+          name: x.name,
+          photo: x.photo,
+          price: x.price,
+          id: x.id
+        }
+      })
+    })
   },
   methods: {
+    search () {
+      if (this.selectedCat !== '') {
+        this.filteredMenu = this.origMenu.filter(x => {
+          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+        })
+        this.filteredMenu = this.filteredMenu.filter(x => {
+          return x.categoria.includes(this.selectedCat)
+        })
+      } else {
+        this.filteredMenu = this.origMenu.filter(x => {
+          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+        })
+      }
+    },
     addToCart () {
+      console.log(this.displayVal, 'diiiiiissss')
       this.addCart({
         prodId: this.displayVal.id,
         quantity: this.quantity,
@@ -134,9 +164,11 @@ export default {
       )
     },
     getMenuItem (id) {
-      this.displayVal = this.menu.find((e) => {
+      console.log(id, 'iiiiiddd')
+      this.displayVal = this.filteredMenu.find((e) => {
         return e.id === id
       })
+      this.displayVal.id = id
     },
     ...mapActions('menu', ['bindMenu', 'addCart']),
     createValue (val, done) {

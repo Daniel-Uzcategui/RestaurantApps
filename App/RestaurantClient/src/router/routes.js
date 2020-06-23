@@ -109,9 +109,9 @@ const routes = [
         }
       },
       {
-        path: 'extras',
-        name: 'Extras',
-        component: () => import('pages/menu/extras.vue'),
+        path: 'carrito',
+        name: 'carrito',
+        component: () => import('pages/menu/carrito.vue'),
         meta: {
           requiresAuth: true
         }
