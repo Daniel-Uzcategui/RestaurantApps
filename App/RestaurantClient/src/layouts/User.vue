@@ -138,22 +138,10 @@ export default {
           link: '#/home'
         },
         {
-          title: 'Sedes',
+          title: 'Haz tu pedido',
           caption: '',
-          icon: 'fa fa-globe',
-          link: '#/localization/index'
-        },
-        {
-          title: 'Categorias',
-          caption: '',
-          icon: 'fa fa-bars',
-          link: '#/menu/categorias'
-        },
-        {
-          title: 'Extras',
-          caption: '',
-          icon: 'fas fa-utensils',
-          link: '#/menu/extras'
+          icon: 'fa fa fa-truck',
+          link: '/home'
         },
         {
           title: 'Menus',
@@ -162,28 +150,16 @@ export default {
           link: '#/menu/menu'
         },
         {
-          title: 'Ordenes',
+          title: 'Tus Ordenes',
           caption: '',
           icon: 'room_service',
-          link: '/'
+          link: '/home'
         },
         {
-          title: 'Pagos',
+          title: 'Encuentranos',
           caption: '',
-          icon: 'fa fa-briefcase',
-          link: '/'
-        },
-        {
-          title: 'Clientes',
-          caption: '',
-          icon: 'fa fa-user',
-          link: '#/clients/index'
-        },
-        {
-          title: 'Usuarios',
-          caption: '',
-          icon: 'fa fa-users',
-          link: '/'
+          icon: 'fa fa-globe',
+          link: '#/home'
         }
       ]
     }
