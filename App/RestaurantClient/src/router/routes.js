@@ -10,6 +10,20 @@ const routes = [
     ]
   },
   {
+    path: '/',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: () => import('pages/home.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
     path: '/auth',
     component: () => import('layouts/Basic.vue'),
     children: [
@@ -38,6 +52,96 @@ const routes = [
         path: 'profile',
         name: 'UserProfile',
         component: () => import('pages/user/Profile.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/localization',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'listLocalization',
+        component: () => import('pages/localization/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'create',
+        name: 'createlocalization',
+        component: () => import('pages/localization/create.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'show',
+        name: 'showlocalization',
+        component: () => import('pages/localization/show.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/menu',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'categorias',
+        name: 'Categorias',
+        component: () => import('pages/menu/categorias.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'menu',
+        name: 'Menu',
+        component: () => import('pages/menu/menu.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'extras',
+        name: 'Extras',
+        component: () => import('pages/menu/extras.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/clients',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'listClients',
+        component: () => import('pages/clients/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'create',
+        name: 'createClient',
+        component: () => import('pages/clients/create.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'show',
+        name: 'showClient',
+        component: () => import('pages/clients/show.vue'),
         meta: {
           requiresAuth: true
         }

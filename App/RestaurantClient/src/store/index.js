@@ -4,6 +4,10 @@ import { vuexfireMutations } from 'vuexfire'
 
 import auth from './auth'
 import user from './user'
+import menu from './menu'
+import client from './client'
+import order from './order'
+import localization from './localization'
 Vue.use(Vuex)
 
 /*
@@ -15,7 +19,11 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       auth,
-      user
+      user,
+      menu,
+      client,
+      order,
+      localization
     },
     mutations: {
       ...vuexfireMutations

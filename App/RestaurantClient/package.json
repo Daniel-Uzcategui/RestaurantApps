@@ -2,7 +2,7 @@
   "name": "uploader",
   "version": "0.0.1",
   "description": "User profile using Firebase, Vuexfire, and Google Cloud Storage",
-  "productName": "Unico Wallet",
+  "productName": "ECRA",
   "cordovaId": "org.unico.wallet.app",
   "capacitorId": "",
   "author": "Adam K. Purdy <admin@kpapro.com>",
@@ -19,9 +19,10 @@
     "axios": "^0.19.2",
     "cross-env": "^7.0.2",
     "eosjs": "^20.0.3",
-    "firebase": "^7.5.0",
+    "firebase": "^7.15.3",
     "quasar": "^1.9.9",
-    "vuexfire": "^3.2.0"
+    "vue2-google-maps": "^0.10.7",
+    "vuexfire": "^3.2.2"
   },
   "devDependencies": {
     "@quasar/app": "^1.6.0",

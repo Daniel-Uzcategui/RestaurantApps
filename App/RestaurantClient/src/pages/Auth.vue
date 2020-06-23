@@ -170,7 +170,7 @@ export default {
               } else {
                 await this.loginUser({ email, password })
               }
-              this.$router.push({ path: '/user/profile' })
+              this.$router.push({ path: '/home' })
             } catch (err) {
               console.error(err)
               this.$q.notify({
