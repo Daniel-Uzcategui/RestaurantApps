@@ -136,13 +136,13 @@ export default {
           title: 'Ordenes',
           caption: '',
           icon: 'room_service',
-          link: '/'
+          link: '#/orders/index'
         },
         {
           title: 'Pagos',
           caption: '',
           icon: 'fa fa-briefcase',
-          link: '/'
+          link: '#/payments/index'
         },
         {
           title: 'Clientes',
@@ -154,7 +154,7 @@ export default {
           title: 'Usuarios',
           caption: '',
           icon: 'fa fa-users',
-          link: '/'
+          link: '#/users/index'
         }
       ]
     }

@@ -5,7 +5,6 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Clientes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update"/>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/clients/index')"/>
           </div>
        </q-card-section>
@@ -87,7 +86,7 @@ export default {
 .header-cell
   padding-left: 50px
 .header-btn-back
-  position: absolute; right:120px !important
+  position: absolute; right:20px !important
 .header
  padding-bottom: 50px
 </style>

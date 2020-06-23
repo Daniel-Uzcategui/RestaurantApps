@@ -147,6 +147,64 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/orders',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'listOrders',
+        component: () => import('pages/orders/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'create',
+        name: 'createOrders',
+        component: () => import('pages/orders/create.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'show',
+        name: 'showOrders',
+        component: () => import('pages/orders/show.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/payments',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'listpayments',
+        component: () => import('pages/payments/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/users',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'listusers',
+        component: () => import('pages/users/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 
