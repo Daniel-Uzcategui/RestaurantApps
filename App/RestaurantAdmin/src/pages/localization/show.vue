@@ -20,16 +20,6 @@
           <q-select standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')" :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-3">
-          <q-select :value="typeServices" standout="bg-teal text-white"  :options="typeServices_options" label="Tipo de Servicios" />
-        </div>
-        <div class="header-cell col-4">
-          <q-input :value="tables"  type="text" float-label="Float Label" placeholder="Mesas" />
-        </div>
-         <div class="header-cell col-4">
-          <q-input :value="capacity"  type="text" float-label="Float Label" placeholder="Capacidad" />
-        </div>
-         <div class="flex-break q-py-md "></div>
         <div class="header-cell col-6">
           <label>Localización</label>
           <q-input :value="JSON.stringify(markers)"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
@@ -43,6 +33,25 @@
           <label>Dirección</label>
          <q-input :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
       </div>
+      <div class="flex-break q-py-md "></div>
+         <div class="header-cell col-3">
+            <div class="col-3">
+            <label>Tipo de Servicios</label>
+            </div>
+            <div class="div-typeServices">
+              <q-checkbox dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
+              <q-checkbox dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
+              <q-checkbox dense label="In local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
+            </div>
+        </div>
+        <div class="header-cell col-4" v-show="localization.Inlocal">
+          <label>Mesas</label>
+          <q-input :value="localization.tables"  type="text" float-label="Float Label" @input="(e) => saved(e, this.$route.query.Localization_Id, 'tables')" />
+        </div>
+         <div class="header-cell col-4"  v-show="localization.Inlocal">
+          <label>Capacidad</label>
+          <q-input :value="localization.capacity"  type="text" float-label="Float Label" @input="(e) => saved(e, this.$route.query.Localization_Id, 'capacity')" />
+        </div>
       </div>
      </div>
       <div class='filled'></div>
@@ -64,9 +73,9 @@ export default {
       estatus_options: [
         'Activo', 'Inactivo'
       ],
-      typeServices_options: [
-        'Pick-up', 'Delivery', 'In local'
-      ],
+      PickUP: false,
+      Delivery: false,
+      Inlocal: false,
       center: { lat: 45.508, lng: -73.587 },
       markers: [],
       places: [],
@@ -111,4 +120,8 @@ export default {
   padding-left: 30px
 .filled
   padding-top: 50px
+.div-typeServices
+ padding-top: 20px
+.typeServices
+ padding-left: 10px
 </style>

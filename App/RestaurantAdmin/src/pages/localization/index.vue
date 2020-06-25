@@ -23,12 +23,35 @@
            <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
           </q-td>
-           <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
-            {{ col.value }}
+           <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+           <q-td key="address" :props="props">
+            {{ props.row.address }}
+          </q-td>
+           <q-td key="status" :props="props">
+            {{ props.row.status }}
+          </q-td>
+           <q-td key="PickUP" :props="props">
+              <q-toggle
+                @input="(e) => saved(e, props.row.PickUP, props.row.id, 'Pick UP')"
+                :value="props.row.PickUP"
+                color="green"
+              />
+          </q-td>
+          <q-td key="Delivery" :props="props">
+              <q-toggle
+                @input="(e) => saved(e, props.row.Delivery, props.row.id, 'Delivery')"
+                :value="props.row.Delivery"
+                color="green"
+              />
+          </q-td>
+          <q-td key="Inlocal" :props="props">
+              <q-toggle
+                @input="(e) => saved(e, props.row.Inlocal, props.row.id, 'Inlocal')"
+                :value="props.row.Inlocal"
+                color="green"
+              />
           </q-td>
         </q-tr>
       </template>
@@ -107,10 +130,12 @@ export default {
     return {
       selected: [],
       columns: [
-        { name: 'Name', required: true, label: 'Nombre', align: 'left', field: 'name', sortable: true },
-        { name: 'Address', required: true, align: 'center', label: 'Ubicación', field: 'address' },
-        { name: 'Status', required: true, label: 'Estatus', field: 'status' },
-        { name: 'Localization_date', label: 'Fecha', field: 'localization_date' }
+        { name: 'name', required: true, label: 'Nombre', align: 'left', field: 'name', sortable: true },
+        { name: 'address', required: true, align: 'center', label: 'Ubicación', field: 'address' },
+        { name: 'status', required: true, label: 'Estatus', field: 'status' },
+        { name: 'PickUP', align: 'center', label: 'Pick UP', field: 'PickUP' },
+        { name: 'Delivery', align: 'center', label: 'Delivery', field: 'Delivery' },
+        { name: 'Inlocal', align: 'center', label: 'In local', field: 'Inlocal' }
       ]
     }
   }

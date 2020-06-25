@@ -4,8 +4,6 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Pago</div>
-          {{payments}}
-          {{this.$route.query.payment_Id}}
           <div>
             <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/payments/index')"/>
           </div>
