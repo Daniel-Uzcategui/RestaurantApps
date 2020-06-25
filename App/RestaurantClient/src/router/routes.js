@@ -107,11 +107,17 @@ const routes = [
         meta: {
           requiresAuth: true
         }
-      },
+      }
+    ]
+  },
+  {
+    path: '/cart',
+    component: () => import('layouts/cart.vue'),
+    children: [
       {
-        path: 'carrito',
+        path: 'index',
         name: 'carrito',
-        component: () => import('pages/menu/carrito.vue'),
+        component: () => import('pages/cart/index.vue'),
         meta: {
           requiresAuth: true
         }

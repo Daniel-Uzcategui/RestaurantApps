@@ -1,46 +1,17 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 /// ////// START Action ////////
-export const setValue = firestoreAction((state, payload) => {
-  return firestore()
-    .collection(payload.collection)
-    .doc(payload.payload.id)
-    .update({ [payload.payload.key]: payload.payload.value })
-    .then(() => {
-      console.log(`${payload.collection} updated!`)
-    })
-})
-
-export const addRow = firestoreAction((state, payload) => {
-  return firestore()
-    .collection(payload.collection).add({
-      name: ''
-    })
-    .then(function (docRef) {
-      console.log('Document written with ID: ', docRef.id)
-    })
-    .catch(function (error) {
-      console.error('Error adding document: ', error)
-    })
-})
-export const delrows = firestoreAction((context, payload) => {
-  console.log(payload)
-  for (const i in payload.payload) {
-    firestore().collection(payload.collection)
-      .doc(payload.payload[i].id)
-      .delete().then(() => {
-        console.log(`${payload.collection} removed!`)
-      }).catch((e) => {
-        console.log('error removing extras!')
-      })
-  }
-})
 /// ////// END Action ////////
 /// Cart Actions
 export const addCart = async function ({ commit }, payload) {
   return commit('addCart', payload)
 }
-
+export const modCartVal = async function ({ commit }, payload) {
+  return commit('modCartVal', payload)
+}
+export const delCartItem = async function ({ commit }, payload) {
+  return commit('delCartItem', payload)
+}
 /// Bindings ////
 export const bindExtras = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingExtras')

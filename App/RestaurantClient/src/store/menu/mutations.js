@@ -61,36 +61,14 @@ export const addMenuMut = firestoreAction((state, payload) => {
 
 /// ////// END Menu Mutations ////////
 /// ////// START Extras Mutations ////////
-export const editExtras = firestoreAction((state, payload) => {
-  return firestore()
-    .collection('extras')
-    .doc(payload.id)
-    .update({ [payload.key]: payload.value })
-    .then(() => {
-      console.log('extras updated!')
-    })
-})
-
-export function saveExtras (state, payload) {
-  console.log(payload)
-  state.extras = payload
-}
-
-export const addExtras = firestoreAction((state, payload) => {
-  return firestore()
-    .collection('extras').add({
-      name: ''
-    })
-    .then(function (docRef) {
-      console.log('Document written with ID: ', docRef.id)
-    })
-    .catch(function (error) {
-      console.error('Error adding document: ', error)
-    })
-})
 
 export function addCart (state, payload) {
-  state.cart.push(payload)
-  console.log(state.cart)
+  state.cart = ([ ...state.cart, { ...payload } ])
+}
+export function modCartVal (state, payload) {
+  state.cart[payload.id][payload.key] = payload.value
+}
+export function delCartItem (state, payload) {
+  delete state.cart.splice(payload, 1)
 }
 /// ////// END Extras Mutations ////////
