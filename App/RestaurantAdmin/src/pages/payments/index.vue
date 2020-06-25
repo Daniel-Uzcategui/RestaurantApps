@@ -108,6 +108,7 @@ export default {
       selected: [],
       columns: [
         { name: 'invoice', required: true, label: 'Factura', align: 'left', field: 'invoice', sortable: true },
+        /* { name: 'nameClient', required: true, label: 'Nombre del Cliente', align: 'left', field: 'nameClient', sortable: true }, */
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'typePayment', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'amount', label: 'Monto', field: 'amount' }

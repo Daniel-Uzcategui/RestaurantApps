@@ -41,7 +41,7 @@ export default {
   created () {
     const online = window.navigator.onLine
     this.$q.loading.show({
-      message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
+      message: online ? 'Cargando informacion del usuario...' : 'Si ves esto perdiste la conección de la red. Por favor vuelve a conectarte.',
       backgroundColor: online ? 'grey' : 'red-6',
       spinner: online ? QSpinnerGears : QSpinnerRadio,
       customClass: 'loader'

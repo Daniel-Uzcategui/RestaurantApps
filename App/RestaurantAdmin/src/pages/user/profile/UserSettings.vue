@@ -3,7 +3,7 @@
     <q-form class="full-height" @submit="saveUserData">
       <q-banner/> <q-banner/>
         <section class="user-info">
-            <h6 class="q-mt-none q-mb-md text-center">Edit Your Profile</h6>
+            <h6 class="q-mt-none q-mb-md text-center">Editar Perfil</h6>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
                 <q-input class="col" id="nombre" v-model="nombre" borderless="borderless" dense="dense" type="text"></q-input>
             </div>
@@ -18,7 +18,7 @@
             </div>
         </section>
         <div class="row justify-between q-my-lg q-px-md ">
-            <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
+            <q-btn color="primary" label="Cancelar" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
             <q-btn color="primary" type="submit" label="GUARDAR" style="min-width:6em;"></q-btn>
         </div>
     </q-form>

@@ -17,6 +17,16 @@
         <div class="header-cell col-4">
           <q-select v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
+        <div class="flex-break q-py-md "></div>
+         <div class="header-cell col-3">
+          <q-select v-model="typeServices" standout="bg-teal text-white"  :options="typeServices_options" label="Tipo de Servicios" />
+        </div>
+        <div class="header-cell col-4">
+          <q-input v-model="tables"  type="text" float-label="Float Label" placeholder="Mesas" />
+        </div>
+         <div class="header-cell col-4">
+          <q-input v-model="capacity"  type="text" float-label="Float Label" placeholder="Capacidad" />
+        </div>
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-6">
           <q-btn v-if="localizacion_sede.length === 0" color="primary" class="q-py-md" label="Agregar Localizacion" icon="fas fa-map-marker-alt"/>
@@ -29,7 +39,7 @@
         </div>
          <div class="header-cell col-5">
             <q-input v-model="address" filled type="textarea" placeholder="Dirección"  />
-      </div>
+        </div>
      </div>
        <diV class='filled'></diV>
      </q-card>
@@ -41,8 +51,7 @@
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-
-        <q-card-section>
+       <q-card-section>
           Debe agregar una localización.
         </q-card-section>
       </q-card>
@@ -60,12 +69,17 @@ export default {
     return {
       noLoc: false,
       name: '',
-      smallAddress: '',
-      status: 'En Espera',
+      tables: '',
+      capacity: '',
+      status: 'Activo',
+      typeServices: 'Pick-up',
       address: '',
       localizacion_sede: [],
       estatus_options: [
-        'En Espera', 'En progreso', 'Completado'
+        'Activo', 'Desactivo'
+      ],
+      typeServices_options: [
+        'Pick-up', 'Delivery', 'In local'
       ],
       center: { lat: 45.508, lng: -73.587 },
       markers: [],
@@ -80,8 +94,10 @@ export default {
       const loc = JSON.parse(JSON.stringify(this.localizacion_sede[0]))
       const payload = {
         name: this.name,
-        smallAddress: this.smallAddress,
+        tables: this.tables,
         status: this.status,
+        typeServices: this.typeServices,
+        capacity: this.capacity,
         address: this.address,
         localizacion_sede: new GeoPoint(loc.position.lat, loc.position.lng)
       }

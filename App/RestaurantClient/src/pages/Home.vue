@@ -1,55 +1,11 @@
 <template>
   <q-page class="q-pa-lg" >
     <div class="row header-container">
-    <div class="header-cell col-md-3 col-sm-4" >
-     <q-card class="text-white" horizontal>
-      <q-card-section class="bg-secondary">
-        <div class="text-h5">
-          <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">98</span>
-        </div>
-        <div class="text-subtitle2">Ordenes Pendientes </div>
-      </q-card-section>
-      <q-separator dark />
-      <q-card-actions class="bg-primary" vertical>
-       <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
-      </q-card-actions>
-       </q-card>
-       </div>
-       <div class="header-cell col-md-3 col-sm-4"  >
-      <q-card class=" text-white" horizontal>
-        <q-card-section  class="bg-secondary">
-        <div class="text-h5">
-          <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">12</span>
-        </div>
-        <div class="text-subtitle2">Ordenes en Progreso</div>
-      </q-card-section>
-       <q-separator dark />
-      <q-card-actions  class="bg-primary" vertical>
-        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
-      </q-card-actions>
-       </q-card>
-        </div>
-        <div class="header-cell col-md-3 col-sm-4">
-       <q-card class="text-white" horizontal>
-        <q-card-section  class="bg-secondary">
-        <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
-        <span class="separate">42</span>
-        </div>
-        <div class="text-subtitle2">Ordenes en Anuladas</div>
-     </q-card-section>
-       <q-separator dark />
-      <q-card-actions class="bg-primary" vertical>
-        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
-      </q-card-actions>
-    </q-card>
-    </div>
-     <div class="flex-break q-py-md "></div>
+    <div class="flex-break q-py-md "></div>
      <div class="header-cell col-12" tabindex="0">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
-        <div class="text-h5">Ordenes</div>
+        <div class="text-h5">Tus Pedidos</div>
       </q-card-section>
      <q-table class="orders "
       :dense="$q.screen.lt.md"

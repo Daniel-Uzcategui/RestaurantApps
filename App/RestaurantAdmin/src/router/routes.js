@@ -189,6 +189,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'show',
+        name: 'showPayments',
+        component: () => import('pages/payments/show.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },

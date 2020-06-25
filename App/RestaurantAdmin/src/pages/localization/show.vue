@@ -19,6 +19,16 @@
         <div class="header-cell col-4">
           <q-select standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')" :options="estatus_options" label="Estatus" />
         </div>
+        <div class="flex-break q-py-md "></div>
+         <div class="header-cell col-3">
+          <q-select :value="typeServices" standout="bg-teal text-white"  :options="typeServices_options" label="Tipo de Servicios" />
+        </div>
+        <div class="header-cell col-4">
+          <q-input :value="tables"  type="text" float-label="Float Label" placeholder="Mesas" />
+        </div>
+         <div class="header-cell col-4">
+          <q-input :value="capacity"  type="text" float-label="Float Label" placeholder="Capacidad" />
+        </div>
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-6">
           <label>Localización</label>
@@ -49,8 +59,13 @@ export default {
   },
   data () {
     return {
+      tables: '',
+      capacity: '',
       estatus_options: [
-        'En Espera', 'En progreso', 'Completado'
+        'Activo', 'Inactivo'
+      ],
+      typeServices_options: [
+        'Pick-up', 'Delivery', 'In local'
       ],
       center: { lat: 45.508, lng: -73.587 },
       markers: [],

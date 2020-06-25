@@ -12,7 +12,7 @@
                />
             <q-toolbar-title class="text-caption">
                <q-avatar>
-                  <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
+                  <img alt="pfcevolution" src="~assets/logo.png" height="326px" width="300px">
                </q-avatar>
                {{getUserData('nombre')}} {{getUserData('apellido')}}
             </q-toolbar-title>
