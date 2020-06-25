@@ -34,7 +34,7 @@
                aria-label="Menu"
                @click="leftDrawerOpen = !leftDrawerOpen"
                />
-               <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+              <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
          </q-toolbar>
       </q-header>
       <q-drawer
@@ -42,7 +42,7 @@
          v-model="leftDrawerOpen"
          show-if-above
          bordered
-         >
+        >
          <q-list>
             <Nav
                v-for="link in nav"
@@ -60,14 +60,10 @@
             <router-view @setBlur="setBlur" />
          </transition>
       </q-page-container>
-    <q-footer elevated class="bg-grey-8 text-white">
-      <q-tabs
-      dense
-        class="bg-primary text-white shadow-2"
-      >
-        <q-route-tab name="cart" icon="fas fa-shopping-cart" to="/cart/index" exact label="Carrito">
-          <q-badge color="red" floating>{{getCartQ}}</q-badge>
-        </q-route-tab>
+      <q-footer elevated class="bg-grey-8 text-white">
+      <q-tabs dense class="bg-primary text-white shadow-2" >
+        <q-tab name="cart" icon="fas fa-cash-register" label="Pagar">
+        </q-tab>
       </q-tabs>
     </q-footer>
    </q-layout>
@@ -77,6 +73,7 @@
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
+
 export default {
   name: 'UserLayout',
   components: {
@@ -86,13 +83,6 @@ export default {
   computed: {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['cart']),
-    getCartQ () {
-      var amt = 0
-      for (const i in this.cart) {
-        amt = this.cart[i].quantity + amt
-      }
-      return amt
-    },
     productName () {
       return window.sessionStorage.productName
     },
