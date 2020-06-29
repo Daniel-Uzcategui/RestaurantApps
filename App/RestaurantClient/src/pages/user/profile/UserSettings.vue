@@ -1,7 +1,6 @@
 <template>
   <div class="user-settings full-width" v-if="currentUser">
-    <q-form class="full-height" @submit="saveUserData">
-      <q-banner/> <q-banner/>
+    <q-form class="full-height q-pa-sm" @submit="saveUserData">
         <section class="user-info">
             <h6 class="q-mt-none q-mb-md text-center">Edit Your Profile</h6>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
@@ -17,7 +16,7 @@
                 <q-input class="col" id="email" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
         </section>
-        <div class="row justify-between q-my-lg q-px-md ">
+        <div class="row justify-between absolute-bottom q-my-lg q-px-md ">
             <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
             <q-btn color="primary" type="submit" label="GUARDAR" style="min-width:6em;"></q-btn>
         </div>

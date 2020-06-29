@@ -1,5 +1,6 @@
 <template>
   <q-item
+    @click="click"
     clickable
     tag="a"
     :href="link"
@@ -42,6 +43,11 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+
+    click: {
+      type: Function,
+      default: () => {}
     }
   }
 }

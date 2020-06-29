@@ -34,6 +34,13 @@
                aria-label="Menu"
                @click="leftDrawerOpen = !leftDrawerOpen"
                />
+               <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
+               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
+                  <user-settings></user-settings>
+               </q-dialog>
+                <q-btn flat name="cart" icon="fas fa-shopping-cart" to="/cart/index" exact >
+                  <q-badge color="red" floating>{{getCartQ}}</q-badge>
+                </q-btn>
                <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
          </q-toolbar>
       </q-header>
@@ -60,16 +67,6 @@
             <router-view @setBlur="setBlur" />
          </transition>
       </q-page-container>
-    <q-footer elevated class="bg-grey-8 text-white">
-      <q-tabs
-      dense
-        class="bg-primary text-white shadow-2"
-      >
-        <q-route-tab name="cart" icon="fas fa-shopping-cart" to="/cart/index" exact label="Carrito">
-          <q-badge color="red" floating>{{getCartQ}}</q-badge>
-        </q-route-tab>
-      </q-tabs>
-    </q-footer>
    </q-layout>
 </template>
 
@@ -161,6 +158,19 @@ export default {
           caption: '',
           icon: 'fa fa-globe',
           link: '#/home'
+        },
+        {
+          title: 'Mis Direcciones',
+          caption: '',
+          icon: 'fas fa-map-marked-alt',
+          link: '#/user/address'
+        },
+        {
+          title: 'Cerrar Sesión',
+          caption: '',
+          icon: 'fas fa-sign-out-alt',
+          link: '#',
+          click: this.logoutUser
         }
       ]
     }

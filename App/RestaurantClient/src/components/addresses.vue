@@ -1,0 +1,111 @@
+<template>
+  <div padding>
+    <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+    <q-btn-group spread class="full-width">
+      <q-btn color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" label="Visualizar" />
+      <q-btn color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" label="Agregar" />
+      <q-btn color="secondary" label="Eliminar" @click="deleteAddress({id: value})" />
+    </q-btn-group>
+    <q-option-group
+      :value="value"
+      @input="(e) => $emit('input', e)"
+      :options="addressRadio"
+      color="primary"
+    />
+  </div>
+  <q-dialog
+      v-model="dialog"
+      persistent
+      :maximized="maximizedToggle"
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+    <q-card :class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'">
+        <q-bar class="bg-primary">
+          <q-space />
+
+          <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
+            <q-tooltip v-if="maximizedToggle" content-class="bg-white text-primary">Minimize</q-tooltip>
+          </q-btn>
+          <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
+            <q-tooltip v-if="!maximizedToggle" content-class="bg-white text-primary">Maximize</q-tooltip>
+          </q-btn>
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+      <q-card-section class="q-pt-none q-pa-md">
+    <q-input class="q-pa-sm" filled type="text" v-model="alias" label="Alias" />
+    <q-input class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" />
+    </q-card-section>
+    <q-card-section class="q-pt-none q-pa-md">
+    <google-map
+      :center="center"
+      :markers="markers" />
+    </q-card-section>
+    <q-card-actions align="around">
+        <q-btn color="secondary" v-close-popup >Cancelar</q-btn>
+        <q-btn color="primary" v-close-popup @click="newAddress()">Guardar</q-btn>
+      </q-card-actions>
+       </q-card>
+  </q-dialog>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+export default {
+  components: {
+    GoogleMap: require('./GoogleMap.vue').default
+  },
+  props: ['value'],
+  computed: {
+    ...mapGetters('address', ['address']),
+    addressRadio () {
+      return this.address.map(x => {
+        return {
+          value: x.id,
+          label: x.alias
+        }
+      })
+    }
+  },
+  methods: {
+    ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
+    newAddress () {
+      this.dialogType === 'new' ? this.addAddress({ alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) }) : this.updateAddress({ id: this.id, alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) })
+    },
+    setDialog () {
+      if (this.value === null) { this.dialog = false; return }
+      const obj = this.address.find(x => x.id === this.value)
+      this.alias = obj.alias
+      this.markers = JSON.parse(obj.location)
+      this.puntoRef = obj.puntoRef
+      this.id = obj.id
+    },
+    newAddDialog () {
+      this.id = null
+      this.alias = null
+      this.markers = []
+      this.puntoRef = null
+    }
+  },
+  mounted () {
+    this.bindAddress()
+  },
+  data () {
+    return {
+      id: null,
+      dialogType: null,
+      alias: null,
+      puntoRef: null,
+      maximizedToggle: true,
+      dialog: false,
+      center: { lat: 45.508, lng: -73.587 },
+      markers: [],
+      places: [],
+      options: []
+    }
+  }
+}
+</script>

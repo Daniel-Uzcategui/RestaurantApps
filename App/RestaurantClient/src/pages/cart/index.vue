@@ -72,19 +72,148 @@
             </q-item-section>
           </q-item>
          </q-list>
+         <q-tabs dense class="bg-primary absolute-bottom text-white shadow-2" >
+            <q-tab name="cart" icon="fas fa-cash-register" @click="ordenar = true" label="Ordenar">
+            </q-tab>
+         </q-tabs>
       </div>
+      <q-dialog
+         content-class="full-width q-pa-lg"
+         square
+         v-model="ordenar"
+         persistent
+         :maximized="maximizedToggle"
+         transition-show="slide-up"
+         transition-hide="slide-down"
+         >
+         <q-card class="bg-secondary full-width">
+            <q-bar class="bg-primary">
+               <q-space />
+               <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
+                  <q-tooltip v-if="maximizedToggle" content-class="bg-white text-primary">Minimize</q-tooltip>
+               </q-btn>
+               <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
+                  <q-tooltip v-if="!maximizedToggle" content-class="bg-white text-primary">Maximize</q-tooltip>
+               </q-btn>
+               <q-btn dense flat icon="close" v-close-popup>
+                  <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
+               </q-btn>
+            </q-bar>
+               <q-stepper
+                  v-model="step"
+                  vertical
+                  color="primary"
+                  animated
+                  >
+                  <q-step
+                     :name="1"
+                     title="Seleccionar Tipo de envio"
+                     icon="add_comment"
+                     :done="step > 1"
+                     >
+                     <div class="q-pa-sm">
+                       <q-radio class="q-pa-sm" dense v-model="tipEnvio" val=1 label="Delivery + 3$" />
+                       <q-radio class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                     </div>
+                     <addresses v-if="tipEnvio == 1" v-model="addId"/>
+                     <q-stepper-navigation>
+                        <q-btn color="primary" @click="step = 2" label="Continuar" />
+                     </q-stepper-navigation>
+                  </q-step>
+                  <q-step
+                     :name="2"
+                     title="Seleccionar tipo de Pago"
+                     icon="settings"
+                     :done="step > 1"
+                  >
+                    <q-option-group
+                      :options="tipoPago"
+                      label="Tipo de Pago"
+                      type="radio"
+                      v-model="pagoSel"
+                    />
+                    <q-stepper-navigation>
+                      <transition-group
+                        appear
+                        enter-active-class="animated fadeIn"
+                        leave-active-class="animated fadeOut"
+                      >
+                        <q-btn key="Continue" v-if="pagoSel" @click="(pagoSel === 'punto') ? step = 4 : step = 3" color="primary" label="Continuar" />
+                        <q-btn key="Atras" flat @click="step = 1" color="primary" label="Atras" class="q-ml-sm" />
+                      </transition-group>
+                    </q-stepper-navigation>
+                  </q-step>
+                  <q-step
+                    :name="3"
+                    title="Subir Foto"
+                    icon="fas fa-camera"
+                    :done="step > 1"
+                  >
+                  <p v-if="pagoSel === 'cash'">Porfavor cargar Foto del efectivo $</p>
+                  <p v-if="pagoSel === 'Zelle'">Porfavor cargar captura del pago Zelle</p>
+                    <q-uploader
+                      url="http://localhost:4444/upload"
+                      label="Carga de Fotos"
+                      color="primary"
+                      square
+                      flat
+                      bordered
+                      style="max-width: -webkit-fill-available;"
+                    />
+                     <q-stepper-navigation>
+                        <q-btn @click="step = 3" color="primary" label="Continuar" />
+                        <q-btn flat @click="step = 1" color="primary" label="Atras" class="q-ml-sm" />
+                     </q-stepper-navigation>
+                  </q-step>
+                  <q-step
+                    :name="4"
+                    title="Finalizar"
+                    icon="fas fa-money"
+                  >
+                  <p class="text-h6">Total: $ {{getTotalCarrito()[2].toFixed(2)}}</p>
+                   <q-btn @click="makeOrder()" color="primary" label="Ordenar" />
+                  </q-step>
+               </q-stepper>
+         </q-card>
+      </q-dialog>
   </q-page>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 export default {
+  components: {
+    'addresses': () => import('../../components/addresses.vue')
+  },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
     ...mapGetters('user', ['currentUser'])
   },
+  data () {
+    return {
+      tipEnvio: 1,
+      addId: '',
+      step: 1,
+      maximizedToggle: true,
+      ordenar: false,
+      notifications: 0,
+      leftDrawerOpen: false,
+      pagoSel: null,
+      tipoPago: [
+        { label: 'Punto de Venta', value: 'punto', color: 'red' },
+        { label: 'Efectivo ($)', value: 'cash', color: 'green' },
+        { label: 'Zelle', value: 'Zelle', color: 'blue' }
+      ]
+    }
+  },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
+    ...mapActions('order', ['addOrder']),
+    makeOrder () {
+      if (!this.tipEnvio) { this.addId = '' }
+      this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.getTotalCarrito()[2].toFixed(2) })
+      console.log({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.getTotalCarrito()[2].toFixed(2) })
+    },
     getExtrasTot (e) {
       var sum = 0
       e.forEach((element) => {

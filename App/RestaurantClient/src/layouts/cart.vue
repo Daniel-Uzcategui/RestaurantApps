@@ -34,7 +34,10 @@
                aria-label="Menu"
                @click="leftDrawerOpen = !leftDrawerOpen"
                />
-              <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+              <q-btn flat name="cart" icon="fas fa-shopping-cart" to="/cart/index" exact >
+                  <q-badge color="red" floating>{{getCartQ}}</q-badge>
+                </q-btn>
+            <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
          </q-toolbar>
       </q-header>
       <q-drawer
@@ -42,7 +45,7 @@
          v-model="leftDrawerOpen"
          show-if-above
          bordered
-        >
+         >
          <q-list>
             <Nav
                v-for="link in nav"
@@ -60,12 +63,6 @@
             <router-view @setBlur="setBlur" />
          </transition>
       </q-page-container>
-      <q-footer elevated class="bg-grey-8 text-white">
-      <q-tabs dense class="bg-primary text-white shadow-2" >
-        <q-tab name="cart" icon="fas fa-cash-register" label="Pagar">
-        </q-tab>
-      </q-tabs>
-    </q-footer>
    </q-layout>
 </template>
 
@@ -83,6 +80,13 @@ export default {
   computed: {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['cart']),
+    getCartQ () {
+      var amt = 0
+      for (const i in this.cart) {
+        amt = this.cart[i].quantity + amt
+      }
+      return amt
+    },
     productName () {
       return window.sessionStorage.productName
     },
@@ -118,9 +122,20 @@ export default {
   },
   data () {
     return {
+      tipEnvio: 1,
+      addId: '',
+      step: 1,
+      maximizedToggle: true,
+      ordenar: false,
       notifications: 0,
       blurLayout: false,
       leftDrawerOpen: false,
+      pagoSel: null,
+      tipoPago: [
+        { label: 'Punto de Venta', value: 'punto', color: 'red' },
+        { label: 'Efectivo ($)', value: 'cash', color: 'green' },
+        { label: 'Zelle', value: 'Zelle', color: 'blue' }
+      ],
       nav: [
         {
           title: 'Inicio',

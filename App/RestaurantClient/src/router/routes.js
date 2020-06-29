@@ -55,6 +55,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'address',
+        name: 'Address',
+        component: () => import('pages/user/address.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },
@@ -112,7 +120,7 @@ const routes = [
   },
   {
     path: '/cart',
-    component: () => import('layouts/cart.vue'),
+    component: () => import('layouts/User.vue'),
     children: [
       {
         path: 'index',
