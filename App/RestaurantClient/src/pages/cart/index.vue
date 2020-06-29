@@ -72,10 +72,7 @@
             </q-item-section>
           </q-item>
          </q-list>
-         <q-tabs dense class="bg-primary absolute-bottom text-white shadow-2" >
-            <q-tab name="cart" icon="fas fa-cash-register" @click="ordenar = true" label="Ordenar">
-            </q-tab>
-         </q-tabs>
+            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" @click="ordenar = true" label="Ordenar"/>
       </div>
       <q-dialog
          content-class="full-width q-pa-lg"
