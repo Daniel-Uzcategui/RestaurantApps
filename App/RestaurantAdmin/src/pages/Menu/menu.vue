@@ -68,7 +68,7 @@
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
                 :value="props.row.estatus"
-                color="green"
+                color="#3c8dbc"
               />
           </q-td>
 

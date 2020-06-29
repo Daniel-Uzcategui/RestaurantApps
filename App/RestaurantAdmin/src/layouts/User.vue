@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main bg-green-1" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
+   <q-layout class="main" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
       <q-header class="bg-primary text-white" v-if="currentUser" elevated>
          <q-toolbar>
             <q-btn
@@ -29,14 +29,12 @@
          v-model="leftDrawerOpen"
          show-if-above
          bordered
-         content-class="bg-grey-1">
-         <q-list>
+         content-class="bg-blue-grey-9">
             <Nav
                v-for="link in nav"
                :key="link.title"
                v-bind="link"
                />
-         </q-list>
       </q-drawer>
       <q-page-container>
          <transition
@@ -112,7 +110,8 @@ export default {
           title: 'Sedes',
           caption: '',
           icon: 'fa fa-globe',
-          link: '#/localization/index'
+          link: '#/localization/index',
+          separator: true
         },
         {
           title: 'Categorias',
@@ -130,7 +129,8 @@ export default {
           title: 'Menus',
           caption: '',
           icon: 'menu_book',
-          link: '#/menu/menu'
+          link: '#/menu/menu',
+          separator: true
         },
         {
           title: 'Ordenes',
@@ -142,7 +142,8 @@ export default {
           title: 'Pagos',
           caption: '',
           icon: 'fa fa-briefcase',
-          link: '#/payments/index'
+          link: '#/payments/index',
+          separator: true
         },
         {
           title: 'Clientes',

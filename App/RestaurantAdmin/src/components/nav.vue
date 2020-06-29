@@ -1,4 +1,5 @@
 <template>
+  <q-list>
   <q-item
     clickable
     tag="a"
@@ -8,17 +9,19 @@
       v-if="icon"
       avatar
     >
-      <q-icon :name="icon" />
+      <q-icon :name="icon" color="white"/>
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>{{ title }}</q-item-label>
+      <q-item-label class="text-white">{{ title }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
     </q-item-section>
   </q-item>
-</template>
+  <q-separator v-if="separator"/>
+   </q-list>
+ </template>
 
 <script>
 export default {
@@ -42,6 +45,9 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+    separator: {
+      default: false
     }
   }
 }

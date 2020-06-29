@@ -36,21 +36,21 @@
               <q-toggle
                 @input="(e) => saved(e, props.row.PickUP, props.row.id, 'Pick UP')"
                 :value="props.row.PickUP"
-                color="green"
+                color="#3c8dbc"
               />
           </q-td>
           <q-td key="Delivery" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.Delivery, props.row.id, 'Delivery')"
                 :value="props.row.Delivery"
-                color="green"
+                color="#3c8dbc"
               />
           </q-td>
           <q-td key="Inlocal" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.Inlocal, props.row.id, 'Inlocal')"
                 :value="props.row.Inlocal"
-                color="green"
+                color="#3c8dbc"
               />
           </q-td>
         </q-tr>

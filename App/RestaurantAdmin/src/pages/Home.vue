@@ -6,7 +6,7 @@
       <q-card-section class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">98</span>
+          <span class="separate">1</span>
         </div>
         <div class="text-subtitle2">Ordenes Pendientes </div>
       </q-card-section>
@@ -21,7 +21,7 @@
         <q-card-section  class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">12</span>
+          <span class="separate">1</span>
         </div>
         <div class="text-subtitle2">Ordenes en Progreso</div>
       </q-card-section>
@@ -35,7 +35,7 @@
        <q-card class="text-white" horizontal>
         <q-card-section  class="bg-secondary">
         <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
-        <span class="separate">42</span>
+        <span class="separate">0</span>
         </div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
      </q-card-section>
@@ -51,12 +51,12 @@
        <q-card-section  class="bg-secondary text-white" >
         <div class="text-h5">Ordenes</div>
       </q-card-section>
-     <q-table class="orders "
+     <q-table
       :dense="$q.screen.lt.md"
-      :data="data"
+      :data="orders"
       :columns="columns"
       color="primary"
-      row-key="name"
+      row-key="id"
       no-data-label="No se encontraron registros"
     >
       <template v-slot:top>
@@ -71,6 +71,7 @@
 
 <script>
 import { exportFile } from 'quasar'
+import { mapGetters, mapActions } from 'vuex'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== void 0
@@ -91,15 +92,21 @@ function wrapCsvValue (val, formatFn) {
 
   return `"${formatted}"`
 }
-import { mapActions } from 'vuex'
 export default {
-  created () {
-    this.bindExtras()
-    this.bindMenu()
-    this.bindCategorias()
+  computed: {
+    ...mapGetters('order', ['orders']),
+    ordersPendients () {
+      return this.orders.find(obj => {
+        return obj.status === 'Pendiente'
+      })
+    }
+  },
+  mounted () {
+    this.bindOrders()
+    console.log(this.orders)
   },
   methods: {
-    ...mapActions('menu', ['bindExtras', 'bindMenu', 'bindCategorias']),
+    ...mapActions('order', ['bindOrders']),
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -130,44 +137,9 @@ export default {
   data () {
     return {
       columns: [
-        {
-          name: 'descrip',
-          required: true,
-          label: 'Descripción',
-          align: 'left',
-          field: 'descrip',
-          sortable: true
-        },
+        { name: 'description', required: true, label: 'Descripción', align: 'left', field: 'description', sortable: true },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', label: 'Estado', field: 'status' }
-      ],
-
-      data: [
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        }
       ]
     }
   }

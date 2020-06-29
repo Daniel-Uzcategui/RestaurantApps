@@ -12,29 +12,31 @@
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell col-4">
-           <label>Nombre</label>
-          <q-input :value="order.name"  @input="(e) => saved(e, this.$route.query.Order_Id, 'name')"  type="text" float-label="Float Label" placeholder="Nombre del Cliente" />
+          <q-input label="Nombre del Cliente" :value="order.name"  @input="(e) => saved(e, this.$route.query.Order_Id, 'name')"  type="text" float-label="Float Label" />
         </div>
         <div class="header-cell col-4">
-          <q-input :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" placeholder="Monto" />
+          <q-input label="Monto" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label"  />
         </div>
         <div class="header-cell col-4">
           <q-select :value="order.status"  @input="(e) => saved(e, this.$route.query.Order_Id, 'status')" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
-          <q-input :value="order.responsable"  @input="(e) => saved(e, this.$route.query.Order_Id, 'responsable')"  type="text" float-label="Float Label" placeholder="Responsable" />
+          <q-input label="Responsable" :value="order.responsable"  @input="(e) => saved(e, this.$route.query.Order_Id, 'responsable')"  type="text" float-label="Float Label"  />
         </div>
         <div class="header-cell col-4">
-          <q-input :value="order.sede"  @input="(e) => saved(e, this.$route.query.Order_Id, 'sede')"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
+          <q-input label="Sede" :value="order.sede"  @input="(e) => saved(e, this.$route.query.Order_Id, 'sede')"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
         </div>
         <div class="header-cell col-4">
           <q-select :value="order.typePayment"  @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
-            <label>Dirección</label>
-            <q-input :value="order.delivered"  @input="(e) => saved(e, this.$route.query.Order_Id, 'delivered')"  filled type="textarea" placeholder="Dirección"  />
+            <q-input label="Dirección" :value="order.delivered"  @input="(e) => saved(e, this.$route.query.Order_Id, 'delivered')"  filled type="textarea" placeholder="Dirección"  />
+         </div>
+          <div class="header-cell col-3">
+            <q-input :value="order.description" @input="(e) => saved(e, this.$route.query.Order_Id, 'delivered')"
+              type="text" float-label="Float Label"  label="Descripción del plato"  />
          </div>
      </div>
      </div>
@@ -49,7 +51,7 @@ export default {
   data () {
     return {
       estatus_options: [
-        'En Espera', 'En progreso', 'Completado'
+        'Pendiente', 'En Espera', 'En progreso', 'Completada', 'Anulada'
       ],
       typePayment_options: [
         'Efectivo', 'Paypal', 'Zelle'

@@ -12,7 +12,7 @@
        <div class='filled'></div>
         <div class="row header-container">
         <div class="header-cell col-4">
-          <q-input v-model="name"  type="text" float-label="Float Label" placeholder="Nombre del Cliente" />
+          <q-input  v-model="name"  type="text" float-label="Float Label" placeholder="Nombre del Cliente" />
         </div>
         <div class="header-cell col-4">
           <q-input v-model="paid"  type="text" float-label="Float Label" placeholder="Monto" />
@@ -37,6 +37,17 @@
          <div class="header-cell col-3">
             <q-input v-model="description" type="text" float-label="Float Label"  placeholder="Descripción del plato"  />
          </div>
+         <div class="header-cell col-3">
+          <q-input v-model="order_date" mask="date" label="Fecha de la orden" >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="order_date" @input="() => $refs.qDateProxy.hide()" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+         </div>
      </div>
        <diV class='filled'></diV>
      </q-card>
@@ -54,13 +65,13 @@ export default {
       typePayment: '',
       responsable: '',
       name: '',
-      smallAddress: '',
       status: 'En Espera',
       delivered: '',
       address: '',
       description: '',
+      order_date: '',
       estatus_options: [
-        'En Espera', 'En progreso', 'Completado'
+        'Pendiente', 'En Espera', 'En progreso', 'Completada', 'Anulada'
       ],
       typePayment_options: [
         'Efectivo', 'Paypal', 'Zelle'
@@ -81,8 +92,8 @@ export default {
         delivered: this.delivered,
         sede: this.sede,
         paid: this.paid,
-        description: this.description
-
+        description: this.description,
+        order_date: this.order_date
       }
       this.addOrder(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/orders/index') })
     }
