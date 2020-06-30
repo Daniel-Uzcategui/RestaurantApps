@@ -15,7 +15,6 @@
       >
       <template v-slot:top-right>
         <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/orders/create')"/>
-        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
@@ -107,7 +106,7 @@ export default {
     return {
       selected: [],
       columns: [
-        { name: 'description', required: true, label: 'Descripción', align: 'left', field: 'description', sortable: true },
+        { name: 'id', required: true, label: 'Numero de Orden', align: 'left', field: 'id', sortable: true },
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'paid', label: 'Monto', field: 'paid' },

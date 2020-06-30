@@ -6,7 +6,7 @@
       <q-card-section class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">1</span>
+          <span class="separate">{{totalOrders('Pendiente')}}</span>
         </div>
         <div class="text-subtitle2">Ordenes Pendientes </div>
       </q-card-section>
@@ -21,7 +21,7 @@
         <q-card-section  class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">1</span>
+          <span class="separate">{{totalOrders('En progreso')}}</span>
         </div>
         <div class="text-subtitle2">Ordenes en Progreso</div>
       </q-card-section>
@@ -35,7 +35,7 @@
        <q-card class="text-white" horizontal>
         <q-card-section  class="bg-secondary">
         <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
-        <span class="separate">0</span>
+        <span class="separate">{{totalOrders('Anulada')}}</span>
         </div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
      </q-card-section>
@@ -94,12 +94,7 @@ function wrapCsvValue (val, formatFn) {
 }
 export default {
   computed: {
-    ...mapGetters('order', ['orders']),
-    ordersPendients () {
-      return this.orders.find(obj => {
-        return obj.status === 'Pendiente'
-      })
-    }
+    ...mapGetters('order', ['orders'])
   },
   mounted () {
     this.bindOrders()
@@ -131,13 +126,19 @@ export default {
           icon: 'warning'
         })
       }
+    },
+    totalOrders (value) {
+      var totalOrder = this.orders.filter(obj => {
+        return obj.status === value
+      })
+      return totalOrder.length
     }
   },
 
   data () {
     return {
       columns: [
-        { name: 'description', required: true, label: 'Descripción', align: 'left', field: 'description', sortable: true },
+        { name: 'id', required: true, label: 'Numero de Orden', align: 'left', field: 'id', sortable: true },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', label: 'Estado', field: 'status' }
       ]
