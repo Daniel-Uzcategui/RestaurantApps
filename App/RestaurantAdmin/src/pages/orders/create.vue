@@ -12,7 +12,8 @@
        <div class='filled'></div>
         <div class="row header-container">
         <div class="header-cell col-4">
-          <q-input  v-model="name"  type="text" float-label="Float Label" placeholder="Nombre del Cliente" />
+          <q-input  v-model="name"  type="text" float-label="Float Label" placeholder="Nombre del Cliente"
+          :rules="[ val => val && val.length > 0 || 'Please type something']" />
         </div>
         <div class="header-cell col-4">
           <q-input v-model="paid"  type="text" float-label="Float Label" placeholder="Monto" />
@@ -33,9 +34,6 @@
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
             <q-input v-model="delivered" filled type="textarea" placeholder="Dirección de entrega"  />
-         </div>
-         <div class="header-cell col-3">
-            <q-input v-model="description" type="text" float-label="Float Label"  placeholder="Descripción del plato"  />
          </div>
          <div class="header-cell col-3">
           <q-input v-model="order_date" mask="date" label="Fecha de la orden" >

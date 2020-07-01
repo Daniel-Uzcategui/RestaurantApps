@@ -5,7 +5,7 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Sedes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="back"/>
             <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" v-if="false" @click="saveLocation"/>
           </div>
        </q-card-section>
@@ -57,6 +57,19 @@
       <div class='filled'></div>
      </q-card>
   </div>
+  <q-dialog v-model="validationError">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Error</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+          Los siguientes campos son requeridos
+          {{messageError}}
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </q-page>
 </template>
 <script>
@@ -79,7 +92,9 @@ export default {
       center: { lat: 45.508, lng: -73.587 },
       markers: [],
       places: [],
-      currentPlace: null
+      currentPlace: null,
+      validationError: false,
+      messageError: []
     }
   },
   computed: {
@@ -102,6 +117,9 @@ export default {
       console.log(value)
       console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveLocation({ value, id, key })
+    },
+    back () {
+      this.$router.replace('/localization/index')
     }
   }
 }

@@ -12,7 +12,9 @@
       </q-card-section>
       <q-separator dark />
       <q-card-actions class="bg-primary" vertical>
-       <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
+       <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right"
+       label="Más info"
+       @click.native="$router.push({ path: '/orders/index', query: { status: 'Pendiente' } })" />
       </q-card-actions>
        </q-card>
        </div>
@@ -27,7 +29,10 @@
       </q-card-section>
        <q-separator dark />
       <q-card-actions  class="bg-primary" vertical>
-        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
+        <q-btn no-caps flat
+        icon-right="fa fa-arrow-alt-circle-right"
+        label="Más info"
+        @click.native="$router.push({ path: '/orders/index', query: { status: 'En progreso' } })" />
       </q-card-actions>
        </q-card>
         </div>
@@ -41,7 +46,8 @@
      </q-card-section>
        <q-separator dark />
       <q-card-actions class="bg-primary" vertical>
-        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info" />
+        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info"
+        @click.native="$router.push({ path: '/orders/index', query: { status: 'Anulada' } })" />
       </q-card-actions>
     </q-card>
     </div>

@@ -12,7 +12,13 @@
        <div class='filled'></div>
         <div class="row header-container">
         <div class="header-cell col-6">
-          <q-input v-model="name"  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
+          <q-input
+          v-model="name"
+          type="text"
+          float-label="Float Label"
+          placeholder="Nombre de la Sede"
+          ref="name"
+          :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre de la Sede']"/>
         </div>
         <div class="header-cell col-4">
           <q-select v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
@@ -28,7 +34,9 @@
             </q-popup-edit>
         </div>
          <div class="header-cell col-6">
-            <q-input v-model="address" filled type="textarea" placeholder="Dirección"  />
+            <q-input v-model="address" filled type="textarea"
+            placeholder="Dirección"
+            :rules="[ val => val && val.length > 0 || '*Requerido el campo de dirección']"  />
         </div>
         <div class="flex-break q-py-md "></div>
          <div class="header-cell col-3">
@@ -51,15 +59,16 @@
        <diV class='filled'></diV>
      </q-card>
   </div>
-  <q-dialog v-model="noLoc">
+  <q-dialog v-model="validationError">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Alerta</div>
+          <div class="text-h6">Error</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
        <q-card-section>
-          Debe agregar una localización.
+          Los siguientes campos son requeridos
+          {{messageError}}
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -74,15 +83,16 @@ export default {
   },
   data () {
     return {
-      noLoc: false,
+      validationError: false,
       name: '',
       tables: '',
       capacity: '',
       status: 'Activo',
-      PickUP: false,
-      Delivery: false,
+      PickUP: true,
+      Delivery: true,
       Inlocal: false,
       address: '',
+      messageError: [],
       localizacion_sede: [],
       estatus_options: [
         'Activo', 'Desactivo'
@@ -98,7 +108,20 @@ export default {
   methods: {
     ...mapActions('localization', ['addLoc']),
     agregar () {
-      if (this.localizacion_sede.length === 0) { this.noLoc = true; return }
+      if (this.localizacion_sede.length === 0 || this.name.length === 0 || this.address.length === 0) {
+        this.messageError = []
+        if (this.localizacion_sede.length === 0) {
+          this.messageError.push(' Localización ')
+        }
+        if (this.name.length === 0) {
+          this.messageError.push(' Nombre de la Sede ')
+        }
+        if (this.address.length === 0) {
+          this.messageError.push(' Dirección ')
+        }
+        this.validationError = true
+        return
+      }
       this.$q.loading.show()
       const loc = JSON.parse(JSON.stringify(this.localizacion_sede[0]))
       const payload = {
@@ -114,6 +137,9 @@ export default {
       }
       this.addLoc(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/localization/index') })
     }
+  },
+  mounted () {
+    this.$refs.name.focus()
   }
 }
 </script>

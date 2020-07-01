@@ -34,12 +34,31 @@
          <div class="header-cell col-5">
             <q-input label="Dirección" :value="order.delivered"  @input="(e) => saved(e, this.$route.query.Order_Id, 'delivered')"  filled type="textarea" placeholder="Dirección"  />
          </div>
-          <div class="header-cell col-3">
-            <q-input :value="order.description" @input="(e) => saved(e, this.$route.query.Order_Id, 'delivered')"
-              type="text" float-label="Float Label"  label="Descripción del plato"  />
-         </div>
+      </div>
      </div>
-     </div>
+     <div class="header-cell col-6 filled">
+          <q-table
+          title="Detalle de Orden"
+          color="primary"
+          :data="orders"
+          :columns="columns"
+          :dense="$q.screen.lt.md"
+          row-key="id"
+          no-data-label="No se encontraron registros"
+      >
+      <template v-slot:body="props">
+        <q-tr>
+           <q-td
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
+            {{ col.value }}
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+        </div>
       <div class='filled'></div>
      </q-card>
   </div>
@@ -55,6 +74,12 @@ export default {
       ],
       typePayment_options: [
         'Efectivo', 'Paypal', 'Zelle'
+      ],
+      columns: [
+        { name: 'Category', required: true, label: 'Categoria', align: 'left', field: 'category', sortable: true },
+        { name: 'nameMenu', required: true, align: 'center', label: 'Nombre', field: 'name' },
+        { name: 'Price', required: true, align: 'center', label: 'Precio', field: 'price' },
+        { name: 'Extras', label: 'Extras', field: 'extras' }
       ]
     }
   },

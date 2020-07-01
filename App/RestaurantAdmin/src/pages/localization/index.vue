@@ -57,7 +57,20 @@
       </template>
     </q-table>
  </div>
-</q-page>
+ <q-dialog v-model="noSelectLoc">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Borrar Sedes</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar una sede a eliminar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+ </q-page>
 </template>
 
 <script>
@@ -123,12 +136,29 @@ export default {
     },
     ...mapActions('localization', ['deleteLocation', 'bindLocalizations']),
     deleted () {
-      this.deleteLocation(this.selected)
+      console.log(this.selected)
+      if (this.selected.length > 0) {
+        this.$q.dialog({
+          title: 'Borrar Sedes',
+          message: 'Desea borrar los elementos seleccionados ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          console.log('>>>> OK')
+          this.deleteLocation(this.selected)
+        }).onCancel(() => {
+          console.log('>>>> Cancel')
+        })
+      }
+      if (this.selected.length === 0) {
+        this.noSelectLoc = true
+      }
     }
   },
   data () {
     return {
       selected: [],
+      noSelectLoc: false,
       columns: [
         { name: 'name', required: true, label: 'Nombre', align: 'left', field: 'name', sortable: true },
         { name: 'address', required: true, align: 'center', label: 'Ubicación', field: 'address' },
