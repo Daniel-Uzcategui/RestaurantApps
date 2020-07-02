@@ -61,6 +61,7 @@ export default {
   props: ['value'],
   computed: {
     ...mapGetters('address', ['address']),
+    ...mapGetters('user', ['currentUser']),
     addressRadio () {
       return this.address.map(x => {
         return {
@@ -73,7 +74,7 @@ export default {
   methods: {
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
     newAddress () {
-      this.dialogType === 'new' ? this.addAddress({ alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) }) : this.updateAddress({ id: this.id, alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) })
+      this.dialogType === 'new' ? this.addAddress({ user: this.currentUser.id, alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) }) : this.updateAddress({ id: this.id, alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) })
     },
     setDialog () {
       if (this.value === null) { this.dialog = false; return }
@@ -91,7 +92,7 @@ export default {
     }
   },
   mounted () {
-    this.bindAddress()
+    this.bindAddress(this.currentUser.id)
   },
   data () {
     return {

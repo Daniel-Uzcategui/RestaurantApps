@@ -86,7 +86,7 @@
                   multiple
                   input-debounce="0"
                   @new-value="createValue"
-                  :options="listextras"
+                  :options="prodExtras"
                   @filter="filterFn"
                   style="width: 250px"
                   map-options
@@ -125,7 +125,8 @@ export default {
       quantity: 1,
       filteredMenu: [],
       origMenu: [],
-      selectedCat: ''
+      selectedCat: '',
+      prodExtras: []
     }
   },
   mounted () {
@@ -137,7 +138,8 @@ export default {
           name: x.name,
           photo: x.photo,
           price: x.price,
-          id: x.id
+          id: x.id,
+          extras: x.extras
         }
       })
     })
@@ -180,11 +182,17 @@ export default {
       )
     },
     getMenuItem (id) {
-      console.log(id, 'iiiiiddd')
+      this.prodExtras = []
       this.displayVal = this.filteredMenu.find((e) => {
         return e.id === id
       })
       this.displayVal.id = id
+      this.displayVal.extras.forEach(x => {
+        var estrafind = this.listextras.find(e => e.value === x)
+        if (typeof estrafind !== 'undefined') {
+          this.prodExtras.push(estrafind)
+        }
+      })
     },
     ...mapActions('menu', ['bindMenu', 'addCart']),
     createValue (val, done) {

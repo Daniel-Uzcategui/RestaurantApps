@@ -33,7 +33,7 @@
                     multiple
                     input-debounce="0"
                     @new-value="createValue"
-                    :options="listextras"
+                    :options="getExtras(item.prodId)"
                     @filter="filterFn"
                     style="width: 250px"
                     map-options
@@ -206,6 +206,21 @@ export default {
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
+    getExtras (id) {
+      console.log('GETECSD')
+      var prodExtras = []
+      var displayVal = this.menu.find((e) => {
+        return e.id === id
+      })
+      displayVal.extras.forEach(x => {
+        var estrafind = this.listextras.find(e => e.value === x)
+        if (typeof estrafind !== 'undefined') {
+          prodExtras.push(estrafind)
+        }
+      })
+      console.log({ prodExtras })
+      return prodExtras
+    },
     makeOrder () {
       if (!this.tipEnvio) { this.addId = '' }
       this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.getTotalCarrito()[2].toFixed(2) })
