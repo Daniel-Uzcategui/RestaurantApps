@@ -177,7 +177,7 @@ export default {
       }).then(() => this.$q.notify({
         message: 'Producto Añadido',
         color: 'secondary',
-        position: 'top'
+        position: 'bottom'
       })
       )
     },

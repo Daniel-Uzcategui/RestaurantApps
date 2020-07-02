@@ -110,7 +110,7 @@ export default {
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'paid', label: 'Monto', field: 'paid' },
-        { name: 'order_date', label: 'Fecha', field: 'order_date', format: val => date.formatDate(val, 'DD-MM-YYYY') }
+        { name: 'dateIn', label: 'Fecha', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'DD-MM-YYYY HH:mm:ss') }
       ]
     }
   }

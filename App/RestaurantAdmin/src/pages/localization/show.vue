@@ -105,6 +105,9 @@ export default {
       })
     }
   },
+  mounted () {
+    this.markers = [{ position: { lat: this.localization.localizacion_sede.Rc, lng: this.localization.localizacion_sede.Ac } }]
+  },
   methods: {
     ...mapActions('localization', ['saveLocation']),
     saved (value, id, key) {
