@@ -183,8 +183,10 @@ export default {
       photoUpload: false
     }
   },
-  mounted () {
+  created () {
     this.bindMenu()
+    this.bindExtras()
+    this.bindCategorias()
   },
   methods: {
     resetPhotoType () {
@@ -200,7 +202,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindExtras', 'bindCategorias']),
     delrow () {
       this.delrows({ payload: this.selected, collection: 'menu' })
     },

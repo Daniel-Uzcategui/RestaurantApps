@@ -161,6 +161,20 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/orders',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('pages/orders/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 

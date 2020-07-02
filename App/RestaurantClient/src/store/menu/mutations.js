@@ -60,7 +60,7 @@ export const addMenuMut = firestoreAction((state, payload) => {
 })
 
 /// ////// END Menu Mutations ////////
-/// ////// START Extras Mutations ////////
+/// ////// START Cart Mutations ////////
 
 export function addCart (state, payload) {
   state.cart = ([ ...state.cart, { ...payload } ])
@@ -71,4 +71,9 @@ export function modCartVal (state, payload) {
 export function delCartItem (state, payload) {
   delete state.cart.splice(payload, 1)
 }
-/// ////// END Extras Mutations ////////
+
+export function delCart (state, payload) {
+  state.cart = []
+}
+
+/// ////// END Cart Mutations ////////

@@ -39,13 +39,13 @@ export const delrows = firestoreAction((context, payload) => {
 /// Bindings ////
 export const bindExtras = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingExtras')
-  return bindFirestoreRef('extras', firestore().collection('extras'))
+  return bindFirestoreRef('extras', firestore().collection('extras'), { reset: false })
 })
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
-  return bindFirestoreRef('menu', firestore().collection('menu'))
+  return bindFirestoreRef('menu', firestore().collection('menu'), { reset: false })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
-  return bindFirestoreRef('categorias', firestore().collection('categorias'))
+  return bindFirestoreRef('categorias', firestore().collection('categorias'), { reset: false })
 })

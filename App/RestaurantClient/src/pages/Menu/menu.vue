@@ -135,6 +135,7 @@ export default {
         return {
           categoria: x.categoria,
           estatus: x.estatus,
+          descripcion: x.descripcion,
           name: x.name,
           photo: x.photo,
           price: x.price,

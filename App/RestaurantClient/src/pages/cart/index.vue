@@ -121,7 +121,7 @@
                      :name="2"
                      title="Seleccionar tipo de Pago"
                      icon="settings"
-                     :done="step > 1"
+                     :done="step > 2"
                   >
                     <q-option-group
                       :options="tipoPago"
@@ -144,7 +144,7 @@
                     :name="3"
                     title="Subir Foto"
                     icon="fas fa-camera"
-                    :done="step > 1"
+                    :done="step > 3"
                   >
                   <p v-if="pagoSel === 'cash'">Porfavor cargar Foto del efectivo $</p>
                   <p v-if="pagoSel === 'Zelle'">Porfavor cargar captura del pago Zelle</p>
@@ -167,17 +167,30 @@
                     title="Finalizar"
                     icon="fas fa-money"
                   >
-                  <p class="text-h6">Total: $ {{getTotalCarrito()[2].toFixed(2)}}</p>
-                   <q-btn @click="makeOrder()" color="primary" label="Ordenar" />
+                  <p class="text-h6">Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
+                  <q-btn flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
+                   <q-btn @click="confirm = true" color="primary" label="Ordenar" />
                   </q-step>
                </q-stepper>
          </q-card>
       </q-dialog>
+      <q-dialog v-model="confirm" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">Confirmar Orden</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn flat label="Confirmar" @click="makeOrder()" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   components: {
     'addresses': () => import('../../components/addresses.vue')
@@ -188,6 +201,7 @@ export default {
   },
   data () {
     return {
+      confirm: false,
       tipEnvio: 1,
       addId: '',
       step: 1,
@@ -206,8 +220,8 @@ export default {
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
+    ...mapMutations('menu', ['delCart']),
     getExtras (id) {
-      console.log('GETECSD')
       var prodExtras = []
       var displayVal = this.menu.find((e) => {
         return e.id === id
@@ -223,8 +237,9 @@ export default {
     },
     makeOrder () {
       if (!this.tipEnvio) { this.addId = '' }
-      this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.getTotalCarrito()[2].toFixed(2) })
-      console.log({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.getTotalCarrito()[2].toFixed(2) })
+
+      this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
+      console.log({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) })
     },
     getExtrasTot (e) {
       var sum = 0
