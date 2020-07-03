@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg" >
+  <q-page class="q-pa-md q-pa-sm " >
     <div class="row header-container">
     <div class="header-cell col-md-3 col-sm-4" >
      <q-card class="text-white" horizontal>
@@ -144,7 +144,7 @@ export default {
   data () {
     return {
       columns: [
-        { name: 'id', required: true, label: 'Numero de Orden', align: 'left', field: 'id', sortable: true },
+        { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', label: 'Estado', field: 'status' }
       ]

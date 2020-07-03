@@ -106,7 +106,7 @@ export default {
     return {
       selected: [],
       columns: [
-        { name: 'id', required: true, label: 'Numero de Orden', align: 'left', field: 'id', sortable: true },
+        { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'paid', label: 'Monto', field: 'paid' },
