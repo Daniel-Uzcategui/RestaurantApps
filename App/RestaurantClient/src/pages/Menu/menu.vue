@@ -90,7 +90,6 @@
                   @filter="filterFn"
                   style="width: 250px"
                   map-options
-                  emit-value
                   stack-label
                   />
             </q-card-section>
@@ -170,9 +169,9 @@ export default {
       }
     },
     addToCart () {
-      console.log(this.displayVal, 'diiiiiissss')
       this.addCart({
         prodId: this.displayVal.id,
+        prodPrice: this.displayVal.price,
         quantity: this.quantity,
         extras: this.disExtras
       }).then(() => this.$q.notify({

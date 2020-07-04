@@ -28,7 +28,7 @@
                     label="Extras"
                     filled
                     :value="item.extras"
-                    @input="(e) => modCartVal({id: index, key: 'extras', value: e})"
+                    @input="(e) => modCartVal({id: index, key: 'extras', value: e })"
                     use-chips
                     multiple
                     input-debounce="0"
@@ -37,7 +37,6 @@
                     @filter="filterFn"
                     style="width: 250px"
                     map-options
-                    emit-value
                     stack-label
                   />
                </q-item-section>
@@ -238,13 +237,14 @@ export default {
     makeOrder () {
       if (!this.tipEnvio) { this.addId = '' }
 
-      this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
+      this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
       console.log({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) })
     },
     getExtrasTot (e) {
       var sum = 0
+      if (e.length === 0) { return 0 }
       e.forEach((element) => {
-        var extra = this.plainExtras.find(e => e.id === element)
+        var extra = this.plainExtras.find(e => e.value === element)
         if (typeof extra === 'undefined') { extra = { price: 0 } }
         sum = parseFloat(extra.price) + sum
       })

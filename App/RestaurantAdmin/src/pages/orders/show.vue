@@ -25,7 +25,7 @@
           <q-input label="Responsable" :value="order.responsable"  @input="(e) => saved(e, this.$route.query.Order_Id, 'responsable')"  type="text" float-label="Float Label"  />
          </div>
          <div class="header-cell col-4">
-          <q-select :value="order.status"  @input="(e) => saved(e, this.$route.query.Order_Id, 'status')" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select :value="order.status"  @input="(e) => saved(e, this.$route.query.Order_Id, 'status')" map-options emit-value standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
         <div class="header-cell col-3">
           <q-select :value="order.typePayment"  @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
@@ -106,7 +106,11 @@ export default {
   data () {
     return {
       estatus_options: [
-        'Pendiente', 'En Espera', 'En progreso', 'Completada', 'Anulada'
+        { label: 'Por Confirmar', value: 0 },
+        { label: 'Preparando su pedido', value: 1 },
+        { label: 'Orden en vía', value: 2 },
+        { label: 'Orden Entregada', value: 3 },
+        { label: 'Anulada', value: 4 }
       ],
       typePayment_options: [
         'Efectivo', 'Paypal', 'Zelle'

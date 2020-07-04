@@ -151,7 +151,7 @@ export default {
           title: 'Tus Ordenes',
           caption: '',
           icon: 'room_service',
-          link: '/home'
+          link: '#/orders/index'
         },
         {
           title: 'Encuentranos',
