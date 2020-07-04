@@ -45,13 +45,13 @@
             <q-item>
               <q-item-section class="text-h6 text-right">
                   <q-item-label>
-                    Platos:        {{(parseFloat(getProdValById(item.prodId, 'price')) * item.quantity).toFixed(2)}}
+                    Platos:        {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price'))) * item.quantity).toFixed(2)}}
                   </q-item-label>
                   <q-item-label>
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
-                    SubTotal:      $ {{(parseFloat(getProdValById(item.prodId, 'price') + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
+                    SubTotal:      $ {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price')) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
             </q-item>
