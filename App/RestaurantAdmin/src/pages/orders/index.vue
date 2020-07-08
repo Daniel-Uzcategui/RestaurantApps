@@ -67,7 +67,7 @@ export default {
     OrderClient () {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago
-      let fullname
+      let fullname, statusOrder, tableOrder
       for (i = 0; i < this.orders.length; i++) {
         obj = this.orders[i]
         clientforOrder = this.clientOrders(obj.customer_id)
@@ -81,14 +81,17 @@ export default {
         if (obj.typePayment === 'Zelle') {
           tipoPago = this.tipo_pago[2]['label']
         }
+        statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
+        tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
         OrderClient.push({
           'id': obj.id,
           'nombre': fullname,
           'typePayment': tipoPago,
-          'status': this.estatus_options[obj.status]['label'],
+          'status': statusOrder,
           'paid': obj.paid.toFixed(2),
           'dateIn': obj.dateIn,
-          'factura': obj.factura
+          'factura': obj.factura,
+          'table': tableOrder
         })
       }
       return OrderClient
@@ -147,6 +150,7 @@ export default {
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'paid', label: 'Monto', field: 'paid' },
+        { name: 'table', label: 'Mesa', field: 'table' },
         { name: 'dateIn', label: 'Fecha', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'DD-MM-YYYY HH:mm:ss') }
       ],
       estatus_options: [
