@@ -9,13 +9,19 @@
           </div>
        </q-card-section>
         <div class="row header-container">
-         <div class="header-cell col-4">
-          <q-input :value="client.identification" @input="(e) => saved(e, this.$route.query.client_Id, 'identification')" type="text" float-label="Float Label" placeholder="Identificación" />
-          <q-input :value="client.name"     @input="(e) => saved(e, this.$route.query.client_Id, 'name')"  type="text" float-label="Float Label" placeholder="Nombre" />
-          <q-input :value="client.lastname" @input="(e) => saved(e, this.$route.query.client_Id, 'lastname')" type="text" float-label="Float Label" placeholder="Apellido" />
-          <q-input :value="client.email"    @input="(e) => saved(e, this.$route.query.client_Id, 'email')" type="text" float-label="Float Label" placeholder="Correo Electrónico" />
-          <q-input :value="client.phone"    @input="(e) => saved(e, this.$route.query.client_Id, 'phone')" type="text" float-label="Float Label" placeholder="Telefono" />
-          <q-input :value="client.address"  @input="(e) => saved(e, this.$route.query.client_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
+         <div class="header-cell col-4" v-if="typeof client !== 'undefined'">
+           <q-input :value="client.cedula"   @input="(e) => saved(e, this.$route.query.client_Id, 'cedula')"
+            type="text" float-label="Float Label" placeholder="Identificación" />
+          <q-input :value="client.nombre"   @input="(e) => saved(e, this.$route.query.client_Id, 'nombre')"
+            type="text" float-label="Float Label" placeholder="Nombre" />
+          <q-input :value="client.apellido" @input="(e) => saved(e, this.$route.query.client_Id, 'apellidos')"
+            type="text" float-label="Float Label" placeholder="Apellido" />
+          <q-input :value="client.email"    @input="(e) => saved(e, this.$route.query.client_Id, 'email')"
+            type="text" float-label="Float Label" placeholder="Correo Electrónico" />
+          <q-input :value="client.phone"    @input="(e) => saved(e, this.$route.query.client_Id, 'phone')"
+            type="text" float-label="Float Label" placeholder="Telefono" />
+          <q-input :value="client.address"  @input="(e) => saved(e, this.$route.query.client_Id, 'address')"
+            filled type="textarea" placeholder="Dirección"  />
         </div>
         <div class="header-cell col-6 filled">
           <q-table
@@ -63,14 +69,27 @@ export default {
     ...mapGetters('client', ['clients']),
     ...mapGetters('order', ['orders']),
     client () {
-      return this.clients[this.$route.query.client_Id]
+      console.log(this.$route.query.client_Id)
+      console.log('clientes filtrado')
+      console.log(this.clientDetail(this.$route.query.client_Id))
+      console.log(this.clients + 'clientes')
+      return this.clientDetail(this.$route.query.client_Id)
     }
   },
+  mounted () {
+    this.bindClients()
+    console.log(this.clients)
+  },
   methods: {
-    ...mapActions('client', ['saveClient']),
+    ...mapActions('client', ['saveClient', 'bindClients']),
     saved (value, id, key) {
       console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveClient({ value, id, key })
+    },
+    clientDetail (value) {
+      return this.clients.find(obj => {
+        return obj.id === value && obj.rol === 'Usuario'
+      })
     }
   }
 }

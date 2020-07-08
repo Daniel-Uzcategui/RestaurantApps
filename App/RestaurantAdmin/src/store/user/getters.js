@@ -4,3 +4,4 @@ export const editUserDialog = ({ editUserDialog }) => editUserDialog
 export const summary = ({ summary }) => summary
 export const hist = ({ hist }) => hist
 export const users = ({ users }) => users
+export const clients = ({ clients }) => clients

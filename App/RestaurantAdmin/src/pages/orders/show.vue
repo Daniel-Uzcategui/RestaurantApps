@@ -124,7 +124,7 @@ export default {
   },
   computed: {
     ...mapGetters('order', ['orders']),
-    ...mapGetters('menu', ['menu']),
+    ...mapGetters('menu', ['menu', 'listext']),
     order () {
       return this.orders.find(obj => {
         return obj.id === this.$route.query.Order_Id

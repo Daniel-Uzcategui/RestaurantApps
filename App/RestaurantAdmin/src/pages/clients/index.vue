@@ -14,7 +14,6 @@
       :selected.sync="selected"
       >
      <template v-slot:top-right>
-        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/clients/create')"/>
         <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
@@ -35,6 +34,19 @@
     </q-table>
     </q-card>
  </div>
+ <q-dialog v-model="noSelect">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Borrar Cliente</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar un cliente a eliminar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </q-page>
 </template>
 
@@ -66,6 +78,10 @@ export default {
   computed: {
     ...mapGetters('client', ['clients'])
   },
+  mounted () {
+    this.bindClients()
+    console.log(this.clients)
+  },
   methods: {
     exportTable () {
       // naive encoding to csv format
@@ -95,17 +111,33 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.clients.length}`
     },
-    ...mapActions('client', ['deleteClient']),
+    ...mapActions('client', ['deleteClient', 'bindClients']),
     deleted () {
-      this.deleteClient(this.clients.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+      if (this.selected.length > 0) {
+        this.$q.dialog({
+          title: 'Borrar Cliente',
+          message: 'Desea borrar los elementos seleccionados ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          console.log('>>>> OK')
+          this.deleteClient(this.clients.filter(a => !this.selected.some(b => b['id'] === a['id'])))
+        }).onCancel(() => {
+          console.log('>>>> Cancel')
+        })
+      }
+      if (this.selected.length === 0) {
+        this.noSelect = true
+      }
     }
   },
 
   data () {
     return {
       selected: [],
+      noSelect: false,
       columns: [
-        { name: 'name', label: 'Nombre', align: 'left', field: 'name', sortable: true },
+        { name: 'nombre', label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
         { name: 'email', align: 'center', label: 'Correo Electrónico', field: 'email' },
         { name: 'status', label: 'Estatus', field: 'status' },
         { name: 'phone', label: 'Telefono', field: 'phone' }

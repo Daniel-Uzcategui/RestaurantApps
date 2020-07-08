@@ -6,15 +6,15 @@
       <q-card-section class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">{{totalOrders('Pendiente')}}</span>
+          <span class="separate">{{totalOrders(0)}}</span>
         </div>
-        <div class="text-subtitle2">Ordenes Pendientes </div>
+        <div class="text-subtitle2">Ordenes Por Confirmar </div>
       </q-card-section>
       <q-separator dark />
       <q-card-actions class="bg-primary" vertical>
        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right"
        label="Más info"
-       @click.native="$router.push({ path: '/orders/index', query: { status: 'Pendiente' } })" />
+       @click.native="$router.push({ path: '/orders/index', query: { status: 0 } })" />
       </q-card-actions>
        </q-card>
        </div>
@@ -23,7 +23,7 @@
         <q-card-section  class="bg-secondary">
         <div class="text-h5">
           <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">{{totalOrders('En progreso')}}</span>
+          <span class="separate">{{totalOrders(1)}}</span>
         </div>
         <div class="text-subtitle2">Ordenes en Progreso</div>
       </q-card-section>
@@ -32,7 +32,7 @@
         <q-btn no-caps flat
         icon-right="fa fa-arrow-alt-circle-right"
         label="Más info"
-        @click.native="$router.push({ path: '/orders/index', query: { status: 'En progreso' } })" />
+        @click.native="$router.push({ path: '/orders/index', query: { status: 1 } })" />
       </q-card-actions>
        </q-card>
         </div>
@@ -40,14 +40,14 @@
        <q-card class="text-white" horizontal>
         <q-card-section  class="bg-secondary">
         <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
-        <span class="separate">{{totalOrders('Anulada')}}</span>
+        <span class="separate">{{totalOrders(4)}}</span>
         </div>
         <div class="text-subtitle2">Ordenes en Anuladas</div>
      </q-card-section>
        <q-separator dark />
       <q-card-actions class="bg-primary" vertical>
         <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info"
-        @click.native="$router.push({ path: '/orders/index', query: { status: 'Anulada' } })" />
+        @click.native="$router.push({ path: '/orders/index', query: { status: 4 } })" />
       </q-card-actions>
     </q-card>
     </div>
@@ -59,7 +59,7 @@
       </q-card-section>
      <q-table
       :dense="$q.screen.lt.md"
-      :data="orders"
+      :data="OrderClient"
       :columns="columns"
       color="primary"
       row-key="id"
@@ -100,14 +100,49 @@ function wrapCsvValue (val, formatFn) {
 }
 export default {
   computed: {
-    ...mapGetters('order', ['orders'])
+    ...mapGetters('order', ['orders']),
+    ...mapGetters('client', ['clients']),
+    OrderClient () {
+      let OrderClient = []
+      let i, obj, clientforOrder, tipoPago
+      let fullname
+      for (i = 0; i < this.orders.length; i++) {
+        obj = this.orders[i]
+        clientforOrder = this.clientOrders(obj.customer_id)
+        fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+        if (obj.typePayment === 'punto') {
+          tipoPago = this.tipo_pago[0]['label']
+        }
+        if (obj.typePayment === 'cash') {
+          tipoPago = this.tipo_pago[1]['label']
+        }
+        if (obj.typePayment === 'Zelle') {
+          tipoPago = this.tipo_pago[2]['label']
+        }
+        OrderClient.push({
+          'id': obj.id,
+          'nombre': fullname,
+          'typePayment': tipoPago,
+          'status': this.estatus_options[obj.status]['label'],
+          'paid': obj.paid.toFixed(2),
+          'factura': obj.factura
+        })
+      }
+      return OrderClient
+    }
   },
   mounted () {
     this.bindOrders()
-    console.log(this.orders)
+    this.bindClients()
   },
   methods: {
     ...mapActions('order', ['bindOrders']),
+    ...mapActions('client', ['bindClients']),
+    clientOrders (value) {
+      return this.clients.find(obj => {
+        return obj.id === value
+      })
+    },
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -145,8 +180,22 @@ export default {
     return {
       columns: [
         { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
+        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre' },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
+        { name: 'paid', label: 'Monto', field: 'paid' },
         { name: 'status', label: 'Estado', field: 'status' }
+      ],
+      estatus_options: [
+        { label: 'Por Confirmar', value: 0 },
+        { label: 'Preparando su pedido', value: 1 },
+        { label: 'Orden en vía', value: 2 },
+        { label: 'Orden Entregada', value: 3 },
+        { label: 'Anulada', value: 4 }
+      ],
+      tipo_pago: [
+        { label: 'Punto de venta', value: 0 },
+        { label: 'Efectivo', value: 1 },
+        { label: 'Zelle', value: 2 }
       ]
     }
   }

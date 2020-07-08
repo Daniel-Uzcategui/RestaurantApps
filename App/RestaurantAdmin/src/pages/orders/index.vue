@@ -4,7 +4,7 @@
       <q-table class="table"
       title="Ordenes"
       color="primary"
-      :data="orders"
+      :data="OrderClient"
       :columns="columns"
       :dense="$q.screen.lt.md"
       row-key="id"
@@ -62,13 +62,48 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders'])
+    ...mapGetters('order', ['orders']),
+    ...mapGetters('client', ['clients']),
+    OrderClient () {
+      let OrderClient = []
+      let i, obj, clientforOrder, tipoPago
+      let fullname
+      for (i = 0; i < this.orders.length; i++) {
+        obj = this.orders[i]
+        clientforOrder = this.clientOrders(obj.customer_id)
+        fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+        if (obj.typePayment === 'punto') {
+          tipoPago = this.tipo_pago[0]['label']
+        }
+        if (obj.typePayment === 'cash') {
+          tipoPago = this.tipo_pago[1]['label']
+        }
+        if (obj.typePayment === 'Zelle') {
+          tipoPago = this.tipo_pago[2]['label']
+        }
+        OrderClient.push({
+          'id': obj.id,
+          'nombre': fullname,
+          'typePayment': tipoPago,
+          'status': this.estatus_options[obj.status]['label'],
+          'paid': obj.paid.toFixed(2),
+          'dateIn': obj.dateIn,
+          'factura': obj.factura
+        })
+      }
+      return OrderClient
+    }
   },
   mounted () {
     this.bindOrders()
-    console.log(this.orders)
+    this.bindClients()
   },
   methods: {
+    clientOrders (value) {
+      return this.clients.find(obj => {
+        return obj.id === value
+      })
+    },
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -98,6 +133,7 @@ export default {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.orders.length}`
     },
     ...mapActions('order', ['deleteOrder', 'bindOrders']),
+    ...mapActions('client', ['bindClients']),
     deleted () {
       this.deleteOrder(this.selected)
     }
@@ -107,10 +143,23 @@ export default {
       selected: [],
       columns: [
         { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
+        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre' },
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'paid', label: 'Monto', field: 'paid' },
         { name: 'dateIn', label: 'Fecha', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'DD-MM-YYYY HH:mm:ss') }
+      ],
+      estatus_options: [
+        { label: 'Por Confirmar', value: 0 },
+        { label: 'Preparando su pedido', value: 1 },
+        { label: 'Orden en vía', value: 2 },
+        { label: 'Orden Entregada', value: 3 },
+        { label: 'Anulada', value: 4 }
+      ],
+      tipo_pago: [
+        { label: 'Punto de venta', value: 0 },
+        { label: 'Efectivo', value: 1 },
+        { label: 'Zelle', value: 2 }
       ]
     }
   }
