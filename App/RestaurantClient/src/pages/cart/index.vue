@@ -106,17 +106,19 @@
                   >
                   <q-step
                      :name="1"
-                     title="Seleccionar Tipo de envio"
+                     title="Seleccionar Tipo de Servicio"
                      icon="add_comment"
                      :done="step > 1"
                      >
-                     <div class="q-pa-sm">
-                       <q-radio class="q-pa-sm" dense v-model="tipEnvio" val=1 label="Delivery + 3$" />
-                       <q-radio class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                     <div class="q-pa-sm" >
+                       <q-radio v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 label="Delivery + 3$" />
+                       <q-radio v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                       <q-radio v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                      </div>
                      <addresses v-if="tipEnvio == 1" v-model="addId"/>
                      <q-stepper-navigation>
-                        <q-btn color="primary" @click="step = 2" label="Continuar" />
+                        <q-btn color="primary" v-if="tipEnvio == 1 && addId != null" @click="step = 2" label="Continuar" />
+                        <q-btn color="primary" v-if="tipEnvio == 0 || tipEnvio == 2" @click="step = 2" label="Continuar" />
                      </q-stepper-navigation>
                   </q-step>
                   <q-step
@@ -143,6 +145,7 @@
                     </q-stepper-navigation>
                   </q-step>
                   <q-step
+                    v-if="pagoSel === 'Zelle' || pagoSel === 'cash'"
                     :name="3"
                     title="Subir Foto"
                     icon="fas fa-camera"
@@ -199,13 +202,14 @@ export default {
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede']),
-    ...mapGetters('user', ['currentUser'])
+    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('localization', ['localizations'])
   },
   data () {
     return {
       confirm: false,
-      tipEnvio: 1,
-      addId: '',
+      tipEnvio: null,
+      addId: null,
       step: 1,
       maximizedToggle: true,
       ordenar: false,
@@ -219,10 +223,18 @@ export default {
       ]
     }
   },
+  created () {
+    this.bindLocalizations()
+  },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
+    ...mapActions('localization', ['bindLocalizations']),
+    getLocBySede (tip) {
+      var locs = this.localizations.find(x => x.id === this.sede)
+      return locs[tip]
+    },
     getStock (id) {
       console.log({ cart: this.cart })
       var item = this.menu.find(x => x.id === id)
@@ -243,10 +255,9 @@ export default {
       return prodExtras
     },
     makeOrder () {
-      if (!this.tipEnvio) { this.addId = '' }
+      if (this.tipEnvio !== 1) { this.addId = '' }
 
-      this.addOrder({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
-      console.log({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) })
+      this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
     },
     getExtrasTot (e) {
       console.log({ e })
