@@ -23,7 +23,6 @@
     <q-card :class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'">
         <q-bar class="bg-primary">
           <q-space />
-
           <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
             <q-tooltip v-if="maximizedToggle" content-class="bg-white text-primary">Minimize</q-tooltip>
           </q-btn>
@@ -36,6 +35,11 @@
         </q-bar>
       <q-card-section class="q-pt-none q-pa-md">
     <q-input class="q-pa-sm" filled type="text" v-model="alias" label="Alias" />
+    <q-input class="q-pa-sm" filled type="text" v-model="estado" label="Estado" />
+    <q-input class="q-pa-sm" filled type="text" v-model="ciudad" label="Ciudad" />
+    <q-input class="q-pa-sm" filled type="text" v-model="municipio" label="Municipio" />
+    <q-input class="q-pa-sm" filled type="text" v-model="calle" label="Calle" />
+    <q-input class="q-pa-sm" filled type="text" v-model="domicilio" label="Domicilio" />
     <q-input class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" />
     </q-card-section>
     <q-card-section class="q-pt-none q-pa-md">
@@ -74,7 +78,24 @@ export default {
   methods: {
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
     newAddress () {
-      this.dialogType === 'new' ? this.addAddress({ user: this.currentUser.id, alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) }) : this.updateAddress({ id: this.id, alias: this.alias, puntoRef: this.puntoRef, location: JSON.stringify(this.markers) })
+      this.dialogType === 'new' ? this.addAddress({
+        estado: this.estado,
+        ciudad: this.ciudad,
+        municipio: this.municipio,
+        calle: this.calle,
+        domicilio: this.domicilio,
+        user: this.currentUser.id,
+        alias: this.alias,
+        puntoRef: this.puntoRef,
+        location: JSON.stringify(this.markers) }) : this.updateAddress({ estado: this.estado,
+        ciudad: this.ciudad,
+        municipio: this.municipio,
+        calle: this.calle,
+        domicilio: this.domicilio,
+        id: this.id,
+        alias: this.alias,
+        puntoRef: this.puntoRef,
+        location: JSON.stringify(this.markers) })
     },
     setDialog () {
       if (this.value === null) { this.dialog = false; return }
@@ -89,6 +110,11 @@ export default {
       this.alias = null
       this.markers = []
       this.puntoRef = null
+      this.estado = null
+      this.ciudad = null
+      this.municipio = null
+      this.calle = null
+      this.domicilio = null
     }
   },
   mounted () {
@@ -105,7 +131,12 @@ export default {
       center: { lat: 45.508, lng: -73.587 },
       markers: [],
       places: [],
-      options: []
+      options: [],
+      estado: null,
+      ciudad: null,
+      municipio: null,
+      calle: null,
+      domicilio: null
     }
   }
 }
