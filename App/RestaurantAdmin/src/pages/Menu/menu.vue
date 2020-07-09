@@ -11,6 +11,15 @@
       :selected.sync="selected"
     >
     <template v-slot:top-right>
+      <q-label class="q-pa-md">STOCK POR SEDE</q-label>
+      <q-select
+        bg-color="white"
+        outlined
+        v-model="sede"
+        :options="locList"
+        style="width: 250px"
+        behavior="menu"
+      />
         <q-btn-group flat push >
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
@@ -82,8 +91,6 @@
                 </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
                 </div>
           </q-td>
-<<<<<<< HEAD
-=======
 
           <q-td key="FechaAct" :props="props">
             <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
@@ -98,7 +105,19 @@
             </q-popup-edit>
           </q-td>
 
->>>>>>> parent of 3a04e90... Menu changes
+           <q-td key="stock" :props="props">
+            <div class="text-pre-wrap">{{ props.row.stock }}</div>
+            <q-popup-edit :value="props.row.stock">
+              <q-input
+                @input="(e) => saved(e, props.row.stock, props.row.id, 'stock')"
+                :value="props.row.stock"
+                dense
+                autofocus
+                type="number"
+              />
+            </q-popup-edit>
+          </q-td>
+
           <q-td key="price" :props="props">
             <div class="text-pre-wrap">{{ props.row.price }}</div>
             <q-popup-edit :value="props.row.price">
@@ -151,10 +170,8 @@ const columns = [
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-<<<<<<< HEAD
-=======
   { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
->>>>>>> parent of 3a04e90... Menu changes
+  { name: 'stock', align: 'center', label: 'Stock', field: 'stock' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'extras', align: 'center', label: 'Extras', field: 'extras' }
 ]
@@ -168,6 +185,15 @@ export default {
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
     ...mapGetters('user', ['currentUser']),
+    ...mapGetters('localization', ['localizations']),
+    locList () {
+      return this.localizations.map(x => {
+        return {
+          value: x.id,
+          label: x.name
+        }
+      })
+    },
     meta () {
       return {
         id: this.currentUser.id,
@@ -182,6 +208,7 @@ export default {
   },
   data () {
     return {
+      sede: null,
       columns,
       selected: [],
       popupEditData: '',
@@ -193,6 +220,7 @@ export default {
     this.bindMenu()
     this.bindExtras()
     this.bindCategorias()
+    this.bindLocalizations()
   },
   methods: {
     resetPhotoType () {
@@ -209,6 +237,7 @@ export default {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
     ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindExtras', 'bindCategorias']),
+    ...mapActions('localization', ['bindLocalizations']),
     delrow () {
       this.delrows({ payload: this.selected, collection: 'menu' })
     },
