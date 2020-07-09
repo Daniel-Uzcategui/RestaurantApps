@@ -12,33 +12,28 @@
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell col-4">
-          <q-input label="Nombre del Cliente" :value="order.name"  type="text" float-label="Float Label" disabled/>
+          <q-input label="Nombre del Cliente" :value="this.clientOrders(order.customer_id)"  type="text" float-label="Float Label" disabled/>
         </div>
         <div class="header-cell col-4">
-          <q-input label="Factura" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label"  />
+          <q-input label="Factura" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
         </div>
         <div class="header-cell col-3">
-          <q-input label="Monto" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label"  />
+          <q-input label="Monto" :value="(order.paid).toFixed(2)"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label"  />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
-          <q-input label="Responsable" :value="order.responsable"  @input="(e) => saved(e, this.$route.query.Order_Id, 'responsable')"  type="text" float-label="Float Label"  />
-         </div>
+          <q-input label="Sede" :value="order.sede"  @input="(e) => saved(e, this.$route.query.Order_Id, 'sede')"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
+        </div>
          <div class="header-cell col-4">
           <q-select :value="order.status"  @input="(e) => saved(e, this.$route.query.Order_Id, 'status')" map-options emit-value standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
         <div class="header-cell col-3">
-          <q-select :value="order.typePayment"  @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
+          <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
+            :options="typePayment_options" label="Tipo de Pago" />
         </div>
          <div class="flex-break q-py-md "></div>
-          <div class="header-cell col-3">
-          <q-input label="Responsable" :value="order.responsable"  @input="(e) => saved(e, this.$route.query.Order_Id, 'responsable')"  type="text" float-label="Float Label"  />
-         </div>
-        <div class="header-cell col-4">
-          <q-input label="Sede" :value="order.sede"  @input="(e) => saved(e, this.$route.query.Order_Id, 'sede')"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
-        </div>
-         <div class="header-cell col-4">
-            <q-input label="Dirección de entrega" :value="order.address"  @input="(e) => saved(e, this.$route.query.Order_Id, 'address')"  filled type="textarea" placeholder="Dirección del cliente"  />
+         <div class="header-cell col-5">
+            <q-input label="Dirección de entrega punto de Referencia" :value="this.addressOrder(order.address)"  filled type="textarea" placeholder="Dirección del cliente"  />
          </div>
       </div>
      </div>
@@ -113,7 +108,9 @@ export default {
         { label: 'Anulada', value: 4 }
       ],
       typePayment_options: [
-        'Efectivo', 'Paypal', 'Zelle'
+        { label: 'Punto de venta', value: 0 },
+        { label: 'Efectivo', value: 1 },
+        { label: 'Zelle', value: 2 }
       ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
@@ -124,7 +121,9 @@ export default {
   },
   computed: {
     ...mapGetters('order', ['orders']),
-    ...mapGetters('menu', ['menu']),
+    ...mapGetters('menu', ['menu', 'listext']),
+    ...mapGetters('client', ['clients']),
+    ...mapGetters('address', ['address']),
     order () {
       return this.orders.find(obj => {
         return obj.id === this.$route.query.Order_Id
@@ -148,10 +147,14 @@ export default {
   },
   mounted () {
     this.bindMenu()
+    this.bindClients()
+    this.bindAddress()
   },
   methods: {
     ...mapActions('order', ['saveOrder']),
     ...mapActions('menu', ['bindMenu']),
+    ...mapActions('client', ['bindClients']),
+    ...mapActions('address', ['bindAddress']),
     saved (value, id, key) {
       console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveOrder({ value, id, key })
@@ -160,6 +163,26 @@ export default {
       return this.menu.find(obj => {
         return obj.id === value
       })
+    },
+    clientOrders (value) {
+      let fullname
+      let objclients
+      objclients = this.clients.find(obj => {
+        return obj.id === value
+      })
+      fullname = objclients.nombre + ' ' + objclients.apellido
+      return fullname
+    },
+    addressOrder (value) {
+      let addressOrder
+      let objaddress
+      objaddress = this.address.find(obj => {
+        return obj.id === value
+      })
+      addressOrder = objaddress.puntoRef
+      console.log({ value })
+      console.log({ addressOrder })
+      return addressOrder
     }
   }
 }

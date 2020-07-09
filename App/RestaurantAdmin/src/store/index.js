@@ -8,6 +8,7 @@ import menu from './menu'
 import client from './client'
 import order from './order'
 import payment from './payment'
+import address from './address'
 import localization from './localization'
 Vue.use(Vuex)
 
@@ -19,6 +20,7 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
+      address,
       auth,
       user,
       menu,

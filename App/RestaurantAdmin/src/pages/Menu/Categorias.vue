@@ -53,19 +53,6 @@
               />
           </q-td>
 
-          <q-td key="FechaAct" :props="props">
-            <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
-            <q-popup-edit v-model.number="props.row.FechaAct">
-              <q-input
-                readonly
-                @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
-                :value="props.row.FechaAct"
-                dense
-                autofocus
-              />
-            </q-popup-edit>
-          </q-td>
-
           <q-td key="categorias" :props="props">
             <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
             <q-popup-edit v-model.number="props.row.FechaAct">
@@ -85,10 +72,9 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Nombre', field: 'name' },
-  { name: 'descripcion', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
-  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' }
+  { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'
