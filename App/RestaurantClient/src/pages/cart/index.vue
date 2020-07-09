@@ -10,17 +10,20 @@
                </q-item-section>
                <q-item-section>
                   <q-item-label >{{getProdValById(item.prodId, 'name')}}</q-item-label>
+                  <q-item-label >$ {{item.prodPrice}}</q-item-label>
                   <q-btn style="width: 50px" size="xs" color="primary" @click="delCartItem(index)" dense>Eliminar</q-btn>
                </q-item-section>
                <q-item-section>
                 <q-item-label class="text-h6">
                     <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
                     {{item.quantity}}
-                    <q-btn size="0.5em" color="orange" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense />
+                    <q-btn size="0.5em" color="orange" @click="(item.quantity == getStock(item.prodId)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
+                      <q-badge color="red" v-if="item.quantity == getStock(item.prodId)" floating>MAX</q-badge>
+                    </q-btn>
                 </q-item-label>
                </q-item-section>
             </q-item>
-            <q-item>
+            <q-item v-if="getExtras(item.prodId).length">
               <q-item-section>
                   <q-select
                     class="full-width"
@@ -42,15 +45,15 @@
                </q-item-section>
             </q-item>
             <q-item>
-              <q-item-section class="text-h6 text-right">
-                  <q-item-label>
-                    Platos:        {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price'))) * item.quantity).toFixed(2)}}
+              <q-item-section v-if="cart.length > 1" class="text-h6 text-right">
+                  <q-item-label v-if="item.quantity > 1 && item.extras.length">
+                    Subtotal: $ {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price'))) * item.quantity).toFixed(2)}}
                   </q-item-label>
-                  <q-item-label>
+                  <q-item-label v-if="item.extras.length">
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
-                    SubTotal:      $ {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price')) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
+                    Total:      $ {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price')) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
             </q-item>
@@ -59,11 +62,11 @@
          <q-list>
           <q-item>
             <q-item-section class="text-h5 text-right">
-              <q-item-label>
-                        Total Platos: {{getTotalCarrito()[0].toFixed(2)}}
+              <q-item-label v-if="getTotalCarrito()[1].toFixed(2) > 0">
+                        Subtotal: {{getTotalCarrito()[0].toFixed(2)}}
               </q-item-label>
-              <q-item-label>
-                        Total Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
+              <q-item-label v-if="getTotalCarrito()[1].toFixed(2) > 0">
+                        Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
               </q-item-label>
               <q-item-label>
                         Total: $ {{getTotalCarrito()[2].toFixed(2)}}
@@ -195,7 +198,7 @@ export default {
     'addresses': () => import('../../components/addresses.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede']),
     ...mapGetters('user', ['currentUser'])
   },
   data () {
@@ -220,6 +223,11 @@ export default {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
+    getStock (id) {
+      console.log({ cart: this.cart })
+      var item = this.menu.find(x => x.id === id)
+      return item.stock[this.sede]
+    },
     getExtras (id) {
       var prodExtras = []
       var displayVal = this.menu.find((e) => {
@@ -241,12 +249,11 @@ export default {
       console.log({ cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 'En Espera', paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) })
     },
     getExtrasTot (e) {
+      console.log({ e })
       var sum = 0
       if (e.length === 0) { return 0 }
       e.forEach((element) => {
-        var extra = this.plainExtras.find(e => e.value === element)
-        if (typeof extra === 'undefined') { extra = { price: 0 } }
-        sum = parseFloat(extra.price) + sum
+        sum = element.price + sum
       })
       return sum
     },
@@ -254,14 +261,10 @@ export default {
       var sumProd = 0
       var sumExtra = 0
       this.cart.forEach(e => {
-        var prod = this.menu.find(element => element.id === e.prodId)
-        if (typeof prod === 'undefined') { prod = { price: 0 } }
-        sumProd = (parseFloat(prod.price) * e.quantity) + sumProd
+        sumProd = (e.prodPrice * e.quantity) + sumProd
 
         e.extras.forEach((element) => {
-          var extra = this.plainExtras.find(i => i.id === element)
-          if (typeof extra === 'undefined') { extra = { price: 0 } }
-          sumExtra = (parseFloat(extra.price) * e.quantity) + sumExtra
+          sumExtra = (element.price * e.quantity) + sumExtra
         })
       })
       return [sumProd, sumExtra, sumProd + sumExtra]

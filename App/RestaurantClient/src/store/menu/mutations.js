@@ -65,6 +65,9 @@ export const addMenuMut = firestoreAction((state, payload) => {
 export function addCart (state, payload) {
   state.cart = ([ ...state.cart, { ...payload } ])
 }
+export function setSede (state, payload) {
+  state.sede = payload
+}
 export function modCartVal (state, payload) {
   state.cart[payload.id][payload.key] = payload.value
 }

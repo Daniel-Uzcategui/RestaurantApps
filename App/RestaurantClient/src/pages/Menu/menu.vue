@@ -1,6 +1,6 @@
 <template>
    <div>
-      <q-input class="q-pa-lg" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
+      <q-input class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'transparent' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
          <template v-slot:prepend>
             <q-icon name="fas fa-search" />
          </template>
@@ -24,11 +24,12 @@
                </q-item-section>
                <q-item-section>
                   <q-item-label lines="1">{{item.name}} </q-item-label>
+                  <q-item-label lines="1" v-if="item.stock ? item.stock[sede] == 0 || typeof item.stock[sede] === 'undefined' ? true : false : true">*No Disponible*</q-item-label>
                   <q-item-label overline>
                      <q-icon color="yellow" size="0.8em" name="fas fa-star" />
                      5.0
                   </q-item-label>
-                  <q-btn style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id)" dense>Añadir</q-btn>
+                  <q-btn v-if="item.stock ? item.stock[sede] == 0 || typeof item.stock[sede] === 'undefined' ? false : true : false" style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id)" dense>Añadir</q-btn>
                </q-item-section>
                <q-item-section side>
                   <q-item-label>$ {{parseFloat(item.price).toFixed(2)}}</q-item-label>
@@ -72,12 +73,15 @@
                <div class="text-h5 col">
                   <q-btn color="grey" @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="fas fa-minus" text-color="white" dense />
                   {{quantity}}
-                  <q-btn color="orange" @click="quantity++" icon="fas fa-plus" text-color="white" dense />
+                  <q-btn color="orange" @click="(quantity == displayVal.stock[sede]) ? false : quantity++" icon="fas fa-plus" text-color="white" dense >
+                    <q-badge color="red" v-if="displayVal.stock ? typeof displayVal.stock[sede] !== 'undefined' ? quantity == displayVal.stock[sede] : false : false" floating>MAX</q-badge>
+                  </q-btn>
                </div>
                <q-item-label class="text-h5">$ {{((parseFloat(displayVal.price) + getExtrasTot()) * quantity  ).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-section>
                <q-select
+                  v-if="prodExtras.length"
                   class="full-width"
                   label="Extras"
                   filled
@@ -107,8 +111,26 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
-    ...mapGetters('user', ['currentUser'])
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede']),
+    ...mapGetters('user', ['currentUser']),
+    origMenu () {
+      return this.menu.reduce((y, x) => {
+        if (x.estatus && x.estatus[this.sede]) {
+          y.push({
+            categoria: x.categoria,
+            estatus: x.estatus,
+            descripcion: x.descripcion,
+            name: x.name,
+            photo: x.photo,
+            price: x.price,
+            id: x.id,
+            extras: x.extras,
+            stock: x.stock
+          })
+        }
+        return y
+      }, [])
+    }
   },
   data () {
     return {
@@ -123,26 +145,21 @@ export default {
       displayVal: {},
       quantity: 1,
       filteredMenu: [],
-      origMenu: [],
       selectedCat: '',
       prodExtras: []
     }
   },
-  mounted () {
+  created () {
     this.bindMenu().then(() => {
-      this.origMenu = this.filteredMenu = this.menu.map(x => {
-        return {
-          categoria: x.categoria,
-          estatus: x.estatus,
-          descripcion: x.descripcion,
-          name: x.name,
-          photo: x.photo,
-          price: x.price,
-          id: x.id,
-          extras: x.extras
-        }
-      })
+      this.filteredMenu = this.origMenu
     })
+    this.bindExtras()
+  },
+  watch: {
+    origMenu () {
+      this.filteredMenu = this.origMenu
+      console.log(this.origMenu)
+    }
   },
   methods: {
     getExtrasTot () {
@@ -194,7 +211,7 @@ export default {
         }
       })
     },
-    ...mapActions('menu', ['bindMenu', 'addCart']),
+    ...mapActions('menu', ['bindMenu', 'addCart', 'bindExtras']),
     createValue (val, done) {
       if (val.length > 0) {
         if (!this.listextras.includes(val)) {

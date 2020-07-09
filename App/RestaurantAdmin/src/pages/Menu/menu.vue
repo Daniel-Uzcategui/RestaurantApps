@@ -78,8 +78,8 @@
 
           <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="props.row.estatus"
+                @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus.${sede}`)"
+                :value="props.row.estatus ? props.row.estatus[sede] ? props.row.estatus[sede] : false : false"
                 color="#3c8dbc"
               />
           </q-td>

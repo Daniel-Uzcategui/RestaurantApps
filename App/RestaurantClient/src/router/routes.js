@@ -115,6 +115,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('pages/menu/index.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },

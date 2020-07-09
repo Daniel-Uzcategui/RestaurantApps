@@ -136,16 +136,10 @@ export default {
           link: '#/home'
         },
         {
-          title: 'Haz tu pedido',
-          caption: '',
-          icon: 'fa fa fa-truck',
-          link: '/home'
-        },
-        {
           title: 'Menus',
           caption: '',
           icon: 'menu_book',
-          link: '#/menu/menu'
+          link: '#/menu/index'
         },
         {
           title: 'Tus Ordenes',

@@ -3,6 +3,7 @@ export default function () {
     categorias: [],
     menu: [],
     extras: [],
-    cart: []
+    cart: [],
+    sede: null
   }
 }

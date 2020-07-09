@@ -6,6 +6,9 @@ import { firestore } from '../../services/firebase/db.js'
 export const addCart = async function ({ commit }, payload) {
   return commit('addCart', payload)
 }
+export const setSede = async function ({ commit }, payload) {
+  return commit('setSede', payload)
+}
 export const modCartVal = async function ({ commit }, payload) {
   return commit('modCartVal', payload)
 }

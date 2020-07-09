@@ -53,3 +53,5 @@ export const plainExtras = ({ extras }) => extras
 export const listext = ({ extras }) => extras
 
 export const cart = ({ cart }) => cart
+
+export const sede = ({ sede }) => sede
