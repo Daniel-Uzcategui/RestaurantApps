@@ -11,7 +11,7 @@
       :selected.sync="selected"
     >
     <template v-slot:top-right>
-      <q-label class="q-pa-md">STOCK POR SEDE</q-label>
+      <div class="q-pa-md">STOCK POR SEDE</div>
       <q-select
         bg-color="white"
         outlined
@@ -19,6 +19,9 @@
         :options="locList"
         style="width: 250px"
         behavior="menu"
+        emit-value
+        map-options
+        stack-label
       />
         <q-btn-group flat push >
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
@@ -26,7 +29,7 @@
         </q-btn-group>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <q-tr v-if="sede !== null" :props="props">
           <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
           </q-td>
@@ -106,11 +109,12 @@
           </q-td>
 
            <q-td key="stock" :props="props">
-            <div class="text-pre-wrap">{{ props.row.stock }}</div>
-            <q-popup-edit :value="props.row.stock">
+            <div v-if="props.row.stock && typeof props.row.stock[sede] !== 'undefined'"  class="text-pre-wrap" >{{ props.row.stock[sede] }}</div>
+            <div v-else >0</div>
+            <q-popup-edit :value="props.row.stock ? props.row.stock[sede] : 0">
               <q-input
-                @input="(e) => saved(e, props.row.stock, props.row.id, 'stock')"
-                :value="props.row.stock"
+                @input="(e) => saved(e, props.row.stock, props.row.id, `stock.${sede}`)"
+                :value="props.row.stock ? props.row.stock[sede] : 0"
                 dense
                 autofocus
                 type="number"
@@ -230,6 +234,8 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
+      console.log(this.sede)
+      console.log({ key })
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },
