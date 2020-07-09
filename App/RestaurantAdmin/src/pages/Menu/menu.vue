@@ -82,6 +82,23 @@
                 </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
                 </div>
           </q-td>
+<<<<<<< HEAD
+=======
+
+          <q-td key="FechaAct" :props="props">
+            <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
+            <q-popup-edit v-model.number="props.row.FechaAct">
+              <q-input
+                readonly
+                @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
+                :value="props.row.FechaAct"
+                dense
+                autofocus
+              />
+            </q-popup-edit>
+          </q-td>
+
+>>>>>>> parent of 3a04e90... Menu changes
           <q-td key="price" :props="props">
             <div class="text-pre-wrap">{{ props.row.price }}</div>
             <q-popup-edit :value="props.row.price">
@@ -134,6 +151,10 @@ const columns = [
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
+<<<<<<< HEAD
+=======
+  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
+>>>>>>> parent of 3a04e90... Menu changes
   { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'extras', align: 'center', label: 'Extras', field: 'extras' }
 ]
