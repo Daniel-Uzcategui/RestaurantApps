@@ -14,7 +14,6 @@
       :selected.sync="selected"
       >
       <template v-slot:top-right>
-        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/user/create')"/>
         <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>

@@ -11,7 +11,7 @@
       :selected.sync="selected"
     >
     <template v-slot:top-right>
-      <div class="q-pa-md">STOCK POR SEDE</div>
+      <div class="q-pa-md">SEDE</div>
       <q-select
         bg-color="white"
         outlined

@@ -1,6 +1,7 @@
 <template>
   <q-page class="q-pa-lg" >
      <div class="q-gutter-md">
+
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Orden</div>
@@ -12,7 +13,7 @@
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell col-4">
-          <q-input label="Nombre del Cliente" :value="this.clientOrders(order.customer_id)"  type="text" float-label="Float Label" disabled/>
+          <q-input label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disabled/>
         </div>
         <div class="header-cell col-4">
           <q-input label="Factura" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
@@ -22,8 +23,12 @@
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
-          <q-input label="Sede" :value="order.sede"  @input="(e) => saved(e, this.$route.query.Order_Id, 'sede')"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
+          <q-input label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
         </div>
+        <div class="header-cell col-4" v-if="order.tipEnvio==2">
+          <q-input label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
+        </div>
+        <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
           <q-select :value="order.status"  @input="(e) => saved(e, this.$route.query.Order_Id, 'status')" map-options emit-value standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
@@ -33,7 +38,10 @@
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
-            <q-input label="Dirección de entrega punto de Referencia" :value="this.addressOrder(order.address)"  filled type="textarea" placeholder="Dirección del cliente"  />
+            <q-input label="punto de Referencia" :value="this.getAddress(order.address)"  filled type="textarea" placeholder="Punto de referencia"  />
+         </div>
+         <div class="header-cell col-5">
+            <q-input label="Dirección de entrega"   filled type="textarea" placeholder="Dirección del cliente"  />
          </div>
       </div>
      </div>
@@ -124,6 +132,7 @@ export default {
     ...mapGetters('menu', ['menu', 'listext']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('address', ['address']),
+    ...mapGetters('localization', ['localizations']),
     order () {
       return this.orders.find(obj => {
         return obj.id === this.$route.query.Order_Id
@@ -132,13 +141,12 @@ export default {
     detailOrder () {
       let productsOrder = []
       let i, j, obj
-      console.log('detailorder ' + this.orders.length)
       for (i = 0; i < this.orders.length; i++) {
         obj = this.orders[i]
         if (obj.id === this.$route.query.Order_Id) {
           for (j = 0; j < obj.cart.length; j++) {
-            productsOrder.push(this.products(obj.cart[j].prodId))
-            console.log(productsOrder)
+            productsOrder.push(this.getProducts(obj.cart[j].prodId))
+            // console.log(productsOrder)
           }
         }
       }
@@ -149,40 +157,47 @@ export default {
     this.bindMenu()
     this.bindClients()
     this.bindAddress()
+    this.bindLocalizations()
   },
   methods: {
     ...mapActions('order', ['saveOrder']),
     ...mapActions('menu', ['bindMenu']),
     ...mapActions('client', ['bindClients']),
     ...mapActions('address', ['bindAddress']),
+    ...mapActions('localization', ['bindLocalizations']),
     saved (value, id, key) {
-      console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
+      //  console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveOrder({ value, id, key })
     },
-    products (value) {
+    getProducts (value) {
       return this.menu.find(obj => {
         return obj.id === value
       })
     },
-    clientOrders (value) {
+    getClient (value) {
       let fullname
       let objclients
       objclients = this.clients.find(obj => {
         return obj.id === value
       })
-      fullname = objclients.nombre + ' ' + objclients.apellido
+      fullname = typeof objclients !== 'undefined' ? objclients.nombre + ' ' + objclients.apellido : 'No disponible'
       return fullname
     },
-    addressOrder (value) {
-      let addressOrder
+    getAddress (value) {
       let objaddress
       objaddress = this.address.find(obj => {
         return obj.id === value
       })
-      addressOrder = objaddress.puntoRef
-      console.log({ value })
-      console.log({ addressOrder })
-      return addressOrder
+      return objaddress
+    },
+    getLocalization (value) {
+      let name
+      let objLocalization
+      objLocalization = this.localizations.find(obj => {
+        return obj.id === value
+      })
+      name = typeof objLocalization !== 'undefined' ? objLocalization.name : 'No disponible'
+      return name
     }
   }
 }

@@ -88,7 +88,7 @@
             <q-item>
               <q-item-section class="text-h6 text-right">
                   <q-item-label>
-                    Platos:        {{(item.prodPrice * item.quantity).toFixed(2)}}
+                    Items:        {{(item.prodPrice * item.quantity).toFixed(2)}}
                   </q-item-label>
                   <q-item-label>
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
@@ -104,7 +104,7 @@
           <q-item>
             <q-item-section class="text-h5 text-right">
               <q-item-label>
-                        Total Platos: {{getTotalCarrito()[0].toFixed(2)}}
+                        Total Items: {{getTotalCarrito()[0].toFixed(2)}}
               </q-item-label>
               <q-item-label>
                         Total Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
