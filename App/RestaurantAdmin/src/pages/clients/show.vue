@@ -59,9 +59,9 @@ export default {
   data () {
     return {
       columns: [
-        { name: 'delivered', required: true, label: 'Entregado', align: 'left', field: 'delivered', sortable: true },
-        { name: 'responsable', required: true, align: 'center', label: 'Responsable de la Entrega', field: 'responsable' },
-        { name: 'paid', label: 'Pago Realizado', field: 'paid' }
+        { name: 'delivered', required: true, label: 'Tipo de pago', align: 'left', field: 'delivered', sortable: true },
+        { name: 'responsable', required: true, align: 'center', label: 'Estatus', field: 'responsable' },
+        { name: 'paid', label: 'Pago Realizado' }
       ]
     }
   },

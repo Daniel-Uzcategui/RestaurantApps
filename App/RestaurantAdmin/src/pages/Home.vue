@@ -105,11 +105,13 @@ export default {
     OrderClient () {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago
-      let fullname
+      let fullname, tableOrder, typeService
       for (i = 0; i < this.orders.length; i++) {
         obj = this.orders[i]
         clientforOrder = this.clientOrders(obj.customer_id)
         fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+        tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
+        typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
         if (obj.typePayment === 'punto') {
           tipoPago = this.tipo_pago[0]['label']
         }
@@ -125,7 +127,9 @@ export default {
           'typePayment': tipoPago,
           'status': this.estatus_options[obj.status]['label'],
           'paid': obj.paid.toFixed(2),
-          'factura': obj.factura
+          'factura': obj.factura,
+          'table': tableOrder,
+          'typeService': typeService
         })
       }
       return OrderClient
@@ -182,7 +186,9 @@ export default {
         { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
         { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre' },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
+        { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService' },
         { name: 'paid', label: 'Monto', field: 'paid' },
+        { name: 'table', label: 'Mesa', field: 'table' },
         { name: 'status', label: 'Estado', field: 'status' }
       ],
       estatus_options: [
@@ -196,6 +202,11 @@ export default {
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 }
+      ],
+      tipo_servicio: [
+        { label: 'Pick-up', value: 0 },
+        { label: 'Delivery', value: 1 },
+        { label: 'In-Local', value: 2 }
       ]
     }
   }

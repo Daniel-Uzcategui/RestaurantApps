@@ -5,18 +5,34 @@
      <div class="header-cell col-12" tabindex="0">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
-        <div class="text-h5">Tus Pedidos</div>
+        <div class="text-h5">Ordenes</div>
       </q-card-section>
      <q-table class="orders "
       :dense="$q.screen.lt.md"
-      :data="data"
+      :data="DetailOrders"
       :columns="columns"
       color="primary"
-      row-key="name"
+      row-key="id"
       no-data-label="No se encontraron registros"
     >
       <template v-slot:top>
           <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+      </template>
+       <template v-slot:body="props">
+        <q-tr :props="props" >
+           <q-td key="factura" :props="props">
+            {{ props.row.factura }}
+          </q-td>
+           <q-td key="status" :props="props">
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="table" :props="props" >
+            {{ props.row.table }}
+          </q-td>
+          <q-td key="paid" :props="props">
+            {{ props.row.paid }}
+          </q-td>
+        </q-tr>
       </template>
     </q-table>
     </q-card>
@@ -27,6 +43,7 @@
 
 <script>
 import { exportFile } from 'quasar'
+import { mapActions, mapGetters } from 'vuex'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== void 0
@@ -47,15 +64,41 @@ function wrapCsvValue (val, formatFn) {
 
   return `"${formatted}"`
 }
-import { mapActions } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters('order', ['orders']),
+    ...mapGetters('user', ['currentUser']),
+    DetailOrders () {
+      let Order = []
+      let i, obj, status
+      let tableOrder
+      for (i = 0; i < this.orders.length; i++) {
+        obj = this.orders[i]
+        tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
+        status = this.estatus_options[obj.status]['label']
+        Order.push({
+          'id': obj.id,
+          'status': status,
+          'paid': obj.paid.toFixed(2),
+          'factura': obj.factura,
+          'table': tableOrder
+        })
+      }
+      console.log(Order)
+      return Order
+    }
+  },
   created () {
     this.bindExtras()
     this.bindMenu()
     this.bindCategorias()
+    console.log(this.currentUser)
+    this.bindOrders(this.currentUser.id)
+    console.log(this.orders)
   },
   methods: {
     ...mapActions('menu', ['bindExtras', 'bindMenu', 'bindCategorias']),
+    ...mapActions('order', ['bindOrders']),
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -86,44 +129,16 @@ export default {
   data () {
     return {
       columns: [
-        {
-          name: 'descrip',
-          required: true,
-          label: 'Descripción',
-          align: 'left',
-          field: 'descrip',
-          sortable: true
-        },
-        { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
-        { name: 'status', label: 'Estado', field: 'status' }
+        { name: 'factura', required: true, label: 'Factura', field: 'factura' },
+        { name: 'status', label: 'Estado', field: 'status', align: 'center' },
+        { name: 'table', label: 'Mesa', field: 'table' }
       ],
-
-      data: [
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        },
-        {
-          descrip: 'Frozen Yogurt',
-          typePayment: 'Efectivo',
-          status: 'En progreso'
-        }
+      estatus_options: [
+        { label: 'Por Confirmar', value: 0 },
+        { label: 'Preparando su pedido', value: 1 },
+        { label: 'Orden en vía', value: 2 },
+        { label: 'Orden Entregada', value: 3 },
+        { label: 'Anulada', value: 4 }
       ]
     }
   }

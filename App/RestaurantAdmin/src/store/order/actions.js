@@ -3,7 +3,7 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindOrders = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindorders')
-  return bindFirestoreRef('orders', firestore().collection('orders'))
+  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('factura'))
 })
 
 export const saveOrder = firestoreAction((state, payload) => {
