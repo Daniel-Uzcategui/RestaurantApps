@@ -1,7 +1,6 @@
 <template>
   <q-page class="q-pa-lg" >
      <div class="q-gutter-md">
-
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Orden</div>
@@ -38,10 +37,10 @@
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
-            <q-input label="punto de Referencia" :value="this.getAddress(order.address)"  filled type="textarea" placeholder="Punto de referencia"  />
+            <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  />
          </div>
          <div class="header-cell col-5">
-            <q-input label="Dirección de entrega"   filled type="textarea" placeholder="Dirección del cliente"  />
+            <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente"  />
          </div>
       </div>
      </div>
@@ -124,7 +123,9 @@ export default {
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'descripcion', required: true, align: 'left', label: 'Decripción', field: 'descripcion' },
         { name: 'price', required: true, align: 'center', label: 'Precio', field: 'price' }
-      ]
+      ],
+      puntoRef: '',
+      addressDelivery: ''
     }
   },
   computed: {
@@ -159,6 +160,9 @@ export default {
     this.bindAddress()
     this.bindLocalizations()
   },
+  updated () {
+    this.getAddress(this.order.address)
+  },
   methods: {
     ...mapActions('order', ['saveOrder']),
     ...mapActions('menu', ['bindMenu']),
@@ -185,9 +189,23 @@ export default {
     },
     getAddress (value) {
       let objaddress
+      let tmpAddressDelivery = ''
       objaddress = this.address.find(obj => {
         return obj.id === value
       })
+      this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
+      if (typeof objaddress !== 'undefined') {
+        this.addressDelivery = tmpAddressDelivery.concat(
+          typeof objaddress.estado !== 'undefined' ? objaddress.estado : '', ' ',
+          typeof objaddress.ciudad !== 'undefined' ? objaddress.ciudad : '', ' ',
+          typeof objaddress.municipio !== 'undefined' ? objaddress.municipio : '', ' ',
+          typeof objaddress.calle !== 'undefined' ? objaddress.calle : '', ' ',
+          typeof objaddress.domicilio !== 'undefined' ? objaddress.domicilio : '', ' '
+        )
+      } else {
+        this.addressDelivery = 'No disponible'
+      }
+      console.log({ objaddress })
       return objaddress
     },
     getLocalization (value) {

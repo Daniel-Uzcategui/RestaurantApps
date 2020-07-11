@@ -1,58 +1,58 @@
 <template>
   <q-page class="q-pa-md q-pa-sm " >
     <div class="row header-container">
-    <div class="header-cell col-md-3 col-sm-4" >
-     <q-card class="text-white" horizontal>
-      <q-card-section class="bg-secondary">
-        <div class="text-h5">
-          <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">{{totalOrders(0)}}</span>
-        </div>
-        <div class="text-subtitle2">Ordenes Por Confirmar </div>
-      </q-card-section>
-      <q-separator dark />
-      <q-card-actions class="bg-primary" vertical>
-       <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right"
-       label="Más info"
-       @click.native="$router.push({ path: '/orders/index', query: { status: 0 } })" />
-      </q-card-actions>
-       </q-card>
-       </div>
-       <div class="header-cell col-md-3 col-sm-4"  >
-      <q-card class=" text-white" horizontal>
-        <q-card-section  class="bg-secondary">
-        <div class="text-h5">
-          <i class="fa fa-bell" aria-hidden="true"></i>
-          <span class="separate">{{totalOrders(1)}}</span>
-        </div>
-        <div class="text-subtitle2">Ordenes en Progreso</div>
-      </q-card-section>
-       <q-separator dark />
-      <q-card-actions  class="bg-primary" vertical>
-        <q-btn no-caps flat
-        icon-right="fa fa-arrow-alt-circle-right"
-        label="Más info"
-        @click.native="$router.push({ path: '/orders/index', query: { status: 1 } })" />
-      </q-card-actions>
-       </q-card>
-        </div>
-        <div class="header-cell col-md-3 col-sm-4">
-       <q-card class="text-white" horizontal>
-        <q-card-section  class="bg-secondary">
-        <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
-        <span class="separate">{{totalOrders(4)}}</span>
-        </div>
-        <div class="text-subtitle2">Ordenes en Anuladas</div>
-     </q-card-section>
-       <q-separator dark />
-      <q-card-actions class="bg-primary" vertical>
-        <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info"
-        @click.native="$router.push({ path: '/orders/index', query: { status: 4 } })" />
-      </q-card-actions>
-    </q-card>
-    </div>
-     <div class="flex-break q-py-md "></div>
-     <div class="header-cell col-12" tabindex="0">
+        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3"  >
+         <q-card class="text-white" horizontal>
+          <q-card-section class="bg-secondary">
+            <div class="text-h5">
+              <i class="fa fa-bell" aria-hidden="true"></i>
+              <span class="separate">{{totalOrders(0)}}</span>
+            </div>
+            <div class="text-subtitle2">Ordenes Por Confirmar </div>
+          </q-card-section>
+          <q-separator dark />
+          <q-card-actions class="bg-primary" vertical>
+           <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right"
+           label="Más info"
+           @click.native="$router.push({ path: '/orders/index', query: { status: 0 } })" />
+          </q-card-actions>
+           </q-card>
+          </div>
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" >
+          <q-card class=" text-white" horizontal>
+          <q-card-section  class="bg-secondary">
+            <div class="text-h5">
+              <i class="fa fa-bell" aria-hidden="true"></i>
+              <span class="separate">{{totalOrders(1)}}</span>
+            </div>
+            <div class="text-subtitle2">Ordenes en Progreso</div>
+          </q-card-section>
+          <q-separator dark />
+          <q-card-actions  class="bg-primary" vertical>
+            <q-btn no-caps flat
+            icon-right="fa fa-arrow-alt-circle-right"
+            label="Más info"
+            @click.native="$router.push({ path: '/orders/index', query: { status: 1 } })" />
+          </q-card-actions>
+           </q-card>
+          </div>
+          <div class="q-pa-xs header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <q-card class="text-white" horizontal>
+              <q-card-section  class="bg-secondary">
+              <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
+              <span class="separate">{{totalOrders(4)}}</span>
+              </div>
+              <div class="text-subtitle2">Ordenes en Anuladas</div>
+             </q-card-section>
+           <q-separator dark />
+            <q-card-actions class="bg-primary" vertical>
+              <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info"
+              @click.native="$router.push({ path: '/orders/index', query: { status: 4 } })" />
+            </q-card-actions>
+          </q-card>
+      </div>
+     <div class="flex-break"></div>
+     <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
         <div class="text-h5">Ordenes</div>
