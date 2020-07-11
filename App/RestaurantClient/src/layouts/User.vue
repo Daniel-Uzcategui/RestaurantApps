@@ -1,30 +1,7 @@
 <template>
    <q-layout class="main bg-image" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
       <q-header class="bg-transparent text-white" v-if="currentUser">
-         <q-toolbar v-if="false">
-            <q-btn
-               flat
-               dense
-               round
-               icon="menu"
-               aria-label="Menu"
-               @click="leftDrawerOpen = !leftDrawerOpen"
-               />
-            <q-toolbar-title class="text-caption">
-               <q-avatar>
-                  <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
-               </q-avatar>
-               {{getUserData('nombre')}} {{getUserData('apellido')}}
-            </q-toolbar-title>
-            <div>
-               <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
-               <q-btn class="text-caption" flat @click="logoutUser()" label="Cerrar Sesión" >  </q-btn>
-               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
-                  <user-settings></user-settings>
-               </q-dialog>
-            </div>
-         </q-toolbar>
-         <q-toolbar v-if="true">
+         <q-toolbar>
             <q-btn
                flat
                color="grey"

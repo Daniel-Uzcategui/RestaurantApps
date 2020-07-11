@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
         <div class="q-pa-md menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <div class="text-h5 menuTop">Carrito</div>
+         <div class="text-h5 menuTop">Carrito {{CheckAv}}</div>
 
          <q-list v-for="(item, index) in cart" :key="index" style="width: 100%">
             <q-item>
@@ -18,7 +18,8 @@
                     <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
                     {{item.quantity}}
                     <q-btn size="0.5em" color="orange" @click="(!checkAvail(index)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
-                      <q-badge color="red" v-if="!checkAvail(index)" floating>max</q-badge>
+                      <q-badge color="red" v-if="item.quantity == getStock(item.prodId)" floating style="left: 10px; right: auto;">max</q-badge>
+                      <q-badge color="red" v-if="item.quantity > getStock(item.prodId)" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
                     </q-btn>
                 </q-item-label>
                </q-item-section>
@@ -75,7 +76,7 @@
             </q-item-section>
           </q-item>
          </q-list>
-            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length" @click="ordenar = true" label="Ordenar"/>
+            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length && !CheckAv" @click="ordenar = true" label="Ordenar"/>
       </div>
       <q-dialog
          content-class="full-width q-pa-lg"
@@ -140,42 +141,19 @@
                         enter-active-class="animated fadeIn"
                         leave-active-class="animated fadeOut"
                       >
-                        <q-btn key="Continue" v-if="pagoSel" @click="(pagoSel === 'punto') ? step = 4 : step = 3" color="primary" label="Continuar" />
+                        <q-btn key="Continue" v-if="pagoSel" @click="step = 3" color="primary" label="Continuar" />
                         <q-btn key="Atras" flat @click="step = 1" color="primary" label="Atras" class="q-ml-sm" />
                       </transition-group>
                     </q-stepper-navigation>
                   </q-step>
                   <q-step
-                    v-if="pagoSel === 'Zelle' || pagoSel === 'cash'"
                     :name="3"
-                    title="Subir Foto"
-                    icon="fas fa-camera"
-                    :done="step > 3"
-                  >
-                  <p v-if="pagoSel === 'cash'">Porfavor cargar Foto del efectivo $</p>
-                  <p v-if="pagoSel === 'Zelle'">Porfavor cargar captura del pago Zelle, Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}} a Mirestaurant@gmail.com</p>
-                    <q-uploader
-                      url="http://localhost:4444/upload"
-                      label="Carga de Fotos"
-                      color="primary"
-                      square
-                      flat
-                      bordered
-                      style="max-width: -webkit-fill-available;"
-                    />
-                     <q-stepper-navigation>
-                        <q-btn @click="step = 3" color="primary" label="Continuar" />
-                        <q-btn flat @click="step = 1" color="primary" label="Atras" class="q-ml-sm" />
-                     </q-stepper-navigation>
-                  </q-step>
-                  <q-step
-                    :name="4"
                     title="Finalizar"
                     icon="fas fa-money"
                   >
                   <p class="text-h6">Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
                   <q-btn flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
-                   <q-btn @click="confirm = true" color="primary" label="Ordenar" />
+                   <q-btn @click="confirm = true" v-if="!CheckAv" color="primary" label="Ordenar" />
                   </q-step>
                </q-stepper>
          </q-card>
@@ -204,7 +182,18 @@ export default {
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('localization', ['localizations'])
+    ...mapGetters('localization', ['localizations']),
+    CheckAv () {
+      for (let e of this.cart) {
+        var item = this.menu.find(x => x.id === e.prodId)
+        if (e.quantity > item.stock[this.sede]) {
+          return true
+        } else {
+          return false
+        }
+      }
+      return false
+    }
   },
   data () {
     return {
@@ -232,6 +221,17 @@ export default {
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
+    showNotif () {
+      this.$q.notify({
+        timeout: 0,
+        position: 'right',
+        message: 'Un producto ha cambiado la disponibilidad',
+        color: 'alert',
+        actions: [
+          { label: 'Dismiss', color: 'white', handler: () => { /* ... */ } }
+        ]
+      })
+    },
     getLocBySede (tip) {
       var locs = this.localizations.find(x => x.id === this.sede)
       if (typeof locs === 'undefined') { return false }
@@ -258,7 +258,6 @@ export default {
     },
     makeOrder () {
       if (this.tipEnvio !== '1') { this.addId = '' }
-
       this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
     },
     getExtrasTot (e) {
@@ -275,7 +274,6 @@ export default {
       var sumExtra = 0
       this.cart.forEach(e => {
         sumProd = (e.prodPrice * e.quantity) + sumProd
-
         e.extras.forEach((element) => {
           sumExtra = (element.price * e.quantity) + sumExtra
         })
@@ -314,12 +312,17 @@ export default {
         counter = element.quantity + counter
       })
       if (typeof product !== 'undefined' && typeof product.stock !== 'undefined') {
-        if (counter === parseInt(product.stock[this.sede])) {
+        if (counter >= parseInt(product.stock[this.sede])) {
           return false
         } else {
           return true
         }
       } else { return false }
+    }
+  },
+  watch: {
+    CheckAv () {
+      if (this.CheckAv) this.showNotif()
     }
   }
 }

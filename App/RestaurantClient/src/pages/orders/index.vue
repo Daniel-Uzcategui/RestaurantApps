@@ -21,6 +21,7 @@
     </q-knob>
     </q-item-section>
     <q-item-section>
+      <q-item-label lines="2" class="text-h7 text-center">{{formatDate(items.dateIn)}}</q-item-label>
     <q-item-label lines="2" class="text-h7 text-center">{{estatus_options[items.status]['label']}}</q-item-label>
     <q-item-label lines="2" class="text-h7 text-center">Nro. Pedido: {{items.factura}}</q-item-label>
     <q-item-label lines="2" class="text-center" caption>Click para ver Detalles</q-item-label>
@@ -54,8 +55,10 @@
                   <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-        <p class="text-h6">Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
-        <p class="text-h6" v-if="ordenDet.tipEnvio == 1">Despacho a dirección: {{getAddById(ordenDet.address)}}</p>
+        <div class="text-h6 q-pa-md">
+          <p>Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
+          <p v-if="ordenDet.tipEnvio == 1">Despacho a dirección: {{getAddById(ordenDet.address)}}</p>
+        </div>
          <q-list :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'" v-for="(item, index) in carrito" :key="index" style="width: 100%">
             <q-item>
               <q-item-section>
@@ -125,6 +128,7 @@
 </template>
 
 <script>
+import { date } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   // name: 'PageName',
@@ -160,6 +164,9 @@ export default {
   methods: {
     ...mapActions('address', ['bindAddress']),
     ...mapActions('order', ['bindOrders']),
+    formatDate (e) {
+      return date.formatDate(e.seconds * 1000, 'DD-MM')
+    },
     getAddById (id) {
       if (id === '') { return }
       var add = this.address.find(x => x.id === id)
@@ -214,8 +221,7 @@ export default {
   created () {
     this.bindOrders(this.currentUser.id)
     this.bindAddress(this.currentUser.id)
-  },
-  mounted () {}
+  }
 }
 </script>
 
