@@ -24,12 +24,13 @@
                </q-item-section>
                <q-item-section>
                   <q-item-label lines="1">{{item.name}} </q-item-label>
-                  <q-item-label lines="1" v-if="item.stock ? item.stock[sede] == 0 || typeof item.stock[sede] === 'undefined' ? true : false : true">*No Disponible*</q-item-label>
+                  <q-item-label lines="1" v-if="!checkAvail(item.id) && itemNotInCart(item.id)">*No Disponible*</q-item-label>
+                  <q-item-label lines="1" v-if="!checkAvail(item.id) && !itemNotInCart(item.id)">*Máx en el Carrito*</q-item-label>
                   <q-item-label overline>
                      <q-icon color="yellow" size="0.8em" name="fas fa-star" />
                      5.0
                   </q-item-label>
-                  <q-btn v-if="item.stock ? item.stock[sede] == 0 || typeof item.stock[sede] === 'undefined' ? false : true : false" style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id)" dense>Añadir</q-btn>
+                  <q-btn v-if="checkAvail(item.id)" style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id)" dense>Añadir</q-btn>
                </q-item-section>
                <q-item-section side>
                   <q-item-label>$ {{parseFloat(item.price).toFixed(2)}}</q-item-label>
@@ -43,7 +44,8 @@
          :maximized="maximizedToggle"
          transition-show="slide-up"
          transition-hide="slide-down"
-         @hide="quantity = 1; disExtras = []"
+         @hide="quantity = 0; disExtras = []"
+         @show="quantity = 1"
          >
          <q-card class="">
             <q-bar>
@@ -73,8 +75,8 @@
                <div class="text-h5 col">
                   <q-btn color="grey" @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="fas fa-minus" text-color="white" dense />
                   {{quantity}}
-                  <q-btn color="orange" @click="(quantity == displayVal.stock[sede]) ? false : quantity++" icon="fas fa-plus" text-color="white" dense >
-                    <q-badge color="red" v-if="displayVal.stock ? typeof displayVal.stock[sede] !== 'undefined' ? quantity == displayVal.stock[sede] : false : false" floating>MAX</q-badge>
+                  <q-btn color="orange" @click="(checkAvail(displayVal.id)) ? quantity++ : false" icon="fas fa-plus" text-color="white" dense >
+                    <q-badge color="red" v-if="!checkAvail(displayVal.id)" floating>MAX</q-badge>
                   </q-btn>
                </div>
                <q-item-label class="text-h5">$ {{((parseFloat(displayVal.price) + getExtrasTot()) * quantity  ).toFixed(2) }}</q-item-label>
@@ -143,7 +145,7 @@ export default {
       photoType: '',
       photoUpload: false,
       displayVal: {},
-      quantity: 1,
+      quantity: 0,
       filteredMenu: [],
       selectedCat: '',
       prodExtras: []
@@ -162,6 +164,14 @@ export default {
     }
   },
   methods: {
+    itemNotInCart (id) {
+      var inCart = this.cart.find(x => x.prodId === id)
+      if (typeof inCart === 'undefined' || inCart.length === 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     getExtrasTot () {
       var sum = 0
       this.disExtras.forEach((element) => {
@@ -198,11 +208,30 @@ export default {
       })
       )
     },
+    checkAvail (id) {
+      var counter = this.quantity
+      var inCart = this.cart.filter(x => x.prodId === id)
+      var product = this.filteredMenu.find(x => x.id === id)
+      inCart.forEach(element => {
+        counter = element.quantity + counter
+      })
+      if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
+        if (counter === parseInt(product.stock[this.sede])) {
+          console.log('true')
+          return false
+        } else {
+          console.log({ counter, prod: product.stock[this.sede] })
+          console.log('false')
+          return true
+        }
+      } else { return false }
+    },
     getMenuItem (id) {
       this.prodExtras = []
       this.displayVal = this.filteredMenu.find((e) => {
         return e.id === id
       })
+      console.log({ displayVal: this.displayVal })
       this.displayVal.id = id
       this.displayVal.extras.forEach(x => {
         var estrafind = this.listextras.find(e => e.value === x)

@@ -4,22 +4,56 @@
       <div class="text-h5 menuTop">Seleccionar Sede</div>
         <q-card flat class="my-card">
         <q-card-section v-for="i in localizations" :key="i.index">
-          <q-btn class="full-width" color="primary" to="/menu/menu" :label="i.name" @click="setSede(i.id)" />
+          <q-btn class="full-width" color="primary" :label="i.name" @click="i.id === sede ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
         </q-card>
     </div>
+    <q-dialog v-if="sedeIn" v-model="dialog" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="fas fa-exclamation-triangle" color="primary" text-color="white" />
+          <span class="q-ml-sm">Usted posee un carrito con productos para la sede {{getLocById(sede)}}</span>
+          <span class="q-ml-sm">¿Quiere continuar a la sede {{sedeIn.name}}?</span>
+          <span class="q-ml-sm">Al hacer esto el carrito actual se borrará</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn flat label="Confirmar" color="primary" v-close-popup @click="delCart(); setSede(sedeIn.id)" to='/menu/menu'/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
+  data () {
+    return {
+      dialog: false,
+      sedeIn: ''
+    }
+  },
   computed: {
-    ...mapGetters('localization', ['localizations'])
+    ...mapGetters('localization', ['localizations']),
+    ...mapGetters('menu', ['sede', 'cart'])
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('menu', ['setSede'])
+    ...mapActions('menu', ['setSede']),
+    ...mapMutations('menu', ['delCart']),
+    getLocById (id) {
+      console.log(this.localizations)
+      console.log(id)
+      if (id === null || this.cart.length === 0) {
+        this.setSede(this.sedeIn.id)
+        this.$router.push({ path: '/menu/menu' })
+        return
+      }
+      var name = this.localizations.find(x => x.id === id)
+      return name.name
+    }
   },
   created () {
     this.bindLocalizations()

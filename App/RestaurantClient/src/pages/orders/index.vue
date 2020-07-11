@@ -3,34 +3,36 @@
     <q-card class="menudiv">
     <q-card-section>
     <div class="q-pa-md flex flex-center">
-      <q-list separator v-for="items in orders" :key="items.factura">
-      <q-item @click="carritoDialog(items.cart)" clickable v-ripple>
+      <q-list separator v-for="(items, index) in orderSort" :key="index">
+      <q-item @click="carritoDialog(items)" clickable v-ripple>
       <q-item-section>
-      <q-icon name="fas fa-dot-circle" size="300px" color="secondary" v-if="items.status == 4"/>
+      <q-icon name="fas fa-dot-circle" size="100px" color="secondary" v-if="items.status == 4"/>
       <q-knob
       v-if="items.status < 4"
       disable
       v-model="items.status"
-      show-value
       :max="3"
-      size="300px"
+      size="100px"
       :thickness="0.22"
       color="primary"
       track-color="grey-3"
-      class="text-primary q-ma-md"
+      class="text-primary"
     >
-    <q-item-label lines="3" class="text-h6">{{estatus_options[items.status]['label']}}</q-item-label>
     </q-knob>
-    <q-item-label lines="1" class="text-h6 text-center">Nro. Pedido: {{items.factura}}</q-item-label>
-    <q-item-label lines="1" class="text-center" caption>Click para ver Detalles</q-item-label>
+    </q-item-section>
+    <q-item-section>
+    <q-item-label lines="2" class="text-h7 text-center">{{estatus_options[items.status]['label']}}</q-item-label>
+    <q-item-label lines="2" class="text-h7 text-center">Nro. Pedido: {{items.factura}}</q-item-label>
+    <q-item-label lines="2" class="text-center" caption>Click para ver Detalles</q-item-label>
     </q-item-section>
       </q-item>
-      <q-separator></q-separator>
+      <q-separator/>
       </q-list>
   </div>
     </q-card-section>
     </q-card>
     <q-dialog
+         v-if="carrito.length"
          content-class="full-width q-pa-lg"
          square
          v-model="dialog"
@@ -52,6 +54,8 @@
                   <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
+        <p class="text-h6">Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
+        <p class="text-h6" v-if="ordenDet.tipEnvio == 1">Despacho a dirección: {{getAddById(ordenDet.address)}}</p>
          <q-list :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'" v-for="(item, index) in carrito" :key="index" style="width: 100%">
             <q-item>
               <q-item-section>
@@ -66,7 +70,7 @@
                 </q-item-label>
                </q-item-section>
             </q-item>
-            <q-item>
+            <q-item v-if="item.extras.length">
               <q-item-section>
                   <q-select
                     class="full-width"
@@ -85,16 +89,16 @@
                   />
                </q-item-section>
             </q-item>
-            <q-item>
+            <q-item v-if="carrito.length > 1">
               <q-item-section class="text-h6 text-right">
-                  <q-item-label>
-                    Platos:        {{(item.prodPrice * item.quantity).toFixed(2)}}
+                  <q-item-label v-if="getExtrasTot (item.extras)">
+                    SubTotal:        {{(item.prodPrice * item.quantity).toFixed(2)}}
                   </q-item-label>
-                  <q-item-label>
+                  <q-item-label v-if="getExtrasTot (item.extras)">
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
-                    SubTotal:      $ {{((item.prodPrice + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
+                    Total:      $ {{((item.prodPrice + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
             </q-item>
@@ -103,11 +107,11 @@
          <q-list>
           <q-item>
             <q-item-section class="text-h5 text-right">
-              <q-item-label>
-                        Total Platos: {{getTotalCarrito()[0].toFixed(2)}}
+              <q-item-label v-if="getTotalCarrito()[1]">
+                        SubTotal: {{getTotalCarrito()[0].toFixed(2)}}
               </q-item-label>
-              <q-item-label>
-                        Total Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
+              <q-item-label v-if="getTotalCarrito()[1]">
+                        Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
               </q-item-label>
               <q-item-label>
                         Total: $ {{getTotalCarrito()[2].toFixed(2)}}
@@ -132,6 +136,8 @@ export default {
       maximizedToggle: true,
       dialog: false,
       carrito: [],
+      ordenDet: {},
+      tipoServ: ['Pick-up', 'Delivery', 'In-Local'],
       estatus_options: [
         { label: 'Por Confirmar', value: 0 },
         { label: 'Preparando su pedido', value: 1 },
@@ -143,14 +149,26 @@ export default {
   },
   computed: {
     ...mapGetters('order', ['orders']),
+    ...mapGetters('address', ['address']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras'])
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
+    orderSort () {
+      var ord = JSON.parse(JSON.stringify(this.orders))
+      return ord.sort((a, b) => b.factura - a.factura)
+    }
   },
   methods: {
+    ...mapActions('address', ['bindAddress']),
     ...mapActions('order', ['bindOrders']),
+    getAddById (id) {
+      if (id === '') { return }
+      var add = this.address.find(x => x.id === id)
+      return add.alias
+    },
     carritoDialog (e) {
       this.dialog = true
-      this.carrito = e
+      this.carrito = e.cart
+      this.ordenDet = e
     },
     getProdbyId (id) {
       return this.menu.find(x => x.id === id)
@@ -195,6 +213,7 @@ export default {
   },
   created () {
     this.bindOrders(this.currentUser.id)
+    this.bindAddress(this.currentUser.id)
   },
   mounted () {}
 }

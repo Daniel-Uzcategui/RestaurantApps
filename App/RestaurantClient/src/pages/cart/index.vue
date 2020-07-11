@@ -17,8 +17,8 @@
                 <q-item-label class="text-h6">
                     <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
                     {{item.quantity}}
-                    <q-btn size="0.5em" color="orange" @click="(item.quantity == getStock(item.prodId)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
-                      <q-badge color="red" v-if="item.quantity == getStock(item.prodId)" floating>MAX</q-badge>
+                    <q-btn size="0.5em" color="orange" @click="(!checkAvail(index)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
+                      <q-badge color="red" v-if="!checkAvail(index)" floating>max</q-badge>
                     </q-btn>
                 </q-item-label>
                </q-item-section>
@@ -60,7 +60,8 @@
             <q-separator />
          </q-list>
          <q-list>
-          <q-item>
+           <p v-if="cart.length == 0" class="text-h6 q-pa-md">No hay productos en el carrito</p>
+          <q-item v-if="cart.length" >
             <q-item-section class="text-h5 text-right">
               <q-item-label v-if="getTotalCarrito()[1].toFixed(2) > 0">
                         Subtotal: {{getTotalCarrito()[0].toFixed(2)}}
@@ -74,7 +75,7 @@
             </q-item-section>
           </q-item>
          </q-list>
-            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" @click="ordenar = true" label="Ordenar"/>
+            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length" @click="ordenar = true" label="Ordenar"/>
       </div>
       <q-dialog
          content-class="full-width q-pa-lg"
@@ -152,7 +153,7 @@
                     :done="step > 3"
                   >
                   <p v-if="pagoSel === 'cash'">Porfavor cargar Foto del efectivo $</p>
-                  <p v-if="pagoSel === 'Zelle'">Porfavor cargar captura del pago Zelle</p>
+                  <p v-if="pagoSel === 'Zelle'">Porfavor cargar captura del pago Zelle, Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}} a Mirestaurant@gmail.com</p>
                     <q-uploader
                       url="http://localhost:4444/upload"
                       label="Carga de Fotos"
@@ -233,6 +234,7 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     getLocBySede (tip) {
       var locs = this.localizations.find(x => x.id === this.sede)
+      if (typeof locs === 'undefined') { return false }
       return locs[tip]
     },
     getStock (id) {
@@ -255,7 +257,7 @@ export default {
       return prodExtras
     },
     makeOrder () {
-      if (this.tipEnvio !== 1) { this.addId = '' }
+      if (this.tipEnvio !== '1') { this.addId = '' }
 
       this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
     },
@@ -303,6 +305,21 @@ export default {
           )
         }
       })
+    },
+    checkAvail (id) {
+      var counter = 0
+      var inCart = this.cart.filter(x => x.prodId === this.cart[id].prodId)
+      var product = this.menu.find(x => x.id === this.cart[id].prodId)
+      inCart.forEach(element => {
+        counter = element.quantity + counter
+      })
+      if (typeof product !== 'undefined' && typeof product.stock !== 'undefined') {
+        if (counter === parseInt(product.stock[this.sede])) {
+          return false
+        } else {
+          return true
+        }
+      } else { return false }
     }
   }
 }

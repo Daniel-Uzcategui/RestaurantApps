@@ -170,6 +170,7 @@ export default {
       objclients = this.clients.find(obj => {
         return obj.id === value
       })
+      if (typeof objclients === 'undefined') { objclients = {} }
       fullname = objclients.nombre + ' ' + objclients.apellido
       return fullname
     },
@@ -179,6 +180,7 @@ export default {
       objaddress = this.address.find(obj => {
         return obj.id === value
       })
+      if (typeof objaddress === 'undefined') { objaddress = {} }
       addressOrder = objaddress.puntoRef
       console.log({ value })
       console.log({ addressOrder })
