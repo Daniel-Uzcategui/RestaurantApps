@@ -98,7 +98,7 @@
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
-                    Total:      $ {{((item.prodPrice + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
+                    Total:      $ {{((parseFloat(item.prodPrice) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
             </q-item>
