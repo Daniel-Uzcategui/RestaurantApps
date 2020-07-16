@@ -65,8 +65,7 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
        <q-card-section>
-          Los siguientes campos son requeridos
-          {{messageError}}
+          El campo {{messageError}} es requerido
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -111,6 +110,25 @@ export default {
   methods: {
     ...mapActions('localization', ['saveLocation']),
     saved (value, id, key) {
+      if (value.length === 0) {
+        this.messageError = []
+        if (key === 'name') {
+          this.messageError.push(' Nombre de la Sede ')
+        }
+        if (key === 'address') {
+          this.messageError.push(' Dirección ')
+        }
+        if (this.localization.Inlocal) {
+          if (key === 'tables' || this.localization.tables === 0) {
+            this.messageError.push(' Mesa ')
+          }
+          if (key === 'capacity') {
+            this.messageError.push(' capacidad ')
+          }
+        }
+        this.validationError = true
+        return
+      }
       console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveLocation({ value, id, key })
     },

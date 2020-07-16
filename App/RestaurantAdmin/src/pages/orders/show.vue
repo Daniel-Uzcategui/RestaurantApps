@@ -22,7 +22,7 @@
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
-          <q-input label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
+          <q-input label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
         </div>
         <div class="header-cell col-4" v-if="order.tipEnvio==2">
           <q-input label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
@@ -37,10 +37,10 @@
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
-            <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  />
+            <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
          </div>
          <div class="header-cell col-5">
-            <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente"  />
+            <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
       </div>
      </div>
@@ -100,6 +100,19 @@
     <div class='filled'></div>
      </q-card>
   </div>
+  <q-dialog v-model="validationError">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Error</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+          Los siguientes campos son requeridos
+          {{messageError}}
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </q-page>
 </template>
 <script>
@@ -125,7 +138,9 @@ export default {
         { name: 'price', required: true, align: 'center', label: 'Precio', field: 'price' }
       ],
       puntoRef: '',
-      addressDelivery: ''
+      addressDelivery: '',
+      validationError: false,
+      messageError: []
     }
   },
   computed: {
