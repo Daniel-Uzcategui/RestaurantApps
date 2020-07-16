@@ -96,16 +96,6 @@
                 </div>
           </q-td>
 
-          <q-td key="FechaAct" :props="props">
-              <q-input
-                readonly
-                @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
-                :value="props.row.FechaAct"
-                dense
-                autofocus
-              />
-          </q-td>
-
            <q-td key="stock" :props="props">
               <q-input
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
@@ -169,6 +159,7 @@
           :meta="meta"
           :prefixPath="prefixPath"
           @uploaded="uploadComplete"
+          document='menu'
         ></fbq-uploader>
     </q-dialog>
   </div>
@@ -180,7 +171,6 @@ const columns = [
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
   { name: 'stock', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Stock', field: 'stock' },
   { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
   { name: 'discount', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Descuento', field: 'discount' },

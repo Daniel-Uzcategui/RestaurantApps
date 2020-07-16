@@ -192,6 +192,7 @@ export default {
         y.estatus = e.estatus
         y.descripcion = e.descripcion
         y.prodType = 1
+        y.photo = e.photo
         prom.push(y)
       })
       return prom

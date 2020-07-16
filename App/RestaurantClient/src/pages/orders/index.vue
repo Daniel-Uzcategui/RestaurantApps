@@ -62,10 +62,10 @@
          <q-list :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'" v-for="(item, index) in carrito" :key="index" style="width: 100%">
             <q-item>
               <q-item-section>
-                  <q-img :src="getProdValById(item.prodId, 'photo')" width="80px" color="primary" text-color="white" class="rounded-borders" />
+                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="rounded-borders" />
                </q-item-section>
                <q-item-section>
-                  <q-item-label >{{getProdValById(item.prodId, 'name')}}</q-item-label>
+                  <q-item-label >{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
                </q-item-section>
                <q-item-section>
                 <q-item-label class="text-h7 text-bold">
@@ -73,7 +73,7 @@
                 </q-item-label>
                </q-item-section>
             </q-item>
-            <q-item v-if="item.extras.length">
+            <q-item v-if="!item.prodType ? item.extras.length : false">
               <q-item-section>
                   <q-select
                     class="full-width"
@@ -113,11 +113,17 @@
               <q-item-label v-if="getTotalCarrito()[1]">
                         SubTotal: {{getTotalCarrito()[0].toFixed(2)}}
               </q-item-label>
-              <q-item-label v-if="getTotalCarrito()[1]">
+              <q-item-label v-if="getTotalCarrito()[1] && ordenDet.tipEnvio != 1">
                         Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
               </q-item-label>
+              <q-item-label v-if="getTotalCarrito()[1] && ordenDet.tipEnvio == 1">
+                        Extras:  {{getTotalCarrito()[1].toFixed(2)}}
+              </q-item-label>
+              <q-item-label v-if="ordenDet.tipEnvio == 1">
+                        Delivery: + <u> 3.00 </u>
+              </q-item-label>
               <q-item-label>
-                        Total: $ {{ordenDet.tipEnvio == '1' ? parseFloat(getTotalCarrito()[2].toFixed(2)) + 3 : getTotalCarrito()[2].toFixed(2)}}
+                        Total: $ {{ordenDet.paid.toFixed(2)}}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -155,7 +161,7 @@ export default {
     ...mapGetters('order', ['orders']),
     ...mapGetters('address', ['address']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'promos']),
     orderSort () {
       var ord = JSON.parse(JSON.stringify(this.orders))
       return ord.sort((a, b) => b.factura - a.factura)
@@ -180,9 +186,14 @@ export default {
     getProdbyId (id) {
       return this.menu.find(x => x.id === id)
     },
-    getProdValById (id, val) {
-      var obj = this.menu.find(e => { return e.id === id })
-      return obj[val]
+    getProdValById (id, val, type) {
+      if (!type) {
+        var obj = this.menu.find(e => { return e.id === id })
+        return obj[val]
+      } else {
+        obj = this.promos.find(e => { return e.id === id })
+        return obj[val]
+      }
     },
     getExtras (id) {
       var prodExtras = []
@@ -199,10 +210,12 @@ export default {
       return prodExtras
     },
     getExtrasTot (e) {
+      console.log({ e })
       var sum = 0
+      if (typeof e === 'undefined') { return 0 }
       if (e.length === 0) { return 0 }
       e.forEach((element) => {
-        sum = parseFloat(element.price) + sum
+        sum = element.price + sum
       })
       return sum
     },
@@ -211,10 +224,13 @@ export default {
       var sumExtra = 0
       this.carrito.forEach(e => {
         sumProd = (e.prodPrice * e.quantity) + sumProd
-        e.extras.forEach((element) => {
-          sumExtra = (element.price * e.quantity) + sumExtra
-        })
+        if (typeof e.extras !== 'undefined') {
+          e.extras.forEach((element) => {
+            sumExtra = (element.price * e.quantity) + sumExtra
+          })
+        }
       })
+      console.log({ sumExtra })
       return [sumProd, sumExtra, sumProd + sumExtra]
     }
   },

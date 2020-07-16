@@ -1,30 +1,30 @@
 <template>
   <q-page padding>
         <div class="q-pa-md menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <div class="text-h5 menuTop">Carrito</div>
+         <div class="text-h5 menuTop">Carrito {{CheckAv}}</div>
 
          <q-list v-for="(item, index) in cart" :key="index" style="width: 100%">
             <q-item>
               <q-item-section>
-                  <q-img :src="getProdValById(item.prodId, 'photo')" width="80px" color="primary" text-color="white" class="rounded-borders" />
+                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="rounded-borders" />
                </q-item-section>
                <q-item-section>
-                  <q-item-label >{{getProdValById(item.prodId, 'name')}}</q-item-label>
-                  <q-item-label >$ {{item.prodPrice}}</q-item-label>
+                  <q-item-label >{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
+                  <q-item-label >$ {{item.prodPrice.toFixed(2)}}</q-item-label>
                   <q-btn style="width: 50px" size="xs" color="primary" @click="delCartItem(index)" dense>Eliminar</q-btn>
                </q-item-section>
                <q-item-section>
                 <q-item-label class="text-h6">
                     <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
                     {{item.quantity}}
-                    <q-btn size="0.5em" color="orange" @click="(!checkAvail(index)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
-                      <q-badge color="red" v-if="item.quantity == getStock(item.prodId)" floating style="left: 10px; right: auto;">max</q-badge>
-                      <q-badge color="red" v-if="item.quantity > getStock(item.prodId)" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
+                    <q-btn size="0.5em" color="orange" @click="(!checkAvail(item.prodId, item.prodType)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
+                      <q-badge color="red" v-if="checkAvail(item.prodId, item.prodType) == 0" floating style="left: 10px; right: auto;">max</q-badge>
+                      <q-badge color="red" v-if="checkAvail(item.prodId, item.prodType) == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
                     </q-btn>
                 </q-item-label>
                </q-item-section>
             </q-item>
-            <q-item v-if="getExtras(item.prodId).length">
+            <q-item v-if="getExtras(item.prodId, item.prodType).length">
               <q-item-section>
                   <q-select
                     class="full-width"
@@ -37,7 +37,7 @@
                     multiple
                     input-debounce="0"
                     @new-value="createValue"
-                    :options="getExtras(item.prodId)"
+                    :options="getExtras(item.prodId, item.prodType)"
                     @filter="filterFn"
                     style="width: 250px"
                     map-options
@@ -47,10 +47,10 @@
             </q-item>
             <q-item>
               <q-item-section v-if="cart.length > 1" class="text-h6 text-right">
-                  <q-item-label v-if="item.quantity > 1 && item.extras.length">
+                  <q-item-label v-if="item.quantity > 1">
                     Subtotal: $ {{(parseFloat(parseFloat(item.prodPrice)) * item.quantity).toFixed(2)}}
                   </q-item-label>
-                  <q-item-label v-if="item.extras.length">
+                  <q-item-label v-if="getExtrasTot(item.extras)">
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
@@ -64,7 +64,7 @@
            <p v-if="cart.length == 0" class="text-h6 q-pa-md">No hay productos en el carrito</p>
           <q-item v-if="cart.length" >
             <q-item-section class="text-h5 text-right">
-              <q-item-label v-if="getTotalCarrito()[1].toFixed(2) > 0">
+              <q-item-label v-if="getTotalCarrito()[1] > 0">
                         Subtotal: {{getTotalCarrito()[0].toFixed(2)}}
               </q-item-label>
               <q-item-label v-if="getTotalCarrito()[1].toFixed(2) > 0">
@@ -151,7 +151,7 @@
                     title="Finalizar"
                     icon="fas fa-money"
                   >
-                  <p class="text-h6">Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
+                  <p class="text-h6" v-if="false">Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
                   <q-btn flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
                    <q-btn @click="confirm = true" v-if="!CheckAv" color="primary" label="Ordenar" />
                   </q-step>
@@ -180,23 +180,32 @@ export default {
     'addresses': () => import('../../components/addresses.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
-    CheckAv () {
-      for (let e of this.cart) {
-        var item = this.menu.find(x => x.id === e.prodId)
-        if (e.quantity > item.stock[this.sede]) {
-          return true
-        } else {
-          return false
-        }
-      }
-      return false
+    promoData () {
+      var prom = []
+      this.promos.forEach(e => {
+        var y = { prods: [] }
+        e.prods.forEach(i => {
+          var its = this.menu.find(x => x.id === i.id)
+          y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock })
+        })
+        y.name = e.name
+        y.id = e.id
+        y.price = e.price
+        y.estatus = e.estatus
+        y.descripcion = e.descripcion
+        y.prodType = 1
+        y.photo = e.photo
+        prom.push(y)
+      })
+      return prom
     }
   },
   data () {
     return {
+      CheckAv: false,
       confirm: false,
       tipEnvio: null,
       addId: null,
@@ -237,23 +246,27 @@ export default {
       if (typeof locs === 'undefined') { return false }
       return locs[tip]
     },
-    getStock (id) {
-      console.log({ cart: this.cart })
-      var item = this.menu.find(x => x.id === id)
-      return item.stock[this.sede]
+    getStock (id, type) {
+      if (!type) {
+        console.log({ cart: this.cart })
+        var item = this.menu.find(x => x.id === id)
+        return item.stock[this.sede]
+      }
     },
-    getExtras (id) {
+    getExtras (id, type) {
       var prodExtras = []
-      var displayVal = this.menu.find((e) => {
-        return e.id === id
-      })
-      displayVal.extras.forEach(x => {
-        var estrafind = this.listextras.find(e => e.value === x)
-        if (typeof estrafind !== 'undefined') {
-          prodExtras.push(estrafind)
-        }
-      })
-      console.log({ prodExtras })
+      if (!type) {
+        var displayVal = this.menu.find((e) => {
+          return e.id === id
+        })
+        displayVal.extras.forEach(x => {
+          var estrafind = this.listextras.find(e => e.value === x)
+          if (typeof estrafind !== 'undefined') {
+            prodExtras.push(estrafind)
+          }
+        })
+        console.log({ prodExtras })
+      }
       return prodExtras
     },
     makeOrder () {
@@ -263,6 +276,7 @@ export default {
     getExtrasTot (e) {
       console.log({ e })
       var sum = 0
+      if (typeof e === 'undefined') { return 0 }
       if (e.length === 0) { return 0 }
       e.forEach((element) => {
         sum = element.price + sum
@@ -270,19 +284,28 @@ export default {
       return sum
     },
     getTotalCarrito () {
+      console.log({ cart: this.cart })
       var sumProd = 0
       var sumExtra = 0
       this.cart.forEach(e => {
         sumProd = (e.prodPrice * e.quantity) + sumProd
-        e.extras.forEach((element) => {
-          sumExtra = (element.price * e.quantity) + sumExtra
-        })
+        if (typeof e.extras !== 'undefined') {
+          e.extras.forEach((element) => {
+            sumExtra = (element.price * e.quantity) + sumExtra
+          })
+        }
       })
       return [sumProd, sumExtra, sumProd + sumExtra]
     },
-    getProdValById (id, val) {
-      var obj = this.menu.find(e => { return e.id === id })
-      return obj[val]
+    getProdValById (id, val, type) {
+      console.log({ id, val, type })
+      if (type === 0) {
+        var obj = this.menu.find(e => { return e.id === id })
+        return obj[val]
+      } else {
+        obj = this.promos.find(e => { return e.id === id })
+        return obj[val]
+      }
     },
     createValue (val, done) {
       if (val.length > 0) {
@@ -304,20 +327,66 @@ export default {
         }
       })
     },
-    checkAvail (id) {
-      var counter = 0
-      var inCart = this.cart.filter(x => x.prodId === this.cart[id].prodId)
-      var product = this.menu.find(x => x.id === this.cart[id].prodId)
-      inCart.forEach(element => {
-        counter = element.quantity + counter
-      })
-      if (typeof product !== 'undefined' && typeof product.stock !== 'undefined') {
-        if (counter >= parseInt(product.stock[this.sede])) {
-          return false
-        } else {
-          return true
+    checkAvail (id, type) {
+      console.log(id, type)
+      if (typeof id === 'undefined' || typeof type === 'undefined') { return false }
+      if (type === 0) {
+        console.log('0')
+        var counter = 0
+        var inCart = this.cart.filter(x => x.prodId === id)
+        var product = this.menu.find(x => x.id === id)
+        inCart.forEach(element => {
+          counter = element.quantity + counter
+        })
+        this.cart.forEach(y => {
+          if (typeof y.prods !== 'undefined') {
+            var producto = y.prods.find(j => j.id === product.id)
+            if (typeof producto === 'undefined') { producto = { quantity: 0 } }
+            counter = producto.quantity * y.quantity + counter
+          }
+        })
+        if (typeof product !== 'undefined' && typeof product.stock !== 'undefined') {
+          if (counter === parseInt(product.stock[this.sede])) {
+            this.CheckAv = false
+            return 0
+          } else if (counter >= parseInt(product.stock[this.sede])) {
+            this.CheckAv = true
+            return 2
+          } else {
+            this.CheckAv = false
+            return 1
+          }
         }
-      } else { return false }
+      } else {
+        var promotion = this.promoData.find(e => e.id === id)
+        for (let e in promotion.prods) {
+          counter = 0
+          inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
+          product = promotion.prods[e]
+          inCart.forEach(element => {
+            counter = element.quantity + counter
+          })
+          this.cart.forEach(y => {
+            if (typeof y.prods !== 'undefined') {
+              var producto = y.prods.find(j => j.id === promotion.prods[e].id)
+              if (typeof producto === 'undefined') { producto = { quantity: 0 } }
+              counter = producto.quantity * y.quantity + counter
+            }
+          })
+          console.log({ product })
+          if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
+            if (counter === parseInt(product.stock[this.sede])) {
+              this.CheckAv = false
+              return 0
+            } else if (counter >= parseInt(product.stock[this.sede])) {
+              this.CheckAv = true
+              return 2
+            }
+          }
+        }
+        this.CheckAv = false
+        return true
+      }
     }
   },
   watch: {

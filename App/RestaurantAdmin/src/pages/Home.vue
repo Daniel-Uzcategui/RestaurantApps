@@ -149,6 +149,7 @@ export default {
     },
     exportTable () {
       // naive encoding to csv format
+      console.log({ cols: this.columns })
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
         this.data.map(row => this.columns.map(col => wrapCsvValue(
           typeof col.field === 'function'
