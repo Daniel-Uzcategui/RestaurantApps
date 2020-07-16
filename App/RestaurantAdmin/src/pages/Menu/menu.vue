@@ -22,6 +22,7 @@
         emit-value
         map-options
         stack-label
+        label="Seleccione"
       />
         <q-btn-group flat push >
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
@@ -174,7 +175,6 @@ const columns = [
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
   { name: 'stock', align: 'center', label: 'Stock', field: 'stock' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'extras', align: 'center', label: 'Extras', field: 'extras' }
