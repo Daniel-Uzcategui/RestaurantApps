@@ -22,6 +22,7 @@
         emit-value
         map-options
         stack-label
+        label="Seleccione"
       />
         <q-btn-group flat push >
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
