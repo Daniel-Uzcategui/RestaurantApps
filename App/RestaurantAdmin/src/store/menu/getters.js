@@ -15,6 +15,14 @@ export const menu = ({ menu }) => {
   }
   return arr
 }
+export const promos = ({ promos }) => {
+  const keys = Object.keys(promos)
+  var arr = []
+  for (const i in keys) {
+    arr.unshift(promos[keys[i]])
+  }
+  return arr
+}
 export const listcategorias = ({ categorias }) => {
   const keys = Object.keys(categorias)
   var arr = []

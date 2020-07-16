@@ -133,6 +133,13 @@ export default {
           separator: true
         },
         {
+          title: 'Promociones',
+          caption: '',
+          icon: 'fas fa-ad',
+          link: '#/menu/promo',
+          separator: true
+        },
+        {
           title: 'Ordenes',
           caption: '',
           icon: 'room_service',

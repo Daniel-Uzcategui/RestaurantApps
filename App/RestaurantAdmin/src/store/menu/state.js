@@ -77,6 +77,7 @@ export default function () {
         price: 10,
         FechaAct: '19/04/20'
       }
-    ]
+    ],
+    promos: []
   }
 }

@@ -4,6 +4,7 @@ export default function () {
     menu: [],
     extras: [],
     cart: [],
-    sede: null
+    sede: null,
+    promos: []
   }
 }

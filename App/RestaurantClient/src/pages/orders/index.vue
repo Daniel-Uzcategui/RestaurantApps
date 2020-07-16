@@ -117,7 +117,7 @@
                         Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
               </q-item-label>
               <q-item-label>
-                        Total: $ {{getTotalCarrito()[2].toFixed(2)}}
+                        Total: $ {{ordenDet.tipEnvio == '1' ? parseFloat(getTotalCarrito()[2].toFixed(2)) + 3 : getTotalCarrito()[2].toFixed(2)}}
               </q-item-label>
             </q-item-section>
           </q-item>

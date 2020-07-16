@@ -109,6 +109,14 @@ const routes = [
         }
       },
       {
+        path: 'promo',
+        name: 'promo',
+        component: () => import('pages/menu/promociones.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: 'extras',
         name: 'Extras',
         component: () => import('pages/menu/extras.vue'),

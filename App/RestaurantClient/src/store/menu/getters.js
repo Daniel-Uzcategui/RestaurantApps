@@ -55,3 +55,12 @@ export const listext = ({ extras }) => extras
 export const cart = ({ cart }) => cart
 
 export const sede = ({ sede }) => sede
+
+export const promos = ({ promos }) => {
+  const keys = Object.keys(promos)
+  var arr = []
+  for (const i in keys) {
+    arr.unshift(promos[keys[i]])
+  }
+  return arr
+}

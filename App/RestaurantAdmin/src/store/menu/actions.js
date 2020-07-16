@@ -23,6 +23,7 @@ export const addRow = firestoreAction((state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
+
 export const delrows = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload.payload) {
@@ -48,4 +49,8 @@ export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
   return bindFirestoreRef('categorias', firestore().collection('categorias'), { reset: false })
+})
+export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindingPromos')
+  return bindFirestoreRef('promos', firestore().collection('promos'), { reset: false })
 })

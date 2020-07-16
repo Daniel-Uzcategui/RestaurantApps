@@ -96,8 +96,6 @@
           </q-td>
 
           <q-td key="FechaAct" :props="props">
-            <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
-            <q-popup-edit v-model.number="props.row.FechaAct">
               <q-input
                 readonly
                 @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
@@ -105,34 +103,41 @@
                 dense
                 autofocus
               />
-            </q-popup-edit>
           </q-td>
 
            <q-td key="stock" :props="props">
-            <div v-if="props.row.stock && typeof props.row.stock[sede] !== 'undefined'"  class="text-pre-wrap" >{{ props.row.stock[sede] }}</div>
-            <div v-else >0</div>
-            <q-popup-edit :value="props.row.stock ? props.row.stock[sede] : 0">
               <q-input
-                @input="(e) => saved(e, props.row.stock, props.row.id, `stock.${sede}`)"
+                @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
                 dense
                 autofocus
                 type="number"
               />
-            </q-popup-edit>
           </q-td>
 
           <q-td key="price" :props="props">
-            <div class="text-pre-wrap">{{ props.row.price }}</div>
-            <q-popup-edit :value="props.row.price">
               <q-input
-                @input="(e) => saved(e, props.row.price, props.row.id, 'price')"
+              filled
+                @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price"
                 dense
                 autofocus
+                reverse-fill-mask
+                label="Dos decimales"
+                input-class="text-center"
+              />
+          </q-td>
+
+          <q-td key="discount" :props="props">
+              <q-input
+              filled
+                @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
+                :value="props.row.discount"
+                dense
+                autofocus
+                label="%"
                 type="number"
               />
-            </q-popup-edit>
           </q-td>
 
           <q-td key="extras" :props="props">
@@ -175,8 +180,9 @@ const columns = [
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
   { name: 'FechaAct', label: 'Fecha Activación', field: 'FechaAct' },
-  { name: 'stock', align: 'center', label: 'Stock', field: 'stock' },
-  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'stock', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Stock', field: 'stock' },
+  { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'discount', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Descuento', field: 'discount' },
   { name: 'extras', align: 'center', label: 'Extras', field: 'extras' }
 ]
 import { QUploaderBase } from 'quasar'
@@ -236,6 +242,7 @@ export default {
     saved (value, initialValue, id, key) {
       console.log(this.sede)
       console.log({ key })
+      if (key === 'discount') { value = parseFloat(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseFloat(value) }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },

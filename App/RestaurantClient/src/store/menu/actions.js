@@ -28,3 +28,7 @@ export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
   return bindFirestoreRef('categorias', firestore().collection('categorias'))
 })
+export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindPromos')
+  return bindFirestoreRef('promos', firestore().collection('promos'))
+})

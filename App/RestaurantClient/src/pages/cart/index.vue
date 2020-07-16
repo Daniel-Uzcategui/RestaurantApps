@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
         <div class="q-pa-md menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <div class="text-h5 menuTop">Carrito {{CheckAv}}</div>
+         <div class="text-h5 menuTop">Carrito</div>
 
          <q-list v-for="(item, index) in cart" :key="index" style="width: 100%">
             <q-item>
@@ -48,13 +48,13 @@
             <q-item>
               <q-item-section v-if="cart.length > 1" class="text-h6 text-right">
                   <q-item-label v-if="item.quantity > 1 && item.extras.length">
-                    Subtotal: $ {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price'))) * item.quantity).toFixed(2)}}
+                    Subtotal: $ {{(parseFloat(parseFloat(item.prodPrice)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                   <q-item-label v-if="item.extras.length">
                     Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
-                    Total:      $ {{(parseFloat(parseFloat(getProdValById(item.prodId, 'price')) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
+                    Total:      $ {{(parseFloat(parseFloat(item.prodPrice) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
             </q-item>
