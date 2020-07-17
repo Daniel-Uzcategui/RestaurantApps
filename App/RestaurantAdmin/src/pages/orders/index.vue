@@ -89,7 +89,7 @@ export default {
           'nombre': fullname,
           'typePayment': tipoPago,
           'status': statusOrder,
-          'paid': obj.paid,
+          'paid': obj.paid.toFixed(2),
           'dateIn': obj.dateIn,
           'factura': obj.factura,
           'table': tableOrder,
