@@ -54,16 +54,17 @@
           </q-td>
 
           <q-td key="price" :props="props">
-            <div class="text-pre-wrap">{{ props.row.price }}</div>
-            <q-popup-edit :value="props.row.price">
               <q-input
-                @input="(e) => saved(e, props.row.price, props.row.id, 'price')"
+              filled
+                @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price"
                 dense
                 autofocus
-                type="number"
+                mask="#.##"
+                reverse-fill-mask
+                label="Dos decimales"
+                input-class="text-center"
               />
-            </q-popup-edit>
           </q-td>
         </q-tr>
       </template>
@@ -95,6 +96,7 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
+      if (key === 'price') { value = parseFloat(value) }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'extras' })
     },

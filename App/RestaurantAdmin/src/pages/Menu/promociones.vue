@@ -64,8 +64,9 @@
                <q-td key="price" :props="props">
                   <q-input
                      filled
-                     @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                     @input="(e) => saved2(e, props.row.price, props.row.id, 'price')"
                      :value="props.row.price"
+                     mask="#.##"
                      dense
                      autofocus
                      reverse-fill-mask
@@ -78,7 +79,6 @@
                 filled
                 :value="props.row.prods"
                 @input="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
-                @input-value="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
                 use-input
                 :option-value="(item) => item === null ? null : { id: item.id, quantity: cantidad, name: item.name }"
                 :option-label="(item) => item === null ? null : typeof item.quantity === 'undefined' ? item.name : `${item.name} * ${item.quantity}`"

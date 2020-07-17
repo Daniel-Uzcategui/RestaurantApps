@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md">
    <q-table
+      :dense="$q.screen.lt.lg"
       :data="menu"
       :columns="columns"
       title="Menu"
@@ -103,6 +104,7 @@
                 dense
                 autofocus
                 type="number"
+                input-class="text-center"
               />
           </q-td>
 
@@ -113,6 +115,7 @@
                 :value="props.row.price"
                 dense
                 autofocus
+                mask="#.##"
                 reverse-fill-mask
                 label="Dos decimales"
                 input-class="text-center"

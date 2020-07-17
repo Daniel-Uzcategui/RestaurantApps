@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
         <div class="q-pa-md menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <div class="text-h5 menuTop">Carrito {{CheckAv}}</div>
+         <div class="text-h5 menuTop">Carrito</div>
 
          <q-list v-for="(item, index) in cart" :key="index" style="width: 100%">
             <q-item>
@@ -15,11 +15,11 @@
                </q-item-section>
                <q-item-section>
                 <q-item-label class="text-h6">
-                    <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
+                    <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
                     {{item.quantity}}
-                    <q-btn size="0.5em" color="orange" @click="(!checkAvail(item.prodId, item.prodType)) ? false : modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)})" icon="fas fa-plus" text-color="white" dense >
-                      <q-badge color="red" v-if="checkAvail(item.prodId, item.prodType) == 0" floating style="left: 10px; right: auto;">max</q-badge>
-                      <q-badge color="red" v-if="checkAvail(item.prodId, item.prodType) == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
+                    <q-btn size="0.5em" color="orange" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-plus" text-color="white" dense >
+                      <q-badge color="red" v-if="item.avail === 0" floating style="left: 10px; right: auto;">max</q-badge>
+                      <q-badge color="red" v-if="item.avail == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
                     </q-btn>
                 </q-item-label>
                </q-item-section>
@@ -47,7 +47,7 @@
             </q-item>
             <q-item>
               <q-item-section v-if="cart.length > 1" class="text-h6 text-right">
-                  <q-item-label v-if="item.quantity > 1">
+                  <q-item-label v-if="getExtrasTot(item.extras)">
                     Subtotal: $ {{(parseFloat(parseFloat(item.prodPrice)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                   <q-item-label v-if="getExtrasTot(item.extras)">
@@ -76,7 +76,7 @@
             </q-item-section>
           </q-item>
          </q-list>
-            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length && !CheckAv" @click="ordenar = true" label="Ordenar"/>
+            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true" label="Ordenar"/>
       </div>
       <q-dialog
          content-class="full-width q-pa-lg"
@@ -153,7 +153,7 @@
                   >
                   <p class="text-h6" v-if="false">Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
                   <q-btn flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
-                   <q-btn @click="confirm = true" v-if="!CheckAv" color="primary" label="Ordenar" />
+                   <q-btn @click="confirm = true" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" label="Ordenar" />
                   </q-step>
                </q-stepper>
          </q-card>
@@ -205,7 +205,7 @@ export default {
   },
   data () {
     return {
-      CheckAv: false,
+      CheckAv: 1,
       confirm: false,
       tipEnvio: null,
       addId: null,
@@ -327,11 +327,10 @@ export default {
         }
       })
     },
-    checkAvail (id, type) {
-      console.log(id, type)
+    checkAvail (id, type, index) {
+      var exists = 0
       if (typeof id === 'undefined' || typeof type === 'undefined') { return false }
       if (type === 0) {
-        console.log('0')
         var counter = 0
         var inCart = this.cart.filter(x => x.prodId === id)
         var product = this.menu.find(x => x.id === id)
@@ -345,24 +344,29 @@ export default {
             counter = producto.quantity * y.quantity + counter
           }
         })
-        if (typeof product !== 'undefined' && typeof product.stock !== 'undefined') {
+        if (counter) { exists = 1 }
+        console.log({ sede: product.stock[this.sede], counter })
+        if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
           if (counter === parseInt(product.stock[this.sede])) {
-            this.CheckAv = false
-            return 0
-          } else if (counter >= parseInt(product.stock[this.sede])) {
-            this.CheckAv = true
-            return 2
+            this.modCartVal({ id: index, key: 'avail', value: 0 })
+            this.CheckAv = 0
+            return [0, exists]
+          } else if (counter > parseInt(product.stock[this.sede])) {
+            this.modCartVal({ id: index, key: 'avail', value: 2 })
+            this.CheckAv = 2
+            return [2, exists]
           } else {
-            this.CheckAv = false
-            return 1
+            this.modCartVal({ id: index, key: 'avail', value: 1 })
+            this.CheckAv = 1
+            return [1, exists]
           }
-        }
+        } else { return [0, exists] }
       } else {
         var promotion = this.promoData.find(e => e.id === id)
         for (let e in promotion.prods) {
+          product = promotion.prods[e]
           counter = 0
           inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-          product = promotion.prods[e]
           inCart.forEach(element => {
             counter = element.quantity + counter
           })
@@ -370,28 +374,27 @@ export default {
             if (typeof y.prods !== 'undefined') {
               var producto = y.prods.find(j => j.id === promotion.prods[e].id)
               if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-              counter = producto.quantity * y.quantity + counter
+              counter = (producto.quantity * y.quantity) + counter
             }
           })
-          console.log({ product })
-          if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
-            if (counter === parseInt(product.stock[this.sede])) {
-              this.CheckAv = false
-              return 0
-            } else if (counter >= parseInt(product.stock[this.sede])) {
-              this.CheckAv = true
-              return 2
+          exists = 0
+          if (counter) { exists = 1 }
+
+          if (typeof product !== 'undefined') {
+            if (counter > parseInt(product.stock[this.sede])) {
+              return [2, exists]
+            } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
+              return [0, exists]
             }
           }
         }
-        this.CheckAv = false
-        return true
+        return [1, exists]
       }
     }
   },
   watch: {
     CheckAv () {
-      if (this.CheckAv) this.showNotif()
+      if (this.CheckAv === 2) this.showNotif()
     }
   }
 }
