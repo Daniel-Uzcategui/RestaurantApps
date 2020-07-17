@@ -104,6 +104,7 @@ export default {
             this.files.forEach(async file => {
               this.updateComponent(index, 0, 'uploaded')
               const link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
+              console.log({ doc: this.document, meta: meta.photoType, link })
               userRef(this.document, meta.photoType).update({ [`photo`]: link })
               this.$emit('uploaded', { files: [ file.name ] })
             })

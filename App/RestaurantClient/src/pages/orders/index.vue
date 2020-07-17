@@ -55,16 +55,16 @@
                   <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-        <div v-if="ordenDet.typePayment === 'Zelle' || ordenDet.typePayment === 'cash'" class="text-center" @click="showPhotoUpload(ordenDet.id)">
-            <div class=" column items-center" v-if="showDefaultPhoto(ordenDet.photo)">
-                <q-avatar rounded class="q-mb-sm"  color="blue-grey-10" icon="fas fa-file-invoice" font-size="50px" size="180px" text-color="white"></q-avatar>
-                <span class="text-caption" v-if="ordenDet.typePayment === 'Zelle'">Porfavor Cargar Captura</span>
+        <div v-if="ordenDet.typePayment === 'Zelle' || ordenDet.typePayment === 'cash'" class="text-center q-pa-md" @click="showPhotoUpload(ordenDet.id)">
+            <div class=" column items-center" v-if="showDefaultPhoto(getOrdedVal(ordenDet.id, 'photo'))">
+                <q-avatar rounded class="q-mb-sm" color="blue-grey-10" icon="fas fa-file-invoice" font-size="50px" size="180px" text-color="white"></q-avatar>
+                <span class="text-caption" v-if="ordenDet.typePayment === 'Zelle'">Haga click cargar captura del pago realizado a Mi_Restaurant@Company.io</span>
                 <span class="text-caption" v-if="ordenDet.typePayment === 'cash'">Porfavor Subir Foto del Efectivo</span>
                 </div>
             <div class="column items-center" v-else>
-                <q-avatar rounded class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(ordenDet.id)">
-                    <q-img :src="ordenDet.photo"></q-img>
-                </q-avatar><span><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Porfavor Cargar Captura</span></div>
+                <q-avatar rounded style="border-radius: 0%" class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(ordenDet.id)">
+                    <q-img :src="getOrdedVal(ordenDet.id, 'photo')"></q-img>
+                </q-avatar><span><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
                 </div>
         <div class="text-h6 q-pa-md">
           <p>Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
@@ -131,7 +131,7 @@
                         Extras:  {{getTotalCarrito()[1].toFixed(2)}}
               </q-item-label>
               <q-item-label v-if="ordenDet.tipEnvio == 1">
-                        Delivery: + <u> 3.00 </u>
+                        Delivery: 3.00
               </q-item-label>
               <q-item-label>
                         Total: $ {{ordenDet.paid.toFixed(2)}}
@@ -148,7 +148,7 @@
           :meta="meta"
           :prefixPath="prefixPath"
           @uploaded="uploadComplete"
-          document='promos'
+          document='orders'
         ></fbq-uploader>
     </q-dialog>
   </q-page>
@@ -189,7 +189,23 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'promos']),
     orderSort () {
-      var ord = JSON.parse(JSON.stringify(this.orders))
+      var ord = this.orders.map(x => {
+        return {
+          id: x.id,
+          address: x.address,
+          cart: x.cart,
+          customer_id: x.customer_id,
+          dateIn: x.dateIn,
+          factura: x.factura,
+          paid: x.paid,
+          sede: x.sede,
+          status: x.status,
+          table: x.table,
+          tipEnvio: x.tipEnvio,
+          typePayment: x.typePayment,
+          photo: x.photo
+        }
+      })
       return ord.sort((a, b) => b.factura - a.factura)
     },
     meta () {
@@ -216,12 +232,17 @@ export default {
       return add.alias
     },
     carritoDialog (e) {
+      console.log({ e })
       this.dialog = true
       this.carrito = e.cart
       this.ordenDet = e
     },
     getProdbyId (id) {
       return this.menu.find(x => x.id === id)
+    },
+    getOrdedVal (id, value) {
+      var obj = this.orders.find(x => x.id === id)
+      return obj[value]
     },
     getProdValById (id, val, type) {
       if (!type) {
@@ -278,6 +299,9 @@ export default {
       return e === '' ||
         e === null ||
         e === undefined
+    },
+    resetPhotoType () {
+      this.photoType = ''
     },
     uploadComplete (info) {
       console.log(this.prefixPath)

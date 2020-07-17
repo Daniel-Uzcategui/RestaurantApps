@@ -35,6 +35,9 @@
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
             :options="typePayment_options" label="Tipo de Pago" />
         </div>
+        <div class="header-cell col-3" @click="photoDiag = true">
+          <q-img :src="order.photo" spinner-color="white" style="height: 400px; max-width: 400px" />
+        </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
             <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
@@ -100,7 +103,7 @@
     <div class='filled'></div>
      </q-card>
   </div>
-  <q-dialog v-model="validationError">
+  <q-dialog v-model="validationError" >
       <q-card>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Error</div>
@@ -113,6 +116,14 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+  <q-dialog full-width v-model="photoDiag">
+      <q-card>
+        <q-img :src="order.photo" spinner-color="white" style="height: 100%; max-width: 100%" />
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 </q-page>
 </template>
 <script>
@@ -120,6 +131,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
+      photoDiag: false,
       estatus_options: [
         { label: 'Por Confirmar', value: 0 },
         { label: 'Preparando su pedido', value: 1 },

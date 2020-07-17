@@ -344,14 +344,15 @@ export default {
         this.displayVal = this.filteredMenu.find((e) => {
           return e.id === id
         })
-        console.log({ displayVal: this.displayVal })
         this.displayVal.id = id
-        this.displayVal.extras.forEach(x => {
-          var estrafind = this.listextras.find(e => e.value === x)
-          if (typeof estrafind !== 'undefined') {
-            this.prodExtras.push(estrafind)
-          }
-        })
+        if (typeof this.displayVal.extras !== 'undefined') {
+          this.displayVal.extras.forEach(x => {
+            var estrafind = this.listextras.find(e => e.value === x)
+            if (typeof estrafind !== 'undefined') {
+              this.prodExtras.push(estrafind)
+            }
+          })
+        }
       } else {
         this.displayVal = this.promos.find((e) => {
           return e.id === id
