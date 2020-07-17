@@ -35,11 +35,9 @@
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
             :options="typePayment_options" label="Tipo de Pago" />
         </div>
-        <div>
-          <q-card>
-          <viewer :img="order.photo">
-          </viewer>
-          </q-card>
+        <div class="header-cell col-3">
+        <label>Soporte de pago</label><br>
+        <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
          <div class="header-cell col-6">
@@ -117,6 +115,19 @@
           Los siguientes campos son requeridos
           {{messageError}}
         </q-card-section>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="photoDiag">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Soporte de pago</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+          <viewer :img="order.photo">
+          </viewer>
+       </q-card-section>
       </q-card>
     </q-dialog>
 </q-page>
