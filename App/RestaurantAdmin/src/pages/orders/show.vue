@@ -35,20 +35,23 @@
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
             :options="typePayment_options" label="Tipo de Pago" />
         </div>
-        <div class="header-cell col-3" @click="photoDiag = true">
-          <q-img :src="order.photo" spinner-color="white" style="height: 400px; max-width: 400px" />
+        <div>
+          <q-card>
+          <viewer :img="order.photo">
+          </viewer>
+          </q-card>
         </div>
-         <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-5">
+         <div class="flex-break q-pa-md"></div>
+         <div class="header-cell col-6">
             <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
          </div>
-         <div class="header-cell col-5">
+         <div class="header-cell col-6">
             <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
       </div>
      </div>
       <div class="flex-break q-py-md "></div>
-     <div class="header-cell col-6 filled">
+     <div class="header-cell col-7 filled">
           <q-table
           title="Detalle de Orden"
           color="primary"
@@ -116,19 +119,14 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-  <q-dialog full-width v-model="photoDiag">
-      <q-card>
-        <q-img :src="order.photo" spinner-color="white" style="height: 100%; max-width: 100%" />
-        <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
 </q-page>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
 export default {
+  components: {
+    Viewer: require('../../components/Viewer.vue').default
+  },
   data () {
     return {
       photoDiag: false,
