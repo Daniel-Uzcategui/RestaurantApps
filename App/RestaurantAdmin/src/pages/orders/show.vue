@@ -35,9 +35,9 @@
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
             :options="typePayment_options" label="Tipo de Pago" />
         </div>
-        <div class="header-cell col-3">
-        <label>Soporte de pago</label><br>
-        <i class="fa fa-search" @click="photoDiag=true"></i>
+        <div class="header-cell col-3" v-if="order.typePayment!=='punto'">
+          <label>Soporte de pago</label><br>
+          <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
          <div class="header-cell col-6">
