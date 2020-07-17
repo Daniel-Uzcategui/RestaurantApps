@@ -145,7 +145,7 @@ export default {
   },
   computed: {
     ...mapGetters('order', ['orders']),
-    ...mapGetters('menu', ['menu', 'listext']),
+    ...mapGetters('menu', ['menu', 'listext', 'promos']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('address', ['address']),
     ...mapGetters('localization', ['localizations']),
@@ -156,31 +156,31 @@ export default {
     },
     detailOrder () {
       let productsOrder = []
-      let i, j, obj
-      for (i = 0; i < this.orders.length; i++) {
-        obj = this.orders[i]
-        if (obj.id === this.$route.query.Order_Id) {
-          for (j = 0; j < obj.cart.length; j++) {
-            productsOrder.push(this.getProducts(obj.cart[j].prodId))
-            // console.log(productsOrder)
+      let ord, prods
+      for (ord of this.orders) {
+        if (ord.id === this.$route.query.Order_Id) {
+          for (prods of ord.cart) {
+            productsOrder.push(this.getProducts(prods.prodId, prods.prodType))
           }
         }
       }
+      console.log({ productsOrder })
       return productsOrder
     }
   },
-  mounted () {
+  created () {
     this.bindMenu()
     this.bindClients()
     this.bindAddress()
     this.bindLocalizations()
+    this.bindPromos()
   },
   updated () {
     this.getAddress(this.order.address)
   },
   methods: {
     ...mapActions('order', ['saveOrder']),
-    ...mapActions('menu', ['bindMenu']),
+    ...mapActions('menu', ['bindMenu', 'bindPromos']),
     ...mapActions('client', ['bindClients']),
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
@@ -188,10 +188,16 @@ export default {
       //  console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveOrder({ value, id, key })
     },
-    getProducts (value) {
-      return this.menu.find(obj => {
-        return obj.id === value
-      })
+    getProducts (value, type) {
+      if (type) {
+        return this.promos.find(obj => {
+          return obj.id === value
+        })
+      } else {
+        return this.menu.find(obj => {
+          return obj.id === value
+        })
+      }
     },
     getClient (value) {
       let fullname

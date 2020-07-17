@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
    <q-table
-      :dense="$q.screen.lt.lg"
+      :dense="$q.screen.lt.md"
       :data="menu"
       :columns="columns"
       title="Menu"
@@ -99,12 +99,11 @@
 
            <q-td key="stock" :props="props">
               <q-input
+                filled
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
-                dense
                 autofocus
                 type="number"
-                input-class="text-center"
               />
           </q-td>
 
@@ -236,7 +235,7 @@ export default {
     saved (value, initialValue, id, key) {
       console.log(this.sede)
       console.log({ key })
-      if (key === 'discount') { value = parseFloat(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseFloat(value) }
+      if (key === 'discount') { value = parseFloat(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseInt(value) }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },

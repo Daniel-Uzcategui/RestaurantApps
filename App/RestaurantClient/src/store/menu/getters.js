@@ -40,7 +40,7 @@ export const listextras = ({ extras }) => {
   const arr2 = arr.map(x => {
     return {
       value: x.id,
-      label: `${x.name} $${parseInt(x.price).toFixed(2)} `,
+      label: `${x.name} $${parseFloat(x.price).toFixed(2)} `,
       price: parseFloat(x.price)
     }
   })

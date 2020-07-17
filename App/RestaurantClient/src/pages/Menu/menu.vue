@@ -135,7 +135,6 @@
                   use-chips
                   multiple
                   input-debounce="0"
-                  @new-value="createValue"
                   :options="prodExtras"
                   @filter="filterFn"
                   style="width: 250px"
@@ -361,14 +360,6 @@ export default {
       }
     },
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindExtras', 'bindCategorias', 'bindPromos']),
-    createValue (val, done) {
-      if (val.length > 0) {
-        if (!this.listextras.includes(val)) {
-          this.listextras.push(val)
-        }
-        done(val, 'toggle')
-      }
-    },
     filterFn (val, update) {
       update(() => {
         if (val === '') {

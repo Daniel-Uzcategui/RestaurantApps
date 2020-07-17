@@ -21,9 +21,9 @@
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell col-6">
-          <label>Localización</label>
-          <q-input :value="JSON.stringify(markers)"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'localizacion_sede')" type="text" float-label="Float Label" placeholder="Localización" />
-          <q-popup-edit :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')" buttons>
+          <q-btn v-if="!markers" color="primary" class="q-py-md" label="Agregar Localización" icon="fas fa-map-marker-alt"/>
+          <q-btn v-if="markers" color="primary" class="q-py-md" label="Localización" icon="fas fa-check"/>
+          <q-popup-edit :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
               <google-map
                 :center="center"
                 :markers="markers" />

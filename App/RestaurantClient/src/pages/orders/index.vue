@@ -55,6 +55,17 @@
                   <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
+        <div v-if="ordenDet.typePayment === 'Zelle' || ordenDet.typePayment === 'cash'" class="text-center" @click="showPhotoUpload(ordenDet.id)">
+            <div class=" column items-center" v-if="showDefaultPhoto(ordenDet.photo)">
+                <q-avatar rounded class="q-mb-sm"  color="blue-grey-10" icon="fas fa-file-invoice" font-size="50px" size="180px" text-color="white"></q-avatar>
+                <span class="text-caption" v-if="ordenDet.typePayment === 'Zelle'">Porfavor Cargar Captura</span>
+                <span class="text-caption" v-if="ordenDet.typePayment === 'cash'">Porfavor Subir Foto del Efectivo</span>
+                </div>
+            <div class="column items-center" v-else>
+                <q-avatar rounded class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(ordenDet.id)">
+                    <q-img :src="ordenDet.photo"></q-img>
+                </q-avatar><span><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Porfavor Cargar Captura</span></div>
+                </div>
         <div class="text-h6 q-pa-md">
           <p>Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
           <p v-if="ordenDet.tipEnvio == 1">Despacho a dirección: {{getAddById(ordenDet.address)}}</p>
@@ -130,14 +141,27 @@
          </q-list>
          </q-card>
       </q-dialog>
+      <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
+        <fbq-uploader
+          class="q-my-lg"
+          label="Please Upload a Photo"
+          :meta="meta"
+          :prefixPath="prefixPath"
+          @uploaded="uploadComplete"
+          document='promos'
+        ></fbq-uploader>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import { date } from 'quasar'
+import { date, QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
 export default {
-  // name: 'PageName',
+  mixins: [ QUploaderBase ],
+  components: {
+    'fbq-uploader': () => import('../../components/FBQUploader.vue')
+  },
   data () {
     return {
       texto: 'Por confirmar',
@@ -146,6 +170,8 @@ export default {
       maximizedToggle: true,
       dialog: false,
       carrito: [],
+      photoType: '',
+      photoUpload: false,
       ordenDet: {},
       tipoServ: ['Pick-up', 'Delivery', 'In-Local'],
       estatus_options: [
@@ -165,6 +191,17 @@ export default {
     orderSort () {
       var ord = JSON.parse(JSON.stringify(this.orders))
       return ord.sort((a, b) => b.factura - a.factura)
+    },
+    meta () {
+      return {
+        id: this.currentUser.id,
+        photoType: this.photoType
+      }
+    },
+    prefixPath () {
+      const id = this.currentUser.id,
+        path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
+      return path
     }
   },
   methods: {
@@ -232,6 +269,26 @@ export default {
       })
       console.log({ sumExtra })
       return [sumProd, sumExtra, sumProd + sumExtra]
+    },
+    showPhotoUpload (type) {
+      this.photoUpload = true
+      this.photoType = type
+    },
+    showDefaultPhoto (e) {
+      return e === '' ||
+        e === null ||
+        e === undefined
+    },
+    uploadComplete (info) {
+      console.log(this.prefixPath)
+      console.log(this.currentUser)
+      let fileNames = []
+      info.files.forEach(file => fileNames.push(file))
+      this.photoUpload = false
+      this.$q.notify({
+        message: `Successfully uploaded your photo: ${fileNames}`,
+        color: 'positive'
+      })
     }
   },
   created () {

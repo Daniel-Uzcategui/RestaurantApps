@@ -259,13 +259,14 @@ export default {
         var displayVal = this.menu.find((e) => {
           return e.id === id
         })
-        displayVal.extras.forEach(x => {
-          var estrafind = this.listextras.find(e => e.value === x)
-          if (typeof estrafind !== 'undefined') {
-            prodExtras.push(estrafind)
-          }
-        })
-        console.log({ prodExtras })
+        if (typeof displayVal.extras !== 'undefined') {
+          displayVal.extras.forEach(x => {
+            var estrafind = this.listextras.find(e => e.value === x)
+            if (typeof estrafind !== 'undefined') {
+              prodExtras.push(estrafind)
+            }
+          })
+        }
       }
       return prodExtras
     },
