@@ -45,9 +45,9 @@
       </div>
       <div class="column items-center filled">
         <div class="col">
-      <label><strong>Soporte de pago</strong></label>
-      <viewer :img="order.photo"></viewer>
-      <span>Presione en la imagen para ver</span>
+          <label><strong>Soporte de pago</strong></label>
+          <viewer :img="order.photo"></viewer>
+          <span>Presione en la imagen para ampliar</span>
       </div>
       </div>
      </div>

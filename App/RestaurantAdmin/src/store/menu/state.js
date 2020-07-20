@@ -97,9 +97,9 @@ export default function () {
       name: 'name',
       group_id: 1,
       descripcion: 'desc',
-      type:0, // 0 = CheckBox, 1 = RadioBox, 2 = Stepper,
+      type: 0, // 0 = CheckBox, 1 = RadioBox, 2 = Stepper,
       min: 0,
-      max: 5, 
+      max: 5,
       maxFree: 2,
       free: 1
     }]
