@@ -78,6 +78,30 @@ export default function () {
         FechaAct: '19/04/20'
       }
     ],
-    promos: []
+    promos: [],
+    item: [{
+      id: 1,
+      price: 1,
+      name: 'name',
+      group_id: 1,
+      descripcion: 'desc'
+    }],
+    itemGroup: [{
+      id: 1,
+      name: 'name',
+      priority: 0,
+      descripcion: 'desc'
+    }],
+    groupComp: [{
+      id: 1,
+      name: 'name',
+      group_id: 1,
+      descripcion: 'desc',
+      type:0, // 0 = CheckBox, 1 = RadioBox, 2 = Stepper,
+      min: 0,
+      max: 5, 
+      maxFree: 2,
+      free: 1
+    }]
   }
 }

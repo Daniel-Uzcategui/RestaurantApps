@@ -58,3 +58,9 @@ export const listextras = ({ extras }) => {
 export const plainExtras = ({ extras }) => extras
 
 export const listext = ({ extras }) => extras
+
+export const item = ({ item }) => item
+
+export const itemGroup = ({ itemGroup }) => itemGroup
+
+export const groupComp = ({ groupComp }) => groupComp

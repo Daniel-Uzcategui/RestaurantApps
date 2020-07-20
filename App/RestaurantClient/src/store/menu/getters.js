@@ -64,3 +64,9 @@ export const promos = ({ promos }) => {
   }
   return arr
 }
+
+export const item = ({ item }) => item
+
+export const itemGroup = ({ itemGroup }) => itemGroup
+
+export const groupComp = ({ groupComp }) => groupComp
