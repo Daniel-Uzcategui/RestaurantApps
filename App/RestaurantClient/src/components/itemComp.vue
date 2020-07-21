@@ -1,18 +1,20 @@
 <template>
-  <div class="q-pa-md" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+  <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+    <p>{{required}}</p>
     <div v-if="readOnly">
-        <q-list class="full-width" v-for="(items, indice) in value" :key="indice">
+        <q-list v-for="(items, indice) in value" :key="indice">
           <q-item v-ripple>
-            <q-item-section>
+            <q-item-section class="text-left" >
             <div class="text-caption">{{getComponent(items.component)['name']}} </div>
             </q-item-section>
-            <q-item-section>
-              <q-item-label>{{getItem(items.item)['name']}}</q-item-label>
+            <q-item-section class="text-center">
+              <q-item-label lines="3">{{items.quantity > 1 ? items.quantity + ' x ' : null}} {{getItem(items.item)['name']}}</q-item-label>
             </q-item-section>
-            <q-item-section>
-              <q-item-label v-if="!getComponent(items.component)['free']" caption>$ {{(typeof items.quantity === 'undefined' ? items.price : items.price * items.quantity).toFixed(2)}}</q-item-label>
+            <q-item-section class="text-right" v-if="!getComponent(items.component)['free']">
+              <q-item-label caption>$ {{(typeof items.quantity === 'undefined' ? items.price : (items.price * items.quantity)).toFixed(2)}}</q-item-label>
             </q-item-section>
           </q-item>
+          <q-separator />
         </q-list>
       </div>
     <div v-for="(component, index) in Group" :key="index">
@@ -97,10 +99,6 @@ export default {
       type: Array,
       default: () => []
     },
-    required: {
-      type: Boolean,
-      default: () => false
-    },
     readOnly: {
       type: Boolean,
       default: () => false
@@ -143,6 +141,28 @@ export default {
       } else {
         return true
       }
+    },
+    totalItComp () {
+      var sum = 0
+      this.value.forEach(x => {
+        var free = this.getComponent(x.component)['free']
+        if (!free) {
+          if (typeof x.quantity === 'undefined') {
+            sum = sum + x.price
+          } else {
+            sum = sum + (x.price * x.quantity)
+          }
+        }
+      })
+      return sum
+    }
+  },
+  watch: {
+    checkReqAll (e) {
+      this.$emit('update-comp', e)
+    },
+    totalItComp (e) {
+      this.$emit('update-tot', e)
     }
   },
   methods: {
@@ -221,7 +241,6 @@ export default {
     }
   },
   created () {
-    this.required = this.checkReqAll
     this.bindItem()
     this.bindGroupComp()
   }

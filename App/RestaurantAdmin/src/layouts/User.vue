@@ -114,6 +114,7 @@ export default {
           }
         ]
       },
+      initAudio: 0,
       countOrder: 0,
       notifications: 0,
       blurLayout: false,
@@ -222,11 +223,14 @@ export default {
       this.$q.loading.hide()
     },
     orders () {
-      console.log('aleeerta')
-      if (this.orders.length > this.countOrder) {
-        console.log({ ord: this.orders.length, coun: this.countOrder })
-        this.countOrder = this.orders.length
-        this.showNotif()
+      if (this.initAudio === 0) {
+        this.$refs['mediapl'].play()
+        this.initAudio = 1
+      } else {
+        if (this.orders.length > this.countOrder) {
+          this.countOrder = this.orders.length
+          this.showNotif()
+        }
       }
     }
   }

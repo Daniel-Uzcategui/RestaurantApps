@@ -129,17 +129,19 @@
             <q-card-section class="q-pt-none q-pa-lg" v-html=displayVal.descripcion>
             </q-card-section>
             <q-card-section>
+              <p>{{required}}</p>
                <itemcomp
                 :comp="displayVal.groupComp"
                 :value="itComp"
-                :required="required"
+                @update-comp="(e) => {required = e}"
+                @update-tot="(e) => {totSum = e}"
               />
             </q-card-section>
             <q-card-section class="text-center">
-            <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price + totalItComp()) * (1 - (displayVal.discount/100))) ) * quantity).toFixed(2)}}
+            <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price + totSum) * (1 - (displayVal.discount/100))) ) * quantity).toFixed(2)}}
                     <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >Descuento {{displayVal.discount}}%</q-badge>
                   </q-item-label>
-               <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{((parseFloat(displayVal.price + totalItComp()).toFixed(2)) * quantity).toFixed(2) }}</q-item-label>
+               <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{((parseFloat(displayVal.price + totSum).toFixed(2)) * quantity).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-actions vertical>
                <q-btn @click="addToCart" v-close-popup color="primary">Añadir</q-btn>
@@ -201,7 +203,8 @@ export default {
   data () {
     return {
       itComp: [],
-      required: true,
+      totSum: 0,
+      required: false,
       promo: 0,
       searchBar: '',
       maximizedToggle: true,
@@ -227,7 +230,6 @@ export default {
   watch: {
     origMenu () {
       this.filteredMenu = this.origMenu
-      console.log(this.origMenu)
     }
   },
   methods: {
@@ -245,17 +247,6 @@ export default {
           return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
         })
       }
-    },
-    totalItComp () {
-      var sum = 0
-      this.itComp.forEach(x => {
-        if (typeof x.quantity === 'undefined') {
-          sum = sum + x.price
-        } else {
-          sum = sum + (x.price * x.quantity)
-        }
-      })
-      return sum
     },
     addToCart () {
       if (this.displayVal.prodType === 0) {
