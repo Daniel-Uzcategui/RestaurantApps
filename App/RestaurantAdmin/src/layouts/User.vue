@@ -23,6 +23,14 @@
                   <user-settings></user-settings>
                </q-dialog>
             </div>
+            <q-media-player
+            style="display: none"
+                ref="mediapl"
+                type="audio"
+                :sources="audio.sources"
+                :auto-play="true"
+              >
+              </q-media-player>
          </q-toolbar>
       </q-header>
       <q-drawer
@@ -61,6 +69,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
+    ...mapGetters('order', ['orders']),
     productName () {
       return window.sessionStorage.productName
     },
@@ -76,6 +85,7 @@ export default {
   created () {
     // Check that our app has access to the user id
     // from Firebase before the page renders
+    this.bindOrders().then(x => { this.countOrder = this.orders.length })
     console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -96,6 +106,15 @@ export default {
   },
   data () {
     return {
+      audio: {
+        sources: [
+          {
+            src: 'http://soundbible.com/grab.php?id=2155&type=mp3',
+            type: 'audio/mp3'
+          }
+        ]
+      },
+      countOrder: 0,
       notifications: 0,
       blurLayout: false,
       leftDrawerOpen: false,
@@ -177,6 +196,19 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),
+    ...mapActions('order', ['bindOrders']),
+    showNotif () {
+      console.log({ ntf: this.$refs['mediapl'] })
+      this.$refs['mediapl'].play()
+      this.$q.notify({
+        message: `<em>I can</em> <span style="color: red">use</span> <strong>HTML</strong>`,
+        html: true,
+        color: 'primary',
+        actions: [
+          { label: 'Dismiss', color: 'white' }
+        ]
+      })
+    },
     ...mapMutations('user', ['setEditUserDialog']),
     setBlur () {
       this.blurLayout = !this.blurLayout
@@ -188,6 +220,14 @@ export default {
   watch: {
     currentUser () {
       this.$q.loading.hide()
+    },
+    orders () {
+      console.log('aleeerta')
+      if (this.orders.length > this.countOrder) {
+        console.log({ ord: this.orders.length, coun: this.countOrder })
+        this.countOrder = this.orders.length
+        this.showNotif()
+      }
     }
   }
 }

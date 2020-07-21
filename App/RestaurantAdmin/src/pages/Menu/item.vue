@@ -47,7 +47,7 @@
 
           <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved2(e, props.row.estatus, props.row.id, 'estatus')"
+                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
                 :value="props.row.estatus"
                 color="#3c8dbc"
               />
@@ -55,7 +55,6 @@
           <q-td key="price" :props="props">
             <q-input
             mask="#.##"
-            reverse-fill-mask
             label="Dos decimales"
             @input="(e) => saved2(e, props.row.price, props.row.id, 'price')" :value="props.row.price" dense autofocus />
           </q-td>
