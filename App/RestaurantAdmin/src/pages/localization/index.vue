@@ -117,7 +117,7 @@ export default {
       ).join('\r\n')
 
       const status = exportFile(
-        'table-export.csv',
+        'Sedes.csv',
         content,
         'text/csv'
       )
