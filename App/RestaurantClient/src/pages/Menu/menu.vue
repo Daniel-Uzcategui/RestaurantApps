@@ -79,12 +79,13 @@
          </div>
       </div>
       <q-dialog
+         v-if="typeof displayVal !== 'undefined' && typeof displayVal.groupComp !== 'undefined'"
          v-model="display"
          persistent
          :maximized="maximizedToggle"
          transition-show="slide-up"
          transition-hide="slide-down"
-         @hide="quantity = 0; disExtras = []"
+         @hide="quantity = 0; itComp = []"
          @show="quantity = 1"
          >
          <q-card class="">
@@ -120,29 +121,25 @@
                     <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
                   </q-btn>
                </div>
-                  <q-item-label v-if="displayVal.discount > 0">$ {{(((parseFloat(displayVal.price).toFixed(2) * (1 - (displayVal.discount/100))) + getExtrasTot()) * quantity).toFixed(2)}}
+                  <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length == 0">$ {{(((parseFloat(displayVal.price).toFixed(2) * (1 - (displayVal.discount/100))) ) * quantity).toFixed(2)}}
                     <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >Descuento {{displayVal.discount}}%</q-badge>
                   </q-item-label>
-               <q-item-label class="text-h5" v-if="!displayVal.discount">$ {{((parseFloat(displayVal.price).toFixed(2) + getExtrasTot()) * quantity).toFixed(2) }}</q-item-label>
-            </q-card-section>
-            <q-card-section>
-               <q-select
-                  v-if="prodExtras.length"
-                  class="full-width"
-                  label="Extras"
-                  filled
-                  v-model="disExtras"
-                  use-chips
-                  multiple
-                  input-debounce="0"
-                  :options="prodExtras"
-                  @filter="filterFn"
-                  style="width: 250px"
-                  map-options
-                  stack-label
-                  />
+               <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-section class="q-pt-none q-pa-lg" v-html=displayVal.descripcion>
+            </q-card-section>
+            <q-card-section>
+               <itemcomp
+                :comp="displayVal.groupComp"
+                :value="itComp"
+                :required="required"
+              />
+            </q-card-section>
+            <q-card-section class="text-center">
+            <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price + totalItComp()) * (1 - (displayVal.discount/100))) ) * quantity).toFixed(2)}}
+                    <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >Descuento {{displayVal.discount}}%</q-badge>
+                  </q-item-label>
+               <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{((parseFloat(displayVal.price + totalItComp()).toFixed(2)) * quantity).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-actions vertical>
                <q-btn @click="addToCart" v-close-popup color="primary">Añadir</q-btn>
@@ -155,8 +152,11 @@
 
 import { mapActions, mapGetters } from 'vuex'
 export default {
+  components: {
+    'itemcomp': () => import('../../components/itemComp.vue')
+  },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'sede', 'promos']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     origMenu () {
       return this.menu.reduce((y, x) => {
@@ -169,10 +169,10 @@ export default {
             photo: x.photo,
             price: x.price,
             id: x.id,
-            extras: x.extras,
             stock: x.stock,
             discount: x.discount,
-            prodType: 0
+            prodType: 0,
+            groupComp: typeof x.groupComp === 'undefined' ? [] : x.groupComp
           })
         }
         return y
@@ -200,11 +200,12 @@ export default {
   },
   data () {
     return {
+      itComp: [],
+      required: true,
       promo: 0,
       searchBar: '',
       maximizedToggle: true,
       display: false,
-      disExtras: [],
       selected: [],
       popupEditData: '',
       photoType: '',
@@ -212,17 +213,16 @@ export default {
       displayVal: {},
       quantity: 0,
       filteredMenu: [],
-      selectedCat: '',
-      prodExtras: []
+      selectedCat: ''
     }
   },
   created () {
     this.bindMenu().then(() => {
       this.filteredMenu = this.origMenu
     })
-    this.bindExtras()
     this.bindCategorias()
     this.bindPromos()
+    this.bindGroupComp()
   },
   watch: {
     origMenu () {
@@ -231,13 +231,7 @@ export default {
     }
   },
   methods: {
-    getExtrasTot () {
-      var sum = 0
-      this.disExtras.forEach((element) => {
-        sum = parseFloat(element.price) + sum
-      })
-      return sum
-    },
+    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
     search () {
       if (this.selectedCat !== '') {
         this.filteredMenu = this.origMenu.filter(x => {
@@ -252,13 +246,24 @@ export default {
         })
       }
     },
+    totalItComp () {
+      var sum = 0
+      this.itComp.forEach(x => {
+        if (typeof x.quantity === 'undefined') {
+          sum = sum + x.price
+        } else {
+          sum = sum + (x.price * x.quantity)
+        }
+      })
+      return sum
+    },
     addToCart () {
       if (this.displayVal.prodType === 0) {
         this.addCart({
           prodId: this.displayVal.id,
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? (this.displayVal.price * (1 - (this.displayVal.discount / 100))) : this.displayVal.price,
           quantity: this.quantity,
-          extras: this.disExtras,
+          items: this.itComp,
           prodType: this.displayVal.prodType
         }).then(() => this.$q.notify({
           message: 'Producto Añadido',
@@ -271,6 +276,7 @@ export default {
           prodId: this.displayVal.id,
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? (this.displayVal.price * (1 - (this.displayVal.discount / 100))) : this.displayVal.price,
           quantity: this.quantity,
+          items: this.itComp,
           prods: this.displayVal.prods,
           prodType: this.displayVal.prodType
         }).then(() => this.$q.notify({
@@ -340,19 +346,10 @@ export default {
     },
     getMenuItem (id, type) {
       if (type === 0) {
-        this.prodExtras = []
         this.displayVal = this.filteredMenu.find((e) => {
           return e.id === id
         })
         this.displayVal.id = id
-        if (typeof this.displayVal.extras !== 'undefined') {
-          this.displayVal.extras.forEach(x => {
-            var estrafind = this.listextras.find(e => e.value === x)
-            if (typeof estrafind !== 'undefined') {
-              this.prodExtras.push(estrafind)
-            }
-          })
-        }
       } else {
         this.displayVal = this.promos.find((e) => {
           return e.id === id
@@ -360,7 +357,6 @@ export default {
         this.displayVal = { ...this.displayVal, prodType: 1, id: id }
       }
     },
-    ...mapActions('menu', ['bindMenu', 'addCart', 'bindExtras', 'bindCategorias', 'bindPromos']),
     filterFn (val, update) {
       update(() => {
         if (val === '') {

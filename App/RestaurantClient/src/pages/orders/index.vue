@@ -84,35 +84,24 @@
                 </q-item-label>
                </q-item-section>
             </q-item>
-            <q-item v-if="!item.prodType ? item.extras.length : false">
+            <q-item >
               <q-item-section>
-                  <q-select
-                    class="full-width"
-                    dense
-                    label="Extras"
-                    filled
-                    :value="item.extras"
-                    use-chips
-                    multiple
-                    input-debounce="0"
-                    readonly
-                    :options="item.extras"
-                    style="width: 250px"
-                    map-options
-                    stack-label
+                  <itemcomp
+                  :value="item.items"
+                  :readOnly="true"
                   />
                </q-item-section>
             </q-item>
             <q-item v-if="carrito.length > 1">
               <q-item-section class="text-h6 text-right">
-                  <q-item-label v-if="getExtrasTot (item.extras)">
+                  <q-item-label v-if="totalItComp (item.items)">
                     SubTotal:        {{(item.prodPrice * item.quantity).toFixed(2)}}
                   </q-item-label>
-                  <q-item-label v-if="getExtrasTot (item.extras)">
-                    Extras:     + <u> {{ ((getExtrasTot (item.extras)) * item.quantity).toFixed(2) }} </u>
+                  <q-item-label v-if="totalItComp (item.items)">
+                    Extras:     + <u> {{ ((totalItComp (item.items)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
                   <q-item-label>
-                    Total:      $ {{((parseFloat(item.prodPrice) + getExtrasTot (item.extras)) * item.quantity).toFixed(2)}}
+                    Total:      $ {{((parseFloat(item.prodPrice) + totalItComp (item.items)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
             </q-item>
@@ -160,7 +149,8 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   mixins: [ QUploaderBase ],
   components: {
-    'fbq-uploader': () => import('../../components/FBQUploader.vue')
+    'fbq-uploader': () => import('../../components/FBQUploader.vue'),
+    'itemcomp': () => import('../../components/itemComp.vue')
   },
   data () {
     return {
@@ -187,7 +177,7 @@ export default {
     ...mapGetters('order', ['orders']),
     ...mapGetters('address', ['address']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'promos']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'promos']),
     orderSort () {
       var ord = this.orders.map(x => {
         return {
@@ -221,6 +211,17 @@ export default {
     }
   },
   methods: {
+    totalItComp (its) {
+      var sum = 0
+      its.forEach(x => {
+        if (typeof x.quantity === 'undefined') {
+          sum = sum + x.price
+        } else {
+          sum = sum + (x.price * x.quantity)
+        }
+      })
+      return sum
+    },
     ...mapActions('address', ['bindAddress']),
     ...mapActions('order', ['bindOrders']),
     formatDate (e) {
@@ -253,42 +254,13 @@ export default {
         return obj[val]
       }
     },
-    getExtras (id) {
-      var prodExtras = []
-      var displayVal = this.menu.find((e) => {
-        return e.id === id
-      })
-      displayVal.extras.forEach(x => {
-        var estrafind = this.listextras.find(e => e.value === x)
-        if (typeof estrafind !== 'undefined') {
-          prodExtras.push(estrafind)
-        }
-      })
-      console.log({ prodExtras })
-      return prodExtras
-    },
-    getExtrasTot (e) {
-      console.log({ e })
-      var sum = 0
-      if (typeof e === 'undefined') { return 0 }
-      if (e.length === 0) { return 0 }
-      e.forEach((element) => {
-        sum = element.price + sum
-      })
-      return sum
-    },
     getTotalCarrito () {
       var sumProd = 0
       var sumExtra = 0
       this.carrito.forEach(e => {
         sumProd = (e.prodPrice * e.quantity) + sumProd
-        if (typeof e.extras !== 'undefined') {
-          e.extras.forEach((element) => {
-            sumExtra = (element.price * e.quantity) + sumExtra
-          })
-        }
+        sumExtra = (this.totalItComp(e.items) * e.quantity) + sumExtra
       })
-      console.log({ sumExtra })
       return [sumProd, sumExtra, sumProd + sumExtra]
     },
     showPhotoUpload (type) {

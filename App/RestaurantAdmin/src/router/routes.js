@@ -123,6 +123,22 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'item',
+        name: 'item',
+        component: () => import('pages/menu/item.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'group',
+        name: 'group',
+        component: () => import('pages/menu/groupComp.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },

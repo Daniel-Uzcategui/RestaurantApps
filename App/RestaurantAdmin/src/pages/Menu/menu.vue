@@ -133,17 +133,19 @@
               />
           </q-td>
 
-          <q-td key="extras" :props="props">
+          <q-td key="groupComp" :props="props">
               <q-select
                 filled
-                :value="props.row.extras"
-                @input="(e) => saved(e, props.row.extras, props.row.id, 'extras')"
+                :value="props.row.groupComp"
+                @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
                 use-chips
                 multiple
                 input-debounce="0"
                 @new-value="createValue"
-                :options="listextras"
+                :options="groupComp"
+                :option-label="(item) => item === null ? null : item.name"
+                :option-value="(item) => item === null ? null : item.id"
                 @filter="filterFn"
                 style="width: 250px"
                 map-options
@@ -176,7 +178,7 @@ const columns = [
   { name: 'stock', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Stock', field: 'stock' },
   { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
   { name: 'discount', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Descuento', field: 'discount' },
-  { name: 'extras', align: 'center', label: 'Extras', field: 'extras' }
+  { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
@@ -186,7 +188,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras']),
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'listextras', 'plainExtras', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     locList () {

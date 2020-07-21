@@ -120,15 +120,9 @@ export default {
           link: '#/menu/categorias'
         },
         {
-          title: 'Extras',
-          caption: '',
-          icon: 'fas fa-utensils',
-          link: '#/menu/extras'
-        },
-        {
           title: 'Menus',
           caption: '',
-          icon: 'menu_book',
+          icon: 'fas fa-utensils',
           link: '#/menu/menu',
           separator: true
         },
@@ -137,6 +131,20 @@ export default {
           caption: '',
           icon: 'fas fa-ad',
           link: '#/menu/promo',
+          separator: true
+        },
+        {
+          title: 'Items',
+          caption: '',
+          icon: 'fab fa-gulp',
+          link: '#/menu/item',
+          separator: true
+        },
+        {
+          title: 'Componentes',
+          caption: '',
+          icon: 'menu_book',
+          link: '#/menu/group',
           separator: true
         },
         {

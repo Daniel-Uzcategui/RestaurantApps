@@ -11,13 +11,14 @@ export const setValue = firestoreAction((state, payload) => {
     })
 })
 
-export const addRow = firestoreAction((state, payload) => {
+export const addRow = firestoreAction(async (state, payload) => {
   return firestore()
     .collection(payload.collection).add({
       name: ''
     })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
+      return docRef.id
     })
     .catch(function (error) {
       console.error('Error adding document: ', error)
@@ -53,4 +54,16 @@ export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingPromos')
   return bindFirestoreRef('promos', firestore().collection('promos'), { reset: false })
+})
+export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindItem')
+  return bindFirestoreRef('item', firestore().collection('item'), { reset: false })
+})
+export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindItemsGroup')
+  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup'), { reset: false })
+})
+export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindGroupComp')
+  return bindFirestoreRef('groupComp', firestore().collection('groupComp'), { reset: false })
 })

@@ -32,3 +32,15 @@ export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindPromos')
   return bindFirestoreRef('promos', firestore().collection('promos'))
 })
+export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindItem')
+  return bindFirestoreRef('item', firestore().collection('item'), { reset: false })
+})
+export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindItemsGroup')
+  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup'), { reset: false })
+})
+export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindGroupComp')
+  return bindFirestoreRef('groupComp', firestore().collection('groupComp'), { reset: false })
+})
