@@ -99,7 +99,7 @@ export default {
       return OrderClient
     }
   },
-  mounted () {
+  created () {
     this.bindOrders()
     this.bindClients()
   },
