@@ -226,6 +226,7 @@ export default {
     this.bindExtras()
     this.bindCategorias()
     this.bindLocalizations()
+    this.bindGroupComp()
   },
   methods: {
     resetPhotoType () {
