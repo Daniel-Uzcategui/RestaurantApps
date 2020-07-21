@@ -103,13 +103,12 @@ export default {
   },
   mounted () {
     this.bindLocalizations()
-    console.log(this.localizations)
   },
   methods: {
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
-        this.data.map(row => this.columns.map(col => wrapCsvValue(
+        this.localizations.map(row => this.columns.map(col => wrapCsvValue(
           typeof col.field === 'function'
             ? col.field(row)
             : row[col.field === void 0 ? col.name : col.field],
@@ -118,7 +117,7 @@ export default {
       ).join('\r\n')
 
       const status = exportFile(
-        'table-export.csv',
+        'Sedes.csv',
         content,
         'text/csv'
       )

@@ -86,7 +86,7 @@ export default {
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
-        this.data.map(row => this.columns.map(col => wrapCsvValue(
+        this.clients.map(row => this.columns.map(col => wrapCsvValue(
           typeof col.field === 'function'
             ? col.field(row)
             : row[col.field === void 0 ? col.name : col.field],
@@ -95,7 +95,7 @@ export default {
       ).join('\r\n')
 
       const status = exportFile(
-        'table-export.csv',
+        'Clientes.csv',
         content,
         'text/csv'
       )
