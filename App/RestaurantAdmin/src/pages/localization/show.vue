@@ -17,7 +17,8 @@
           <q-input :value="localization.name"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'name')"  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
         </div>
         <div class="header-cell col-4">
-          <q-select standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')" :options="estatus_options" label="Estatus" />
+          <q-select map-options emit-value standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')"
+            :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell col-6">
@@ -83,7 +84,8 @@ export default {
       tables: '',
       capacity: '',
       estatus_options: [
-        'Activo', 'Inactivo'
+        { label: 'Activo', value: 0 },
+        { label: 'Inactivo', value: 1 }
       ],
       PickUP: false,
       Delivery: false,

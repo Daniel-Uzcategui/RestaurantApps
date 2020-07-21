@@ -21,7 +21,7 @@
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre de la Sede']"/>
         </div>
         <div class="header-cell col-4">
-          <q-select v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
@@ -95,7 +95,8 @@ export default {
       messageError: [],
       localizacion_sede: [],
       estatus_options: [
-        'Activo', 'Desactivo'
+        { label: 'Activo', value: 0 },
+        { label: 'Inactivo', value: 1 }
       ],
       typeServices_options: [
         'Pick-up', 'Delivery', 'In local'

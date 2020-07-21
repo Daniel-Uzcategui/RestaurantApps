@@ -10,12 +10,12 @@
       row-key="id"
       no-data-label="No se encontraron registros"
       :selected-rows-label="getSelectedString"
-      selection="multiple"
+      selection="single"
       :selected.sync="selected"
       >
       <template v-slot:top-right>
         <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/localization/create')"/>
-        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
+        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
@@ -30,7 +30,7 @@
             {{ props.row.address }}
           </q-td>
            <q-td key="status" :props="props">
-            {{ props.row.status }}
+            {{estatus_options[props.row.status].label}}
           </q-td>
            <q-td key="PickUP" :props="props">
               <q-toggle
@@ -60,13 +60,13 @@
  <q-dialog v-model="noSelectLoc">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Borrar Sedes</div>
+          <div class="text-h6">Eliminar Sede</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-space />
        <q-card-section>
-          Debe seleccionar una sede a eliminar
+          Debe seleccionar una sede ha Eliminar
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -134,20 +134,20 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.localizations.length}`
     },
-    ...mapActions('localization', ['deleteLocation', 'bindLocalizations']),
-    deleted () {
-      console.log(this.selected)
+    ...mapActions('localization', ['saveLocation', 'bindLocalizations']),
+    softDelete () {
+      let id = this.selected[0].id
+      let value = 2
+      let key = 'status'
       if (this.selected.length > 0) {
         this.$q.dialog({
-          title: 'Borrar Sedes',
-          message: 'Desea borrar los elementos seleccionados ?',
+          title: 'Borrar Sede',
+          message: '¿Desea Borrar la Sede seleccionada ?',
           cancel: true,
           persistent: true
         }).onOk(() => {
-          console.log('>>>> OK')
-          this.deleteLocation(this.selected)
+          this.saveLocation({ value, id, key })
         }).onCancel(() => {
-          console.log('>>>> Cancel')
         })
       }
       if (this.selected.length === 0) {
@@ -159,6 +159,10 @@ export default {
     return {
       selected: [],
       noSelectLoc: false,
+      estatus_options: [
+        { label: 'Activo', value: 0 },
+        { label: 'Inactivo', value: 1 }
+      ],
       columns: [
         { name: 'name', required: true, label: 'Nombre', align: 'left', field: 'name', sortable: true },
         { name: 'address', required: true, align: 'center', label: 'Ubicación', field: 'address' },
