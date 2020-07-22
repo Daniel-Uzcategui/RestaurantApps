@@ -235,6 +235,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'show',
+        name: 'showUsers',
+        component: () => import('pages/users/show.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   }

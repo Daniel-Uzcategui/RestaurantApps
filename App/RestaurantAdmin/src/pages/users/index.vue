@@ -18,7 +18,7 @@
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/user/show', query: { user_Id: props.row.id } })">
+        <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/users/show', query: { user_Id: props.row.id } })">
            <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
           </q-td>
