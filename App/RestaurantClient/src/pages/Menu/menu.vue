@@ -129,7 +129,6 @@
             <q-card-section class="q-pt-none q-pa-lg" v-html=displayVal.descripcion>
             </q-card-section>
             <q-card-section>
-              <p>{{required}}</p>
                <itemcomp
                 :comp="displayVal.groupComp"
                 :value="itComp"
@@ -144,7 +143,8 @@
                <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{((parseFloat(displayVal.price + totSum).toFixed(2)) * quantity).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-actions vertical>
-               <q-btn @click="addToCart" v-close-popup color="primary">Añadir</q-btn>
+               <q-btn v-if="required" @click="addToCart" v-close-popup color="primary">Añadir</q-btn>
+               <q-btn v-if="!required" @click="showNotif" color="primary">Añadir</q-btn>
             </q-card-actions>
          </q-card>
       </q-dialog>
@@ -234,6 +234,15 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
+    showNotif () {
+      this.$q.notify({
+        message: `Debe seleccionar los campos obligatorios`,
+        color: 'red',
+        actions: [
+          { label: 'X', color: 'white' }
+        ]
+      })
+    },
     search () {
       if (this.selectedCat !== '') {
         this.filteredMenu = this.origMenu.filter(x => {

@@ -1,5 +1,5 @@
 <template>
-  <div padding>
+  <div>
     <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
     <q-btn-group spread class="full-width">
       <q-btn color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" label="Visualizar" />
@@ -87,7 +87,8 @@ export default {
         user: this.currentUser.id,
         alias: this.alias,
         puntoRef: this.puntoRef,
-        location: JSON.stringify(this.markers) }) : this.updateAddress({ estado: this.estado,
+        location: JSON.stringify(this.markers) }) : this.updateAddress({
+        estado: this.estado,
         ciudad: this.ciudad,
         municipio: this.municipio,
         calle: this.calle,
@@ -100,6 +101,11 @@ export default {
     setDialog () {
       if (this.value === null) { this.dialog = false; return }
       const obj = this.address.find(x => x.id === this.value)
+      this.estado = obj.estado
+      this.ciudad = obj.ciudad
+      this.municipio = obj.municipio
+      this.calle = obj.calle
+      this.domicilio = obj.domicilio
       this.alias = obj.alias
       this.markers = JSON.parse(obj.location)
       this.puntoRef = obj.puntoRef

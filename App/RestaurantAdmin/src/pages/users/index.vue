@@ -18,8 +18,8 @@
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/user/show', query: { user_Id: props.row.id } })">
-           <q-td  auto-width>
+        <q-tr :props="props" class="cursor-pointer">
+           <q-td auto-width>
             <q-checkbox v-model="props.selected" />
           </q-td>
            <q-td
@@ -27,7 +27,24 @@
             :key="col.name"
             :props="props"
           >
-            {{ col.value }}
+            <div v-if="col.name !== 'Rol'">{{ col.value }}</div>
+            <q-select
+                v-if="col.name === 'Rol'"
+                filled
+                :value="getVals(col.value)"
+                @input="(e) => saved(e[(e.length - 1)].val, col.value, props.row.id, `rol.${e[(e.length - 1)].label}`)"
+                @remove="(e) => removed({...e, id: props.row.id})"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                :options="rolOpt"
+                :option-label="(item) => item === null ? null : item.label"
+                :option-value="(item) => item === null ? null : { val: item.value, label: item.label.replace(/ .*/,'') }"
+                map-options
+                emit-value
+                stack-label
+              />
           </q-td>
         </q-tr>
       </template>
@@ -69,6 +86,20 @@ export default {
     console.log(this.users)
   },
   methods: {
+    ...mapActions('menu', ['setValue', 'delValue']),
+    removed (e) {
+      console.log(e)
+      this.delValue({ payload: { id: e.id, key: `rol.${e.value[0].label}` }, collection: 'users' })
+    },
+    getVals (col) {
+      if (typeof col === 'undefined') { return null }
+      var keys = Object.keys(col)
+      console.log({ col, keys })
+      var out = []
+      keys.forEach(e => out.push({ val: col[e], label: e }))
+      console.log({ out })
+      return out
+    },
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -100,6 +131,10 @@ export default {
     ...mapActions('user', ['deleteUsers', 'bindusers']),
     deleted () {
       this.deleteUsers(this.selected)
+    },
+    saved (value, initialValue, id, key) {
+      console.log({ value, initialValue, id, key })
+      this.setValue({ payload: { value, id, key }, collection: 'users' })
     }
   },
   data () {
@@ -110,6 +145,19 @@ export default {
         { name: 'LastName', required: true, label: 'Apellido', field: 'apellido' },
         { name: 'Rol', required: true, label: 'Rol', field: 'rol' },
         { name: 'Status', required: true, label: 'Estatus', field: 'status' }
+      ],
+      rolOpt: [
+        { value: 1, label: 'Administrador' },
+        { value: 'r', label: 'Menu Lectura' },
+        { value: 'w', label: 'Menu Escritura' },
+        { value: 'r', label: 'Sedes Escritura' },
+        { value: 'w', label: 'Sedes Lectura' },
+        { value: 'r', label: 'item Lectura' },
+        { value: 'w', label: 'item Escritura' },
+        { value: 'r', label: 'Componentes Escritura' },
+        { value: 'w', label: 'Componentes Lectura' },
+        { value: 'r', label: 'Promo Lectura' },
+        { value: 'w', label: 'Promo Escritura' }
       ]
     }
   }

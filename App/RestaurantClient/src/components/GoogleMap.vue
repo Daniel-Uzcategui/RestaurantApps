@@ -3,7 +3,7 @@
     <gmap-map
       :center="centerClone"
       :zoom="12"
-      style="width:100%;  height: 250px;"
+      style="width:100%;  height: 300px;"
       @click="addMark"
     >
       <gmap-marker
@@ -27,7 +27,7 @@ Vue.use(VueGoogleMaps, {
   }
 })
 export default {
-  props: ['markers', 'center'],
+  props: ['markers', 'center', 'readOnly'],
   name: 'GoogleMap',
   data () {
     return {
@@ -35,7 +35,7 @@ export default {
       // change this to whatever makes sense
       places: [],
       currentPlace: null,
-      markersClone: this.markers,
+      markersClone: Array.from(this.markers),
       centerClone: this.center
     }
   },
@@ -48,6 +48,7 @@ export default {
     addMark (e) {
       console.log(e)
       var clickedLocation = e.latLng
+      if (typeof this.readOnly !== 'undefined' && this.readOnly === true) { return }
       if (this.markersClone.length <= 0) {
         this.markersClone.push({
           position: clickedLocation

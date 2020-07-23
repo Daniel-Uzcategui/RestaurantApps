@@ -27,7 +27,6 @@ export const deleteOrder = firestoreAction((context, payload) => {
       })
   }
 })
-
 export const addOrder = firestoreAction((state, payload) => {
   return firestore()
     .collection('orders').add(

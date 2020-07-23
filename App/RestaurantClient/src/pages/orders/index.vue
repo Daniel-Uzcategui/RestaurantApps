@@ -128,6 +128,16 @@
             </q-item-section>
           </q-item>
          </q-list>
+         <q-card-section :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+           <q-input
+                @input="(e) => saved(e, ordenDet.id, 'userComment')"
+                :value="ordenDet.userComment"
+                label="Añade tu comentario"
+                type="textarea"
+                min-height="5rem"
+                autofocus
+              />
+         </q-card-section>
          </q-card>
       </q-dialog>
       <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
@@ -181,6 +191,7 @@ export default {
     orderSort () {
       var ord = this.orders.map(x => {
         return {
+          userComment: typeof x.userComment === 'undefined' ? '' : x.userComment,
           id: x.id,
           address: x.address,
           cart: x.cart,
@@ -196,7 +207,14 @@ export default {
           photo: x.photo
         }
       })
-      return ord.sort((a, b) => b.factura - a.factura)
+      return ord.sort((a, b) => {
+        if (typeof b.factura === 'undefined') {
+          return 999999 - a.factura
+        } else if (typeof a.factura === 'undefined') {
+          return b.factura - 999999
+        }
+        return b.factura - a.factura
+      })
     },
     meta () {
       return {
@@ -211,6 +229,9 @@ export default {
     }
   },
   methods: {
+    saved (value, id, key) {
+      this.saveOrder({ value, id, key })
+    },
     totalItComp (its) {
       var sum = 0
       its.forEach(x => {
@@ -223,7 +244,7 @@ export default {
       return sum
     },
     ...mapActions('address', ['bindAddress']),
-    ...mapActions('order', ['bindOrders']),
+    ...mapActions('order', ['bindOrders', 'saveOrder']),
     formatDate (e) {
       return date.formatDate(e.seconds * 1000, 'DD-MM')
     },
@@ -233,7 +254,6 @@ export default {
       return add.alias
     },
     carritoDialog (e) {
-      console.log({ e })
       this.dialog = true
       this.carrito = e.cart
       this.ordenDet = e
@@ -276,14 +296,12 @@ export default {
       this.photoType = ''
     },
     uploadComplete (info) {
-      console.log(this.prefixPath)
-      console.log(this.currentUser)
       let fileNames = []
       info.files.forEach(file => fileNames.push(file))
       this.photoUpload = false
       this.$q.notify({
-        message: `Successfully uploaded your photo: ${fileNames}`,
-        color: 'positive'
+        message: `Foto subida correctamente`,
+        color: 'primary'
       })
     }
   },

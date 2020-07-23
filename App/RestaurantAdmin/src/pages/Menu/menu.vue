@@ -2,7 +2,7 @@
   <div class="q-pa-md">
    <q-table
       :dense="$q.screen.lt.md"
-      :data="menu"
+      :data="elmenu"
       :columns="columns"
       title="Menu"
       :rows-per-page-options="[]"
@@ -115,7 +115,6 @@
                 dense
                 autofocus
                 mask="#.##"
-                reverse-fill-mask
                 label="Dos decimales"
                 input-class="text-center"
               />
@@ -191,6 +190,17 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'listextras', 'plainExtras', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
+    elmenu () {
+      var sort = Array.from(this.menu)
+      return sort.sort((a, b) => {
+        if (typeof b.descripcion === 'undefined') {
+          return 999999
+        } else if (typeof a.descripcion === 'undefined') {
+          return -999999
+        }
+        return b.id - a.id
+      })
+    },
     locList () {
       return this.localizations.map(x => {
         return {
@@ -245,13 +255,13 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindExtras', 'bindCategorias']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindExtras', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
     delrow () {
       this.delrows({ payload: this.selected, collection: 'menu' })
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.menu.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.elmenu.length}`
     },
     addrow () {
       this.addRow({ collection: 'menu' })
@@ -286,7 +296,6 @@ export default {
     },
     getExtras (e) {
       console.log('GetExtras1', e, this.plainExtras)
-      // if (Array.isArray(e) && e.length) { return [] }
       const ret = e.map(x => {
         return this.plainExtras[x].name
       })

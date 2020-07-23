@@ -69,7 +69,6 @@
                      mask="#.##"
                      dense
                      autofocus
-                     reverse-fill-mask
                      input-class="text-center"
                      label="2 decimales"
                      />

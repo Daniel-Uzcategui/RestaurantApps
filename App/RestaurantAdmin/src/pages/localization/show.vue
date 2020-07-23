@@ -24,7 +24,7 @@
         <div class="header-cell col-6">
           <q-btn v-if="!markers" color="primary" class="q-py-md" label="Agregar Localización" icon="fas fa-map-marker-alt"/>
           <q-btn v-if="markers" color="primary" class="q-py-md" label="Localización" icon="fas fa-check"/>
-          <q-popup-edit :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
+          <q-popup-edit buttons :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
               <google-map
                 :center="center"
                 :markers="markers" />

@@ -18,7 +18,16 @@ export const addOrder = firestoreAction((state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
-
+export const saveOrder = firestoreAction((state, payload) => {
+  console.log({ payload })
+  return firestore()
+    .collection('orders')
+    .doc(payload.id)
+    .update({ [payload.key]: payload.value })
+    .then(() => {
+      console.log('orders updated!')
+    })
+})
 export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindorders')
   return bindFirestoreRef('orders', firestore().collection('orders').where('customer_id', '==', payload))

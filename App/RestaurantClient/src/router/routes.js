@@ -20,6 +20,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'findus',
+        name: 'findUs',
+        component: () => import('pages/findus.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },

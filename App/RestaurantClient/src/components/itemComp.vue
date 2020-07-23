@@ -1,24 +1,24 @@
 <template>
   <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-    <p>{{required}}</p>
     <div v-if="readOnly">
         <q-list v-for="(items, indice) in value" :key="indice">
           <q-item v-ripple>
             <q-item-section class="text-left" >
-            <div class="text-caption">{{getComponent(items.component)['name']}} </div>
+            <div class="text-caption">{{getComponent(items.component, 'name')}} </div>
             </q-item-section>
             <q-item-section class="text-center">
-              <q-item-label lines="3">{{items.quantity > 1 ? items.quantity + ' x ' : null}} {{getItem(items.item)['name']}}</q-item-label>
+              <q-item-label lines="3">{{items.quantity > 1 ? items.quantity + ' x ' : null}} {{getItem(items.item, 'name')}}</q-item-label>
             </q-item-section>
-            <q-item-section class="text-right" v-if="!getComponent(items.component)['free']">
+            <q-item-section class="text-right" v-if="!getComponent(items.component, 'free')">
               <q-item-label caption>$ {{(typeof items.quantity === 'undefined' ? items.price : (items.price * items.quantity)).toFixed(2)}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
         </q-list>
       </div>
+    <div v-if="!readOnly">
     <div v-for="(component, index) in Group" :key="index">
-      <div v-if="component.type === 1 && !readOnly">
+      <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
         <q-list class="full-width" v-for="(items, indice) in component.items" :key="indice">
@@ -36,7 +36,7 @@
           </q-item>
         </q-list>
       </div>
-      <div v-if="component.type === 0 && !readOnly">
+      <div v-if="component.type === 0">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
         <q-list class="full-width" v-for="(items, indice) in component.items" :key="indice">
@@ -58,7 +58,7 @@
           </q-item>
         </q-list>
       </div>
-      <div v-if="component.type === 2 && !readOnly">
+      <div v-if="component.type === 2">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
         <q-list v-for="(items, indice) in component.items" :key="indice">
@@ -84,6 +84,7 @@
         </q-list>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <script>
@@ -117,14 +118,12 @@ export default {
           group.push({ ...grp, id: element, items })
         }
       })
-      console.log({ group })
       return group.sort((a, b) => a.priority - b.priority)
     },
     checkReqAll () {
-      if (typeof this.value !== 'undefined') {
+      if (typeof this.value !== 'undefined' && this.comp.length) {
         for (let e of this.Group) {
           var items = this.value.filter(x => e.id === x.component)
-          console.log({ items })
           if (items.length) {
             if (!(e.type === 1)) {
               if (items.length < e.min) {
@@ -145,7 +144,7 @@ export default {
     totalItComp () {
       var sum = 0
       this.value.forEach(x => {
-        var free = this.getComponent(x.component)['free']
+        var free = this.getComponent(x.component, 'free')
         if (!free) {
           if (typeof x.quantity === 'undefined') {
             sum = sum + x.price
@@ -155,6 +154,11 @@ export default {
         }
       })
       return sum
+    }
+  },
+  mounted () {
+    if (this.Group.length === 0) {
+      this.$emit('update-comp', true)
     }
   },
   watch: {
@@ -167,20 +171,22 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindItem', 'bindGroupComp', 'bindCategorias', 'bindPromos']),
-    getComponent (id) {
-      return this.groupComp.find(x => x.id === id)
+    getComponent (id, val) {
+      var comp = this.groupComp.find(x => x.id === id)
+      if (typeof comp === 'undefined') { return null }
+      return comp[val]
     },
-    getItem (id) {
-      return this.item.find(x => x.id === id)
+    getItem (id, val) {
+      var item = this.item.find(x => x.id === id)
+      if (typeof item === 'undefined') { return null }
+      return item[val]
     },
     radioInput (x, e, r) {
       var newElement = JSON.parse(x)
-      console.log({ newElement })
       this.value.forEach(e => {
         var oldElement = e
         if (oldElement.component === newElement.component) {
           var index = this.value.findIndex(el => el.item === oldElement.item && el.component === oldElement.component)
-          console.log({ index })
           if (index !== (-1)) {
             this.value.splice(index, 1)
           }

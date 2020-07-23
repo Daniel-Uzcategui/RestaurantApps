@@ -83,6 +83,8 @@
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
+                :toolbar="[]"
+                :definitions="{}"
                 min-height="5rem"
                 autofocus
               />

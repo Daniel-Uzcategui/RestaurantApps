@@ -1,5 +1,5 @@
 import { firestoreAction } from 'vuexfire'
-import { firestore } from '../../services/firebase/db.js'
+import { firestore, firebase } from '../../services/firebase/db.js'
 /// ////// START Action ////////
 export const setValue = firestoreAction((state, payload) => {
   return firestore()
@@ -10,7 +10,15 @@ export const setValue = firestoreAction((state, payload) => {
       console.log(`${payload.collection} updated!`)
     })
 })
-
+export const delValue = firestoreAction((state, payload) => {
+  return firestore()
+    .collection(payload.collection)
+    .doc(payload.payload.id)
+    .update({ [payload.payload.key]: firebase.firestore.FieldValue.delete() })
+    .then(() => {
+      console.log(`${payload.collection} updated!`)
+    })
+})
 export const addRow = firestoreAction(async (state, payload) => {
   return firestore()
     .collection(payload.collection).add({

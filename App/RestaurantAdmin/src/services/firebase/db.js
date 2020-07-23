@@ -12,6 +12,7 @@ import 'firebase/storage'
 export const firestore = () => {
   return firebase.firestore()
 }
+export { firebase }
 const { Timestamp, GeoPoint } = firebase.firestore
 export { Timestamp, GeoPoint }
 /**

@@ -128,7 +128,7 @@ export default {
           title: 'Encuentranos',
           caption: '',
           icon: 'fa fa-globe',
-          link: '#/home'
+          link: '#/findus'
         },
         {
           title: 'Mis Direcciones',

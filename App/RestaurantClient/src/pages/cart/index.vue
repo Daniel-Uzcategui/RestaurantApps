@@ -247,7 +247,7 @@ export default {
     },
     getStock (id, type) {
       if (!type) {
-        console.log({ cart: this.cart })
+        // console.log({ cart: this.cart })
         var item = this.menu.find(x => x.id === id)
         return item.stock[this.sede]
       }
@@ -257,7 +257,7 @@ export default {
       this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
     },
     getTotalCarrito () {
-      console.log({ cart: this.cart })
+      // console.log({ cart: this.cart })
       var sumProd = 0
       var sumExtra = 0
       this.cart.forEach(e => {
@@ -267,7 +267,7 @@ export default {
       return [sumProd, sumExtra, sumProd + sumExtra]
     },
     getProdValById (id, val, type) {
-      console.log({ id, val, type })
+      // console.log({ id, val, type })
       if (type === 0) {
         var obj = this.menu.find(e => { return e.id === id })
         return obj[val]
@@ -314,7 +314,7 @@ export default {
           }
         })
         if (counter) { exists = 1 }
-        console.log({ sede: product.stock[this.sede], counter })
+        // console.log({ sede: product.stock[this.sede], counter })
         if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
           if (counter === parseInt(product.stock[this.sede])) {
             this.modCartVal({ id: index, key: 'avail', value: 0 })
