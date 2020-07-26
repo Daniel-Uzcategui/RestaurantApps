@@ -19,3 +19,7 @@ export const SetSummary = (state, payload) => {
 export const setHistory = (state, setHistory) => {
   state.hist = setHistory
 }
+
+export function setRolUser (state, data) {
+  state.rol = data.rol
+}

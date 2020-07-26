@@ -1,5 +1,6 @@
 export default {
   currentUser: null,
+  rol: null,
   docUser: null,
   editUserDialog: false,
   summary: {

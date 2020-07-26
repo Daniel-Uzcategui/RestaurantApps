@@ -1,5 +1,6 @@
 export default {
   isAuthenticated: false,
   isReady: false,
-  uid: ''
+  uid: '',
+  rol: null
 }

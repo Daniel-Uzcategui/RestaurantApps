@@ -71,3 +71,7 @@ export const deleteUsers = firestoreAction((context, payload) => {
       })
   }
 })
+
+export const setRolUser = async function ({ commit }, payload) {
+  commit('user/setRolUser', payload, { root: true })
+}

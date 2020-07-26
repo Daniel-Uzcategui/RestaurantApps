@@ -31,8 +31,8 @@
             <q-select
                 v-if="col.name === 'Rol'"
                 filled
-                :value="getVals(col.value)"
-                @input="(e) => saved(e[(e.length - 1)].val, col.value, props.row.id, `rol.${e[(e.length - 1)].label}`)"
+                :value="col.value"
+                @input="(e) => saved(e, col.value, props.row.id, `rol`)"
                 @remove="(e) => removed({...e, id: props.row.id})"
                 use-input
                 use-chips
@@ -40,7 +40,7 @@
                 input-debounce="0"
                 :options="rolOpt"
                 :option-label="(item) => item === null ? null : item.label"
-                :option-value="(item) => item === null ? null : { val: item.value, label: item.label.replace(/ .*/,'') }"
+                :option-value="(item) => item === null ? null : item.value"
                 map-options
                 emit-value
                 stack-label
@@ -84,21 +84,30 @@ export default {
   mounted () {
     this.bindusers()
     console.log(this.users)
+    this.rolOpt = this.getPages()
   },
   methods: {
     ...mapActions('menu', ['setValue', 'delValue']),
+    getPages () {
+      let rutas = this.$router.options.routes
+      let filter = rutas.filter(x => {
+        if (typeof x.children === 'undefined') { return false }
+        return true
+      })
+      let out = [{ value: 'Admin', label: 'Admin' }]
+      filter.forEach(e => {
+        e.children.forEach(k => {
+          if (typeof k !== 'undefined' && typeof k.meta !== 'undefined' && typeof k.meta.nombre !== 'undefined') {
+            out.push({ value: k.name, label: k.meta.nombre })
+          }
+        })
+      })
+      console.log({ out })
+      return out
+    },
     removed (e) {
       console.log(e)
       this.delValue({ payload: { id: e.id, key: `rol.${e.value[0].label}` }, collection: 'users' })
-    },
-    getVals (col) {
-      if (typeof col === 'undefined') { return null }
-      var keys = Object.keys(col)
-      console.log({ col, keys })
-      var out = []
-      keys.forEach(e => out.push({ val: col[e], label: e }))
-      console.log({ out })
-      return out
     },
     exportTable () {
       // naive encoding to csv format
@@ -146,19 +155,7 @@ export default {
         { name: 'Rol', required: true, label: 'Rol', field: 'rol' },
         { name: 'Status', required: true, label: 'Estatus', field: 'status' }
       ],
-      rolOpt: [
-        { value: 1, label: 'Administrador' },
-        { value: 'r', label: 'Menu Lectura' },
-        { value: 'w', label: 'Menu Escritura' },
-        { value: 'r', label: 'Sedes Escritura' },
-        { value: 'w', label: 'Sedes Lectura' },
-        { value: 'r', label: 'item Lectura' },
-        { value: 'w', label: 'item Escritura' },
-        { value: 'r', label: 'Componentes Escritura' },
-        { value: 'w', label: 'Componentes Lectura' },
-        { value: 'r', label: 'Promo Lectura' },
-        { value: 'w', label: 'Promo Escritura' }
-      ]
+      rolOpt: []
     }
   }
 }

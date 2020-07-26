@@ -96,6 +96,29 @@ export const logoutUser = () => {
 export const routerBeforeEach = async (router, store) => {
   router.beforeEach(async (to, from, next) => {
     try {
+      if (to.name === 'Login') {
+        logoutUser()
+        store.dispatch('auth/logoutUser', {})
+        console.log('LOGOUT')
+      }
+      console.log({ from, to, next })
+      let getUsr = store.getters['user/currentUser']
+      console.log({ getUsr: getUsr })
+      if (getUsr !== null) {
+        if (typeof to.meta.nombre !== 'undefined') {
+          if (getUsr.rol.includes('Admin') || (from.name !== 'Login' && getUsr.rol.includes(to.name))) {
+            console.log('Tiene acceso')
+          } else {
+            next(from.path)
+            console.log('No tiene acceso')
+            Notify.create({
+              message: `No tiene acceso`,
+              color: 'negative'
+            })
+            return
+          }
+        }
+      }
       await ensureAuthIsInitialized(store)
       if (to.matched.some(record => record.meta.requiresAuth)) {
         if (isAuthenticated(store)) {

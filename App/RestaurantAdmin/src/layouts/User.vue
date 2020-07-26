@@ -154,17 +154,17 @@ export default {
           separator: true
         },
         {
-          title: 'Items',
+          title: 'Opciones',
           caption: '',
           icon: 'fab fa-gulp',
-          link: '#/menu/item',
+          link: '#/menu/options',
           separator: true
         },
         {
-          title: 'Componentes',
+          title: 'Configuracion de Opciones',
           caption: '',
           icon: 'menu_book',
-          link: '#/menu/group',
+          link: '#/menu/optionsconf',
           separator: true
         },
         {

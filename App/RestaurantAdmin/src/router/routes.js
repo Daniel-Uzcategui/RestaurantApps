@@ -67,7 +67,8 @@ const routes = [
         name: 'listLocalization',
         component: () => import('pages/localization/index.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Sedes'
         }
       },
       {
@@ -75,7 +76,8 @@ const routes = [
         name: 'createlocalization',
         component: () => import('pages/localization/create.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Crear Sedes'
         }
       },
       {
@@ -83,7 +85,8 @@ const routes = [
         name: 'showlocalization',
         component: () => import('pages/localization/show.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Visualizar Sedes'
         }
       }
     ]
@@ -97,7 +100,8 @@ const routes = [
         name: 'Categorias',
         component: () => import('pages/menu/categorias.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Categorias'
         }
       },
       {
@@ -105,39 +109,35 @@ const routes = [
         name: 'Menu',
         component: () => import('pages/menu/menu.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Menu'
         }
       },
       {
         path: 'promo',
-        name: 'promo',
+        name: 'Promo',
         component: () => import('pages/menu/promociones.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Promo'
         }
       },
       {
-        path: 'extras',
-        name: 'Extras',
-        component: () => import('pages/menu/extras.vue'),
+        path: 'options',
+        name: 'Options',
+        component: () => import('pages/menu/options.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Opciones'
         }
       },
       {
-        path: 'item',
-        name: 'item',
-        component: () => import('pages/menu/item.vue'),
+        path: 'optionsconf',
+        name: 'options_Config',
+        component: () => import('pages/menu/optionsConf.vue'),
         meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: 'group',
-        name: 'group',
-        component: () => import('pages/menu/groupComp.vue'),
-        meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Configuracion de Opciones'
         }
       }
     ]
@@ -151,7 +151,8 @@ const routes = [
         name: 'listClients',
         component: () => import('pages/clients/index.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Clientes'
         }
       },
       {
@@ -159,7 +160,8 @@ const routes = [
         name: 'createClient',
         component: () => import('pages/clients/create.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Crear clientes'
         }
       },
       {
@@ -167,7 +169,8 @@ const routes = [
         name: 'showClient',
         component: () => import('pages/clients/show.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Visualizar Clientes'
         }
       }
     ]
@@ -181,7 +184,8 @@ const routes = [
         name: 'listOrders',
         component: () => import('pages/orders/index.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Ordenes'
         }
       },
       {
@@ -189,7 +193,8 @@ const routes = [
         name: 'createOrders',
         component: () => import('pages/orders/create.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Crear Ordenes'
         }
       },
       {
@@ -197,7 +202,8 @@ const routes = [
         name: 'showOrders',
         component: () => import('pages/orders/show.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Visualizar Ordenes'
         }
       }
     ]
@@ -211,7 +217,8 @@ const routes = [
         name: 'listpayments',
         component: () => import('pages/payments/index.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Pagos'
         }
       },
       {
@@ -219,7 +226,8 @@ const routes = [
         name: 'showPayments',
         component: () => import('pages/payments/show.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Visualizar Pagos'
         }
       }
     ]
@@ -233,7 +241,8 @@ const routes = [
         name: 'listusers',
         component: () => import('pages/users/index.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Usuarios'
         }
       },
       {
@@ -241,7 +250,8 @@ const routes = [
         name: 'showUsers',
         component: () => import('pages/users/show.vue'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          nombre: 'Visualizar Usuarios'
         }
       }
     ]
