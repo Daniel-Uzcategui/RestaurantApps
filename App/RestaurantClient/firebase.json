@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "target": "client",
+    "public": "dist/spa",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

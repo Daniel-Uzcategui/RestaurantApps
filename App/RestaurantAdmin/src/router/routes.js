@@ -59,6 +59,21 @@ const routes = [
     ]
   },
   {
+    path: '/editor',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'Editor',
+        component: () => import('pages/editor/index.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Editor Web'
+        }
+      }
+    ]
+  },
+  {
     path: '/localization',
     component: () => import('layouts/User.vue'),
     children: [

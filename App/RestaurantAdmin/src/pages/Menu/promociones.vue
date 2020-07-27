@@ -73,6 +73,26 @@
                      label="2 decimales"
                      />
                </q-td>
+               <q-td key="groupComp" :props="props">
+              <q-select
+                filled
+                :value="props.row.groupComp"
+                @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                @new-value="createValue"
+                :options="groupComp"
+                :option-label="(item) => item === null ? null : item.name"
+                :option-value="(item) => item === null ? null : item.id"
+                @filter="filterFn"
+                style="width: 250px"
+                map-options
+                emit-value
+                stack-label
+              />
+          </q-td>
               <q-td key="prods" :props="props">
               <q-select
                 filled
@@ -121,6 +141,7 @@ const columns2 = [
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
   { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' },
   { name: 'prods', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Productos', field: 'prods' }
 ]
 import { QUploaderBase } from 'quasar'
@@ -131,7 +152,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'promos']),
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'promos', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     locList () {

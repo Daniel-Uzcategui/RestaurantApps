@@ -82,7 +82,7 @@
          v-if="typeof displayVal !== 'undefined' && typeof displayVal.groupComp !== 'undefined'"
          v-model="display"
          persistent
-         :maximized="maximizedToggle"
+         :maximized="$q.screen.lt.md"
          transition-show="slide-up"
          transition-hide="slide-down"
          @hide="quantity = 0; itComp = []"
@@ -101,7 +101,7 @@
                   <q-tooltip content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-            <img style="border-bottom-left-radius: 50px;" v-if="displayVal.photo" :src=displayVal.photo>
+            <q-img :style="$q.screen.gt.xs ? 'min-width: 500px;' : null" style="border-bottom-left-radius: 50px; max-height: 500px;" v-if="displayVal.photo" contain :src=displayVal.photo />
             <q-card-section class="q-pa-lg row">
                <div class="text-h5 col">
                   {{displayVal.name}}
@@ -195,6 +195,7 @@ export default {
         y.descripcion = e.descripcion
         y.prodType = 1
         y.photo = e.photo
+        y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
         prom.push(y)
       })
       return prom
@@ -351,10 +352,11 @@ export default {
         })
         this.displayVal.id = id
       } else {
-        this.displayVal = this.promos.find((e) => {
+        this.displayVal = this.promoData.find((e) => {
           return e.id === id
         })
         this.displayVal = { ...this.displayVal, prodType: 1, id: id }
+        console.log({ disp: this.displayVal })
       }
     },
     filterFn (val, update) {

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "restaurant-testnet"
+  },
+  "targets": {
+    "restaurant-testnet": {
+      "hosting": {
+        "admin": [
+          "admin-restaurant-testnet"
+        ]
+      }
+    }
+  }
+}

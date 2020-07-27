@@ -181,6 +181,12 @@ export default {
           separator: true
         },
         {
+          title: 'Editor Web',
+          caption: '',
+          icon: 'far fa-object-group',
+          link: '#/editor/index'
+        },
+        {
           title: 'Clientes',
           caption: '',
           icon: 'fa fa-user',
@@ -202,8 +208,7 @@ export default {
       console.log({ ntf: this.$refs['mediapl'] })
       this.$refs['mediapl'].play()
       this.$q.notify({
-        message: `<em>I can</em> <span style="color: red">use</span> <strong>HTML</strong>`,
-        html: true,
+        message: `Nueva Orden!`,
         color: 'primary',
         actions: [
           { label: 'Dismiss', color: 'white' }
