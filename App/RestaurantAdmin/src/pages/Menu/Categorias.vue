@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md">
+<q-page class="q-pa-md" >
+   <div class="q-pa-md">
    <q-table
       :data="categorias"
       :columns="columns"
@@ -7,13 +8,14 @@
       :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"
-      selection="multiple"
+      selection="single"
       :selected.sync="selected"
+      no-data-label="No se encontraron registros"
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
@@ -48,7 +50,7 @@
           <q-td key="estatus" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="props.row.estatus"
+                :value="getStatus(props.row.estatus)"
                 color="#3c8dbc"
               />
           </q-td>
@@ -69,6 +71,20 @@
       </template>
     </q-table>
   </div>
+  <q-dialog v-model="noSelect">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Borrar categoria</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar una Categoria ha Borrar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+ </q-page>
 </template>
 <script>
 const columns = [
@@ -86,6 +102,7 @@ export default {
     return {
       columns,
       selected: [],
+      noSelect: false,
       popupEditData: ''
     }
   },
@@ -97,6 +114,9 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
+      if (key === 'estatus') {
+        value = value === false ? 1 : 0
+      }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'categorias' })
     },
@@ -104,8 +124,33 @@ export default {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
     ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindCategorias']),
-    delrow () {
+    /* delrow () {
       this.delrows({ payload: this.selected, collection: 'categorias' })
+    }, */
+    softDelete () {
+      let id = ''
+      let value = 2
+      let key = 'estatus'
+      if (this.selected.length === 0) {
+        this.noSelect = true
+      }
+      if (this.selected.length > 0) {
+        id = this.selected[0].id
+        this.$q.dialog({
+          title: 'Borrar categoria',
+          message: '¿Desea Borrar la categoria seleccionada ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          this.setValue({ payload: { value, id, key }, collection: 'categorias' })
+        }).onCancel(() => {
+        })
+      }
+    },
+    getStatus (value) {
+      let status
+      status = value === 0
+      return status
     },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.categorias.length}`

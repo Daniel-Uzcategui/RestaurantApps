@@ -60,13 +60,13 @@
  <q-dialog v-model="noSelectLoc">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Eliminar Sede</div>
+          <div class="text-h6">Borrar Sede</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-space />
        <q-card-section>
-          Debe seleccionar una sede ha Eliminar
+          Debe seleccionar una sede ha Borrar
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -135,10 +135,14 @@ export default {
     },
     ...mapActions('localization', ['saveLocation', 'bindLocalizations']),
     softDelete () {
-      let id = this.selected[0].id
+      let id = ''
       let value = 2
       let key = 'status'
+      if (this.selected.length === 0) {
+        this.noSelectLoc = true
+      }
       if (this.selected.length > 0) {
+        id = this.selected[0].id
         this.$q.dialog({
           title: 'Borrar Sede',
           message: '¿Desea Borrar la Sede seleccionada ?',
@@ -148,9 +152,6 @@ export default {
           this.saveLocation({ value, id, key })
         }).onCancel(() => {
         })
-      }
-      if (this.selected.length === 0) {
-        this.noSelectLoc = true
       }
     }
   },

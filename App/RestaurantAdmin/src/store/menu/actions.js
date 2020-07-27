@@ -57,7 +57,7 @@ export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
-  return bindFirestoreRef('categorias', firestore().collection('categorias'), { reset: false })
+  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '<', 2), { reset: false })
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingPromos')
