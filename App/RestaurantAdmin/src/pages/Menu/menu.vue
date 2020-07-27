@@ -62,7 +62,7 @@
           <q-td key="categoria" :props="props">
               <q-select
                 filled
-                :value="props.row.categoria"
+                :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
                 use-chips
@@ -187,7 +187,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'listextras', 'plainExtras', 'groupComp']),
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     elmenu () {
@@ -239,6 +239,18 @@ export default {
     this.bindGroupComp()
   },
   methods: {
+    CatExists (values) {
+      let cat = this.plaincategorias
+      if (typeof values === 'undefined') { return [] }
+      for (let i in values) {
+        var filter = cat.filter(x => x.id === values[i])
+        if (filter.length === 0) {
+          values.splice(i, 1)
+        }
+      }
+      console.log({ values })
+      return values
+    },
     resetPhotoType () {
       this.photoType = ''
     },
