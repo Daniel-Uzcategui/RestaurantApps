@@ -23,9 +23,9 @@ export const addRow = firestoreAction(async (state, payload) => {
   return firestore()
     .collection(payload.collection).add({
       name: '',
-      estatus: 1,
+      estatus: 0,
+      descripcion: '',
       DateIn: firebase.firestore.FieldValue.serverTimestamp()
-      descripcion: ''
     })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)

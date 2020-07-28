@@ -130,10 +130,9 @@
               <q-input
               filled
                 @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="props.row.price"
+                :value="getNumberFormat(props.row.price,2,',','.')"
                 dense
                 autofocus
-                mask="#.##"
                 label="Dos decimales"
                 input-class="text-center"
               />
@@ -313,6 +312,35 @@ export default {
           )
         }
       })
+    },
+    getNumberFormat (number, decimals, decPoint, thousandsPoint) {
+      if (number == null || !isFinite(number)) {
+        // throw new TypeError('number is not valid')
+        number = 0
+      }
+
+      if (!decimals) {
+        var len = number.toString().split('.').length
+        decimals = len > 1 ? len : 0
+      }
+
+      if (!decPoint) {
+        decPoint = '.'
+      }
+
+      if (!thousandsPoint) {
+        thousandsPoint = ','
+      }
+
+      number = parseFloat(number).toFixed(decimals)
+
+      number = number.replace('.', decPoint)
+
+      var splitNum = number.split(decPoint)
+      splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsPoint)
+      number = splitNum.join(decPoint)
+
+      return number
     }
   }
 }
