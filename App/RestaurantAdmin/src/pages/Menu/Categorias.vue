@@ -5,12 +5,12 @@
       :data="categorias"
       :columns="columns"
       title="Categorias"
-      :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"
       selection="single"
       :selected.sync="selected"
       no-data-label="No se encontraron registros"
+      rows-per-page-label="Registros por página"
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
@@ -24,13 +24,10 @@
             <q-checkbox v-model="props.selected" />
           </q-td>
           <q-td key="desc" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit
-            :value="props.row.name"
-            @show="() => showPopup(props.row, 'name')"
-            >
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
-            </q-popup-edit>
+              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                :value="props.row.name"
+                dense
+                autofocus />
           </q-td>
 
           <q-td key="descripcion" :props="props">
@@ -115,7 +112,7 @@ export default {
     },
     saved (value, initialValue, id, key) {
       if (key === 'estatus') {
-        value = value === false ? 1 : 0
+        value = value === false ? 0 : 1
       }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'categorias' })
@@ -149,7 +146,7 @@ export default {
     },
     getStatus (value) {
       let status
-      status = value === 0
+      status = value === 1
       return status
     },
     getSelectedString () {

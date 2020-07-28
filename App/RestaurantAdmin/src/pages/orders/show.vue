@@ -43,7 +43,7 @@
             <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
       </div>
-      <div class="column items-center filled">
+      <div class="column items-center filled-soport">
         <div class="col">
           <label><strong>Soporte de pago</strong></label>
           <viewer :img="order.photo"></viewer>
@@ -268,6 +268,8 @@ export default {
   padding-left: 30px
 .filled
   padding-top: 50px
+.filled-soport
+  padding-top: 30px
 .table
   width: 90%
 </style>

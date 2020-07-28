@@ -9,6 +9,7 @@
       :dense="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
+      rows-per-page-label="Registros por página"
       :selected-rows-label="getSelectedString"
       selection="single"
       :selected.sync="selected"

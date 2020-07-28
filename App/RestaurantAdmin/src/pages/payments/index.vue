@@ -9,6 +9,7 @@
       :dense="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
+      rows-per-page-label="Registros por página"
       >
       <template v-slot:top-right>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>

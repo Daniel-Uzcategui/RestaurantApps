@@ -21,7 +21,17 @@
                <q-td  auto-width>
                   <q-checkbox v-model="props.selected" />
                </q-td>
-               <q-td key="desc" :props="props">
+           <q-td key="photo" :props="props">
+            <div class="text-center" @click="showPhotoUpload(props.row.id)">
+            <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
+                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
+            <div class="column items-center" v-else>
+                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
+                    <q-img :src="props.row.photo"></q-img>
+                </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </div>
+          </q-td>
+          <q-td key="desc" :props="props">
             {{ props.row.name }}
             <q-popup-edit
             :value="props.row.name"
@@ -30,7 +40,6 @@
               <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
             </q-popup-edit>
           </q-td>
-
           <q-td key="descripcion" :props="props">
             <div v-html="props.row.descripcion"></div>
             <q-popup-edit
@@ -50,16 +59,6 @@
                 :value="typeof props.row.estatus !== 'undefined' ? props.row.estatus : false"
                 color="#3c8dbc"
               />
-          </q-td>
-          <q-td key="photo" :props="props">
-            <div class="text-center" @click="showPhotoUpload(props.row.id)">
-            <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
-            <div class="column items-center" v-else>
-                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
-                    <q-img :src="props.row.photo"></q-img>
-                </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
-                </div>
           </q-td>
                <q-td key="price" :props="props">
                   <q-input
@@ -136,10 +135,10 @@ const columns = [
   { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' }
 ]
 const columns2 = [
+  { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
   { name: 'desc', style: 'min-width: 80px; width: 100px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', style: 'min-width: 80px; width: 120px', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
-  { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
   { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
   { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' },
   { name: 'prods', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Productos', field: 'prods' }
