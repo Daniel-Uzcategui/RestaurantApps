@@ -1,7 +1,6 @@
 <template>
   <q-page>
     <div style="overflow-x:hidden;overflow-y:hidden; overflow: hidden;">
-      <iframe src="http://pfcevolution.com/" style="position:fixed; top:50px; left:0; width:100%; overflow:hidden;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen></iframe>
     </div>
   </q-page>
 </template>

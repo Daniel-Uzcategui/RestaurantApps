@@ -2,22 +2,20 @@
    <q-layout class="main bg-image" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
       <q-header class="bg-transparent text-white" v-if="currentUser">
          <q-toolbar>
-            <q-btn
-               flat
+                <q-btn fab
                color="grey"
                dense
                round
-               icon="menu"
-               aria-label="Menu"
+               icon='fas fa-shopping-cart'
+              name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
-               />
-               <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
-               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
-                  <user-settings></user-settings>
-               </q-dialog>
-                <q-btn flat name="cart" icon="fas fa-shopping-cart" to="/cart/index" exact >
+               exact >
                   <q-badge color="red" floating>{{getCartQ}}</q-badge>
                 </q-btn>
+                <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
+               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
+                  <user-settings></user-settings>
+               </q-dialog>
                <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
          </q-toolbar>
       </q-header>
@@ -35,6 +33,7 @@
                />
          </q-list>
       </q-drawer>
+      <iframe :class="{ 'bluriframe': $router.currentRoute.fullPath !== '/home' }" src="http://pfcevolution.com/" style="position:fixed; top:0px; left:0; width:100%; overflow:hidden;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen />
       <q-page-container>
          <transition
             name="transitions"
@@ -82,6 +81,7 @@ export default {
   created () {
     // Check that our app has access to the user id
     // from Firebase before the page renders
+    console.log({ rt: this.$router.currentRoute.fullPath })
     console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -119,10 +119,22 @@ export default {
           link: '#/menu/index'
         },
         {
+          title: 'Perfil',
+          caption: '',
+          icon: 'fas fa-sign-out-alt',
+          link: '#'
+        },
+        {
           title: 'Tus Ordenes',
           caption: '',
           icon: 'room_service',
           link: '#/orders/index'
+        },
+        {
+          title: 'Carrito',
+          caption: '',
+          icon: 'fas fa-shopping-cart',
+          link: '#/cart/index'
         },
         {
           title: 'Encuentranos',
@@ -170,10 +182,22 @@ export default {
 <style lang="stylus" scoped>
   .main
     &.blur-layout
+      -webkit-filter: blur(5px);
+      -moz-filter: blur(5px);
+      -o-filter: blur(5px);
+      -ms-filter: blur(5px);
       filter blur(5px)
   .bg-image {
     background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
     background-repeat: no-repeat;
     background-size: cover;
   }
+  .bluriframe {
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+  background-color: #ccc;
+}
 </style>
