@@ -22,7 +22,8 @@ export const delValue = firestoreAction((state, payload) => {
 export const addRow = firestoreAction(async (state, payload) => {
   return firestore()
     .collection(payload.collection).add({
-      name: ''
+      name: '',
+      DateIn: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)

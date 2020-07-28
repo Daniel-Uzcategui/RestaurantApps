@@ -193,12 +193,7 @@ export default {
     elmenu () {
       var sort = Array.from(this.menu)
       return sort.sort((a, b) => {
-        if (typeof b.descripcion === 'undefined') {
-          return 999999
-        } else if (typeof a.descripcion === 'undefined') {
-          return -999999
-        }
-        return b.id - a.id
+        return b.DateIn - a.DateIn
       })
     },
     locList () {

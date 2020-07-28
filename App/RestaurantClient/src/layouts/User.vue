@@ -33,7 +33,7 @@
                />
          </q-list>
       </q-drawer>
-      <iframe :class="{ 'bluriframe': $router.currentRoute.fullPath !== '/home' }" src="http://pfcevolution.com/" style="position:fixed; top:0px; left:0; width:100%; overflow:hidden;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen />
+      <iframe :class="{ 'bluriframe': $router.currentRoute.fullPath !== '/home' }" src="https://pfcevolution.com/" style="background: #FFFFFF;position:inherit; top:0px; left:0; width:100%; overflow:hidden;height: -webkit-fill-available;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen />
       <q-page-container>
          <transition
             name="transitions"
