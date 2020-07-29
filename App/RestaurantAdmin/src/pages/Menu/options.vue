@@ -3,7 +3,7 @@
    <q-table
       :data="item"
       :columns="columns"
-      title="Items"
+      title="Opciones"
       :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"
@@ -88,8 +88,8 @@ const columns = [
   { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus' },
-  { name: 'price', align: 'right', label: 'price', field: 'price' },
-  { name: 'group_id', align: 'right', label: 'Grupos', field: 'group_id' }
+  { name: 'price', align: 'right', label: 'Precio', field: 'price' },
+  { name: 'group_id', align: 'center', label: 'Grupos', field: 'group_id' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'

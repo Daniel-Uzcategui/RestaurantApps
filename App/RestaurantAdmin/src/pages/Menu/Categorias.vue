@@ -24,7 +24,7 @@
             <q-checkbox v-model="props.selected" />
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              <q-input  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                 :value="props.row.name"
                 dense
                 />
@@ -32,17 +32,13 @@
 
           <q-td key="descripcion" :props="props">
             <div v-html="props.row.descripcion"></div>
-            <q-popup-edit
-              :value="props.row.descripcion"
-            >
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
                 autofocus
               />
-            </q-popup-edit>
-          </q-td>
+           </q-td>
 
           <q-td key="estatus" :props="props">
               <q-toggle
@@ -85,7 +81,7 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'desc', style: 'min-width: 280px; width: 280px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'left', label: 'Activar', field: 'estatus' }
 ]

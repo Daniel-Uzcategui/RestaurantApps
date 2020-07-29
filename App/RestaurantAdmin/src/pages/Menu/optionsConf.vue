@@ -3,7 +3,7 @@
    <q-table
       :data="groupComp"
       :columns="columns"
-      title="Componentes de Items"
+      title="Configuración de Opciones"
       :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"
@@ -19,7 +19,7 @@
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th auto-width>
-            Preview
+            Vista Previa
           </q-th>
           <q-th auto-width />
           <q-th

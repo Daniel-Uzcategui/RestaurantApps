@@ -148,13 +148,6 @@ export default {
           separator: true
         },
         {
-          title: 'Promociones',
-          caption: '',
-          icon: 'fas fa-ad',
-          link: '#/menu/promo',
-          separator: true
-        },
-        {
           title: 'Opciones',
           caption: '',
           icon: 'fab fa-gulp',
@@ -166,6 +159,13 @@ export default {
           caption: '',
           icon: 'menu_book',
           link: '#/menu/optionsconf',
+          separator: true
+        },
+        {
+          title: 'Promociones',
+          caption: '',
+          icon: 'fas fa-ad',
+          link: '#/menu/promo',
           separator: true
         },
         {
