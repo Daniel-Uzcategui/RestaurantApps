@@ -1,6 +1,6 @@
 <template>
   <q-item
-    @click="click"
+    @click.native="click"
     clickable
     tag="a"
     :href="link"

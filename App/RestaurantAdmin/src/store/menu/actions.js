@@ -24,7 +24,7 @@ export const addRow = firestoreAction(async (state, payload) => {
     .collection(payload.collection).add({
       name: '',
       estatus: 1,
-      DateIn: firebase.firestore.FieldValue.serverTimestamp()
+      DateIn: firebase.firestore.FieldValue.serverTimestamp(),
       descripcion: ''
     })
     .then(function (docRef) {

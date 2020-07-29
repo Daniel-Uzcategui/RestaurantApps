@@ -56,7 +56,12 @@ export default {
     }
   },
   created () {
-    this.bindLocalizations()
+    this.bindLocalizations().then(() => {
+      if (this.localizations.length === 1) {
+        this.setSede(this.localizations[0]['id'])
+        this.$router.push({ path: '/menu/menu' })
+      }
+    })
   }
 }
 </script>

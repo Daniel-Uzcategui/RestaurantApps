@@ -96,6 +96,7 @@ export default {
     })
   },
   async mounted () {
+    console.log({ rt: this.$router })
     const { currentUser } = this
     if (currentUser) {
       // Hide the loading screen if currentUser

@@ -127,16 +127,18 @@
               />
           </q-td>
           <q-td key="price" :props="props">
-              <q-input
+            <q-field
               filled
                 @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price"
-                dense
-                autofocus
-                mask="#.##"
-                label="Dos decimales"
-                input-class="text-center"
-              />
+                label="Price with v-money component"
+                hint="Mask: $ #,###.00 #"
+                :id="props.row.id"
+            >
+              <template v-slot:control="{ id, floatingLabel, value, emitValue }">
+                <input :id="id" class="q-field__input text-right" :value="value" @change="e => emitValue(e.target.value)" v-money="moneyFormatForDirective" v-show="floatingLabel">
+              </template>
+            </q-field>
           </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
@@ -212,6 +214,14 @@ export default {
   },
   data () {
     return {
+      moneyFormatForDirective: {
+        decimal: '.',
+        thousands: ',',
+        prefix: '$ ',
+        suffix: ' #',
+        precision: 2,
+        masked: false
+      },
       sede: null,
       columns,
       selected: [],

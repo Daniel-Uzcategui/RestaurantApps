@@ -3,7 +3,7 @@
       <q-header class="bg-transparent text-white" v-if="currentUser">
          <q-toolbar>
                 <q-btn fab
-               color="grey"
+               color="light-blue"
                dense
                round
                icon='fas fa-shopping-cart'
@@ -12,7 +12,7 @@
                exact >
                   <q-badge color="red" floating>{{getCartQ}}</q-badge>
                 </q-btn>
-                <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
+                <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(); setBlur()" label="Perfil" />
                <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
                   <user-settings></user-settings>
                </q-dialog>
@@ -20,9 +20,9 @@
          </q-toolbar>
       </q-header>
       <q-drawer
+         on-layout="hide"
          :content-class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'"
          v-model="leftDrawerOpen"
-         show-if-above
          bordered
          >
          <q-list>
@@ -33,7 +33,6 @@
                />
          </q-list>
       </q-drawer>
-      <iframe :class="{ 'bluriframe': $router.currentRoute.fullPath !== '/home' }" src="https://pfcevolution.com/" style="background: #FFFFFF;position:inherit; top:0px; left:0; width:100%; overflow:hidden;height: -webkit-fill-available;" name="myiFrame" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" height="100%" width="100%" allowfullscreen />
       <q-page-container>
          <transition
             name="transitions"
@@ -73,8 +72,8 @@ export default {
       get () {
         return this.$store.state.user.editUserDialog
       },
-      set (val) {
-        this.setEditUserDialog(val)
+      set () {
+        this.setEditUserDialog(true)
       }
     }
   },
@@ -122,7 +121,8 @@ export default {
           title: 'Perfil',
           caption: '',
           icon: 'fas fa-sign-out-alt',
-          link: '#'
+          link: '#',
+          click: this.setEditUserDialog
         },
         {
           title: 'Tus Ordenes',
