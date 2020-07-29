@@ -139,8 +139,8 @@
           </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus.${sede}`)"
-                :value="props.row.estatus ? props.row.estatus[sede] ? props.row.estatus[sede] : false : false"
+                @input="(e) => saved2(e, props.row.status, props.row.id, `estatus.${sede}`)"
+                :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
                 color="#3c8dbc"
               />
           </q-td>
@@ -221,7 +221,6 @@ export default {
   },
   created () {
     this.bindMenu()
-    this.bindExtras()
     this.bindCategorias()
     this.bindLocalizations()
     this.bindGroupComp()
@@ -252,10 +251,16 @@ export default {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },
+    saved2 (value, initialValue, id, key) {
+      console.log({ key })
+      if (value) { value = 1 } else { value = 0 }
+      console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
+      this.setValue({ payload: { value, id, key }, collection: 'menu' })
+    },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindExtras', 'bindCategorias', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
     delrow () {
       this.delrows({ payload: this.selected, collection: 'menu' })

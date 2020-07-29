@@ -55,8 +55,8 @@
           </q-td>
                <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus`)"
-                :value="typeof props.row.estatus !== 'undefined' ? props.row.estatus : false"
+                @input="(e) => saved((e ? 1 : 0), props.row.estatus, props.row.id, `estatus`)"
+                :value="props.row.estatus ? true : false"
                 color="#3c8dbc"
               />
           </q-td>
@@ -151,7 +151,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'promos', 'groupComp']),
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'promos', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     locList () {
@@ -195,8 +195,8 @@ export default {
           name: x.name
         }
       })
+      console.log({ ff: this.filterOptions })
     })
-    this.bindExtras()
     this.bindCategorias()
     this.bindLocalizations()
     this.bindPromos()
@@ -218,16 +218,23 @@ export default {
     saved2 (value, initialValue, id, key) {
       console.log({ key })
       if (key === 'discount') { value = parseFloat(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseFloat(value) }
+      if (key === 'estatus') { if (value) { value = 1 } else { value = 0 } }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'promos' })
+    },
+    getStatus (value) {
+      let status
+      status = value === 1
+      return status
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindExtras', 'bindCategorias', 'bindPromos']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindPromos']),
     ...mapActions('localization', ['bindLocalizations']),
     delrow () {
-      this.delrows({ payload: this.selected, collection: 'promos' })
+      console.log({ payload: this.selected2, collection: 'promos' })
+      this.delrows({ payload: this.selected2, collection: 'promos' })
     },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.menu.length}`

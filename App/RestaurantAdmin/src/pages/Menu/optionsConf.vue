@@ -178,7 +178,7 @@ export default {
   data () {
     return {
       value: [],
-      typeOpts: [{ name: 'CheckBox', value: 0 }, { name: 'RadioBox', value: 1 }, { name: 'Slider', value: 2 }],
+      typeOpts: [{ name: 'Seleccion Múltiple A', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple B', value: 2 }],
       typeFree: [{ name: 'Si', value: 1 }, { name: 'No', value: 0 }],
       columns,
       selected: [],

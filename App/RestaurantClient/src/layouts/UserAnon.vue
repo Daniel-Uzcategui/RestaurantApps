@@ -1,6 +1,6 @@
 <template>
    <q-layout class="main bg-image" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
-      <q-header class="bg-transparent text-white" >
+      <q-header class="bg-transparent text-white" v-if="true">
          <q-toolbar>
                 <q-btn fab
                color="light-blue"
@@ -12,9 +12,8 @@
                exact >
                   <q-badge color="red" floating>{{getCartQ}}</q-badge>
                 </q-btn>
-                <q-btn v-if="isAnonymous" class="text-caption" flat v-ripple @click="$router.push({ path: '/auth/login' })" label="LogIn/Register" />
-                <q-btn v-if="!isAnonymous" class="text-caption" flat v-ripple @click="logoutUser()" label="LogIn/Register" />
-               <q-dialog v-if="isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
+                <q-btn class="text-caption" flat v-ripple @click="$router.push({ path: '/auth' })" label="LogIn/Register" />
+               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
                   <user-settings></user-settings>
                </q-dialog>
                <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
@@ -58,7 +57,6 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart']),
     getCartQ () {
       var amt = 0
@@ -94,13 +92,6 @@ export default {
   },
   async mounted () {
     const { currentUser } = this
-    console.log({ rt: this.$router })
-    if (typeof this.$router.currentRoute.meta !== 'undefined') {
-      if (Object.keys(this.$router.currentRoute.meta).length === 0) {
-        this.$q.loading.hide()
-      }
-    }
-    console.log({ t: this.currentUser })
     if (currentUser) {
       // Hide the loading screen if currentUser
       // is available before the page renders
@@ -162,7 +153,7 @@ export default {
           caption: '',
           icon: 'fas fa-sign-out-alt',
           link: '#',
-          click: () => this.logoutUser()
+          click: this.logoutUser
         }
       ]
     }

@@ -28,9 +28,9 @@
          <q-card-section v-if="!promo">
            <div class="q-pa-md flex">
             <q-list v-for="item in filteredMenu" separator :key="item.id">
-               <q-item>
+               <q-item style="width: 300px; height: 110px">
                   <q-item-section avatar top>
-                     <q-img :src=item.photo width="80px" color="primary" text-color="white" class="rounded-borders" />
+                     <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders" />
                   </q-item-section>
                   <q-item-section>
                      <q-item-label lines="1">{{item.name}} </q-item-label>
@@ -43,13 +43,14 @@
                      <q-btn v-if="checkAvail(item.id, item.prodType)[0]" style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id, 0)" dense>Añadir</q-btn>
                   </q-item-section>
                   <q-item-section side>
-                     <q-badge color="red" floating rounded v-if="item.discount > 0" >Descuento {{item.discount}}%</q-badge>
+                     <q-badge style="margin-top: 15px; margin-right: 20px" color="red" floating rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
                      <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                      </q-item-label>
                      <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                      </q-item-label>
                   </q-item-section>
                </q-item>
+               <q-separator />
             </q-list>
            </div>
          </q-card-section>

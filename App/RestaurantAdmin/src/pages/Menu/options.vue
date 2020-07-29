@@ -47,8 +47,8 @@
 
           <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="props.row.estatus"
+                @input="(e) => saved2(e, props.row.estatus, props.row.id, 'estatus')"
+                :value="props.row.estatus ? true : false"
                 color="#3c8dbc"
               />
           </q-td>
@@ -120,7 +120,7 @@ export default {
       if (val.length > 0) {
         if (!this.itemGroup.includes(val)) {
           this.addRow({ collection: 'itemGroup' })
-            .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name' }, collection: 'itemGroup' }) })
+            .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }) })
         }
         done(val, 'toggle')
       }
@@ -132,6 +132,7 @@ export default {
       this.setValue({ payload: { value, id, key }, collection: 'item' })
     },
     saved2 (value, initialValue, id, key) {
+      if (key === 'estatus') { if (value) { value = 1 } else { value = 0 } }
       this.setValue({ payload: { value: parseFloat(value), id, key }, collection: 'item' })
     },
     canceled (val, initialValue) {

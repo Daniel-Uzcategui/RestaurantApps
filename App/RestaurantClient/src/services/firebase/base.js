@@ -56,15 +56,17 @@ export const fBInit = (config) => {
  */
 export const handleOnAuthStateChanged = async (store, currentUser) => {
   const initialAuthState = isAuthenticated(store)
+  console.log({ initialAuthState })
   // Save to the store
   store.commit('auth/setAuthState', {
     isAuthenticated: currentUser !== null,
+    isAnonymous: currentUser !== null ? currentUser.isAnonymous : true,
     isReady: true,
     uid: (currentUser ? currentUser.uid : '')
   })
-
   // Get & bind the current user
   if (store.state.auth.isAuthenticated) {
+    console.log({ currentUser })
     await store.dispatch('user/getCurrentUser', currentUser.uid)
   }
 
@@ -73,12 +75,30 @@ export const handleOnAuthStateChanged = async (store, currentUser) => {
   if (!currentUser && initialAuthState) {
     store.dispatch('auth/routeUserToAuth')
   }
+  if (currentUser == null) {
+    firebase.auth().signInAnonymously().then(e => {
+      store.commit('auth/setAuthState', {
+        isAuthenticated: currentUser !== null,
+        isAnonymous: true,
+        isReady: true,
+        uid: (currentUser ? currentUser.uid : '')
+      })
+      console.log('Anonimo!')
+    }).catch(function (error) {
+      var errorCode = error.code
+      var errorMessage = error.message
+      console.log({ errorCode, errorMessage })
+    })
+  }
 }
 
 /**
  * @param  {Object} store - Vuex store
  */
 export const isAuthenticated = (store) => {
+  if (store.state.auth.isAnonymous) {
+    return false
+  }
   return store.state.auth.isAuthenticated
 }
 
@@ -99,13 +119,15 @@ export const routerBeforeEach = async (router, store) => {
       await ensureAuthIsInitialized(store)
       if (to.matched.some(record => record.meta.requiresAuth)) {
         if (isAuthenticated(store)) {
+          console.log('trueee')
           next()
         } else {
+          console.log('falseeee')
           next('/auth/login')
         }
       } else if ((to.path === '/auth/register' && isAuthenticated(store)) ||
         (to.path === '/auth/login' && isAuthenticated(store))) {
-        next('/user/profile')
+        next()
       } else {
         next()
       }

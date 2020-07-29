@@ -20,10 +20,14 @@ export const delValue = firestoreAction((state, payload) => {
     })
 })
 export const addRow = firestoreAction(async (state, payload) => {
+  var st = 'estatus'
+  if (payload.collection === 'menu') {
+    st = 'status'
+  }
   return firestore()
     .collection(payload.collection).add({
       name: '',
-      estatus: 0,
+      [st]: 0,
       descripcion: '',
       DateIn: firebase.firestore.FieldValue.serverTimestamp()
     })
@@ -38,25 +42,26 @@ export const addRow = firestoreAction(async (state, payload) => {
 
 export const delrows = firestoreAction((context, payload) => {
   console.log(payload)
+  var st = 'estatus'
+  if (payload.collection === 'menu') {
+    st = 'status'
+  }
   for (const i in payload.payload) {
     firestore().collection(payload.collection)
       .doc(payload.payload[i].id)
-      .delete().then(() => {
-        console.log(`${payload.collection} removed!`)
-      }).catch((e) => {
-        console.log('error removing extras!')
+      .update({ [st]: 2 })
+      .then(() => {
+        console.log(`${payload.collection} updated!`)
       })
   }
 })
 /// ////// END Action ////////
 /// Bindings ////
-export const bindExtras = firestoreAction(({ bindFirestoreRef }) => {
-  console.log('bindingExtras')
-  return bindFirestoreRef('extras', firestore().collection('extras'), { reset: false })
-})
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
-  return bindFirestoreRef('menu', firestore().collection('menu'), { reset: false })
+  return bindFirestoreRef('menu', firestore()
+    .collection('menu').orderBy('status', 'desc')
+    .where('status', '<', 2), { reset: false })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
@@ -66,17 +71,25 @@ export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingPromos')
-  return bindFirestoreRef('promos', firestore().collection('promos'), { reset: false })
+  return bindFirestoreRef('promos', firestore().collection('promos')
+    .orderBy('estatus', 'desc')
+    .where('estatus', '<', 2), { reset: false })
 })
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')
-  return bindFirestoreRef('item', firestore().collection('item'), { reset: false })
+  return bindFirestoreRef('item', firestore().collection('item')
+    .orderBy('estatus', 'desc')
+    .where('estatus', '<', 2), { reset: false })
 })
 export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItemsGroup')
-  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup'), { reset: false })
+  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup')
+    .orderBy('estatus', 'desc')
+    .where('estatus', '<', 2), { reset: false })
 })
 export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindGroupComp')
-  return bindFirestoreRef('groupComp', firestore().collection('groupComp'), { reset: false })
+  return bindFirestoreRef('groupComp', firestore().collection('groupComp')
+    .orderBy('estatus', 'desc')
+    .where('estatus', '<', 2), { reset: false })
 })

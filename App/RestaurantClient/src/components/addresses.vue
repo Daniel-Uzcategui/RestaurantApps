@@ -124,7 +124,9 @@ export default {
     }
   },
   mounted () {
-    this.bindAddress(this.currentUser.id)
+    if (this.currentUser !== null) {
+      this.bindAddress(this.currentUser.id)
+    }
   },
   data () {
     return {
