@@ -26,9 +26,9 @@
         stack-label
         label="Seleccione"
       />
-        <q-btn-group flat push >
+        <q-btn-group flat push v-if="sede !== null">
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
@@ -112,6 +112,7 @@
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
                 autofocus
+                min="1" max="99999"
                 type="number"
               />
           </q-td>
@@ -123,6 +124,7 @@
                 dense
                 autofocus
                 label="%"
+                min="1" max="100"
                 type="number"
               />
           </q-td>
@@ -157,6 +159,19 @@
           @uploaded="uploadComplete"
           document='menu'
         ></fbq-uploader>
+    </q-dialog>
+    <q-dialog v-model="noSelect">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Eliminar Producto</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar un producto a Eliminar
+        </q-card-section>
+      </q-card>
     </q-dialog>
   </div>
 </template>
@@ -216,7 +231,8 @@ export default {
       selected: [],
       popupEditData: '',
       photoType: '',
-      photoUpload: false
+      photoUpload: false,
+      noSelect: false
     }
   },
   created () {
@@ -262,14 +278,34 @@ export default {
     },
     ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
-    delrow () {
+    /* delrow () {
       this.delrows({ payload: this.selected, collection: 'menu' })
+    }, */
+    softDelete () {
+      if (this.selected.length === 0) {
+        this.noSelect = true
+      }
+      if (this.selected.length > 0) {
+        this.$q.dialog({
+          title: 'Eliminar producto',
+          message: '¿Desea Eliminar el producto seleccionado ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          this.delrows({ payload: this.selected, collection: 'menu' })
+        }).onCancel(() => {
+        })
+      }
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.elmenu.length}`
+      let literal = this.selected.length > 1 ? 's' : ''
+      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.elmenu.length}`
+      return objSelectedString
     },
     addrow () {
-      this.addRow({ collection: 'menu' })
+      if (this.sede !== null) {
+        this.addRow({ collection: 'menu' })
+      }
     },
     showPhotoUpload (type) {
       this.photoUpload = true

@@ -154,7 +154,7 @@ export default {
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },
         { label: 'Delivery', value: 1 },
-        { label: 'In-Local', value: 2 }
+        { label: 'En-Local', value: 2 }
       ]
     }
   }

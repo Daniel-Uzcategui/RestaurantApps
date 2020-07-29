@@ -67,13 +67,13 @@
   <q-dialog v-model="noSelect">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Borrar categoria</div>
+          <div class="text-h6">Eliminar categoria</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-space />
        <q-card-section>
-          Debe seleccionar una Categoria ha Borrar
+          Debe seleccionar una Categoria a Eliminar
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -147,7 +147,9 @@ export default {
       return status
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.categorias.length}`
+      let literal = this.selected.length > 1 ? 's' : ''
+      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.categorias.length}`
+      return objSelectedString
     },
     addrow () {
       this.addRow({ collection: 'categorias' })
