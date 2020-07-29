@@ -133,7 +133,6 @@
                 :value="getNumberFormat(props.row.price,2,',','.')"
                 dense
                 autofocus
-                mask="#.##"
                 label="Dos decimales"
                 input-class="text-center"
               />
