@@ -127,12 +127,13 @@
               />
           </q-td>
           <q-td key="price" :props="props">
-            <q-field
+            <q-input
               filled
                 @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="getNumberFormat(props.row.price,2,',','.')"
                 dense
                 autofocus
+                mask="#.##"
                 label="Dos decimales"
                 input-class="text-center"
               />
@@ -211,14 +212,6 @@ export default {
   },
   data () {
     return {
-      moneyFormatForDirective: {
-        decimal: '.',
-        thousands: ',',
-        prefix: '$ ',
-        suffix: ' #',
-        precision: 2,
-        masked: false
-      },
       sede: null,
       columns,
       selected: [],
