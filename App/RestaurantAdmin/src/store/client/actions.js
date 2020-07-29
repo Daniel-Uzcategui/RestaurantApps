@@ -15,5 +15,5 @@ export const deleteClient = async function ({ commit }, payload) {
 
 export const bindClients = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindClients')
-  return bindFirestoreRef('clients', firestore().collection('users').where('rol', '==', 'Usuario'))
+  return bindFirestoreRef('clients', firestore().collection('users'))
 })

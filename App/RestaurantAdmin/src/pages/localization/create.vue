@@ -46,7 +46,7 @@
             <div class="div-typeServices">
               <q-checkbox v-model="PickUP"  dense label="Pick-up" color="teal" class="typeServices" />
               <q-checkbox v-model="Delivery" dense label="Delivery" color="orange" class="typeServices" />
-              <q-checkbox v-model="Inlocal" dense label="In local" color="red" class="typeServices" />
+              <q-checkbox v-model="Inlocal" dense label="En local" color="red" class="typeServices" />
             </div>
         </div>
         <div class="header-cell col-4" v-show="Inlocal">

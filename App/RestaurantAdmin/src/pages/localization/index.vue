@@ -170,7 +170,7 @@ export default {
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'PickUP', align: 'center', label: 'Pick UP', field: 'PickUP' },
         { name: 'Delivery', align: 'center', label: 'Delivery', field: 'Delivery' },
-        { name: 'Inlocal', align: 'center', label: 'In local', field: 'Inlocal' }
+        { name: 'Inlocal', align: 'center', label: 'En local', field: 'Inlocal' }
       ]
     }
   }

@@ -112,7 +112,7 @@ export default {
     },
     getClientDetail (value) {
       return this.clients.find(obj => {
-        return obj.id === value && obj.rol === 'Usuario'
+        return obj.id === value // && obj.rol === 'Usuario'
       })
     },
     getClientOrders (value) {
