@@ -87,7 +87,7 @@ export default {
       name: '',
       tables: '',
       capacity: '',
-      status: 'Activo',
+      status: 1,
       PickUP: true,
       Delivery: true,
       Inlocal: false,
