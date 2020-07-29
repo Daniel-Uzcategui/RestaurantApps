@@ -130,15 +130,12 @@
             <q-field
               filled
                 @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="props.row.price"
-                label="Price with v-money component"
-                hint="Mask: $ #,###.00 #"
-                :id="props.row.id"
-            >
-              <template v-slot:control="{ id, floatingLabel, value, emitValue }">
-                <input :id="id" class="q-field__input text-right" :value="value" @change="e => emitValue(e.target.value)" v-money="moneyFormatForDirective" v-show="floatingLabel">
-              </template>
-            </q-field>
+                :value="getNumberFormat(props.row.price,2,',','.')"
+                dense
+                autofocus
+                label="Dos decimales"
+                input-class="text-center"
+              />
           </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
@@ -323,6 +320,35 @@ export default {
           )
         }
       })
+    },
+    getNumberFormat (number, decimals, decPoint, thousandsPoint) {
+      if (number == null || !isFinite(number)) {
+        // throw new TypeError('number is not valid')
+        number = 0
+      }
+
+      if (!decimals) {
+        var len = number.toString().split('.').length
+        decimals = len > 1 ? len : 0
+      }
+
+      if (!decPoint) {
+        decPoint = '.'
+      }
+
+      if (!thousandsPoint) {
+        thousandsPoint = ','
+      }
+
+      number = parseFloat(number).toFixed(decimals)
+
+      number = number.replace('.', decPoint)
+
+      var splitNum = number.split(decPoint)
+      splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsPoint)
+      number = splitNum.join(decPoint)
+
+      return number
     }
   }
 }

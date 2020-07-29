@@ -23,9 +23,9 @@ export const addRow = firestoreAction(async (state, payload) => {
   return firestore()
     .collection(payload.collection).add({
       name: '',
-      estatus: 1,
-      DateIn: firebase.firestore.FieldValue.serverTimestamp(),
-      descripcion: ''
+      estatus: 0,
+      descripcion: '',
+      DateIn: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
@@ -60,7 +60,9 @@ export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
-  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '<', 2), { reset: false })
+  return bindFirestoreRef('categorias', firestore().collection('categorias')
+    .orderBy('estatus', 'desc')
+    .where('estatus', '<', 2), { reset: false })
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingPromos')

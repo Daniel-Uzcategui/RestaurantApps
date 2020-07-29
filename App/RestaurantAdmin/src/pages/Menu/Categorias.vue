@@ -27,7 +27,7 @@
               <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                 :value="props.row.name"
                 dense
-                autofocus />
+                />
           </q-td>
 
           <q-td key="descripcion" :props="props">
@@ -85,9 +85,9 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name' },
-  { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus' }
+  { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'estatus', align: 'left', label: 'Activar', field: 'estatus' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'
@@ -105,6 +105,7 @@ export default {
   },
   mounted () {
     this.bindCategorias()
+    console.log(this.$router)
   },
   methods: {
     showPopup (row, col) {
