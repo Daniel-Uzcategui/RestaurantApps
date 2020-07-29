@@ -69,7 +69,6 @@
                      dense
                      autofocus
                      input-class="text-center"
-                     label="2 decimales"
                      />
                </q-td>
                <q-td key="groupComp" :props="props">

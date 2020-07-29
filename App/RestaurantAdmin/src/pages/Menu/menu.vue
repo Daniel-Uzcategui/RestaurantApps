@@ -135,7 +135,6 @@
                 :value="getNumberFormat(props.row.price,2,',','.')"
                 dense
                 autofocus
-                label="Dos decimales"
                 input-class="text-center"
               />
           </q-td>
