@@ -78,7 +78,7 @@ export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')
   return bindFirestoreRef('item', firestore().collection('item')
-    .orderBy('estatus', 'desc')
+    .orderBy('estatus', 'asc')
     .where('estatus', '<', 2), { reset: false })
 })
 export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {

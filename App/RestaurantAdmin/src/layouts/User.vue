@@ -125,79 +125,85 @@ export default {
           title: 'Inicio',
           caption: '',
           icon: 'fa fa-home',
-          link: '#/home'
+          link: '#/home',
+          separator: true
         },
         {
           title: 'Sedes',
           caption: '',
           icon: 'fa fa-globe',
           link: '#/localization/index',
-          separator: true
+          separator: false
         },
         {
           title: 'Categorias',
           caption: '',
           icon: 'fa fa-bars',
-          link: '#/menu/categorias'
+          link: '#/menu/categorias',
+          separator: false
         },
         {
           title: 'Menus',
           caption: '',
           icon: 'fas fa-utensils',
           link: '#/menu/menu',
-          separator: true
+          separator: false
         },
         {
           title: 'Opciones',
           caption: '',
           icon: 'fab fa-gulp',
           link: '#/menu/options',
-          separator: true
+          separator: false
         },
         {
           title: 'Configuracion de Opciones',
           caption: '',
           icon: 'menu_book',
           link: '#/menu/optionsconf',
-          separator: true
+          separator: false
         },
         {
           title: 'Promociones',
           caption: '',
           icon: 'fas fa-ad',
           link: '#/menu/promo',
-          separator: true
+          separator: false
         },
         {
           title: 'Ordenes',
           caption: '',
           icon: 'room_service',
-          link: '#/orders/index'
+          link: '#/orders/index',
+          separator: false
         },
         {
           title: 'Pagos',
           caption: '',
           icon: 'fa fa-briefcase',
           link: '#/payments/index',
-          separator: true
-        },
-        {
-          title: 'Editor Web',
-          caption: '',
-          icon: 'far fa-object-group',
-          link: '#/editor/index'
+          separator: false
         },
         {
           title: 'Clientes',
           caption: '',
           icon: 'fa fa-user',
-          link: '#/clients/index'
+          link: '#/clients/index',
+          separator: false
+        },
+        {
+          title: 'Editor Web',
+          caption: '',
+          icon: 'far fa-object-group',
+          link: '#/editor/index',
+          separator: false
         },
         {
           title: 'Usuarios',
           caption: '',
           icon: 'fa fa-users',
-          link: '#/users/index'
+          link: '#/users/index',
+          separator: false
         }
       ]
     }

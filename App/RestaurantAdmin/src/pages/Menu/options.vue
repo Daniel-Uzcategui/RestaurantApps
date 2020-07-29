@@ -54,9 +54,8 @@
           </q-td>
           <q-td key="price" :props="props">
             <q-input
-            mask="#.##"
-            label="Dos decimales"
-            @input="(e) => saved2(e, props.row.price, props.row.id, 'price')" :value="props.row.price" dense autofocus />
+            @input="(e) => saved2(e, props.row.price, props.row.id, 'price')"
+            :value="getNumberFormat(props.row.price,2,',','.')" dense autofocus />
           </q-td>
           <q-td key="group_id" :props="props">
               <q-select
@@ -81,6 +80,19 @@
         </q-tr>
       </template>
     </q-table>
+    <q-dialog v-model="noSelect">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Eliminar Opciones</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar un opción a Eliminar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -88,8 +100,8 @@ const columns = [
   { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus' },
-  { name: 'price', align: 'right', label: 'Precio', field: 'price' },
-  { name: 'group_id', align: 'center', label: 'Grupos', field: 'group_id' }
+  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'group_id', style: 'min-width: 300px; width: 300px', align: 'center', label: 'Grupos', field: 'group_id' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'
@@ -102,7 +114,8 @@ export default {
       columns,
       selected: [],
       popupEditData: '',
-      filterOptions: ''
+      filterOptions: '',
+      noSelect: false
     }
   },
   watch: {
@@ -140,10 +153,25 @@ export default {
     },
     ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindItem', 'bindItemGroup']),
     delrow () {
-      this.delrows({ payload: this.selected, collection: 'item' })
+      if (this.selected.length === 0) {
+        this.noSelect = true
+      }
+      if (this.selected.length > 0) {
+        this.$q.dialog({
+          title: 'Eliminar Opciones',
+          message: '¿Desea Eliminar la opción seleccionada ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          this.delrows({ payload: this.selected, collection: 'item' })
+        }).onCancel(() => {
+        })
+      }
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.item.length}`
+      let literal = this.selected.length > 1 ? 's' : ''
+      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.item.length}`
+      return objSelectedString
     },
     addrow () {
       this.addRow({ collection: 'item' })
@@ -160,6 +188,35 @@ export default {
           )
         }
       })
+    },
+    getNumberFormat (number, decimals, decPoint, thousandsPoint) {
+      if (number == null || !isFinite(number)) {
+        // throw new TypeError('number is not valid')
+        number = 0
+      }
+
+      if (!decimals) {
+        var len = number.toString().split('.').length
+        decimals = len > 1 ? len : 0
+      }
+
+      if (!decPoint) {
+        decPoint = '.'
+      }
+
+      if (!thousandsPoint) {
+        thousandsPoint = ','
+      }
+
+      number = parseFloat(number).toFixed(decimals)
+
+      number = number.replace('.', decPoint)
+
+      var splitNum = number.split(decPoint)
+      splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsPoint)
+      number = splitNum.join(decPoint)
+
+      return number
     }
   }
 }
