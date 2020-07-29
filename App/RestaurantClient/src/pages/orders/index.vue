@@ -3,6 +3,7 @@
     <q-card class="menudiv">
     <q-card-section>
     <div class="q-pa-md flex flex-center">
+      <p v-if="orderSort.length === 0" class="text-h4 text-center">No existen pasadas ordenes</p>
       <q-list separator v-for="(items, index) in orderSort" :key="index">
       <q-item @click="carritoDialog(items)" clickable v-ripple>
       <q-item-section>

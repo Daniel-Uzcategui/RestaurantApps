@@ -48,7 +48,7 @@
             <q-separator />
          </q-list>
          <q-list>
-           <p v-if="cart.length == 0" class="text-h6 q-pa-md">No hay productos en el carrito</p>
+           <p v-if="cart.length == 0" class="text-h4 text-center">No ha seleccionado productos</p>
           <q-item v-if="cart.length" >
             <q-item-section class="text-h5 text-right">
               <q-item-label v-if="getTotalCarrito()[1] > 0">

@@ -6,15 +6,15 @@
                color="light-blue"
                dense
                round
-               icon='fas fa-shopping-cart'
+               icon='fas fa-bars'
               name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
                exact >
                   <q-badge color="red" floating>{{getCartQ}}</q-badge>
                 </q-btn>
                 <q-btn v-if="isAnonymous" class="text-caption" flat v-ripple @click="$router.push({ path: '/auth/login' })" label="LogIn/Register" />
-                <q-btn v-if="!isAnonymous" class="text-caption" flat v-ripple @click="logoutUser()" label="LogIn/Register" />
-               <q-dialog v-if="isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
+                <q-btn v-if="!isAnonymous" class="text-caption" flat v-ripple @click="logoutUser()" label="Cerrar Sesión" />
+               <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
                   <user-settings></user-settings>
                </q-dialog>
                <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
@@ -131,7 +131,7 @@ export default {
           caption: '',
           icon: 'fas fa-user',
           link: '#',
-          click: () => { this.setEditUserDialog(true); this.setBlur() }
+          click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
         },
         {
           title: 'Tus Ordenes',
@@ -156,13 +156,6 @@ export default {
           caption: '',
           icon: 'fas fa-map-marked-alt',
           link: '#/user/address'
-        },
-        {
-          title: 'Cerrar Sesión',
-          caption: '',
-          icon: 'fas fa-sign-out-alt',
-          link: '#',
-          click: () => this.logoutUser()
         }
       ]
     }
