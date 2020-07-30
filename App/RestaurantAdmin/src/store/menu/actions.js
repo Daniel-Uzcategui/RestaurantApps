@@ -90,6 +90,6 @@ export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
 export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindGroupComp')
   return bindFirestoreRef('groupComp', firestore().collection('groupComp')
-    .orderBy('estatus', 'desc')
+    .orderBy('estatus', 'asc')
     .where('estatus', '<', 2), { reset: false })
 })

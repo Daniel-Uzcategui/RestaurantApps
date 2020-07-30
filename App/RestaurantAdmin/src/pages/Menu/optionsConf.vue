@@ -151,6 +151,19 @@
         </q-tr>
       </template>
     </q-table>
+    <q-dialog v-model="noSelect">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Eliminar Configuración de Opciones</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar una Configuración de Opción a Eliminar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -183,6 +196,7 @@ export default {
       columns,
       selected: [],
       popupEditData: '',
+      noSelect: false,
       filterOptions: ''
     }
   },
@@ -212,10 +226,25 @@ export default {
     },
     ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindItem', 'bindItemGroup', 'bindGroupComp']),
     delrow () {
-      this.delrows({ payload: this.selected, collection: 'groupComp' })
+      if (this.selected.length === 0) {
+        this.noSelect = true
+      }
+      if (this.selected.length > 0) {
+        this.$q.dialog({
+          title: 'Eliminar Configuración de Opciones',
+          message: '¿Desea Eliminar la Configuración de Opción seleccionada ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          this.delrows({ payload: this.selected, collection: 'groupComp' })
+        }).onCancel(() => {
+        })
+      }
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.item.length}`
+      let literal = this.selected.length > 1 ? 's' : ''
+      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.item.length}`
+      return objSelectedString
     },
     addrow () {
       this.addRow({ collection: 'groupComp' })
