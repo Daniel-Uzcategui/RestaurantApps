@@ -20,13 +20,17 @@ export const delValue = firestoreAction((state, payload) => {
     })
 })
 export const addRow = firestoreAction(async (state, payload) => {
+  let data = {
+    name: '',
+    softDelete: 0,
+    descripcion: '',
+    DateIn: firebase.firestore.FieldValue.serverTimestamp()
+  }
+  if (payload.collection !== 'optionsConf') {
+    data = { ...data, price: 0 }
+  }
   return firestore()
-    .collection(payload.collection).add({
-      name: '',
-      softDelete: 0,
-      descripcion: '',
-      DateIn: firebase.firestore.FieldValue.serverTimestamp()
-    })
+    .collection(payload.collection).add({ ...data })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
       return docRef.id
@@ -51,42 +55,37 @@ export const delrows = firestoreAction((context, payload) => {
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
   return bindFirestoreRef('menu', firestore()
-    .collection('menu').orderBy('status', 'desc')
-    .orderBy('DateIn', 'desc')
+    .collection('menu')
+    .orderBy('softDelete', 'asc')
     .where('softDelete', '<', 1), { reset: false })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
   return bindFirestoreRef('categorias', firestore().collection('categorias')
-    .orderBy('estatus', 'desc')
-    .orderBy('DateIn', 'desc')
+    .orderBy('softDelete', 'asc')
     .where('softDelete', '<', 1), { reset: false })
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingPromos')
   return bindFirestoreRef('promos', firestore().collection('promos')
-    .orderBy('estatus', 'desc')
-    .orderBy('DateIn', 'desc')
+    .orderBy('softDelete', 'asc')
     .where('softDelete', '<', 1), { reset: false })
 })
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')
   return bindFirestoreRef('item', firestore().collection('item')
-    .orderBy('estatus', 'asc')
-    .orderBy('DateIn', 'desc')
+    .orderBy('softDelete', 'asc')
     .where('softDelete', '<', 1), { reset: false })
 })
 export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItemsGroup')
   return bindFirestoreRef('itemGroup', firestore().collection('itemGroup')
-    .orderBy('estatus', 'desc')
-    .orderBy('DateIn', 'desc')
+    .orderBy('softDelete', 'asc')
     .where('softDelete', '<', 1), { reset: false })
 })
 export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindGroupComp')
   return bindFirestoreRef('groupComp', firestore().collection('groupComp')
-    .orderBy('estatus', 'asc')
-    .orderBy('DateIn', 'desc')
+    .orderBy('softDelete', 'asc')
     .where('softDelete', '<', 1), { reset: false })
 })
