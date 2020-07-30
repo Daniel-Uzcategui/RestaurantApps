@@ -26,8 +26,11 @@ export const addRow = firestoreAction(async (state, payload) => {
     descripcion: '',
     DateIn: firebase.firestore.FieldValue.serverTimestamp()
   }
-  if (payload.collection !== 'optionsConf') {
-    data = { ...data, price: 0 }
+  if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {
+    data = {
+      ...data,
+      price: 0
+    }
   }
   return firestore()
     .collection(payload.collection).add({ ...data })
