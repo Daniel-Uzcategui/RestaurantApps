@@ -3,5 +3,6 @@
     "common_root_object": "environments",
     "add_qenv_to_gitignore": false
   },
-  "@quasar/qmediaplayer": {}
+  "@quasar/qmediaplayer": {},
+  "qdecimal": {}
 }

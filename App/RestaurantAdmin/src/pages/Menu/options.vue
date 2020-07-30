@@ -47,15 +47,14 @@
 
           <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved2(e, props.row.estatus, props.row.id, 'estatus')"
+                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
                 :value="props.row.estatus ? true : false"
                 color="#3c8dbc"
               />
           </q-td>
           <q-td key="price" :props="props">
-            <q-input
-            @input="(e) => saved2(e, props.row.price, props.row.id, 'price')"
-            :value="getNumberFormat(props.row.price,2,',','.')" dense autofocus />
+            <q-decimal class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                :value="props.row.price" input-style="text-align: right"></q-decimal>
           </q-td>
           <q-td key="group_id" :props="props">
               <q-select
@@ -129,6 +128,9 @@ export default {
     this.filterOptions = Array.from(this.itemGroup)
   },
   methods: {
+    validate (value) {
+      return value >= 0 || 'error'
+    },
     createValue (val, done) {
       if (val.length > 0) {
         if (!this.itemGroup.includes(val)) {
@@ -145,7 +147,6 @@ export default {
       this.setValue({ payload: { value, id, key }, collection: 'item' })
     },
     saved2 (value, initialValue, id, key) {
-      if (key === 'estatus') { if (value) { value = 1 } else { value = 0 } }
       if (key === 'price') { value = isNaN(parseInt(value)) ? 0 : parseInt(value) }
       this.setValue({ payload: { value: parseFloat(value), id, key }, collection: 'item' })
     },
@@ -189,35 +190,6 @@ export default {
           )
         }
       })
-    },
-    getNumberFormat (number, decimals, decPoint, thousandsPoint) {
-      if (number == null || !isFinite(number)) {
-        // throw new TypeError('number is not valid')
-        number = 0
-      }
-
-      if (!decimals) {
-        var len = number.toString().split('.').length
-        decimals = len > 1 ? len : 0
-      }
-
-      if (!decPoint) {
-        decPoint = '.'
-      }
-
-      if (!thousandsPoint) {
-        thousandsPoint = ','
-      }
-
-      number = parseFloat(number).toFixed(decimals)
-
-      number = number.replace('.', decPoint)
-
-      var splitNum = number.split(decPoint)
-      splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsPoint)
-      number = splitNum.join(decPoint)
-
-      return number
     }
   }
 }

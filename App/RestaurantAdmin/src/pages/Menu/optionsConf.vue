@@ -77,7 +77,7 @@
           <q-td key="estatus" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="getStatus(props.row.estatus)"
+                :value="props.row.estatus"
                 color="#3c8dbc"
               />
           </q-td>
@@ -216,11 +216,6 @@ export default {
     this.filterOptions = Array.from(this.itemGroup)
   },
   methods: {
-    getStatus (value) {
-      let status
-      status = value === 1
-      return status
-    },
     showPopup (row, col) {
       this.popupEditData = row[col]
     },

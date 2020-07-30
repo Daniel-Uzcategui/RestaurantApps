@@ -55,21 +55,14 @@
           </q-td>
                <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved((e ? 1 : 0), props.row.estatus, props.row.id, `estatus`)"
-                :value="props.row.estatus ? true : false"
+                @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus`)"
+                :value="props.row.estatus"
                 color="#3c8dbc"
               />
           </q-td>
                <q-td key="price" :props="props">
-                  <q-input
-                     filled
-                     @input="(e) => saved2(e, props.row.price, props.row.id, 'price')"
-                     :value="props.row.price"
-                     mask="#.##"
-                     dense
-                     autofocus
-                     input-class="text-center"
-                     />
+                  <q-decimal class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                :value="props.row.price" input-style="text-align: right"></q-decimal>
                </q-td>
                <q-td key="groupComp" :props="props">
               <q-select

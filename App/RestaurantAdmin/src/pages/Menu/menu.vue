@@ -94,17 +94,12 @@
               />
           </q-td>
            <q-td key="descripcion" :props="props">
-            <div v-html="props.row.descripcion"></div>
-            <q-popup-edit
-              :value="props.row.descripcion"
-            >
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
                 autofocus
               />
-            </q-popup-edit>
           </q-td>
            <q-td key="stock" :props="props">
               <q-input
@@ -129,19 +124,12 @@
               />
           </q-td>
           <q-td key="price" :props="props">
-            <q-input
-              filled
-                @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="getNumberFormat(props.row.price,2,',','.')"
-                dense
-                autofocus
-                label="Dos decimales"
-                input-class="text-center"
-              />
+              <q-decimal class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                :value="props.row.price" input-style="text-align: right"></q-decimal>
           </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
-                @input="(e) => saved2(e, props.row.status, props.row.id, `estatus.${sede}`)"
+                @input="(e) => saved(e, props.row.status, props.row.id, `estatus.${sede}`)"
                 :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
                 color="#3c8dbc"
               />
@@ -178,13 +166,13 @@
 <script>
 const columns = [
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'desc', style: 'min-width: 80px; width: 100px', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'desc', align: 'center', label: 'Nombre', field: 'name' },
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
-  { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' },
-  { name: 'descripcion', style: 'min-width: 80px; width: 120px', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'stock', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Stock', field: 'stock' },
-  { name: 'discount', style: 'min-width: 80px; width: 120px', align: 'center', label: 'Descuento', field: 'discount' },
-  { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
+  { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'stock', align: 'center', label: 'Stock', field: 'stock' },
+  { name: 'discount', align: 'center', label: 'Descuento', field: 'discount' },
+  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' }
 ]
 import { QUploaderBase } from 'quasar'
@@ -242,6 +230,9 @@ export default {
     this.bindGroupComp()
   },
   methods: {
+    validate (value) {
+      return value >= 0 || 'error'
+    },
     CatExists (values) {
       let cat = this.plaincategorias
       if (typeof values === 'undefined') { return [] }
@@ -353,35 +344,6 @@ export default {
           )
         }
       })
-    },
-    getNumberFormat (number, decimals, decPoint, thousandsPoint) {
-      if (number == null || !isFinite(number)) {
-        // throw new TypeError('number is not valid')
-        number = 0
-      }
-
-      if (!decimals) {
-        var len = number.toString().split('.').length
-        decimals = len > 1 ? len : 0
-      }
-
-      if (!decPoint) {
-        decPoint = '.'
-      }
-
-      if (!thousandsPoint) {
-        thousandsPoint = ','
-      }
-
-      number = parseFloat(number).toFixed(decimals)
-
-      number = number.replace('.', decPoint)
-
-      var splitNum = number.split(decPoint)
-      splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsPoint)
-      number = splitNum.join(decPoint)
-
-      return number
     }
   }
 }

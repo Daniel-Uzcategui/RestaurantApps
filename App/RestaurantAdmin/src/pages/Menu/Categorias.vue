@@ -43,7 +43,7 @@
           <q-td key="estatus" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="getStatus(props.row.estatus)"
+                :value="props.row.estatus"
                 color="#3c8dbc"
               />
           </q-td>
@@ -140,11 +140,6 @@ export default {
         }).onCancel(() => {
         })
       }
-    },
-    getStatus (value) {
-      let status
-      status = value === 1
-      return status
     },
     getSelectedString () {
       let literal = this.selected.length > 1 ? 's' : ''
