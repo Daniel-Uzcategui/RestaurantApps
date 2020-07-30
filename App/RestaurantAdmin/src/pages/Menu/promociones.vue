@@ -118,6 +118,19 @@
           document='promos'
         ></fbq-uploader>
     </q-dialog>
+    <q-dialog v-model="noSelect">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Eliminar Promociones</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-space />
+       <q-card-section>
+          Debe seleccionar una Promoción a Eliminar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
    </div>
 </template>
 <script>
@@ -176,6 +189,7 @@ export default {
       popupEditData: '',
       photoType: '',
       photoUpload: false,
+      noSelect: false,
       filterOptions: []
     }
   },
@@ -226,13 +240,28 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     delrow () {
       console.log({ payload: this.selected2, collection: 'promos' })
-      this.delrows({ payload: this.selected2, collection: 'promos' })
+      if (this.selected2.length === 0) {
+        this.noSelect = true
+      }
+      if (this.selected2.length > 0) {
+        this.$q.dialog({
+          title: 'Eliminar Promociones',
+          message: '¿Desea Eliminar la Promociones seleccionada ?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          this.delrows({ payload: this.selected2, collection: 'promos' })
+        }).onCancel(() => {
+        })
+      }
     },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.menu.length}`
     },
     getSelectedString2 () {
-      return this.selected2.length === 0 ? '' : `${this.selected2.length} record${this.selected2.length > 1 ? 's' : ''} selected of ${this.promos.length}`
+      let literal = this.selected2.length > 1 ? 's' : ''
+      let objSelectedString = this.selected2.length === 0 ? '' : `${this.selected2.length} registro` + literal + ` seleccionado` + literal + ` de ${this.promos.length}`
+      return objSelectedString
     },
     addrow () {
       this.addRow({ collection: 'promos' })
