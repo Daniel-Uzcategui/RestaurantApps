@@ -12,13 +12,13 @@
                   <q-btn fab color="secondary" :label="promo ? 'Volver' : 'Promociones'" @click="promo = !promo" />
                </div>
             </q-card-section>
-        <q-card-section>
+        <q-card-section class="wrapel">
          <q-tabs
             v-if="!promo"
-            dense
-            class=""
+            class="wrapel"
+            content-class="wrapel"
             >
-            <q-tab v-for="(tabs, index) in categorias"
+            <q-tab class="wrapel" content-class="wrapel" v-for="(tabs, index) in categorias"
                :key="index"
                @click="selectedCat=tabs.id; search()">
                {{tabs.name.toLowerCase()}}
@@ -396,6 +396,8 @@ export default {
 </script>
 
 <style lang="stylus">
+  .wrapel .no-wrap
+    flex-wrap: wrap !important
   .menuTop
     height 50px
     margin-left 10%

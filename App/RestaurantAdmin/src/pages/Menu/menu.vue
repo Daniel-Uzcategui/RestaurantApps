@@ -124,7 +124,7 @@
                 dense
                 autofocus
                 label="%"
-                min="1" max="100"
+                min="0" max="100"
                 type="number"
               />
           </q-td>
@@ -135,6 +135,7 @@
                 :value="getNumberFormat(props.row.price,2,',','.')"
                 dense
                 autofocus
+                label="Dos decimales"
                 input-class="text-center"
               />
           </q-td>
@@ -262,7 +263,7 @@ export default {
     saved (value, initialValue, id, key) {
       console.log(this.sede)
       console.log({ key })
-      if (key === 'discount') { value = parseFloat(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseInt(value) }
+      if (key === 'discount') { value = isNaN(parseInt(value)) ? 0 : parseInt(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseInt(value) }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },

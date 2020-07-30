@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md">
    <q-table
+      dense
       :data="groupComp"
       :columns="columns"
       title="Configuración de Opciones"
@@ -50,17 +51,12 @@
           </q-td>
 
           <q-td key="descripcion" :props="props">
-            <div v-html="props.row.descripcion"></div>
-            <q-popup-edit
-              :value="props.row.descripcion"
-            >
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
                 autofocus
               />
-            </q-popup-edit>
           </q-td>
           <q-td key="required" :props="props">
             <q-select
@@ -76,6 +72,13 @@
                 stack-label
                 emit-value
                 map-options
+              />
+          </q-td>
+          <q-td key="estatus" :props="props">
+              <q-toggle
+                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
+                :value="getStatus(props.row.estatus)"
+                color="#3c8dbc"
               />
           </q-td>
           <q-td key="group_id" :props="props">
@@ -155,16 +158,17 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name' },
-  { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'required', align: 'right', label: 'Requerido', field: 'required' },
-  { name: 'group_id', align: 'right', label: 'Grupos', field: 'group_id' },
-  { name: 'type', align: 'right', label: 'Tipo', field: 'type' },
-  { name: 'free', align: 'right', label: 'Gratis', field: 'free' },
-  { name: 'priority', align: 'right', label: 'Prioridad', field: 'priority' },
-  { name: 'min', align: 'right', label: 'Min', field: 'min' },
-  { name: 'max', align: 'right', label: 'Max', field: 'max' },
-  { name: 'maxUnit', align: 'right', label: 'MaxUnit', field: 'maxUnit' }
+  { name: 'desc', align: 'center', label: 'Nombre', field: 'name' },
+  { name: 'descripcion', align: 'center', label: 'Descripción', field: 'descripcion' },
+  { name: 'required', align: 'center', label: 'Requerido', field: 'required' },
+  { name: 'estatus', align: 'left', label: 'Activar', field: 'estatus' },
+  { name: 'group_id', align: 'center', label: 'Grupos', field: 'group_id' },
+  { name: 'type', align: 'center', label: 'Tipo', field: 'type' },
+  { name: 'free', align: 'center', label: 'Gratis', field: 'free' },
+  { name: 'priority', align: 'center', label: 'Prioridad', field: 'priority' },
+  { name: 'min', align: 'center', label: 'Min', field: 'min' },
+  { name: 'max', align: 'center', label: 'Max', field: 'max' },
+  { name: 'maxUnit', align: 'center', label: 'MaxUnit', field: 'maxUnit' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'
@@ -198,10 +202,18 @@ export default {
     this.filterOptions = Array.from(this.itemGroup)
   },
   methods: {
+    getStatus (value) {
+      let status
+      status = value === 1
+      return status
+    },
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
+      if (key === 'estatus') {
+        value = value === false ? 0 : 1
+      }
       this.setValue({ payload: { value, id, key }, collection: 'groupComp' })
     },
     saved2 (value, initialValue, id, key) {
