@@ -19,15 +19,24 @@
       </template>
        <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/clients/show', query: { client_Id: props.row.id } })">
-           <q-td  auto-width>
+            <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
            </q-td>
-           <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
-            {{ col.value }}
+           <q-td key="nombre" :props="props">
+            {{ props.row.nombre }}
+          </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="status" :props="props">
+              <q-toggle
+                @input="(e) => saved(e, props.row.status, props.row.id, `status`)"
+                :value="props.row.status ? true : false"
+                color="#3c8dbc"
+              />
+          </q-td>
+          <q-td key="phone" :props="props">
+            <q-input filled :value="props.row.phone" type="text" float-label="Float Label" mask="(###) ### - ####" disabled/>
           </q-td>
         </q-tr>
       </template>
@@ -138,9 +147,9 @@ export default {
       noSelect: false,
       columns: [
         { name: 'nombre', label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
-        { name: 'email', align: 'center', label: 'Correo Electrónico', field: 'email' },
-        { name: 'status', label: 'Estatus', field: 'status' },
-        { name: 'phone', label: 'Telefono', field: 'phone' }
+        { name: 'email', align: 'left', label: 'Correo Electrónico', field: 'email' },
+        { name: 'status', label: 'Estatus', field: 'status', align: 'left' },
+        { name: 'phone', label: 'Telefono', field: 'phone', align: 'center', style: 'min-width: 180px; width: 220px' }
       ]
     }
   }

@@ -33,16 +33,12 @@
 
           <q-td key="descripcion" :props="props">
             <div v-html="props.row.descripcion"></div>
-            <q-popup-edit
-              :value="props.row.descripcion"
-            >
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
                 autofocus
               />
-            </q-popup-edit>
           </q-td>
 
           <q-td key="estatus" :props="props">
