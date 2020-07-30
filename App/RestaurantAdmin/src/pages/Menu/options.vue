@@ -146,6 +146,7 @@ export default {
     },
     saved2 (value, initialValue, id, key) {
       if (key === 'estatus') { if (value) { value = 1 } else { value = 0 } }
+      if (key === 'price') { value = isNaN(parseInt(value)) ? 0 : parseInt(value) }
       this.setValue({ payload: { value: parseFloat(value), id, key }, collection: 'item' })
     },
     canceled (val, initialValue) {
