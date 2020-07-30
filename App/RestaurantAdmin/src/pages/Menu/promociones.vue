@@ -32,26 +32,15 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit
-            :value="props.row.name"
-            @show="() => showPopup(props.row, 'name')"
-            >
               <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
-            </q-popup-edit>
           </q-td>
           <q-td key="descripcion" :props="props">
-            <div v-html="props.row.descripcion"></div>
-            <q-popup-edit
-              :value="props.row.descripcion"
-            >
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
                 autofocus
               />
-            </q-popup-edit>
           </q-td>
                <q-td key="estatus" :props="props">
               <q-toggle
@@ -135,18 +124,18 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', style: 'min-width: 80px; width: 100px', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' }
+  { name: 'price', align: 'center', label: 'Precio', field: 'price' }
 ]
 const columns2 = [
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'desc', style: 'min-width: 80px; width: 100px', align: 'left', label: 'Nombre', field: 'name' },
-  { name: 'descripcion', style: 'min-width: 80px; width: 120px', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
-  { name: 'price', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Precio', field: 'price' },
+  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' },
-  { name: 'prods', style: 'min-width: 150px; width: 200px', align: 'center', label: 'Productos', field: 'prods' }
+  { name: 'prods', align: 'center', label: 'Productos', field: 'prods' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
