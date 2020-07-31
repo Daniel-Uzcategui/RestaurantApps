@@ -36,6 +36,10 @@
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
             :options="typePayment_options" map-options emit-value label="Tipo de Pago" />
         </div>
+        <div class="header-cell col-3">
+          <label>Comprobante de Pago</label><br>
+          <i class="fa fa-search" @click="photoDiag=true"></i>
+        </div>
          <div class="flex-break q-pa-md"></div>
          <div class="header-cell col-6">
             <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
@@ -157,8 +161,15 @@
         </q-tr>
       </template>
     </q-table>
-    </div>
-    <div ref="content" class="q-pa-md">
+    </div> <q-dialog v-model="photoDiag">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Comprobante de Pago</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+          <div ref="content" class="q-pa-md">
       <q-card style="width: 500px" class="text-uppercase" ref="doccontext">
       <q-card-section class="text-center text-h1 q-pa-none">
         {{order.factura}}
@@ -200,6 +211,9 @@
       </q-card-section>
       </q-card>
     </div>
+       </q-card-section>
+      </q-card>
+    </q-dialog>
     <div class='filled'></div>
      </q-card>
   </div>
