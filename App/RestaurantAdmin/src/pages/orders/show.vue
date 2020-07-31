@@ -5,7 +5,6 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Orden</div>
           <div class="absolute-bottom-right q-pa-md">
-            <q-btn flat color="white" label="Descargar Factura" icon="fas fa-download" @click="downloadWithCSS"/>
             <q-btn flat color="white" label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/Orders/index')"/>
           </div>
        </q-card-section>
@@ -163,6 +162,7 @@
     </q-table>
     </div> <q-dialog v-model="photoDiag">
       <q-card>
+        <q-btn flat color="primary" label="Descargar Factura" icon="fas fa-download" @click="downloadWithCSS"/>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Comprobante de Pago</div>
           <q-space />
