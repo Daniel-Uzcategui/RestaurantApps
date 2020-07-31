@@ -43,6 +43,11 @@
                 autofocus
               />
           </q-td>
+           <q-td key="price" :props="props">
+                  <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]"
+                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                :value="props.row.price" input-style="text-align: right"></q-decimal>
+               </q-td>
                <q-td key="estatus" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus`)"
@@ -50,12 +55,12 @@
                 color="#3c8dbc"
               />
           </q-td>
-               <q-td key="price" :props="props">
-                  <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]"
-                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="props.row.price" input-style="text-align: right"></q-decimal>
-               </q-td>
-               <q-td key="groupComp" :props="props">
+           <q-td auto-width >
+            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
+          </q-td>
+          </q-tr>
+          <q-tr v-show="props.expand" :props="props">
+               <q-td colspan="2" key="groupComp" :props="props">
               <q-select
                 filled
                 :value="props.row.groupComp"
@@ -73,8 +78,11 @@
                 map-options
                 emit-value
                 stack-label
+                label="Componentes"
               />
           </q-td>
+          </q-tr>
+            <q-tr v-show="props.expand" :props="props">
               <q-td key="prods" :props="props">
               <q-select
                 filled
@@ -91,12 +99,15 @@
                 style="width: 250px"
                 stack-label
                 emit-value
+                label="Productos"
               />
           </q-td>
           <q-td key="cantidad">
-              <q-input style="width: 150px" filled v-model.number="cantidad" label="Cantidad a Agregar" type="number"/>
+              <q-input style="width: 150px" filled v-model.number="cantidad" label="Cantidad por Producto" type="number"/>
           </q-td>
-            </q-tr>
+          <q-td colspan="100%" >
+          </q-td>
+          </q-tr>
          </template>
       </q-table>
       <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
@@ -134,11 +145,11 @@ const columns2 = [
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
   { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price' },
-  { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' },
-  { name: 'prods', align: 'center', label: 'Productos', field: 'prods' },
-  { name: 'cantidad', align: 'center', label: 'cantidad', field: 'cantidad' }
+  { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
+  { name: 'groupComp', align: 'center', field: 'groupComp' },
+  { name: 'prods', align: 'center', field: 'prods' },
+  { name: 'cantidad', align: 'center', field: 'cantidad' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
@@ -326,5 +337,8 @@ export default {
   .q-table__top
     background-color $secondary
     color white
-
+  .group
+     width: 100px
+     height: 100px
+     border: 3px solid #555
 </style>
