@@ -190,7 +190,10 @@
       <q-card-section class="text-left">
         <div v-for="(ord, index) in detailOrder" :key="index">
           {{ord.quantity}} {{ord.name}}
-          <div style="padding-left: 10px" v-for="(items, index) in ord.items" :key="index">
+          <div style="padding-left: 10px" v-for="(items, index) in ord.prods" :key="index">
+            {{items.quantity}} {{items.name}}
+          </div>
+          <div style="padding-left: 20px" v-for="(items, index) in ord.items" :key="index">
             {{items.quantity}} {{items.name}}
           </div>
         </div>
@@ -219,8 +222,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import jsPDF from 'jspdf'
 import domtoimage from 'dom-to-image-more'
-// eslint-disable-next-line no-unused-vars
-import html2canvas from 'html2canvas'
 export default {
   components: {
     Viewer: require('../../components/Viewer.vue').default
