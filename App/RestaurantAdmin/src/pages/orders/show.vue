@@ -4,8 +4,9 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Orden</div>
-          <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/Orders/index')"/>
+          <div class="absolute-bottom-right q-pa-md">
+            <q-btn flat color="white" label="Descargar Factura" icon="fas fa-download" @click="downloadWithCSS"/>
+            <q-btn flat color="white" label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/Orders/index')"/>
           </div>
        </q-card-section>
          <div class='filled'></div>
@@ -126,6 +127,45 @@
       </template>
     </q-table>
     </div>
+    <div ref="content" class="q-pa-md">
+      <q-card style="width: 500px" class="text-uppercase" ref="doccontext">
+      <q-card-section class="text-center text-h1 q-pa-none">
+        {{order.factura}}
+      </q-card-section>
+      <q-card-section class="text-center text-h1 q-pa-none">
+        ------------------
+      </q-card-section>
+      <q-card-section class="text-center text-h4 q-pa-none bg-black text-white">
+        ** {{this.getLocalization (order.sede)}} **
+      </q-card-section>
+      <q-card-section class="text-center text-h6">
+        ...info sede para factura...
+      </q-card-section>
+      <q-card-section class="text-center text-h6">
+        ...info factura...
+      </q-card-section>
+      <q-card-section class="text-left text-h7">
+        {{'Direccion:' + addressDelivery}}
+      </q-card-section>
+      <q-card-section class="text-left text-h7">
+        {{'Punto de referencia:' + puntoRef}}
+      </q-card-section>
+      <q-card-section class="text-h7">
+        <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid}}</q-item-section></q-item>
+      </q-card-section>
+      <q-card-section class="text-left text-h7">
+        CANT ITEM
+      </q-card-section>
+      <q-card-section class="text-left">
+        <div v-for="(ord, index) in detailOrder" :key="index">
+          {{ord.quantity}} {{ord.name}}
+          <div style="padding-left: 10px" v-for="(items, index) in ord.items" :key="index">
+            {{items.quantity}} {{items.name}}
+          </div>
+        </div>
+      </q-card-section>
+      </q-card>
+    </div>
     <div class='filled'></div>
      </q-card>
   </div>
@@ -146,6 +186,10 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import jsPDF from 'jspdf'
+import domtoimage from 'dom-to-image-more'
+// eslint-disable-next-line no-unused-vars
+import html2canvas from 'html2canvas'
 export default {
   components: {
     Viewer: require('../../components/Viewer.vue').default
@@ -214,6 +258,47 @@ export default {
     ...mapActions('client', ['bindClients']),
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
+    download () {
+      // eslint-disable-next-line new-cap
+      const doc = new jsPDF()
+      const contentHtml = this.$refs.content.innerHTML
+      doc.fromHTML(contentHtml, 15, 15, {
+        width: 170
+      })
+      doc.save('sample.pdf')
+    },
+    downloadWithCSS () {
+      /** WITH CSS */
+      // eslint-disable-next-line no-undef
+      let ref = this.$refs
+      domtoimage
+        .toPng(this.$refs.content)
+        .then(function (dataUrl) {
+          var img = new Image()
+          img.src = dataUrl
+          // eslint-disable-next-line new-cap
+          const doc = new jsPDF({
+            orientation: 'portrait',
+            // unit: "pt",
+            format: [ref.doccontext.$el.clientHeight, 500]
+          })
+          doc.addImage(img, 'PNG', 20, 20)
+          const date = new Date()
+          const filename =
+          'timechart_' +
+          date.getFullYear() +
+          ('0' + (date.getMonth() + 1)).slice(-2) +
+          ('0' + date.getDate()).slice(-2) +
+          ('0' + date.getHours()).slice(-2) +
+          ('0' + date.getMinutes()).slice(-2) +
+          ('0' + date.getSeconds()).slice(-2) +
+          '.pdf'
+          doc.save(filename)
+        })
+        .catch(function (error) {
+          console.error('oops, something went wrong!', error)
+        })
+    },
     saved (value, id, key) {
       //  console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveOrder({ value, id, key })
