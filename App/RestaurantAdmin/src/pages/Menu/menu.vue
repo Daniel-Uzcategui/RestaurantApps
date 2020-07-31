@@ -58,7 +58,6 @@
                 use-chips
                 multiple
                 input-debounce="0"
-                @new-value="createValue"
                 :options="listcategorias"
                 style="width: 250px"
                 map-options
@@ -84,7 +83,7 @@
                 stack-label
               />
           </q-td>
-           <q-td key="descripcion" :props="props">
+          <q-td key="descripcion" :props="props">
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
@@ -92,8 +91,14 @@
                 autofocus
               />
           </q-td>
-           <q-td key="stock" :props="props">
-              <q-input
+          <q-td auto-width >
+            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
+          </q-td>
+       </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+           <q-td><label class="label-expand">Stock</label></q-td>
+           <q-td colspan="100%" key="stock" :props="props">
+               <q-input
                 style="width: 100px"
                 filled
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
@@ -103,9 +108,13 @@
                 type="number"
               />
           </q-td>
-          <q-td key="discount" :props="props">
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Descuento</label></q-td>
+          <q-td colspan="100%" key="discount" :props="props">
               <q-input
               filled
+                style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
                 :value="props.row.discount"
                 dense
@@ -115,18 +124,29 @@
                 type="number"
               />
           </q-td>
-          <q-td key="price" :props="props">
-              <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="props.row.price" input-style="text-align: right"></q-decimal>
+         </q-tr>
+         <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Precio</label></q-td>
+          <q-td colspan="100%" key="price" :props="props">
+             <q-decimal style="width: 150px"
+             :rules="[validate]"
+             outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+             :value="props.row.price"
+             input-style="text-align: right">
+             </q-decimal>
           </q-td>
-          <q-td key="estatus" :props="props">
+        </q-tr>
+         <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Activar</label></q-td>
+          <q-td  key="estatus" :props="props" >
               <q-toggle
                 @input="(e) => saved(e, props.row.status, props.row.id, `estatus.${sede}`)"
                 :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
                 color="#3c8dbc"
               />
           </q-td>
-
+          <q-td colspan="100%" >
+          </q-td>
         </q-tr>
       </template>
     </q-table>
@@ -161,11 +181,11 @@ const columns = [
   { name: 'desc', align: 'center', label: 'Nombre', field: 'name' },
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
-  { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'stock', align: 'center', label: 'Stock', field: 'stock' },
-  { name: 'discount', align: 'center', label: 'Descuento', field: 'discount' },
-  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
-  { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' }
+  { name: 'descripcion', align: 'left', field: 'descripcion', label: 'Descripción' },
+  { name: 'stock', align: 'center', field: 'stock' },
+  { name: 'discount', align: 'center', field: 'discount' },
+  { name: 'price', align: 'center', field: 'price' },
+  { name: 'estatus', align: 'center', field: 'estatus' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
@@ -319,5 +339,6 @@ export default {
   .q-table__top
     background-color $secondary
     color white
-
+  .label-expand
+    font-weight: bold
 </style>
