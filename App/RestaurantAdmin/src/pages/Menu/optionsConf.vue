@@ -41,7 +41,7 @@
             <q-checkbox v-model="props.selected" />
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input style="width: 150px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
           </q-td>
 
           <q-td key="descripcion" :props="props">

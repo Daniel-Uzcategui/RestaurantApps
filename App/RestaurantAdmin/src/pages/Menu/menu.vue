@@ -47,7 +47,7 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input style="width: 200px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
           </q-td>
           <q-td key="categoria" :props="props">
               <q-select
@@ -60,7 +60,6 @@
                 input-debounce="0"
                 @new-value="createValue"
                 :options="listcategorias"
-                @filter="filterFn"
                 style="width: 250px"
                 map-options
                 emit-value
@@ -76,11 +75,9 @@
                 use-chips
                 multiple
                 input-debounce="0"
-                @new-value="createValue"
                 :options="groupComp"
                 :option-label="(item) => item === null ? null : item.name"
                 :option-value="(item) => item === null ? null : item.id"
-                @filter="filterFn"
                 style="width: 250px"
                 map-options
                 emit-value
@@ -97,6 +94,7 @@
           </q-td>
            <q-td key="stock" :props="props">
               <q-input
+                style="width: 100px"
                 filled
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
@@ -118,7 +116,7 @@
               />
           </q-td>
           <q-td key="price" :props="props">
-              <q-decimal class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+              <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price" input-style="text-align: right"></q-decimal>
           </q-td>
           <q-td key="estatus" :props="props">
@@ -177,7 +175,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'listextras', 'plainExtras', 'groupComp']),
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     elmenu () {
@@ -222,6 +220,7 @@ export default {
     this.bindCategorias()
     this.bindLocalizations()
     this.bindGroupComp()
+    console.log({ cat: this.categorias, gr: this.groupComp })
   },
   methods: {
     validate (value) {
@@ -310,33 +309,6 @@ export default {
       this.$q.notify({
         message: `Successfully uploaded your photo: ${fileNames}`,
         color: 'positive'
-      })
-    },
-    createValue (val, done) {
-      if (val.length > 0) {
-        if (!this.listextras.includes(val)) {
-          this.listextras.push(val)
-        }
-        done(val, 'toggle')
-      }
-    },
-    getExtras (e) {
-      console.log('GetExtras1', e, this.plainExtras)
-      const ret = e.map(x => {
-        return this.plainExtras[x].name
-      })
-      return ret
-    },
-    filterFn (val, update) {
-      update(() => {
-        if (val === '') {
-          this.filterOptions = this.listextras
-        } else {
-          const needle = val.toLowerCase()
-          this.filterOptions = this.listextras.filter(
-            v => v.toLowerCase().indexOf(needle) > -1
-          )
-        }
       })
     }
   }

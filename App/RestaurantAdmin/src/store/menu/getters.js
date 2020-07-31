@@ -25,26 +25,6 @@ export const listcategorias = ({ categorias }) => {
   return arr2
 }
 
-export const listextras = ({ extras }) => {
-  const keys = Object.keys(extras)
-  var arr = []
-  for (const i in keys) {
-    arr.unshift(extras[keys[i]])
-  }
-  const arr2 = arr.map(x => {
-    return {
-      value: x.id,
-      label: x.name
-    }
-  })
-  console.log('Extras', arr2)
-  return arr2
-}
-
-export const plainExtras = ({ extras }) => extras
-
-export const listext = ({ extras }) => extras
-
 export const item = ({ item }) => item
 
 export const itemGroup = ({ itemGroup }) => itemGroup

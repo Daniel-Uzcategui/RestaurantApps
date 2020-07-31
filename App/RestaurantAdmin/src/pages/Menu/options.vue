@@ -49,7 +49,7 @@
               />
           </q-td>
           <q-td key="price" :props="props">
-            <q-decimal class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+            <q-decimal style="width: 135px" class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price" input-style="text-align: right"></q-decimal>
           </q-td>
           <q-td key="group_id" :props="props">
@@ -114,14 +114,15 @@ export default {
     }
   },
   watch: {
-    itemGroup () {
-      this.filterOptions = Array.from(this.itemGroup)
+    itemGroup (e) {
+      console.log({ e })
+      this.filterOptions = Array.from(e)
     }
   },
-  mounted () {
+  created () {
     this.bindItem()
     this.bindItemGroup()
-    this.filterOptions = Array.from(this.itemGroup)
+    console.log({ it: this.itemGroup })
   },
   methods: {
     validate (value) {
@@ -176,7 +177,9 @@ export default {
     },
     filterFn (val, update) {
       update(() => {
-        if (val === '') {
+        console.log({ val })
+        if (val === '' || typeof val === 'undefined') {
+          console.log({ val, it: this.itemGroup })
           this.filterOptions = Array.from(this.itemGroup)
         } else {
           console.log({ val })

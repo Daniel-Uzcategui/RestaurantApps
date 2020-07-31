@@ -1,6 +1,7 @@
 <template>
    <div class="q-pa-md">
            <q-table
+           dense
          :data="promos"
          :columns="columns2"
          title="Promociones"
@@ -32,7 +33,7 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
           </q-td>
           <q-td key="descripcion" :props="props">
               <q-editor
@@ -50,7 +51,7 @@
               />
           </q-td>
                <q-td key="price" :props="props">
-                  <q-decimal class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price" input-style="text-align: right"></q-decimal>
                </q-td>
                <q-td key="groupComp" :props="props">
@@ -92,7 +93,7 @@
               />
           </q-td>
           <q-td key="cantidad">
-              <q-input filled v-model.number="cantidad" label="Cantidad de productos" type="number"/>
+              <q-input style="width: 150px" filled v-model.number="cantidad" label="Cantidad a Agregar" type="number"/>
           </q-td>
             </q-tr>
          </template>
@@ -135,7 +136,8 @@ const columns2 = [
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'groupComp', align: 'center', label: 'Componentes', field: 'groupComp' },
-  { name: 'prods', align: 'center', label: 'Productos', field: 'prods' }
+  { name: 'prods', align: 'center', label: 'Productos', field: 'prods' },
+  { name: 'cantidad', align: 'center', label: 'cantidad', field: 'cantidad' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
@@ -195,8 +197,14 @@ export default {
     this.bindCategorias()
     this.bindLocalizations()
     this.bindPromos()
+    this.bindItem()
+    this.bindItemGroup()
+    this.bindGroupComp()
   },
   methods: {
+    validate (value) {
+      return value >= 0 || 'error'
+    },
     seleccion () {
       console.log(this.selected)
     },
@@ -225,7 +233,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindPromos']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindPromos', 'bindItemGroup', 'bindItem', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
     delrow () {
       console.log({ payload: this.selected2, collection: 'promos' })
