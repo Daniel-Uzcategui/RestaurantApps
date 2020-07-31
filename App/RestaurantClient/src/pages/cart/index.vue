@@ -204,9 +204,9 @@ export default {
       leftDrawerOpen: false,
       pagoSel: null,
       tipoPago: [
-        { label: 'Punto de Venta', value: 'punto', color: 'red' },
-        { label: 'Efectivo ($)', value: 'cash', color: 'green' },
-        { label: 'Zelle', value: 'Zelle', color: 'blue' }
+        { label: 'Punto de Venta', value: 0, color: 'red' },
+        { label: 'Efectivo ($)', value: 1, color: 'green' },
+        { label: 'Zelle', value: 2, color: 'blue' }
       ]
     }
   },

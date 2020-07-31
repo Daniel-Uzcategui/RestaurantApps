@@ -1,6 +1,7 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
+  console.log('bindingAddress')
   return bindFirestoreRef('address', firestore().collection('address').where('softDelete', '<', 1))
 })
 

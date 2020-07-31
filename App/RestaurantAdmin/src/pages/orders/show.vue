@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg" >
+  <q-page class="q-pa-md" >
      <div class="q-gutter-md">
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
@@ -43,7 +43,7 @@
             <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
       </div>
-      <div v-if="order.typePayment == 0 || order.typePayment == 2" class="column items-center filled-soport">
+      <div v-if="order.typePayment == 1 || order.typePayment == 2" class="column items-center filled-soport">
         <div class="col">
           <label><strong>Soporte de pago</strong></label>
           <viewer :img="order.photo"></viewer>
@@ -61,7 +61,6 @@
           :dense="$q.screen.lt.md"
           row-key="id"
           no-data-label="No se encontraron registros"
-          class="table"
       >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -205,12 +204,9 @@ export default {
   created () {
     this.bindMenu()
     this.bindClients()
-    this.bindAddress()
+    this.bindAddress().then(e => this.getAddress(this.order.address))
     this.bindLocalizations()
     this.bindPromos()
-  },
-  updated () {
-    this.getAddress(this.order.address)
   },
   methods: {
     ...mapActions('order', ['saveOrder']),
@@ -248,6 +244,7 @@ export default {
       objaddress = this.address.find(obj => {
         return obj.id === value
       })
+      console.log({ objaddress, add: this.address })
       this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
       if (typeof objaddress !== 'undefined') {
         this.addressDelivery = tmpAddressDelivery.concat(

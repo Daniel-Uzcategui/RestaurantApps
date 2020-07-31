@@ -56,11 +56,11 @@
                   <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-        <div v-if="ordenDet.typePayment === 'Zelle' || ordenDet.typePayment === 'cash'" class="text-center q-pa-md" @click="showPhotoUpload(ordenDet.id)">
+        <div v-if="ordenDet.typePayment == 2 || ordenDet.typePayment == 1" class="text-center q-pa-md" @click="showPhotoUpload(ordenDet.id)">
             <div class=" column items-center" v-if="showDefaultPhoto(getOrdedVal(ordenDet.id, 'photo'))">
                 <q-avatar rounded class="q-mb-sm" color="blue-grey-10" icon="fas fa-file-invoice" font-size="50px" size="180px" text-color="white"></q-avatar>
-                <span class="text-caption" v-if="ordenDet.typePayment === 'Zelle'">Haga click cargar captura del pago realizado a Mi_Restaurant@Company.io</span>
-                <span class="text-caption" v-if="ordenDet.typePayment === 'cash'">Porfavor Subir Foto del Efectivo</span>
+                <span class="text-caption" v-if="ordenDet.typePayment == 2">Haga click cargar captura del pago realizado a Mi_Restaurant@Company.io</span>
+                <span class="text-caption" v-if="ordenDet.typePayment == 1">Porfavor Subir Foto del Efectivo</span>
                 </div>
             <div class="column items-center" v-else>
                 <q-avatar rounded style="border-radius: 0%" class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(ordenDet.id)">
