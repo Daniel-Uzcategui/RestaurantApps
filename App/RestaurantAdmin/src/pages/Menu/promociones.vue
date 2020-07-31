@@ -51,7 +51,8 @@
               />
           </q-td>
                <q-td key="price" :props="props">
-                  <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]"
+                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price" input-style="text-align: right"></q-decimal>
                </q-td>
                <q-td key="groupComp" :props="props">
@@ -101,7 +102,7 @@
       <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
         <fbq-uploader
           class="q-my-lg"
-          label="Please Upload a Photo"
+          label="Por favor cargar una foto"
           :meta="meta"
           :prefixPath="prefixPath"
           @uploaded="uploadComplete"

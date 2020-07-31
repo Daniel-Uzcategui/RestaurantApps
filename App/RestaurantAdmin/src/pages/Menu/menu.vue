@@ -47,7 +47,12 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input style="width: 200px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input style="width: 200px"
+              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              :value="props.row.name"
+              dense
+              autofocus
+              outlined />
           </q-td>
           <q-td key="categoria" :props="props">
               <q-select
@@ -83,18 +88,22 @@
                 stack-label
               />
           </q-td>
-          <q-td key="descripcion" :props="props">
+          <q-td auto-width >
+            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
+          </q-td>
+       </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+           <q-td><label class="label-expand">Descripción</label></q-td>
+           <q-td colspan="100%" key="descripcion" :props="props">
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
                 autofocus
+                style="width: 450px"
               />
           </q-td>
-          <q-td auto-width >
-            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
-          </q-td>
-       </q-tr>
+        </q-tr>
         <q-tr v-show="props.expand" :props="props">
            <q-td><label class="label-expand">Stock</label></q-td>
            <q-td colspan="100%" key="stock" :props="props">
@@ -181,11 +190,11 @@ const columns = [
   { name: 'desc', align: 'center', label: 'Nombre', field: 'name' },
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
-  { name: 'descripcion', align: 'left', field: 'descripcion', label: 'Descripción' },
+  { name: 'descripcion', align: 'left', field: 'descripcion' },
   { name: 'stock', align: 'center', field: 'stock' },
   { name: 'discount', align: 'center', field: 'discount' },
   { name: 'price', align: 'center', field: 'price' },
-  { name: 'estatus', align: 'center', field: 'estatus' }
+  { name: 'estatus', align: 'left', field: 'estatus' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'

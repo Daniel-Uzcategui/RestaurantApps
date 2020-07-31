@@ -12,16 +12,24 @@
          <div class='filled'></div>
        <div v-if="typeof localization !== 'undefined'">
        <div class="row header-container">
-        <div class="header-cell col-6">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-6 col-lg-6">
           <label>Sede</label>
-          <q-input :value="localization.name"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'name')"  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
+          <q-input :value="localization.name"
+          @input="(e) => saved(e, this.$route.query.Localization_Id, 'name')"
+          type="text" float-label="Float Label"
+          placeholder="Nombre de la Sede"
+          outlined
+          class="label-width"/>
         </div>
-        <div class="header-cell col-4">
-          <q-select map-options emit-value standout="bg-teal text-white"  :value="localization.status"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')"
-            :options="estatus_options" label="Estatus" />
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <label>Estatus</label>
+          <q-select map-options emit-value standout="bg-teal text-white"
+          :value="localization.status"
+          @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')"
+          :options="estatus_options" />
         </div>
         <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-6">
+        <div class="header-cell col-xs-8 col-sm-6 col-md-6 col-lg-6">
           <q-btn v-if="!markers" color="primary" class="q-py-md" label="Agregar Localización" icon="fas fa-map-marker-alt"/>
           <q-btn v-if="markers" color="primary" class="q-py-md" label="Localización" icon="fas fa-check"/>
           <q-popup-edit buttons :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
@@ -30,12 +38,12 @@
                 :markers="markers" />
             </q-popup-edit>
         </div>
-         <div class="header-cell col-5">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-5">
           <label>Dirección</label>
          <q-input :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
       </div>
       <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-3">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="col-3">
             <label>Tipo de Servicios</label>
             </div>
@@ -45,13 +53,22 @@
               <q-checkbox dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
             </div>
         </div>
-        <div class="header-cell col-4" v-show="localization.Inlocal">
+        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="localization.Inlocal">
           <label>Mesas</label>
-          <q-input :value="localization.tables"  type="text" float-label="Float Label" @input="(e) => saved(e, this.$route.query.Localization_Id, 'tables')" />
+          <q-input :value="localization.tables"
+          type="text"
+          float-label="Float Label"
+          @input="(e) => saved(e, this.$route.query.Localization_Id, 'tables')"
+          outlined
+          class="label-width"/>
         </div>
-         <div class="header-cell col-4"  v-show="localization.Inlocal">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3"  v-show="localization.Inlocal">
           <label>Capacidad</label>
-          <q-input :value="localization.capacity"  type="text" float-label="Float Label" @input="(e) => saved(e, this.$route.query.Localization_Id, 'capacity')" />
+          <q-input :value="localization.capacity"
+          type="text"
+          float-label="Float Label"
+          @input="(e) => saved(e, this.$route.query.Localization_Id, 'capacity')"
+          outlined/>
         </div>
       </div>
      </div>
@@ -165,4 +182,6 @@ export default {
  padding-top: 20px
 .typeServices
  padding-left: 10px
+.label-width
+ width: 50%
 </style>

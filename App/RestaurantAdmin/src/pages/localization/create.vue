@@ -11,20 +11,22 @@
        </q-card-section>
        <div class='filled'></div>
         <div class="row header-container">
-        <div class="header-cell col-6">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input
           v-model="name"
           type="text"
           float-label="Float Label"
           placeholder="Nombre de la Sede"
           ref="name"
+          outlined
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre de la Sede']"/>
         </div>
-        <div class="header-cell col-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          outlined :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-3">
+        <div class="header-cell col-xs-12 col-sm-6 col-md-5 col-lg-4">
           <q-btn v-if="localizacion_sede.length === 0" color="primary" class="q-py-md" label="Agregar Localizacion" icon="fas fa-map-marker-alt"/>
           <q-btn v-if="localizacion_sede.length > 0" color="primary" class="q-py-md" label="Localizacion Agregada" icon="fas fa-check"/>
           <q-popup-edit :value="localizacion_sede" buttons>
@@ -33,13 +35,13 @@
                 :markers="localizacion_sede" />
             </q-popup-edit>
         </div>
-         <div class="header-cell col-6">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-5 col-lg-5">
             <q-input v-model="address" filled type="textarea"
             placeholder="Dirección"
             :rules="[ val => val && val.length > 0 || '*Requerido el campo de dirección']"  />
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-3">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="col-3">
             <label>Tipo de Servicios</label>
             </div>
@@ -49,11 +51,11 @@
               <q-checkbox v-model="Inlocal" dense label="En local" color="red" class="typeServices" />
             </div>
         </div>
-        <div class="header-cell col-4" v-show="Inlocal">
-          <q-input v-model="tables"  type="text" float-label="Float Label" placeholder="Mesas" />
+        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
+          <q-input v-model="tables" outlined  type="text" float-label="Float Label" placeholder="Mesas" />
         </div>
-         <div class="header-cell col-4" v-show="Inlocal">
-          <q-input v-model="capacity"  type="text" float-label="Float Label" placeholder="Capacidad" />
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
+          <q-input v-model="capacity" outlined type="text" float-label="Float Label" placeholder="Capacidad" />
         </div>
      </div>
        <diV class='filled'></diV>

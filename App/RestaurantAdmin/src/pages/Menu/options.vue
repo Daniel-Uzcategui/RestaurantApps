@@ -48,10 +48,6 @@
                 color="#3c8dbc"
               />
           </q-td>
-          <q-td key="price" :props="props">
-            <q-decimal style="width: 135px" class="q-mb-md" :rules="[validate]" label="right aligned" outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="props.row.price" input-style="text-align: right"></q-decimal>
-          </q-td>
           <q-td key="group_id" :props="props">
               <q-select
                 filled
@@ -71,6 +67,12 @@
                 emit-value
                 map-options
               />
+          </q-td>
+           <q-td key="price" :props="props">
+            <q-decimal style="width: 135px" :rules="[validate]"
+            outlined
+            @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                :value="props.row.price" input-style="text-align: right"></q-decimal>
           </q-td>
         </q-tr>
       </template>
@@ -94,9 +96,9 @@
 const columns = [
   { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus' },
-  { name: 'price', align: 'center', label: 'Precio', field: 'price' },
-  { name: 'group_id', style: 'min-width: 300px; width: 300px', align: 'center', label: 'Grupos', field: 'group_id' }
+  { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus', style: 'min-width: 100px; width: 100px' },
+  { name: 'group_id', style: 'min-width: 300px; width: 300px', align: 'center', label: 'Grupos', field: 'group_id' },
+  { name: 'price', align: 'center', label: 'Precio', field: 'price', style: 'min-width: 135px; width: 135px' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'
