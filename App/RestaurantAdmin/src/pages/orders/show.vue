@@ -93,7 +93,7 @@
               />
           </q-td>
         </q-tr>
-        <q-tr :props="props" v-if="props.row.items.length">
+        <q-tr :props="props" v-if="props.row.items">
           <q-td colspan="100%">
             <div class="text-bold">Opciones</div>
             <q-list class="text-center">
@@ -110,6 +110,37 @@
           </q-item>
         </q-list>
             <q-list v-for="(items, index) in props.row.items" :key="index+props.row.prodId" class="text-center">
+          <q-item tag="label" v-ripple>
+            <q-item-section>
+              <q-item-label>{{items.name}}</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ items.quantity ? items.quantity : 1}}</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{items.price ? '$ ' +items.price : 'incluido'}}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+          </q-td>
+        </q-tr>
+        <q-tr :props="props" v-if="props.row.prods">
+          <q-td colspan="100%">
+            <div class="text-bold">Productos</div>
+            <q-list class="text-center">
+          <q-item tag="label" v-ripple>
+            <q-item-section>
+              <q-item-label class="text-bold">Nombre</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-bold">Cantidad</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-bold">Precio</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+            <q-list v-for="(items, index) in props.row.prods" :key="index+props.row.prodId" class="text-center">
           <q-item tag="label" v-ripple>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
