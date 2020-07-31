@@ -103,7 +103,13 @@
               />
           </q-td>
           <q-td key="cantidad">
-              <q-input style="width: 150px" filled v-model.number="cantidad" label="Cantidad por Producto" type="number"/>
+              <q-input style="width: 150px"
+              filled
+              v-model.number="cantidad"
+              label="Cantidad por Producto"
+              type="number"
+              min="1"
+              max="99"/>
           </q-td>
           <q-td colspan="100%" >
           </q-td>
