@@ -138,7 +138,7 @@
                     title="Finalizar"
                     icon="fas fa-money"
                   >
-                  <p class="text-h6" v-if="false">Total: $ {{tipEnvio ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
+                  <p class="text-h6" v-if="false">Total: $ {{tipEnvio == 1 ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
                   <q-btn flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
                    <q-btn @click="confirm = true" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" label="Ordenar" />
                   </q-step>
@@ -212,6 +212,7 @@ export default {
   },
   created () {
     this.bindLocalizations()
+    console.log(this.cart)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -254,7 +255,7 @@ export default {
     },
     makeOrder () {
       if (this.tipEnvio !== '1') { this.addId = '' }
-      this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, paid: this.tipEnvio ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2].toFixed(2) }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
+      this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, paid: this.tipEnvio === '1' ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2] }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
     },
     getTotalCarrito () {
       // console.log({ cart: this.cart })

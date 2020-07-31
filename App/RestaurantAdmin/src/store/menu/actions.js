@@ -47,7 +47,7 @@ export const delrows = firestoreAction((context, payload) => {
   for (const i in payload.payload) {
     firestore().collection(payload.collection)
       .doc(payload.payload[i].id)
-      .update({ softDelete: 1 , estatus: false })
+      .update({ softDelete: 1, estatus: false })
       .then(() => {
         console.log(`${payload.collection} updated!`)
       })

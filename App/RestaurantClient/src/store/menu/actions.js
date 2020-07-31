@@ -18,25 +18,25 @@ export const delCartItem = async function ({ commit }, payload) {
 /// Bindings ////
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
-  return bindFirestoreRef('menu', firestore().collection('menu'))
+  return bindFirestoreRef('menu', firestore().collection('menu').where('softDelete', '==', 0))
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
-  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '==', 1))
+  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '==', true))
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindPromos')
-  return bindFirestoreRef('promos', firestore().collection('promos').where('estatus', '==', 1))
+  return bindFirestoreRef('promos', firestore().collection('promos').where('estatus', '==', true))
 })
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')
-  return bindFirestoreRef('item', firestore().collection('item').where('estatus', '==', 1), { reset: false })
+  return bindFirestoreRef('item', firestore().collection('item').where('estatus', '==', true), { reset: false })
 })
 export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItemsGroup')
-  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup').where('estatus', '==', 1), { reset: false })
+  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup').where('estatus', '==', true), { reset: false })
 })
 export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindGroupComp')
-  return bindFirestoreRef('groupComp', firestore().collection('groupComp').where('estatus', '==', 1), { reset: false })
+  return bindFirestoreRef('groupComp', firestore().collection('groupComp').where('estatus', '==', true), { reset: false })
 })

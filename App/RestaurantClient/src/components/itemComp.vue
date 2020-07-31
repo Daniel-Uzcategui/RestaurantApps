@@ -151,6 +151,8 @@ export default {
           } else {
             sum = sum + (x.price * x.quantity)
           }
+        } else {
+          x.price = 0
         }
       })
       return sum

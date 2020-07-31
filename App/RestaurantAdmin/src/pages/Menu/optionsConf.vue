@@ -214,9 +214,6 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
-      if (key === 'estatus') {
-        value = value === false ? 0 : 1
-      }
       this.setValue({ payload: { value, id, key }, collection: 'groupComp' })
     },
     saved2 (value, initialValue, id, key) {

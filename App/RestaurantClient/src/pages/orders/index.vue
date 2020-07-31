@@ -124,7 +124,7 @@
                         Delivery: 3.00
               </q-item-label>
               <q-item-label>
-                        Total: $ {{ordenDet.paid.toFixed(2)}}
+                        Total: $ {{ordenDet.paid}}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -232,6 +232,7 @@ export default {
   methods: {
     saved (value, id, key) {
       this.saveOrder({ value, id, key })
+      this.ordenDet.userComment = value
     },
     totalItComp (its) {
       var sum = 0
@@ -258,6 +259,7 @@ export default {
       this.dialog = true
       this.carrito = e.cart
       this.ordenDet = e
+      console.log({ th: this.ordenDet })
     },
     getProdbyId (id) {
       return this.menu.find(x => x.id === id)

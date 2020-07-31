@@ -9,7 +9,7 @@
       <q-card-section>
                <div class="text-h5 menuTop">Menu</div>
                <div class="absolute-bottom-right q-pa-md" >
-                  <q-btn fab color="secondary" :label="promo ? 'Volver' : 'Promociones'" @click="promo = !promo" />
+                  <q-btn v-if="promoData.length || promo" fab color="secondary" :label="promo ? 'Volver' : 'Promociones'" @click="promo = !promo" />
                </div>
             </q-card-section>
         <q-card-section class="wrapel">
@@ -56,6 +56,7 @@
          </q-card-section>
          <q-card-section v-if="promo">
            <div class="q-pa-md flex">
+             <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
             <q-list v-for="item in promoData" separator :key="item.id">
                <q-item>
                   <q-item-section avatar top>
@@ -91,8 +92,8 @@
          :maximized="$q.screen.lt.md"
          transition-show="slide-up"
          transition-hide="slide-down"
-         @hide="quantity = 0; itComp = []"
-         @show="quantity = 1"
+         @hide="quantity = 0; totSum = 0; required = false; itComp = []"
+         @show="quantity = 1;"
          >
          <q-card class="">
             <q-bar>
@@ -147,10 +148,10 @@
             </q-card-section>
             <q-card-section class="text-center">
                <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length">
-                  Total $ {{(((parseFloat(displayVal.price + totSum) * (1 - (displayVal.discount/100))) ) * quantity).toFixed(2)}}
-                  <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >Descuento {{displayVal.discount}}%</q-badge>
+                  Total $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
+                  <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
                </q-item-label>
-               <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{((parseFloat(displayVal.price + totSum).toFixed(2)) * quantity).toFixed(2) }}</q-item-label>
+               <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-actions vertical>
                <q-btn v-if="required" @click="addToCart" v-close-popup color="primary">Añadir</q-btn>
@@ -199,7 +200,7 @@ export default {
         e.prods.forEach(i => {
           if (guard) { return }
           var its = this.menu.find(x => x.id === i.id)
-          if (typeof its !== 'undefined') {
+          if (typeof its !== 'undefined' && its.estatus[this.sede]) {
             y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock, quantity: i.quantity })
           } else {
             y.prods = []
@@ -214,7 +215,7 @@ export default {
         y.prodType = 1
         y.photo = e.photo
         y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
-        if (y.prods.length) {
+        if (y.prods.length && !guard) {
           prom.push(y)
         }
       })
@@ -282,7 +283,7 @@ export default {
       if (this.displayVal.prodType === 0) {
         this.addCart({
           prodId: this.displayVal.id,
-          prodPrice: typeof this.displayVal.discount !== 'undefined' ? (this.displayVal.price * (1 - (this.displayVal.discount / 100))) : this.displayVal.price,
+          prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
           prodType: this.displayVal.prodType
@@ -295,7 +296,7 @@ export default {
       } else {
         this.addCart({
           prodId: this.displayVal.id,
-          prodPrice: typeof this.displayVal.discount !== 'undefined' ? (this.displayVal.price * (1 - (this.displayVal.discount / 100))) : this.displayVal.price,
+          prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
           prods: this.displayVal.prods,
@@ -337,28 +338,30 @@ export default {
         } else { return [0, exists] }
       } else {
         var promotion = this.promoData.find(e => e.id === id)
-        for (let e in promotion.prods) {
-          product = promotion.prods[e]
-          counter = this.quantity * product.quantity
-          inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-          inCart.forEach(element => {
-            counter = element.quantity + counter
-          })
-          this.cart.forEach(y => {
-            if (typeof y.prods !== 'undefined') {
-              var producto = y.prods.find(j => j.id === promotion.prods[e].id)
-              if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-              counter = (producto.quantity * y.quantity) + counter
-            }
-          })
-          exists = 0
-          if (counter) { exists = 1 }
+        if (typeof promotion !== 'undefined') {
+          for (let e in promotion.prods) {
+            product = promotion.prods[e]
+            counter = this.quantity * product.quantity
+            inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
+            inCart.forEach(element => {
+              counter = element.quantity + counter
+            })
+            this.cart.forEach(y => {
+              if (typeof y.prods !== 'undefined') {
+                var producto = y.prods.find(j => j.id === promotion.prods[e].id)
+                if (typeof producto === 'undefined') { producto = { quantity: 0 } }
+                counter = (producto.quantity * y.quantity) + counter
+              }
+            })
+            exists = 0
+            if (counter) { exists = 1 }
 
-          if (typeof product !== 'undefined') {
-            if (counter > parseInt(product.stock[this.sede])) {
-              return [2, exists]
-            } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
-              return [0, exists]
+            if (typeof product !== 'undefined') {
+              if (counter > parseInt(product.stock[this.sede])) {
+                return [2, exists]
+              } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
+                return [0, exists]
+              }
             }
           }
         }
