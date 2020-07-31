@@ -3,7 +3,7 @@
      <div class="q-gutter-md">
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
-          <div class="text-h5">Editar Orden</div>
+          <div class="text-h5">Orden</div>
           <div>
             <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/Orders/index')"/>
           </div>
@@ -33,7 +33,7 @@
         </div>
         <div class="header-cell col-3">
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
-            :options="typePayment_options" label="Tipo de Pago" />
+            :options="typePayment_options" map-options emit-value label="Tipo de Pago" />
         </div>
          <div class="flex-break q-pa-md"></div>
          <div class="header-cell col-6">
@@ -43,7 +43,7 @@
             <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
       </div>
-      <div class="column items-center filled-soport">
+      <div v-if="order.typePayment == 0 || order.typePayment == 2" class="column items-center filled-soport">
         <div class="col">
           <label><strong>Soporte de pago</strong></label>
           <viewer :img="order.photo"></viewer>
@@ -74,33 +74,54 @@
               <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
             </q-popup-edit>
           </q-td>
-
-          <q-td key="descripcion" :props="props">
-            <div v-html="props.row.descripcion"></div>
-            <q-popup-edit
-              :value="props.row.descripcion"
-            >
-              <q-editor
-                @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                :value="props.row.descripcion"
-                :toolbar="[]"
-                :definitions="{}"
-                min-height="5rem"
-                autofocus
-              />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="price" :props="props">
-            <div class="text-pre-wrap">{{ props.row.price }}</div>
-            <q-popup-edit :value="props.row.price">
+          <q-td key="quantity" :props="props">
               <q-input
-                @input="(e) => saved(e, props.row.price, props.row.id, 'price')"
-                :value="props.row.price"
+                @input="(e) => saved(e, props.row.quantity, props.row.id, 'quantity')"
+                :value="props.row.quantity"
                 dense
                 autofocus
                 type="number"
               />
-            </q-popup-edit>
+          </q-td>
+          <q-td key="price" :props="props">
+              <q-input
+                @input="(e) => saved(e, props.row.prodPrice, props.row.id, 'price')"
+                :value="props.row.prodPrice"
+                dense
+                autofocus
+                type="number"
+              />
+          </q-td>
+        </q-tr>
+        <q-tr :props="props" v-if="props.row.items.length">
+          <q-td colspan="100%">
+            <div class="text-bold">Opciones</div>
+            <q-list class="text-center">
+          <q-item tag="label" v-ripple>
+            <q-item-section>
+              <q-item-label class="text-bold">Nombre</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-bold">Cantidad</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-bold">Precio</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+            <q-list v-for="(items, index) in props.row.items" :key="index+props.row.prodId" class="text-center">
+          <q-item tag="label" v-ripple>
+            <q-item-section>
+              <q-item-label>{{items.name}}</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ items.quantity ? items.quantity : 1}}</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{items.price ? '$ ' +items.price : 'incluido'}}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
           </q-td>
         </q-tr>
       </template>
@@ -147,8 +168,8 @@ export default {
       ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
-        { name: 'descripcion', required: true, align: 'left', label: 'Decripción', field: 'descripcion' },
-        { name: 'price', required: true, align: 'center', label: 'Precio', field: 'price' }
+        { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
+        { name: 'price', required: true, align: 'center', label: 'Precio/Unidad', field: 'price' }
       ],
       puntoRef: '',
       addressDelivery: '',
@@ -158,7 +179,7 @@ export default {
   },
   computed: {
     ...mapGetters('order', ['orders']),
-    ...mapGetters('menu', ['menu', 'listext', 'promos']),
+    ...mapGetters('menu', ['menu', 'item', 'promos']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('address', ['address']),
     ...mapGetters('localization', ['localizations']),
@@ -173,7 +194,7 @@ export default {
       for (ord of this.orders) {
         if (ord.id === this.$route.query.Order_Id) {
           for (prods of ord.cart) {
-            productsOrder.push(this.getProducts(prods.prodId, prods.prodType))
+            productsOrder.push({ ...this.getProducts(prods.prodId, prods.prodType), ...prods })
           }
         }
       }

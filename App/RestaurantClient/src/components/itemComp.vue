@@ -24,7 +24,7 @@
         <q-list class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
-              <q-radio :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id }) : JSON.stringify({ item: items.id, price: 0, component: component.id })" color="teal" />
+              <q-radio :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id, component_name: component.name, name: items.name }) : JSON.stringify({ item: items.id, price: 0, component: component.id, component_name: component.name, name: items.name })" color="teal" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
@@ -43,7 +43,7 @@
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
               <q-checkbox
-                @input="(x,e)=> checkBoxInput({ component: component.id, item: items.id, price: items.price }, e, x)"
+                @input="(x,e)=> checkBoxInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, e, x)"
                 :value="value.length ? (typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined') ? true : false : false"
                 :disable="value.findIndex(el => el.item === items.id && el.component === component.id)===(-1) && value.filter(x => x['component'] === component.id).length >= component.max"
                 color="teal" />
@@ -65,7 +65,7 @@
           <q-item>
             <q-item-section>
               <q-slider
-                @input="(x)=> qSliderInput({ component: component.id, item: items.id, price: items.price }, x)"
+                @input="(x)=> qSliderInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, x)"
                 :value="value.length ? typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined' ? value.find(x => (x['component'] === component.id && x['item'] === items.id))['quantity'] : 0 : 0"
                 label-always
                 :min="0"

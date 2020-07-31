@@ -283,6 +283,7 @@ export default {
       if (this.displayVal.prodType === 0) {
         this.addCart({
           prodId: this.displayVal.id,
+          name: this.displayVal.name,
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
@@ -296,6 +297,7 @@ export default {
       } else {
         this.addCart({
           prodId: this.displayVal.id,
+          name: this.displayVal.name,
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
