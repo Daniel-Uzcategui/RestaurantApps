@@ -58,6 +58,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
+    ...mapGetters('config', ['config']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart']),
     getCartQ () {
@@ -107,6 +108,7 @@ export default {
       console.log(this.currentUser)
       this.$q.loading.hide()
     }
+    this.chatServe(this.config)
   },
   data () {
     return {
@@ -166,6 +168,21 @@ export default {
     toggleColors () {
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
+    },
+    async chatServe (config) {
+      console.log({ ...config })
+      if (config.tawkChat.active) {
+        // eslint-disable-next-line
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+          var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0]
+          s1.async = true
+          s1.src = `https://embed.tawk.to/${config.tawkChat.value}/default`
+          s1.charset = 'UTF-8'
+          s1.setAttribute('crossorigin', '*')
+          s0.parentNode.insertBefore(s1, s0)
+        })()
+      }
     },
     setBlur () {
       this.blurLayout = !this.blurLayout

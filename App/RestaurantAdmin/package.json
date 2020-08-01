@@ -27,6 +27,7 @@
     "quasar": "^1.9.9",
     "v-money": "^0.8.1",
     "v-viewer": "^1.5.1",
+    "vue-business-hours": "^1.4.1",
     "vue2-google-maps": "^0.10.7",
     "vuexfire": "^3.2.2"
   },

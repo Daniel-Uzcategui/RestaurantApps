@@ -3,7 +3,7 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindLocalizations = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindLocalizations')
-  return bindFirestoreRef('localizations', firestore().collection('localizations').where('status', '==', 0), { reset: false })
+  return bindFirestoreRef('localizations', firestore().collection('localizations').where('status', '==', 0))
 })
 
 export const saveLocation = firestoreAction((state, payload) => {

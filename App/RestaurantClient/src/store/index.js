@@ -9,6 +9,7 @@ import client from './client'
 import order from './order'
 import address from './address'
 import localization from './localization'
+import config from './config'
 Vue.use(Vuex)
 
 /*
@@ -25,7 +26,8 @@ export default function (/* { ssrContext } */) {
       menu,
       client,
       order,
-      localization
+      localization,
+      config
     },
     mutations: {
       ...vuexfireMutations

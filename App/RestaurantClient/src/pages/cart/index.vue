@@ -73,6 +73,7 @@
          :maximized="maximizedToggle"
          transition-show="slide-up"
          transition-hide="slide-down"
+         @show="showme()"
          >
          <q-card class="bg-secondary full-width">
             <q-bar class="bg-primary">
@@ -134,7 +135,25 @@
                     </q-stepper-navigation>
                   </q-step>
                   <q-step
-                    :name="3"
+                     v-if="step === 3"
+                     :name="3"
+                     title="Tarjeta o Paypal"
+                     icon="settings"
+                     :done="step > 4"
+                  >
+                    <div id="paypal-button-container" ref="payp"></div>
+                    <q-stepper-navigation>
+                      <transition-group
+                        appear
+                        enter-active-class="animated fadeIn"
+                        leave-active-class="animated fadeOut"
+                      >
+                        <q-btn key="Atras" flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
+                      </transition-group>
+                    </q-stepper-navigation>
+                  </q-step>
+                  <q-step
+                    :name="4"
                     title="Finalizar"
                     icon="fas fa-money"
                   >
@@ -193,6 +212,7 @@ export default {
   },
   data () {
     return {
+      paypal: window.paypal,
       CheckAv: 1,
       confirm: false,
       tipEnvio: null,
@@ -206,19 +226,24 @@ export default {
       tipoPago: [
         { label: 'Punto de Venta', value: 0, color: 'red' },
         { label: 'Efectivo ($)', value: 1, color: 'green' },
-        { label: 'Zelle', value: 2, color: 'blue' }
+        { label: 'Zelle', value: 2, color: 'blue' },
+        { label: 'Tarjeta o Paypal', value: 3, color: 'blue' }
       ]
     }
   },
   created () {
     this.bindLocalizations()
     console.log(this.cart)
+    console.log(this.$refs)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
+    showme () {
+      this.$nextTick(() => console.log(this.$refs))
+    },
     totalItComp (its) {
       var sum = 0
       its.forEach(x => {
@@ -365,6 +390,33 @@ export default {
   watch: {
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()
+    },
+    step () {
+      if (this.step === 3) {
+        this.$nextTick(() => {
+          let that = this
+          this.paypal.Buttons({
+            createOrder: function (data, actions) {
+            // This function sets up the details of the transaction, including the amount and line item details.
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    value: that.tipEnvio === '1' ? that.getTotalCarrito()[2] + 3 : that.getTotalCarrito()[2]
+                  }
+                }]
+              })
+            },
+            onApprove: function (data, actions) {
+              // This function captures the funds from the transaction.
+              return actions.order.capture().then(function (details) {
+                // This function shows a transaction success message to your buyer.
+                console.log({ details })
+                that.makeOrder()
+              })
+            }
+          }).render('#paypal-button-container')
+        })
+      }
     }
   }
 }

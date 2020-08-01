@@ -18,15 +18,15 @@ export const delCartItem = async function ({ commit }, payload) {
 /// Bindings ////
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
-  return bindFirestoreRef('menu', firestore().collection('menu').where('softDelete', '==', 0))
+  return bindFirestoreRef('menu', firestore().collection('menu').where('softDelete', '==', 0), { reset: false })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
-  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '==', true))
+  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '==', true), { reset: false })
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindPromos')
-  return bindFirestoreRef('promos', firestore().collection('promos').where('estatus', '==', true))
+  return bindFirestoreRef('promos', firestore().collection('promos').where('estatus', '==', true), { reset: false })
 })
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')

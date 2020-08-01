@@ -85,6 +85,17 @@ const routes = [
     ]
   },
   {
+    path: '/test',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'payout',
+        name: 'test',
+        component: () => import('pages/testPayout.vue')
+      }
+    ]
+  },
+  {
     path: '/cart',
     component: () => import('layouts/User.vue'),
     children: [

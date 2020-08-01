@@ -270,6 +270,21 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/settings',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: '',
+        name: 'settings',
+        component: () => import('pages/settings.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'settings'
+        }
+      }
+    ]
   }
 ]
 
