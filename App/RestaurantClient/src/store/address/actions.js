@@ -8,9 +8,10 @@ export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
 export const addAddress = firestoreAction((state, payload) => {
   console.log({ payload })
   return firestore()
-    .collection('address').add(
-      payload
-    )
+    .collection('address').add({
+      ...payload,
+      softDelete: 0
+    })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
     })

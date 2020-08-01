@@ -108,9 +108,6 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
-      if (key === 'estatus') {
-        value = value === false ? 0 : 1
-      }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'categorias' })
     },
@@ -122,21 +119,17 @@ export default {
       this.delrows({ payload: this.selected, collection: 'categorias' })
     }, */
     softDelete () {
-      let id = ''
-      let value = 2
-      let key = 'estatus'
       if (this.selected.length === 0) {
         this.noSelect = true
       }
       if (this.selected.length > 0) {
-        id = this.selected[0].id
         this.$q.dialog({
-          title: 'Borrar categoria',
-          message: '¿Desea Borrar la categoria seleccionada ?',
+          title: 'Eliminar producto',
+          message: '¿Desea Eliminar el producto seleccionado ?',
           cancel: true,
           persistent: true
         }).onOk(() => {
-          this.setValue({ payload: { value, id, key }, collection: 'categorias' })
+          this.delrows({ payload: this.selected, collection: 'categorias' })
         }).onCancel(() => {
         })
       }
