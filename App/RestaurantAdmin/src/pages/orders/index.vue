@@ -70,32 +70,41 @@ export default {
       let i, obj, clientforOrder, tipoPago
       let fullname, statusOrder, tableOrder, typeService
       for (i = 0; i < this.orders.length; i++) {
-        obj = this.orders[i]
-        clientforOrder = this.clientOrders(obj.customer_id)
-        fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
-        typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-        if (obj.typePayment === 'punto') {
-          tipoPago = this.tipo_pago[0]['label']
+        obj = null
+        if (typeof this.$route.query.status !== 'undefined') {
+          if (this.$route.query.status === this.orders[i].status) {
+            obj = this.orders[i]
+          }
+        } else {
+          obj = this.orders[i]
         }
-        if (obj.typePayment === 'cash') {
-          tipoPago = this.tipo_pago[1]['label']
+        if (obj !== null) {
+          clientforOrder = this.clientOrders(obj.customer_id)
+          fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+          typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
+          if (obj.typePayment === 'punto') {
+            tipoPago = this.tipo_pago[0]['label']
+          }
+          if (obj.typePayment === 'cash') {
+            tipoPago = this.tipo_pago[1]['label']
+          }
+          if (obj.typePayment === 'Zelle') {
+            tipoPago = this.tipo_pago[2]['label']
+          }
+          statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
+          tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
+          OrderClient.push({
+            'id': obj.id,
+            'nombre': fullname,
+            'typePayment': tipoPago,
+            'status': statusOrder,
+            'paid': obj.paid,
+            'dateIn': obj.dateIn,
+            'factura': obj.factura,
+            'table': tableOrder,
+            'typeService': typeService
+          })
         }
-        if (obj.typePayment === 'Zelle') {
-          tipoPago = this.tipo_pago[2]['label']
-        }
-        statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
-        tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
-        OrderClient.push({
-          'id': obj.id,
-          'nombre': fullname,
-          'typePayment': tipoPago,
-          'status': statusOrder,
-          'paid': obj.paid,
-          'dateIn': obj.dateIn,
-          'factura': obj.factura,
-          'table': tableOrder,
-          'typeService': typeService
-        })
       }
       return OrderClient
     }
