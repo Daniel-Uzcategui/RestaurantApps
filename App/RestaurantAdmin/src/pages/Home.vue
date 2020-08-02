@@ -113,15 +113,7 @@ export default {
         fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
         tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
         typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-        if (obj.typePayment === 'punto') {
-          tipoPago = this.tipo_pago[0]['label']
-        }
-        if (obj.typePayment === 'cash') {
-          tipoPago = this.tipo_pago[1]['label']
-        }
-        if (obj.typePayment === 'Zelle') {
-          tipoPago = this.tipo_pago[2]['label']
-        }
+        tipoPago = this.tipo_pago[obj.typePayment]['label']
         OrderClient.push({
           'id': obj.id,
           'nombre': fullname,
@@ -203,7 +195,8 @@ export default {
       tipo_pago: [
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
-        { label: 'Zelle', value: 2 }
+        { label: 'Zelle', value: 2 },
+        { label: 'Tarjeta o Paypal', value: 3 }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },

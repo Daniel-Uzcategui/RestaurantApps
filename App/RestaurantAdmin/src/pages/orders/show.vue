@@ -253,7 +253,8 @@ export default {
       typePayment_options: [
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
-        { label: 'Zelle', value: 2 }
+        { label: 'Zelle', value: 2 },
+        { label: 'Tarjeta o Paypal', value: 3 }
       ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },

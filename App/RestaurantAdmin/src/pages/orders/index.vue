@@ -15,7 +15,6 @@
       :selected.sync="selected"
       >
       <template v-slot:top-right>
-        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/orders/create')"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
@@ -82,15 +81,7 @@ export default {
           clientforOrder = this.clientOrders(obj.customer_id)
           fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
           typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-          if (obj.typePayment === 'punto') {
-            tipoPago = this.tipo_pago[0]['label']
-          }
-          if (obj.typePayment === 'cash') {
-            tipoPago = this.tipo_pago[1]['label']
-          }
-          if (obj.typePayment === 'Zelle') {
-            tipoPago = this.tipo_pago[2]['label']
-          }
+          tipoPago = this.tipo_pago[obj.typePayment]['label']
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
           OrderClient.push({
@@ -176,7 +167,8 @@ export default {
       tipo_pago: [
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
-        { label: 'Zelle', value: 2 }
+        { label: 'Zelle', value: 2 },
+        { label: 'Tarjeta o Paypal', value: 3 }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },
