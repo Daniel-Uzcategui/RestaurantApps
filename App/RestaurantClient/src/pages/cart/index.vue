@@ -129,7 +129,7 @@
                         enter-active-class="animated fadeIn"
                         leave-active-class="animated fadeOut"
                       >
-                        <q-btn key="Continue" v-if="pagoSel" @click="step = 3" color="primary" label="Continuar" />
+                        <q-btn key="Continue" v-if="pagoSel" @click="pagoSel === 3 ? step = 3 : step = 4" color="primary" label="Continuar" />
                         <q-btn key="Atras" flat @click="step = 1" color="primary" label="Atras" class="q-ml-sm" />
                       </transition-group>
                     </q-stepper-navigation>

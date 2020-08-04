@@ -83,6 +83,11 @@ export default {
         }
       })
     }
+  },
+  watch: {
+    markersClone (e) {
+      this.$emit('update-mark', e)
+    }
   }
 }
 </script>

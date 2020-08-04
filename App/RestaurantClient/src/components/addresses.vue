@@ -45,7 +45,8 @@
     <q-card-section class="q-pt-none q-pa-md">
     <google-map
       :center="center"
-      :markers="markers" />
+      :markers="markers"
+      @update-mark="(e) => markers = e" />
     </q-card-section>
     <q-card-actions align="around">
         <q-btn color="secondary" v-close-popup >Cancelar</q-btn>
