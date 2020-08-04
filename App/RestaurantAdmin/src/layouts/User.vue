@@ -126,84 +126,116 @@ export default {
           caption: '',
           icon: 'fa fa-home',
           link: '#/home',
-          separator: true
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Sedes',
           caption: '',
           icon: 'fa fa-globe',
           link: '#/localization/index',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Categorias',
           caption: '',
           icon: 'fa fa-bars',
           link: '#/menu/categorias',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
-          title: 'Menus',
+          title: 'Catálogos',
           caption: '',
           icon: 'fas fa-utensils',
           link: '#/menu/menu',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Opciones',
           caption: '',
           icon: 'fab fa-gulp',
           link: '#/menu/options',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
-          title: 'Configuracion de Opciones',
+          title: 'Configuración de Opciones',
           caption: '',
           icon: 'menu_book',
           link: '#/menu/optionsconf',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Promociones',
           caption: '',
           icon: 'fas fa-ad',
           link: '#/menu/promo',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Ordenes',
           caption: '',
           icon: 'room_service',
           link: '#/orders/index',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Pagos',
           caption: '',
           icon: 'fa fa-briefcase',
           link: '#/payments/index',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Clientes',
           caption: '',
           icon: 'fa fa-user',
           link: '#/clients/index',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Editor Web',
           caption: '',
           icon: 'far fa-object-group',
           link: '#/editor/index',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
         },
         {
           title: 'Usuarios',
           caption: '',
           icon: 'fa fa-users',
           link: '#/users/index',
-          separator: false
+          separator: true,
+          tree: [{ children: [] }]
+        },
+        {
+          title: 'Ajustes',
+          caption: '',
+          icon: 'fa fa-cog',
+          separator: true,
+          tree: [
+            {
+              children: [
+                { label: 'Chat',
+                  link: 'chat',
+                  handler: (node) => this.onClickOption(node) },
+                { label: 'Horarios',
+                  link: 'schedule',
+                  handler: (node) => this.onClickOption(node) },
+                { label: 'Pago y Servicios',
+                  link: 'paymentServ',
+                  handler: (node) => this.onClickOption(node) }
+              ]
+            }]
         }
       ]
     }
@@ -228,6 +260,9 @@ export default {
     },
     getUserData (attr) {
       return (this.currentUser[attr]) ? this.currentUser[attr] : 'Please update your profile'
+    },
+    onClickOption (node) {
+      this.$router.push({ path: '/settings/' + node.link })
     }
   },
   watch: {

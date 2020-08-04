@@ -4,7 +4,7 @@
       :dense="$q.screen.lt.md"
       :data="elmenu"
       :columns="columns"
-      title="Menu"
+      title="Catálogos"
       :rows-per-page-options="[]"
       row-key="id"
       :selected-rows-label="getSelectedString"
