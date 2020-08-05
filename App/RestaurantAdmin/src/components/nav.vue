@@ -11,12 +11,16 @@
     >
       <q-icon :name="icon" color="white"/>
     </q-item-section>
-
     <q-item-section>
       <q-item-label class="text-white">{{ title }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
+      <q-tree
+        :nodes="tree"
+        node-key="label"
+        dark
+      />
     </q-item-section>
   </q-item>
   <q-separator v-if="separator"/>
@@ -48,6 +52,9 @@ export default {
     },
     separator: {
       default: false
+    },
+    tree: {
+      default: []
     }
   }
 }

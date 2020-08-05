@@ -1,13 +1,22 @@
 <template>
-  <q-page padding>
-    <business-hours
-    :days="days"
-    name="holidayHours"
-    type="select"
-    :time-increment="60"
-    :localization="localization"
-    color="#00af0b"
-  ></business-hours>
+  <q-page class="q-pa-lg" >
+     <div class="q-gutter-md">
+      <q-card>
+       <q-card-section  class="bg-secondary text-white header" >
+          <div class="text-h5">Ajustes de Horarios</div>
+       </q-card-section>
+     </q-card>
+     <q-card-section>
+      <business-hours
+            :days="days"
+            name="holidayHours"
+            type="select"
+            :time-increment="60"
+            :localization="localization"
+            color="#00af0b"
+          ></business-hours>
+      </q-card-section>
+    </div>
   </q-page>
 </template>
 

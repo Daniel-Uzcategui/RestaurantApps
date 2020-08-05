@@ -276,12 +276,30 @@ const routes = [
     component: () => import('layouts/User.vue'),
     children: [
       {
-        path: '',
-        name: 'settings',
-        component: () => import('pages/settings.vue'),
+        path: 'schedule',
+        name: 'schedule',
+        component: () => import('pages/settings/schedule.vue'),
         meta: {
           requiresAuth: true,
-          nombre: 'settings'
+          nombre: 'Horarios de sedes'
+        }
+      },
+      {
+        path: 'paymentServ',
+        name: 'paymentServ',
+        component: () => import('pages/settings/paymentServ.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Pagos y Servicios'
+        }
+      },
+      {
+        path: 'chat',
+        name: 'chat',
+        component: () => import('pages/settings/chat.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Chat'
         }
       }
     ]
