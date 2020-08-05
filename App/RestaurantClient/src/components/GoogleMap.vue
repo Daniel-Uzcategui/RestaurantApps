@@ -1,5 +1,16 @@
 <template>
   <div>
+    <gmap-autocomplete v-if="!readOnly" class="introInput" @place_changed="(e) => addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})" >
+                    <template v-slot:input="slotProps">
+                        <q-input outlined
+                                      prepend-inner-icon="place"
+                                      placeholder="Buscar"
+                                      ref="input"
+                                      v-on:listeners="slotProps.listeners"
+                                      v-on:attrs="slotProps.attrs">
+                        </q-input>
+                    </template>
+        </gmap-autocomplete>
     <gmap-map
       :center="centerClone"
       :zoom="12"
@@ -18,9 +29,9 @@
 
 <script>
 import Vue from 'vue'
-import * as VueGoogleMaps from 'vue2-google-maps'
+import * as GmapVue from 'gmap-vue'
 
-Vue.use(VueGoogleMaps, {
+Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyAiUb3VghW0YlWkGkx-nNbG_tLm3tKDnDM',
     libraries: 'places'
@@ -42,11 +53,16 @@ export default {
 
   mounted () {
     this.geolocate()
+    this.$nextTick(() => {
+      console.log({ ref: this.$refs })
+      this.opensearch = true
+    })
   },
 
   methods: {
     addMark (e) {
-      console.log(e)
+      console.log({ e })
+      this.centerClone = e.latLng
       var clickedLocation = e.latLng
       if (typeof this.readOnly !== 'undefined' && this.readOnly === true) { return }
       if (this.markersClone.length <= 0) {
@@ -62,6 +78,17 @@ export default {
     },
     setPlace (place) {
       this.currentPlace = place
+    },
+    usePlace (place) {
+      if (this.place) {
+        this.markers.push({
+          position: {
+            lat: this.place.geometry.location.lat(),
+            lng: this.place.geometry.location.lng()
+          }
+        })
+        this.place = null
+      }
     },
     addMarker () {
       if (this.currentPlace) {
@@ -91,3 +118,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" >
+.pac-container
+ z-index: 99999999 !important
+</style>

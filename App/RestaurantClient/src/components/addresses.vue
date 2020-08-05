@@ -45,8 +45,7 @@
     <q-card-section class="q-pt-none q-pa-md">
     <google-map
       :center="center"
-      :markers="markers"
-      @update-mark="(e) => markers = e" />
+      :markers="markers" />
     </q-card-section>
     <q-card-actions align="around">
         <q-btn color="secondary" v-close-popup >Cancelar</q-btn>
@@ -137,7 +136,7 @@ export default {
       puntoRef: null,
       maximizedToggle: true,
       dialog: false,
-      center: { lat: 45.508, lng: -73.587 },
+      center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },
       markers: [],
       places: [],
       options: [],

@@ -21,8 +21,8 @@
     "cross-env": "^7.0.2",
     "eosjs": "^20.0.3",
     "firebase": "^7.15.3",
+    "gmap-vue": "^1.2.1",
     "quasar": "^1.9.9",
-    "vue2-google-maps": "^0.10.7",
     "vuexfire": "^3.2.2"
   },
   "devDependencies": {

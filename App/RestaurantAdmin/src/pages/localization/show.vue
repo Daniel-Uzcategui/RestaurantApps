@@ -32,7 +32,7 @@
         <div class="header-cell col-xs-8 col-sm-6 col-md-6 col-lg-6">
           <q-btn v-if="!markers" color="primary" class="q-py-md" label="Agregar Localización" icon="fas fa-map-marker-alt"/>
           <q-btn v-if="markers" color="primary" class="q-py-md" label="Localización" icon="fas fa-check"/>
-          <q-popup-edit buttons :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
+          <q-popup-edit persistent buttons :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
               <google-map
                 :center="center"
                 :markers="markers" />
@@ -107,7 +107,7 @@ export default {
       PickUP: false,
       Delivery: false,
       Inlocal: false,
-      center: { lat: 45.508, lng: -73.587 },
+      center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },
       markers: [],
       places: [],
       currentPlace: null,
@@ -184,4 +184,9 @@ export default {
  padding-left: 10px
 .label-width
  width: 50%
+</style>
+
+<style lang="sass" >
+.pac-container
+ z-index: 99999999 !important
 </style>

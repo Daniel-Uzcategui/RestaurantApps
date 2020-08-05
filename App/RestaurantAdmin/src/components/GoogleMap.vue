@@ -1,5 +1,16 @@
 <template>
   <div>
+    <gmap-autocomplete class="introInput" @place_changed="(e) => addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})" >
+                    <template v-slot:input="slotProps">
+                        <q-input outlined
+                                      prepend-inner-icon="place"
+                                      placeholder="Buscar"
+                                      ref="input"
+                                      v-on:listeners="slotProps.listeners"
+                                      v-on:attrs="slotProps.attrs">
+                        </q-input>
+                    </template>
+        </gmap-autocomplete>
     <gmap-map
       :center="centerClone"
       :zoom="12"
@@ -18,9 +29,9 @@
 
 <script>
 import Vue from 'vue'
-import * as VueGoogleMaps from 'vue2-google-maps'
+import * as GmapVue from 'gmap-vue'
 
-Vue.use(VueGoogleMaps, {
+Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyAiUb3VghW0YlWkGkx-nNbG_tLm3tKDnDM',
     libraries: 'places'
@@ -48,6 +59,7 @@ export default {
     addMark (e) {
       console.log(e)
       var clickedLocation = e.latLng
+      this.centerClone = e.latLng
       if (this.markersClone.length <= 0) {
         this.markersClone.push({
           position: clickedLocation

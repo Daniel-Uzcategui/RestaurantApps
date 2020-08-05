@@ -22,8 +22,8 @@ export default {
       days: {
         'sunday': [
           {
-            'open': '',
-            'close': '',
+            'open': '0800',
+            'close': '1700',
             'id': '5ca5578b0c5c7',
             'isOpen': false
           }
@@ -55,7 +55,7 @@ export default {
         'thursday': [
           {
             'open': '0800',
-            'close': '0300',
+            'close': '1700',
             'id': '5ca5578b0c5e6',
             'isOpen': true
           }
@@ -63,21 +63,21 @@ export default {
         'friday': [
           {
             'open': '0800',
-            'close': 'asdda',
+            'close': '1700',
             'id': '5ca5578b0c5ec',
             'isOpen': true
           },
           {
-            'open': '1900',
-            'close': '2200',
+            'open': '0800',
+            'close': '1700',
             'id': '5ca5578b0c5f2',
             'isOpen': true
           }
         ],
         'saturday': [
           {
-            'open': '24hrs',
-            'close': '24hrs',
+            'open': '0800',
+            'close': '1700',
             'id': '5ca5578b0c5f8',
             'isOpen': true
           }
@@ -86,8 +86,8 @@ export default {
       localization: {
         'switchOpen': 'Abierto',
         'switchClosed': 'Cerrado',
-        'placeholderOpens': 'Abre',
-        'placeholderCloses': 'Cierra',
+        'placeholderOpens': 'Abierto',
+        'placeholderCloses': 'Cerrado',
         'addHours': 'Agregar horas',
         'open': {
           'invalidInput': 'Ingrese una hora de apertura en el formato de 12 horas (es decir, 08:00 a.m.). También puede ingresar las "24 horas".',
