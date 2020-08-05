@@ -4,8 +4,10 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Horarios</div>
+          <div>
+            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+          </div>
        </q-card-section>
-     </q-card>
      <q-card-section>
       <business-hours
             :days="days"
@@ -16,6 +18,7 @@
             color="#00af0b"
           ></business-hours>
       </q-card-section>
+    </q-card>
     </div>
   </q-page>
 </template>
@@ -126,3 +129,12 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+.flex-break
+  flex: 1 0 100% !important
+  height: 0 !important
+.header-btn
+  position: absolute; right: 10px !important
+.header
+ padding-bottom: 50px
+</style>

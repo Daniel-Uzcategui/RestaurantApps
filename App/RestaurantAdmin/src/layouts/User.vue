@@ -231,7 +231,7 @@ export default {
                 { label: 'Horarios',
                   link: 'schedule',
                   handler: (node) => this.onClickOption(node) },
-                { label: 'Pago y Servicios',
+                { label: 'Pagos y Servicios',
                   link: 'paymentServ',
                   handler: (node) => this.onClickOption(node) }
               ]
