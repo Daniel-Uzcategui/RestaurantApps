@@ -1,36 +1,36 @@
 /// ////// Localization Action ////////
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
-export const bindLocalizations = firestoreAction(({ bindFirestoreRef }) => {
-  console.log('bindLocalizations')
-  return bindFirestoreRef('localizations', firestore().collection('localizations').where('status', '==', 0))
+export const bindConfigChat = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindConfigs')
+  return bindFirestoreRef('configs', firestore().collection('config'), { reset: false })
 })
 
-export const saveLocation = firestoreAction((state, payload) => {
+export const saveConfig = firestoreAction((state, payload) => {
   return firestore()
-    .collection('localizations')
+    .collection(payload.collection)
     .doc(payload.id)
     .update({ [payload.key]: payload.value })
     .then(() => {
-      console.log('localizations updated!')
+      console.log(`${payload.collection} updated!`)
     })
 })
-export const deleteLocation = firestoreAction((context, payload) => {
+export const deleteConfig = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload) {
-    firestore().collection('localizations')
+    firestore().collection(payload.collection)
       .doc(payload[i].id)
       .delete().then(() => {
-        console.log('localizations removed!')
+        console.log(`${payload.collection} removeupdated!`)
       }).catch((e) => {
-        console.log('error removing localizations!')
+        console.log('error removing Configs!')
       })
   }
 })
 
-export const addLoc = firestoreAction((state, payload) => {
+export const addConfig = firestoreAction((state, payload) => {
   return firestore()
-    .collection('localizations').add(
+    .collection(payload.collection).add(
       payload
     )
     .then(function (docRef) {

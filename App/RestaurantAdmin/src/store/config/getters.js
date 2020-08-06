@@ -1,1 +1,1 @@
-export const localizations = ({ localizations }) => localizations
+export const configs = ({ configs }) => configs

@@ -10,7 +10,7 @@
        </q-card-section>
      <q-card-section>
       <business-hours
-            :days="days"
+            :days="configs[0].days[0]"
             name="holidayHours"
             type="select"
             :time-increment="60"
@@ -25,76 +25,16 @@
 
 <script>
 import BusinessHours from 'vue-business-hours'
+import { mapGetters } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters('config', ['configs', 'days'])
+  },
   components: {
     BusinessHours
   },
   data () {
     return {
-      days: {
-        'sunday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5c7',
-            'isOpen': false
-          }
-        ],
-        'monday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5d1',
-            'isOpen': true
-          }
-        ],
-        'tuesday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5d8',
-            'isOpen': true
-          }
-        ],
-        'wednesday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5df',
-            'isOpen': true
-          }
-        ],
-        'thursday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5e6',
-            'isOpen': true
-          }
-        ],
-        'friday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5ec',
-            'isOpen': true
-          },
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5f2',
-            'isOpen': true
-          }
-        ],
-        'saturday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5f8',
-            'isOpen': true
-          }
-        ]
-      },
       localization: {
         'switchOpen': 'Abierto',
         'switchClosed': 'Cerrado',

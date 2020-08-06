@@ -218,6 +218,20 @@ export default {
           tree: [{ children: [] }]
         },
         {
+          title: 'Widgets',
+          caption: '',
+          icon: 'fa fa-cube',
+          separator: true,
+          tree: [
+            {
+              children: [
+                { label: 'Chat',
+                  link: 'chat',
+                  handler: (node) => this.onClickOption(node) }
+              ]
+            }]
+        },
+        {
           title: 'Ajustes',
           caption: '',
           icon: 'fa fa-cog',
@@ -225,9 +239,6 @@ export default {
           tree: [
             {
               children: [
-                { label: 'Chat',
-                  link: 'chat',
-                  handler: (node) => this.onClickOption(node) },
                 { label: 'Horarios',
                   link: 'schedule',
                   handler: (node) => this.onClickOption(node) },

@@ -15,7 +15,7 @@
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select v-model="statusDelivery" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Delivery" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
@@ -34,37 +34,44 @@
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select v-model="statusPto" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Punto de Venta" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Zelle" />
         </div>
         </div>
          <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select v-model="statusCash" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Efectivo" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Paypal" />
         </div>
         </div>
-        <div class="flex-break q-py-md "></div>
+         <div class='filled'></div>
      </q-card>
   </div>
 </q-page>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters('config', ['configs'])
+  },
   data () {
     return {
-      ChatID: '',
-      status: 1,
+      statusDelivery: 1,
+      statusPto: 1,
+      statusZelle: 1,
+      statusCash: 1,
+      statusPaypal: 1,
       estatus_options: [
         { label: 'Activo', value: 0 },
         { label: 'Inactivo', value: 1 }

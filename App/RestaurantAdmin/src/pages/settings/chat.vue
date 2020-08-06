@@ -3,9 +3,10 @@
      <div class="q-gutter-md">
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
-          <div class="text-h5">Ajustes Generales del Chat</div>
+          <div class="text-h5">Widgets Chat</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
+            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>
@@ -27,14 +28,59 @@
     </div>
      </q-card>
   </div>
-
+<q-dialog v-model="validationError">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Error</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+          Los siguientes campos son requeridos
+          {{messageError}}
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </q-page>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
+  created () {
+    this.bindConfigChat().then(e => console.log(this.afterBindigChat()))
+  },
+  computed: {
+    ...mapGetters('config', ['configs'])
+  },
+  methods: {
+    ...mapActions('config', ['addConfig', 'bindConfigChat', 'saveConfig']),
+    agregar () {
+      if (this.ChatID === 0 || this.ChatID.length === 0) {
+        this.messageError = []
+        if (this.localizacion_sede.length === 0) {
+          this.messageError.push('Key default chat ')
+        }
+        this.validationError = true
+        return
+      }
+      this.$q.loading.show()
+      const payload = {
+        ChatID: this.ChatID,
+        status: this.status,
+        collection: 'configChat'
+      }
+      this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+    },
+    afterBindigChat () {
+      console.log('afterBindigChat')
+      console.log(this.configs)
+    }
+  },
   data () {
     return {
+      validationError: false,
+      messageError: [],
       ChatID: '',
       status: 1,
       estatus_options: [
