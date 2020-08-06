@@ -67,8 +67,7 @@ export default {
       this.$q.loading.show()
       const payload = {
         ChatID: this.ChatID,
-        status: this.status,
-        collection: 'configChat'
+        status: this.status
       }
       this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },

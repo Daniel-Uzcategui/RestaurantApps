@@ -8,7 +8,7 @@ export const bindConfigChat = firestoreAction(({ bindFirestoreRef }) => {
 
 export const saveConfig = firestoreAction((state, payload) => {
   return firestore()
-    .collection(payload.collection)
+    .collection('config')
     .doc(payload.id)
     .update({ [payload.key]: payload.value })
     .then(() => {
@@ -18,7 +18,7 @@ export const saveConfig = firestoreAction((state, payload) => {
 export const deleteConfig = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload) {
-    firestore().collection(payload.collection)
+    firestore().collection('config')
       .doc(payload[i].id)
       .delete().then(() => {
         console.log(`${payload.collection} removeupdated!`)
@@ -30,7 +30,7 @@ export const deleteConfig = firestoreAction((context, payload) => {
 
 export const addConfig = firestoreAction((state, payload) => {
   return firestore()
-    .collection(payload.collection).add(
+    .collection('config').add(
       payload
     )
     .then(function (docRef) {
