@@ -5,7 +5,12 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Medios de Pagos y Tipos de Servicios</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
+           <div v-if="config">
+              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
+            </div>
+            <div v-else>
+              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+            </div>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
          </q-card-section>
@@ -64,8 +69,16 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 export default {
+  created () {
+    this.bindConfigChat().then(e => console.log(this.afterBindigChat()))
+  },
   computed: {
-    ...mapGetters('config', ['configs'])
+    ...mapGetters('config', ['configs']),
+    config () {
+      return this.configs.find(obj => {
+        return obj.source === 'paymentServ'
+      })
+    }
   },
   data () {
     return {
@@ -85,7 +98,7 @@ export default {
   },
   methods: {
     ...mapActions('config', ['addConfig', 'bindConfigChat', 'saveConfig']),
-    agregar () {
+    add () {
       this.$q.loading.show()
       const payload = {
         statusDelivery: this.statusDelivery,
@@ -94,13 +107,41 @@ export default {
         statusCash: this.statusCash,
         statusPaypal: this.statusPaypal,
         price: this.price,
-        source: 'PaymentServ'
+        source: 'paymentServ'
       }
       this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
+    save () {
+      let value, id, key
+      value = this.statusDelivery
+      id = this.config.id
+      key = 'statusDelivery'
+      this.saveConfig({ value, id, key })
+      value = this.statusPto
+      key = 'statusPto'
+      this.saveConfig({ value, id, key })
+      value = this.statusZelle
+      key = 'statusZelle'
+      this.saveConfig({ value, id, key })
+      value = this.statusCash
+      key = 'statusCash'
+      this.saveConfig({ value, id, key })
+      value = this.statusPaypal
+      key = 'statusPaypal'
+      this.saveConfig({ value, id, key })
+      value = this.price
+      key = 'price'
+      this.saveConfig({ value, id, key }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+    },
     afterBindigChat () {
-      console.log('afterBindigChat')
-      console.log(this.configs)
+      if (this.config.source !== '') {
+        this.statusDelivery = this.config.statusDelivery
+        this.statusPto = this.config.statusPto
+        this.statusZelle = this.config.statusZelle
+        this.statusCash = this.config.statusCash
+        this.statusPaypal = this.config.statusPaypal
+        this.price = this.config.price
+      }
     }
   }
 }
