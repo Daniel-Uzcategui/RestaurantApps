@@ -10,7 +10,7 @@
        </q-card-section>
      <q-card-section>
       <business-hours
-            :days="configs[0].days[0]"
+            :days="days"
             name="holidayHours"
             type="select"
             :time-increment="60"
@@ -25,21 +25,81 @@
 
 <script>
 import BusinessHours from 'vue-business-hours'
-import { mapGetters } from 'vuex'
 export default {
-  computed: {
-    ...mapGetters('config', ['configs', 'days'])
-  },
   components: {
     BusinessHours
   },
   data () {
     return {
+      days: {
+        'sunday': [
+          {
+            'open': '',
+            'close': '',
+            'id': '5ca5578b0c5c7',
+            'isOpen': false
+          }
+        ],
+        'monday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5d1',
+            'isOpen': true
+          }
+        ],
+        'tuesday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5d8',
+            'isOpen': true
+          }
+        ],
+        'wednesday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5df',
+            'isOpen': true
+          }
+        ],
+        'thursday': [
+          {
+            'open': '0800',
+            'close': '0300',
+            'id': '5ca5578b0c5e6',
+            'isOpen': true
+          }
+        ],
+        'friday': [
+          {
+            'open': '0800',
+            'close': 'asdda',
+            'id': '5ca5578b0c5ec',
+            'isOpen': true
+          },
+          {
+            'open': '1900',
+            'close': '2200',
+            'id': '5ca5578b0c5f2',
+            'isOpen': true
+          }
+        ],
+        'saturday': [
+          {
+            'open': '24hrs',
+            'close': '24hrs',
+            'id': '5ca5578b0c5f8',
+            'isOpen': true
+          }
+        ]
+      },
       localization: {
         'switchOpen': 'Abierto',
         'switchClosed': 'Cerrado',
-        'placeholderOpens': 'Abierto',
-        'placeholderCloses': 'Cerrado',
+        'placeholderOpens': 'Abre',
+        'placeholderCloses': 'Cierra',
         'addHours': 'Agregar horas',
         'open': {
           'invalidInput': 'Ingrese una hora de apertura en el formato de 12 horas (es decir, 08:00 a.m.). También puede ingresar las "24 horas".',

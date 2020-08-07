@@ -5,7 +5,12 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Widgets Chat</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
+            <div v-if="config">
+              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
+            </div>
+            <div v-else>
+              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+            </div>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
        </q-card-section>
@@ -13,7 +18,7 @@
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input
-          v-model="ChatID"
+          v-model="key"
           type="text"
           float-label="Float Label"
           placeholder="Key default chat"
@@ -51,12 +56,17 @@ export default {
     this.bindConfigChat().then(e => console.log(this.afterBindigChat()))
   },
   computed: {
-    ...mapGetters('config', ['configs'])
+    ...mapGetters('config', ['configs']),
+    config () {
+      return this.configs.find(obj => {
+        return obj.source === 'chat'
+      })
+    }
   },
   methods: {
     ...mapActions('config', ['addConfig', 'bindConfigChat', 'saveConfig']),
-    agregar () {
-      if (this.ChatID === 0 || this.ChatID.length === 0) {
+    add () {
+      if (this.key === 0 || this.key.length === 0) {
         this.messageError = []
         if (this.localizacion_sede.length === 0) {
           this.messageError.push('Key default chat ')
@@ -66,21 +76,34 @@ export default {
       }
       this.$q.loading.show()
       const payload = {
-        ChatID: this.ChatID,
-        status: this.status
+        key: this.key,
+        status: this.status,
+        source: 'chat'
       }
       this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
+    save () {
+      let value, id, key
+      value = this.key
+      id = this.config.id
+      key = 'key'
+      this.saveConfig({ value, id, key })
+      value = this.status
+      key = 'status'
+      this.saveConfig({ value, id, key })
+    },
     afterBindigChat () {
-      console.log('afterBindigChat')
-      console.log(this.configs)
+      if (this.config.key !== '') {
+        this.key = this.config.key
+        this.status = this.config.status
+      }
     }
   },
   data () {
     return {
       validationError: false,
       messageError: [],
-      ChatID: '',
+      key: '',
       status: 1,
       estatus_options: [
         { label: 'Activo', value: 0 },

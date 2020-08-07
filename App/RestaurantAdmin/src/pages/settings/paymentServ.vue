@@ -5,7 +5,8 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Medios de Pagos y Tipos de Servicios</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
+            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
          </q-card-section>
         <div class='filled'></div>
@@ -24,6 +25,7 @@
           float-label="Float Label"
           placeholder="Precio"
           outlined
+          v-model="price"
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Precio']"/>
         </div>
         <div class="flex-break q-py-md "></div>
@@ -60,22 +62,45 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   computed: {
     ...mapGetters('config', ['configs'])
   },
   data () {
     return {
+      validationError: false,
+      messageError: [],
       statusDelivery: 1,
       statusPto: 1,
       statusZelle: 1,
       statusCash: 1,
       statusPaypal: 1,
+      price: 0,
       estatus_options: [
         { label: 'Activo', value: 0 },
         { label: 'Inactivo', value: 1 }
       ]
+    }
+  },
+  methods: {
+    ...mapActions('config', ['addConfig', 'bindConfigChat', 'saveConfig']),
+    agregar () {
+      this.$q.loading.show()
+      const payload = {
+        statusDelivery: this.statusDelivery,
+        statusPto: this.statusPto,
+        statusZelle: this.statusZelle,
+        statusCash: this.statusCash,
+        statusPaypal: this.statusPaypal,
+        price: this.price,
+        source: 'PaymentServ'
+      }
+      this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+    },
+    afterBindigChat () {
+      console.log('afterBindigChat')
+      console.log(this.configs)
     }
   }
 }
