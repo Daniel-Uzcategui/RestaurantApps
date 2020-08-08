@@ -78,7 +78,7 @@
                 map-options
                 emit-value
                 stack-label
-                label="Componentes"
+                label="Opciones"
               />
           </q-td>
           </q-tr>

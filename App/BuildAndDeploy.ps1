@@ -1,0 +1,1 @@
+Set-Location .\RestaurantAdmin; firebase use QA; yarn build-qa; firebase deploy;firebase use default; yarn build; firebase deploy; Set-Location ..; Set-Location .\RestaurantClient; firebase use QA; yarn build-qa; firebase deploy;firebase use default; yarn build; firebase deploy;

@@ -10,12 +10,21 @@
                                       v-on:attrs="slotProps.attrs">
                         </q-input>
                     </template>
-        </gmap-autocomplete>
+        </gmap-autocomplete>  <q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" label="Localizarme" />
     <gmap-map
       :center="centerClone"
       :zoom="12"
       style="width:100%;  height: 300px;"
       @click="addMark"
+      :options="{
+   zoomControl: true,
+   mapTypeControl: true,
+   scaleControl: false,
+   streetViewControl: false,
+   rotateControl: false,
+   fullscreenControl: true,
+   disableDefaultUI: false
+ }"
     >
       <gmap-marker
         :key="index"
@@ -108,6 +117,16 @@ export default {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         }
+      })
+    },
+    geolocalize () {
+      navigator.geolocation.getCurrentPosition(position => {
+        console.log({ position })
+        let latLng = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+        this.addMark({ latLng })
       })
     }
   },

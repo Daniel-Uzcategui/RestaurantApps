@@ -11,3 +11,4 @@ debug.log
 *.njsproj
 *.sln
 *.sublime*
+App/RestaurantClient/firebase-debug.log

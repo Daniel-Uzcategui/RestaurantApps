@@ -16,6 +16,15 @@
       :zoom="12"
       style="width:100%;  height: 400px;"
       @click="addMark"
+      :options="{
+   zoomControl: true,
+   mapTypeControl: false,
+   scaleControl: false,
+   streetViewControl: false,
+   rotateControl: false,
+   fullscreenControl: true,
+   disableDefaultUI: false
+ }"
     >
       <gmap-marker
         :key="index"
