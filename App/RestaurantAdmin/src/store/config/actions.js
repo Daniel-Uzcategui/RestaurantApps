@@ -1,7 +1,7 @@
 /// ////// Localization Action ////////
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
-export const bindConfigChat = firestoreAction(({ bindFirestoreRef }) => {
+export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configs', firestore().collection('config'), { reset: false })
 })

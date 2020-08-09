@@ -4,11 +4,30 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Horarios</div>
-          <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+           <div>
+            <div v-if="config">
+              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
+            </div>
+            <div v-else>
+              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+            </div>
+            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
        </q-card-section>
      <q-card-section>
+      <div class="q-pa-md">SEDE</div>
+      <q-select
+        bg-color="white"
+        outlined
+        v-model="sede"
+        :options="locList"
+        style="width: 250px"
+        behavior="menu"
+        emit-value
+        map-options
+        stack-label
+        label="Seleccione"
+      />
       <business-hours
             :days="days"
             name="holidayHours"
@@ -16,6 +35,7 @@
             :time-increment="60"
             :localization="localization"
             color="#00af0b"
+            @updated-hours="updatedHours"
           ></business-hours>
       </q-card-section>
     </q-card>
@@ -24,8 +44,68 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import BusinessHours from 'vue-business-hours'
 export default {
+  created () {
+    this.bindConfigs().then(e => console.log(this.afterBindigChat()))
+  },
+  computed: {
+    ...mapGetters('config', ['configs']),
+    ...mapGetters('localization', ['localizations']),
+    config () {
+      return this.configs.find(obj => {
+        return obj.source === 'schedule'
+      })
+    },
+    locList () {
+      return this.localizations.map(x => {
+        return {
+          value: x.id,
+          label: x.name
+        }
+      })
+    }
+  },
+  methods: {
+    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
+    add () {
+      if (this.key === 0 || this.key.length === 0) {
+        this.messageError = []
+        if (this.localizacion_sede.length === 0) {
+          this.messageError.push('Key default chat ')
+        }
+        this.validationError = true
+        return
+      }
+      this.$q.loading.show()
+      const payload = {
+        key: this.key,
+        status: this.status,
+        source: 'schedule'
+      }
+      this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+    },
+    save () {
+      let value, id, key
+      value = this.key
+      id = this.config.id
+      key = 'key'
+      this.saveConfig({ value, id, key })
+      value = this.status
+      key = 'status'
+      this.saveConfig({ value, id, key })
+    },
+    afterBindigChat () {
+      if (this.config.key !== '') {
+        this.key = this.config.key
+        this.status = this.config.status
+      }
+    },
+    updatedHours (val) {
+      console.log(val)
+    }
+  },
   components: {
     BusinessHours
   },
@@ -135,6 +215,10 @@ export default {
   height: 0 !important
 .header-btn
   position: absolute; right: 10px !important
+.header-btn-back
+  position: absolute; right:120px !important
 .header
  padding-bottom: 50px
+.header-cell
+  padding-left: 30px
 </style>

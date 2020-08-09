@@ -70,7 +70,7 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   created () {
-    this.bindConfigChat().then(e => console.log(this.afterBindigChat()))
+    this.bindConfigs().then(e => console.log(this.afterBindigs()))
   },
   computed: {
     ...mapGetters('config', ['configs']),
@@ -97,7 +97,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig', 'bindConfigChat', 'saveConfig']),
+    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
     add () {
       this.$q.loading.show()
       const payload = {
@@ -133,7 +133,7 @@ export default {
       key = 'price'
       this.saveConfig({ value, id, key }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
-    afterBindigChat () {
+    afterBindigs () {
       if (this.config.source !== '') {
         this.statusDelivery = this.config.statusDelivery
         this.statusPto = this.config.statusPto

@@ -53,7 +53,7 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   created () {
-    this.bindConfigChat().then(e => console.log(this.afterBindigChat()))
+    this.bindConfigs().then(e => console.log(this.afterBindigChat()))
   },
   computed: {
     ...mapGetters('config', ['configs']),
@@ -64,7 +64,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig', 'bindConfigChat', 'saveConfig']),
+    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
     add () {
       if (this.key === 0 || this.key.length === 0) {
         this.messageError = []
@@ -90,7 +90,7 @@ export default {
       this.saveConfig({ value, id, key })
       value = this.status
       key = 'status'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
     afterBindigChat () {
       if (this.config.key !== '') {
