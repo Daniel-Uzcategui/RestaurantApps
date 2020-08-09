@@ -48,7 +48,7 @@ import { mapActions, mapGetters } from 'vuex'
 import BusinessHours from 'vue-business-hours'
 export default {
   created () {
-    this.bindConfigs().then(e => console.log(this.afterBindigChat()))
+    this.bindConfigs().then(e => console.log(this.afterBindig()))
   },
   computed: {
     ...mapGetters('config', ['configs']),
@@ -96,7 +96,7 @@ export default {
       key = 'status'
       this.saveConfig({ value, id, key })
     },
-    afterBindigChat () {
+    afterBindig () {
       if (this.config.key !== '') {
         this.key = this.config.key
         this.status = this.config.status
