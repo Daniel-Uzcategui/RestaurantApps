@@ -38,6 +38,7 @@
     <q-input class="q-pa-sm" filled type="text" v-model="estado" label="Estado" />
     <q-input class="q-pa-sm" filled type="text" v-model="ciudad" label="Ciudad" />
     <q-input class="q-pa-sm" filled type="text" v-model="municipio" label="Municipio" />
+    <q-input class="q-pa-sm" filled type="text" v-model="urb" label="Urbanización" />
     <q-input class="q-pa-sm" filled type="text" v-model="calle" label="Calle" />
     <q-input class="q-pa-sm" filled type="text" v-model="domicilio" label="Domicilio" />
     <q-input class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" />
@@ -86,10 +87,12 @@ export default {
         domicilio: this.domicilio,
         user: this.currentUser.id,
         alias: this.alias,
+        urb: this.urb,
         puntoRef: this.puntoRef,
         location: JSON.stringify(this.markers) }) : this.updateAddress({
         estado: this.estado,
         ciudad: this.ciudad,
+        urb: this.urb,
         municipio: this.municipio,
         calle: this.calle,
         domicilio: this.domicilio,
@@ -107,6 +110,7 @@ export default {
       this.calle = obj.calle
       this.domicilio = obj.domicilio
       this.alias = obj.alias
+      this.urb = obj.urb
       this.markers = JSON.parse(obj.location)
       this.puntoRef = obj.puntoRef
       this.id = obj.id
@@ -115,6 +119,7 @@ export default {
       this.id = null
       this.alias = null
       this.markers = []
+      this.urb = null
       this.puntoRef = null
       this.estado = null
       this.ciudad = null
@@ -141,6 +146,7 @@ export default {
       places: [],
       options: [],
       estado: null,
+      urb: null,
       ciudad: null,
       municipio: null,
       calle: null,

@@ -10,6 +10,21 @@
           :center="center"
           :markers="markers"
           :readOnly="true" />
+          <q-list v-for="(sede, index) in localizations" :key="index">
+
+            <q-item >
+              <q-item-section>
+                <q-item-label class="text-h6">{{sede.name}}</q-item-label>
+                <q-item-label class="text-h7" lines="2">{{sede.address}}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <q-item-label caption></q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-separator spaced inset />
+          </q-list>
        </q-card-section>
     </q-card>
   </q-page>
@@ -37,7 +52,7 @@ export default {
     }
   },
   created () {
-    this.bindLocalizations()
+    this.bindLocalizations().then(e => console.log(e))
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations'])
