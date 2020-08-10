@@ -12,3 +12,5 @@ debug.log
 *.sln
 *.sublime*
 App/RestaurantClient/firebase-debug.log
+App/RestaurantAdmin/.firebase/hosting.ZGlzdFxzcGE.cache
+App/RestaurantClient/.firebase/hosting.ZGlzdFxzcGE.cache
