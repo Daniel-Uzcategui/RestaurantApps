@@ -6,7 +6,7 @@
           <div class="text-h5">Ajustes de Horarios</div>
            <div>
             <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="updatedHours" icon="fas fa-save"/>
             </div>
             <div v-else>
               <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
@@ -48,6 +48,7 @@ import { mapActions, mapGetters } from 'vuex'
 import BusinessHours from 'vue-business-hours'
 export default {
   created () {
+    this.bindLocalizations()
     this.bindConfigs().then(e => console.log(this.afterBindig()))
   },
   computed: {
@@ -55,7 +56,7 @@ export default {
     ...mapGetters('localization', ['localizations']),
     config () {
       return this.configs.find(obj => {
-        return obj.source === 'schedule'
+        return obj.source === 'schedule' && obj.sede === this.sede
       })
     },
     locList () {
@@ -69,8 +70,9 @@ export default {
   },
   methods: {
     ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
+    ...mapActions('localization', ['bindLocalizations']),
     add () {
-      if (this.key === 0 || this.key.length === 0) {
+      /* if (this.key === 0 || this.key.length === 0) {
         this.messageError = []
         if (this.localizacion_sede.length === 0) {
           this.messageError.push('Key default chat ')
@@ -78,23 +80,14 @@ export default {
         this.validationError = true
         return
       }
-      this.$q.loading.show()
+      this.$q.loading.show() */
       const payload = {
-        key: this.key,
-        status: this.status,
+        days: this.days,
+        sede: this.sede,
         source: 'schedule'
       }
       this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
-    },
-    save () {
-      let value, id, key
-      value = this.key
-      id = this.config.id
-      key = 'key'
-      this.saveConfig({ value, id, key })
-      value = this.status
-      key = 'status'
-      this.saveConfig({ value, id, key })
+      console.log(this.days)
     },
     afterBindig () {
       if (this.config.key !== '') {
@@ -104,6 +97,14 @@ export default {
     },
     updatedHours (val) {
       console.log(val)
+      let value, id, key
+      value = val
+      id = this.config.id
+      key = 'days'
+      console.log(value)
+      console.log(id)
+      console.log(key)
+      this.saveConfig({ value, id, key })
     }
   },
   components: {
@@ -111,6 +112,7 @@ export default {
   },
   data () {
     return {
+      sede: null,
       days: {
         'sunday': [
           {
