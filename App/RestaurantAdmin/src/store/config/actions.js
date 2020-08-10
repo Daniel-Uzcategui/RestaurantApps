@@ -16,6 +16,21 @@ export const saveConfig = firestoreAction((state, payload) => {
       console.log('updated!')
     })
 })
+
+export const saveDay = firestoreAction((state, payload) => {
+  console.log(payload)
+  return firestore()
+    .collection('config')
+    .doc(payload.id)
+    .update({ 'days': {
+      [payload.key]: payload.value
+    }
+    })
+    .then(() => {
+      console.log('updated!')
+    })
+})
+
 export const deleteConfig = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload) {
