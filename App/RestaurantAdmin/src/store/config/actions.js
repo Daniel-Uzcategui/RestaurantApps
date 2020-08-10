@@ -22,10 +22,10 @@ export const saveDay = firestoreAction((state, payload) => {
   return firestore()
     .collection('config')
     .doc(payload.id)
-    .update({ 'days': {
+    .set({ 'days': {
       [payload.key]: payload.value
     }
-    })
+    }, { merge: true })
     .then(() => {
       console.log('updated!')
     })
