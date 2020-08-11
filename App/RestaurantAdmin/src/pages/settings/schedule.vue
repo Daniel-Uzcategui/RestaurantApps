@@ -30,7 +30,7 @@
       />
       <business-hours
             :days="days"
-            name="holidayHours"
+            name="dayHours"
             type="select"
             :time-increment="60"
             :localization="localization"
@@ -69,18 +69,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
+    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveDay']),
     ...mapActions('localization', ['bindLocalizations']),
     add () {
-      /* if (this.key === 0 || this.key.length === 0) {
-        this.messageError = []
-        if (this.localizacion_sede.length === 0) {
-          this.messageError.push('Key default chat ')
-        }
-        this.validationError = true
-        return
-      }
-      this.$q.loading.show() */
+      this.$q.loading.show()
       const payload = {
         days: this.days,
         sede: this.sede,
@@ -96,15 +88,11 @@ export default {
       }
     },
     updatedHours (val) {
-      console.log(val)
       let value, id, key
       value = val
       id = this.config.id
-      key = 'days'
-      console.log(value)
-      console.log(id)
-      console.log(key)
-      this.saveConfig({ value, id, key })
+      key = Object.keys(val)[0]
+      this.saveDay({ value, id, key })
     }
   },
   components: {

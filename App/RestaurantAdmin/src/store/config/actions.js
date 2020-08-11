@@ -23,7 +23,7 @@ export const saveDay = firestoreAction((state, payload) => {
     .collection('config')
     .doc(payload.id)
     .set({ 'days': {
-      [payload.key]: payload.value
+      ...payload.value
     }
     }, { merge: true })
     .then(() => {
