@@ -4,16 +4,19 @@
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Horarios</div>
-           <div>
+           <div v-show="sede">
             <div v-if="config">
               <q-btn class="header-btn" flat color="white" push label="Guardar" @click="updatedHours" icon="fas fa-save"/>
             </div>
             <div v-else>
               <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
             </div>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
+          <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
        </q-card-section>
+     <div v-show="sede">
+      <div v-if="!config"><label class="error">Debe agregar una Horario a la Sede</label></div>
+    </div>
      <q-card-section>
       <div class="q-pa-md">SEDE</div>
       <q-select
@@ -28,7 +31,7 @@
         stack-label
         label="Seleccione"
       />
-      <business-hours
+      <business-hours v-show="sede"
             :days="days"
             name="dayHours"
             type="select"
@@ -49,7 +52,10 @@ import BusinessHours from 'vue-business-hours'
 export default {
   created () {
     this.bindLocalizations()
-    this.bindConfigs().then(e => console.log(this.afterBindig()))
+    this.bindConfigs().then(e => this.getDays())
+  },
+  updated () {
+    this.getDays()
   },
   computed: {
     ...mapGetters('config', ['configs']),
@@ -73,18 +79,24 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     add () {
       this.$q.loading.show()
-      const payload = {
-        days: this.days,
-        sede: this.sede,
-        source: 'schedule'
+      if (this.days !== 'undefiend') {
+        const payload = {
+          days: this.days,
+          sede: this.sede,
+          source: 'schedule'
+        }
+        this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
       }
-      this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
-      console.log(this.days)
     },
-    afterBindig () {
-      if (this.config.key !== '') {
-        this.key = this.config.key
-        this.status = this.config.status
+    getDays () {
+      console.log('getDays')
+      if (this.sede) {
+        if (this.config) {
+          this.days = this.config.days
+          console.log(this.config.days)
+        } else {
+          this.days = this.default
+        }
       }
     },
     updatedHours (val) {
@@ -101,13 +113,14 @@ export default {
   data () {
     return {
       sede: null,
-      days: {
+      days: [],
+      default: {
         'sunday': [
           {
-            'open': '',
-            'close': '',
+            'open': '0800',
+            'close': '1700',
             'id': '5ca5578b0c5c7',
-            'isOpen': false
+            'isOpen': true
           }
         ],
         'monday': [
@@ -137,7 +150,7 @@ export default {
         'thursday': [
           {
             'open': '0800',
-            'close': '0300',
+            'close': '1600',
             'id': '5ca5578b0c5e6',
             'isOpen': true
           }
@@ -145,7 +158,7 @@ export default {
         'friday': [
           {
             'open': '0800',
-            'close': 'asdda',
+            'close': '1600',
             'id': '5ca5578b0c5ec',
             'isOpen': true
           },
@@ -211,4 +224,6 @@ export default {
  padding-bottom: 50px
 .header-cell
   padding-left: 30px
+.error
+ color: red
 </style>
