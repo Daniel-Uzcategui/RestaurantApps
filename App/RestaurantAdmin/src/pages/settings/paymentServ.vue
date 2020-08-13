@@ -35,6 +35,17 @@
         </div>
         <div class="flex-break q-py-md "></div>
       </div>
+       <div class="row header-container">
+         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select v-model="statusPickup" map-options emit-value standout="bg-teal text-white"
+          outlined :options="estatus_options" label="Pick Up" />
+        </div>
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select v-model="statusInlocal" map-options emit-value standout="bg-teal text-white"
+          outlined :options="estatus_options" label="In Local" />
+        </div>
+        <div class="flex-break q-py-md "></div>
+      </div>
         <div class="row header-container">
          <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Medios de Pagos</div>
        </div>
@@ -85,6 +96,8 @@ export default {
       validationError: false,
       messageError: [],
       statusDelivery: 1,
+      statusPickup: 1,
+      statusInlocal: 1,
       statusPto: 1,
       statusZelle: 1,
       statusCash: 1,
@@ -102,6 +115,8 @@ export default {
       this.$q.loading.show()
       const payload = {
         statusDelivery: this.statusDelivery,
+        statusPickup: this.statusPickup,
+        statusInlocal: this.statusInlocal,
         statusPto: this.statusPto,
         statusZelle: this.statusZelle,
         statusCash: this.statusCash,
@@ -116,6 +131,14 @@ export default {
       value = this.statusDelivery
       id = this.config.id
       key = 'statusDelivery'
+      this.saveConfig({ value, id, key })
+      value = this.statusPickup
+      id = this.config.id
+      key = 'statusPickup'
+      this.saveConfig({ value, id, key })
+      value = this.statusInlocal
+      id = this.config.id
+      key = 'statusInlocal'
       this.saveConfig({ value, id, key })
       value = this.statusPto
       key = 'statusPto'
@@ -136,6 +159,8 @@ export default {
     afterBindigs () {
       if (this.config.source !== '') {
         this.statusDelivery = this.config.statusDelivery
+        this.statusPickup = this.config.statusPickup
+        this.statusInlocal = this.config.statusInlocal
         this.statusPto = this.config.statusPto
         this.statusZelle = this.config.statusZelle
         this.statusCash = this.config.statusCash
