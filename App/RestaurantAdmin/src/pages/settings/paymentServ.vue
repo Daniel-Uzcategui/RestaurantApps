@@ -104,8 +104,8 @@ export default {
       statusPaypal: 1,
       price: 0,
       estatus_options: [
-        { label: 'Activo', value: 0 },
-        { label: 'Inactivo', value: 1 }
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
       ]
     }
   },

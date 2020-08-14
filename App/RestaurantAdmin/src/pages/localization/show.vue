@@ -48,11 +48,12 @@
             <label>Tipo de Servicios</label>
             </div>
             <div class="div-typeServices">
-              <q-checkbox dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
-              <q-checkbox dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
-              <q-checkbox dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
+              <q-checkbox v-if="config.statusPickup"  dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
+              <q-checkbox v-if="config.statusDelivery" dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
+              <q-checkbox v-if="config.statusInlocal" dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
             </div>
         </div>
+        <div v-if="config.statusInlocal">
         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="localization.Inlocal">
           <label>Mesas</label>
           <q-input :value="localization.tables"
@@ -62,6 +63,8 @@
           outlined
           class="label-width"/>
         </div>
+        </div>
+        <div v-if="config.statusInlocal">
          <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3"  v-show="localization.Inlocal">
           <label>Capacidad</label>
           <q-input :value="localization.capacity"
@@ -70,6 +73,7 @@
           @input="(e) => saved(e, this.$route.query.Localization_Id, 'capacity')"
           outlined/>
         </div>
+       </div>
       </div>
      </div>
       <div class='filled'></div>
@@ -117,6 +121,12 @@ export default {
   },
   computed: {
     ...mapGetters('localization', ['localizations']),
+    ...mapGetters('config', ['configs']),
+    config () {
+      return this.configs.find(obj => {
+        return obj.source === 'paymentServ'
+      })
+    },
     localization () {
       return this.localizations.find(obj => {
         return obj.id === this.$route.query.Localization_Id
@@ -128,6 +138,7 @@ export default {
   },
   methods: {
     ...mapActions('localization', ['saveLocation']),
+    ...mapActions('config', ['bindConfigs']),
     saved (value, id, key) {
       if (value.length === 0) {
         this.messageError = []
