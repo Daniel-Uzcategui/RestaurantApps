@@ -1,6 +1,6 @@
 <template>
    <q-layout class="main" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
-      <q-header class="bg-primary text-white" v-if="currentUser" elevated>
+      <q-header class="bg-primary text-white" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
          <q-toolbar>
             <q-btn
                flat
