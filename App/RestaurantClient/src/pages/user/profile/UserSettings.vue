@@ -13,10 +13,10 @@
                 <q-input class="col" id="email" v-model="email" borderless="borderless" dense="dense" type="text"></q-input>
             </div>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="cedula">Cedula</label>
-                <q-input class="col" id="email" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
+                <q-input class="col" id="cedula" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="tlf">Teléfono</label>
-                <q-input class="col" id="email" v-model="tlf" borderless="borderless" dense="dense" type="number"></q-input>
+            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="phone">Teléfono</label>
+                <q-input class="col" id="phone" v-model="phone" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
         </section>
         <div class="row justify-between absolute-bottom q-my-lg q-px-md ">
@@ -38,7 +38,7 @@ export default {
       nombre: state.nombre,
       apellido: state.apellido,
       cedula: state.cedula,
-      tlf: state.tlf
+      phone: state.phone
     }
   },
   computed: {
@@ -53,7 +53,7 @@ export default {
     ...mapActions('user', ['updateUserData']),
     ...mapMutations('user', ['setEditUserDialog']),
     async saveUserData () {
-      const { currentUser, email, nombre, apellido, cedula, tlf } = this
+      const { currentUser, email, nombre, apellido, cedula, phone } = this
       this.$q.loading.show({
         message: 'Updating your data, please stand by...',
         customClass: 'text-h3, text-bold'
@@ -66,7 +66,7 @@ export default {
           nombre,
           apellido,
           cedula,
-          tlf
+          phone
         })
       } catch (err) {
         this.$q.notify({

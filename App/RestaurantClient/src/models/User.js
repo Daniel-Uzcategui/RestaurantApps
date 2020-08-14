@@ -9,6 +9,7 @@ export default class User {
   nombre = ''
   apellido = ''
   cedula = ''
+  phone = ''
   /**
    * @param  {Object} args - User arguments supplied during
    * user creation
