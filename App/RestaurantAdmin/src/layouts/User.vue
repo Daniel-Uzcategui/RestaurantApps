@@ -282,7 +282,9 @@ export default {
     },
     orders () {
       if (this.initAudio === 0) {
-        this.$refs['mediapl'].play()
+        if (typeof this.$refs['mediapl'] !== 'undefined') {
+          this.$refs['mediapl'].play()
+        }
         this.initAudio = 1
       } else {
         if (this.orders.length > this.countOrder) {
