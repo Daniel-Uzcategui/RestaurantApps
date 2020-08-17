@@ -14,7 +14,7 @@
             type="text" float-label="Float Label" placeholder="Identificación" />
           <q-input label="Nombre" :value="client.nombre"   @input="(e) => saved(e, this.$route.query.client_Id, 'nombre')"
             type="text" float-label="Float Label" placeholder="Nombre" />
-          <q-input label="Apellido" :value="client.apellido" @input="(e) => saved(e, this.$route.query.client_Id, 'apellidos')"
+          <q-input label="Apellido" :value="client.apellido" @input="(e) => saved(e, this.$route.query.client_Id, 'apellido')"
             type="text" float-label="Float Label" placeholder="Apellido" />
           <q-input label="Correo Electrónico" :value="client.email"    @input="(e) => saved(e, this.$route.query.client_Id, 'email')"
             type="text" float-label="Float Label" placeholder="Correo Electrónico" />
@@ -110,6 +110,7 @@ export default {
     ...mapActions('order', ['bindOrders']),
     ...mapActions('address', ['bindAddress']),
     saved (value, id, key) {
+      console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveClient({ value, id, key })
     },
     getClientDetail (value) {
