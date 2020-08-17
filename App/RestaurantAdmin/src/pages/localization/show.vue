@@ -46,11 +46,12 @@
          <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="col-3">
             <label>Tipo de Servicios</label>
+            <div class="label-error" v-if="(config.statusPickup === 0 && config.statusDelivery === 0 && config.statusInlocal ===0)">Tipo de Servicios no disponibles </div>
             </div>
             <div class="div-typeServices">
-              <q-checkbox v-if="config.statusPickup"  dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
-              <q-checkbox v-if="config.statusDelivery" dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
-              <q-checkbox v-if="config.statusInlocal" dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
+              <q-checkbox v-show="config.statusPickup"  dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
+              <q-checkbox v-show="config.statusDelivery" dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
+              <q-checkbox v-show="config.statusInlocal" dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
             </div>
         </div>
         <div v-if="config.statusInlocal">
@@ -133,6 +134,9 @@ export default {
       })
     }
   },
+  created () {
+    this.bindConfigs()
+  },
   mounted () {
     this.markers = [{ position: { lat: this.localization.localizacion_sede.Rc, lng: this.localization.localizacion_sede.Ac } }]
   },
@@ -195,6 +199,8 @@ export default {
  padding-left: 10px
 .label-width
  width: 50%
+.label-error
+ color: red
 </style>
 
 <style lang="sass" >
