@@ -29,7 +29,20 @@
         </div>
         <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
-          <q-select :value="order.status"  @input="(e) => saved(e, this.$route.query.Order_Id, 'status')" map-options emit-value standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select :value="order.status"
+            @input="(e) => { e !== 3 ? saved(e, this.$route.query.Order_Id, 'status') :
+              $q.dialog({
+                title: 'Alerta!',
+                message: 'Al colocar la orden como entregada se liberan los puntos de fidelidad al cliente, esto no se puede reversar '
+              }).onOk(() => {
+                saved(e, this.$route.query.Order_Id, 'status')
+              })
+            }"
+            map-options
+            emit-value
+            standout="bg-teal text-white"
+            :options="estatus_options"
+            label="Estatus" />
         </div>
         <div class="header-cell col-3">
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"

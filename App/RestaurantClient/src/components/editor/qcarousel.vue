@@ -5,7 +5,7 @@
       :class="classes"
       animated
       v-model="slide"
-      arrows
+      :arrows="!$q.platform.is.mobile"
       swipeable
       navigation
       infinite
@@ -18,9 +18,9 @@
       <q-carousel-slide v-for="(opt,index) in valOptions" :key="index" class="q-pa-none" :name="index" :img-src="opt.img">
          <div class="full-height full-width flex flex-center" style="background-color: rgba(0, 0, 0, 0.68) !important;">
             <div class="custom-caption">
-               <div class="text-h2 main_line animation_2">{{opt.text_1 + ' '}}<span class="text-primary">{{opt.text_2}}</span></div>
+               <div class="fontsize-56 main_line animation_2">{{opt.text_1 + ' '}}<span class="text-primary">{{opt.text_2}}</span></div>
                <br><br><br>
-               <div class="text-h4 animation_1">{{opt.text_3}}<br> {{opt.text_4}}</div>
+               <div class="fontsize-24 animation_1">{{opt.text_3}}<br> {{opt.text_4}}</div>
                <br><br><br>
                <div class="animation_2">
                   <q-btn size="md" class="bg-primary" :label="opt.button_label"/>
@@ -71,7 +71,7 @@ export default {
           text_3: 'The Web as I envisaged it, we have not seen it yet. The future',
           text_4: 'is still so much bigger than the past.',
           button_label: 'READ MORE',
-          img: '/statics/images/image_1.jpg'
+          img: 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg'
         }]
       }
       var a = []
@@ -82,7 +82,7 @@ export default {
         if (typeof i.text_3 === 'undefined') { obj.text_3 = 'The Web as I envisaged it, we have not seen it yet. The future' } else { obj.text_3 = i.text_3 }
         if (typeof i.text_4 === 'undefined') { obj.text_4 = 'is still so much bigger than the past.' } else { obj.text_4 = i.text_4 }
         if (typeof i.button_label === 'undefined') { obj.button_label = 'READ MORE' } else { obj.button_label = i.button_label }
-        if (typeof i.img === 'undefined') { obj.img = '/statics/images/image_1.jpg' } else { obj.img = i.img }
+        if (typeof i.img === 'undefined') { obj.img = 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg' } else { obj.img = i.img }
         a.push(obj)
       }
       return a
@@ -109,7 +109,7 @@ export default {
   },
   data () {
     return {
-      slide: 1
+      slide: 0
     }
   },
   methods: {
@@ -205,52 +205,4 @@ export default {
       width: 350px
       max-width: 350px
       margin-top: 10px
-
-    .team-header
-      width: 100%
-      top: 0
-      height: 45px
-      color: white
-      text-transform: uppercase
-      text-align: center
-      font-size: 17px
-      margin: 60px 0 0 0
-      padding: 12px
-
-    .team-text
-      width: 100%
-      top: 0
-      height: 90px
-      color: white
-      text-align: center
-      font-size: 15px
-      margin: 100px 0 0 0
-      padding: 20px
-      line-height: normal
-      font-family: Georgia, serif
-      font-style: italic
-
-    .quote
-      background: url(/statics/images/parallax.jpg);
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-
-    .pricing
-      background: url(/statics/images/pricing.jpg);
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-
-    .contact_us
-      background: url(/statics/images/contact_us.jpg);
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-
-    .custom_tab
-      width: 130px;
 </style>

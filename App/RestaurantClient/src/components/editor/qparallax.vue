@@ -2,7 +2,7 @@
 <q-parallax @click="click" :style="valStyle"
       :src="valImg"
     >
-      <h1 :style="title_style">{{title}}</h1>
+      <div class="fontsize-56" :style="title_style">{{title}}</div>
 </q-parallax>
 </template>
 <script>

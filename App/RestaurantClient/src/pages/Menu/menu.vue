@@ -1,13 +1,13 @@
 <template>
    <div>
-      <q-input class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'black' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
+      <q-input class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
          <template v-slot:prepend>
             <q-icon name="fas fa-search" />
          </template>
       </q-input>
       <q-card flat class="menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <q-card-section>
-               <div class="text-h5 menuTop">Menu</div>
+               <div class="fontsize-18 menuTop">Catálogo</div>
                <div class="absolute-bottom-right q-pa-md" >
                   <q-btn v-if="promoData.length || promo" fab color="secondary" :label="promo ? 'Volver' : 'Promociones'" @click="promo = !promo" />
                </div>
@@ -18,7 +18,7 @@
             class="wrapel"
             content-class="wrapel"
             >
-            <q-tab class="wrapel" content-class="wrapel" v-for="(tabs, index) in categorias"
+            <q-tab class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in categorias"
                :key="index"
                @click="selectedCat=tabs.id; search()">
                {{tabs.name.toLowerCase()}}
@@ -26,21 +26,20 @@
          </q-tabs>
         </q-card-section>
          <q-card-section v-if="!promo">
-           <div class="q-pa-md flex">
-            <q-list v-for="item in filteredMenu" separator :key="item.id">
-               <q-item style="width: 300px; height: 110px">
+           <div class="flex justify-around fontsize-12">
+            <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="item in filteredMenu" separator :key="item.id" style="width: 300px;">
+               <q-item v-ripple>
                   <q-item-section avatar top>
                      <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders" />
                   </q-item-section>
-                  <q-item-section>
-                     <q-item-label lines="1">{{item.name}} </q-item-label>
+                  <q-item-section >
+                     <q-item-label lines="5">{{item.name}} </q-item-label>
                      <q-item-label lines="1" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
                      <q-item-label lines="1" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-item-label>
                      <q-item-label overline>
                         <q-icon color="yellow" size="0.8em" name="fas fa-star" />
                         5.0
                      </q-item-label>
-                     <q-btn v-if="checkAvail(item.id, item.prodType)[0]" style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id, 0)" dense>Añadir</q-btn>
                   </q-item-section>
                   <q-item-section side>
                      <q-badge style="margin-top: 15px; margin-right: 20px" color="red" floating rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
@@ -55,10 +54,10 @@
            </div>
          </q-card-section>
          <q-card-section v-if="promo">
-           <div class="q-pa-md flex">
+           <div class="flex justify-around fontsize-10">
              <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-            <q-list v-for="item in promoData" separator :key="item.id">
-               <q-item>
+            <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" v-for="item in promoData" separator :key="item.id" style="width: 300px;">
+               <q-item v-ripple>
                   <q-item-section avatar top>
                      <q-img :src=item.photo width="80px" color="primary" text-color="white" class="rounded-borders" />
                   </q-item-section>
@@ -70,7 +69,6 @@
                         <q-icon color="yellow" size="0.8em" name="fas fa-star" />
                         5.0
                      </q-item-label>
-                     <q-btn v-if="checkAvail(item.id, item.prodType)[0]" style="width: 50px" size="xs" color="primary" @click="display = true; getMenuItem(item.id, 1)" dense>Añadir</q-btn>
                   </q-item-section>
                   <q-item-section side>
                      <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
@@ -287,7 +285,8 @@ export default {
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
-          prodType: this.displayVal.prodType
+          prodType: this.displayVal.prodType,
+          rewards: 0
         }).then(() => this.$q.notify({
           message: 'Producto Añadido',
           color: 'secondary',

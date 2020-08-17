@@ -1,5 +1,5 @@
 <template>
-  <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
+  <q-card style="background: unset" @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
         <q-img v-if="!no_image && valImg !== '' && icon === '' && !parallax" :src="valImg" :style="valImgStyle"/>
         <q-parallax
           v-if="!no_image && valImg !== '' && icon === '' && parallax"

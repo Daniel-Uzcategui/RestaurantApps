@@ -2,7 +2,7 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log({ payload })
-  return bindFirestoreRef('address', firestore().collection('address').where('user', '==', payload))
+  return bindFirestoreRef('address', firestore().collection('address').where('user', '==', payload), { reset: false })
 })
 
 export const addAddress = firestoreAction((state, payload) => {
