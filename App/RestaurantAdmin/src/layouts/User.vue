@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
+   <q-layout class="main" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
       <q-header class="bg-primary text-white" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
          <q-toolbar>
             <q-btn
@@ -282,7 +282,9 @@ export default {
     },
     orders () {
       if (this.initAudio === 0) {
-        this.$refs['mediapl'].play()
+        if (typeof this.$refs['mediapl'] !== 'undefined') {
+          this.$refs['mediapl'].play()
+        }
         this.initAudio = 1
       } else {
         if (this.orders.length > this.countOrder) {

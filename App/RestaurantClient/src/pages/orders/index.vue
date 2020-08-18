@@ -3,28 +3,30 @@
     <q-card class="menudiv">
     <q-card-section>
     <div class="q-pa-md flex flex-center">
-      <p v-if="orderSort.length === 0" class="text-h4 text-center">No existen pasadas ordenes</p>
+      <q-spinner-cube v-if="loading" size="lg" color="primary" />
+      <p v-if="orderSort.length === 0 && !loading" class="text-h4 text-center">No existen pasadas ordenes</p>
       <q-list separator v-for="(items, index) in orderSort" :key="index">
       <q-item @click="carritoDialog(items)" clickable v-ripple>
       <q-item-section>
       <q-icon name="fas fa-dot-circle" size="100px" color="secondary" v-if="items.status == 4"/>
       <q-knob
-      v-if="items.status < 4"
-      disable
-      v-model="items.status"
-      :max="3"
-      size="100px"
-      :thickness="0.22"
-      color="primary"
-      track-color="grey-3"
-      class="text-primary"
-    >
+        v-if="items.status < 4"
+        disable
+        v-model="items.status"
+        :max="3"
+        size="100px"
+        :thickness="0.22"
+        color="primary"
+        track-color="grey-3"
+        class="text-primary"
+      >
     </q-knob>
     </q-item-section>
     <q-item-section>
       <q-item-label lines="2" class="text-h7 text-center">{{formatDate(items.dateIn)}}</q-item-label>
     <q-item-label lines="2" class="text-h7 text-center">{{estatus_options[items.status]['label']}}</q-item-label>
-    <q-item-label lines="2" class="text-h7 text-center">Nro. Pedido: {{items.factura}}</q-item-label>
+    <q-item-label lines="2" class="text-h7 text-center" v-if="typeof items.factura !== 'undefined'">Nro. Pedido: {{items.factura}}</q-item-label>
+    <q-item-label lines="2" class="text-h7 text-center" v-if="typeof items.factura === 'undefined'">Nro. Pedido: <q-spinner-cube color="primary" /></q-item-label>
     <q-item-label lines="2" class="text-center" caption>Click para ver Detalles</q-item-label>
     </q-item-section>
       </q-item>
@@ -165,6 +167,7 @@ export default {
   },
   data () {
     return {
+      loading: true,
       texto: 'Por confirmar',
       texto2: 'Estamos trabajando Para entregarle su orden',
       value: 20,
@@ -309,7 +312,7 @@ export default {
     }
   },
   created () {
-    this.bindOrders(this.currentUser.id)
+    this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
     this.bindAddress(this.currentUser.id)
   }
 }

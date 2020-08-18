@@ -1,25 +1,25 @@
 <template>
-   <q-layout class="main bg-image" :class="{ 'blur-layout': blurLayout }" view="hHh lpR fFf">
-      <q-header class="bg-transparent text-white" >
-         <q-toolbar>
+   <q-layout class="main bg-image" :class="{ 'blur-layout': blurLayout }" view="hhh LpR fFf">
+         <q-toolbar class="bg-transparent text-white" style="z-index: 100">
                 <q-btn fab
-               color="light-blue"
+                v-if="!leftDrawerOpen"
+               color="primary"
                dense
                round
                icon='fas fa-bars'
               name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
-               exact >
-                  <q-badge color="red" floating>{{getCartQ}}</q-badge>
-                </q-btn>
-                <q-btn v-if="isAnonymous" class="text-caption" flat v-ripple @click="$router.push({ path: '/auth/login' })" label="LogIn/Register" />
-                <q-btn v-if="!isAnonymous" class="text-caption" flat v-ripple @click="logoutUser()" label="Cerrar Sesión" />
+               exact />
                <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
                   <user-settings></user-settings>
                </q-dialog>
-               <q-toggle class="fixed-top-right" color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+               <div class="absolute-right">
+                 <q-btn to="/cart/index" color="white" flat icon="fas fa-shopping-cart" >
+                   <q-badge color="red" floating>{{getCartQ}}</q-badge>
+                 </q-btn>
+               <q-toggle color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+               </div>
          </q-toolbar>
-      </q-header>
       <q-drawer
          on-layout="hide"
          :content-class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'"
@@ -28,8 +28,8 @@
          >
          <q-list>
             <Nav
-               v-for="link in nav"
-               :key="link.title"
+               v-for="(link, index) in nav"
+               :key="index"
                v-bind="link"
                />
          </q-list>
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
@@ -109,62 +110,63 @@ export default {
       this.$q.loading.hide()
     }
     this.chatServe(this.config)
+    this.navigateFill()
   },
   data () {
     return {
       notifications: 0,
       blurLayout: false,
       leftDrawerOpen: false,
-      nav: [
-        {
-          title: 'Inicio',
-          caption: '',
-          icon: 'fa fa-home',
-          link: '#/home'
-        },
-        {
-          title: 'Menus',
-          caption: '',
-          icon: 'menu_book',
-          link: '#/menu/index'
-        },
-        {
-          title: 'Perfil',
-          caption: '',
-          icon: 'fas fa-user',
-          link: '#',
-          click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
-        },
-        {
-          title: 'Tus Ordenes',
-          caption: '',
-          icon: 'room_service',
-          link: '#/orders/index'
-        },
-        {
-          title: 'Carrito',
-          caption: '',
-          icon: 'fas fa-shopping-cart',
-          link: '#/cart/index'
-        },
-        {
-          title: 'Encuentranos',
-          caption: '',
-          icon: 'fa fa-globe',
-          link: '#/findus'
-        },
-        {
-          title: 'Mis Direcciones',
-          caption: '',
-          icon: 'fas fa-map-marked-alt',
-          link: '#/user/address'
-        }
-      ]
+      nav: []
     }
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
+    navigateFill () {
+      let navig = [{
+        title: 'Inicio',
+        caption: '',
+        icon: 'fa fa-home',
+        link: '#/home'
+      },
+      {
+        title: 'Catálogo',
+        caption: '',
+        icon: 'menu_book',
+        link: '#/menu/index'
+      },
+      {
+        title: 'Perfil',
+        caption: '',
+        icon: 'fas fa-user',
+        link: '#',
+        click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
+      },
+      {
+        title: 'Tus Ordenes',
+        caption: '',
+        icon: 'room_service',
+        link: '#/orders/index'
+      },
+      {
+        title: 'Encuentranos',
+        caption: '',
+        icon: 'fa fa-globe',
+        link: '#/findus'
+      },
+      {
+        title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
+        caption: '',
+        icon: 'fas fa-sign-out-alt',
+        link: '#',
+        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser() })() }
+      }]
+      for (let i of navig) {
+        Vue.set(this.nav, this.nav.length, i)
+        console.log({ i })
+      }
+    },
     toggleColors () {
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
@@ -174,13 +176,20 @@ export default {
       if (config.tawkChat.active) {
         // eslint-disable-next-line
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-        (function () {
+        window.Tawk_API.onBeforeLoad = function () {
+          console.log('Tawk loaded')
+          if (this.$q.platform.is.mobile) {
+            // wwindow.Tawk_API.hideWidget()
+          }
+        };
+        (async function () {
           var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0]
           s1.async = true
           s1.src = `https://embed.tawk.to/${config.tawkChat.value}/default`
           s1.charset = 'UTF-8'
           s1.setAttribute('crossorigin', '*')
           s0.parentNode.insertBefore(s1, s0)
+          return s1.src
         })()
       }
     },
@@ -194,6 +203,9 @@ export default {
   watch: {
     currentUser () {
       this.$q.loading.hide()
+    },
+    Tawk_API () {
+      console.log('asdasdasd')
     }
   }
 }

@@ -51,9 +51,9 @@ const routes = [
     component: () => import('layouts/User.vue'),
     children: [
       {
-        path: 'profile',
-        name: 'UserProfile',
-        component: () => import('pages/user/Profile.vue'),
+        path: 'rewards',
+        name: 'Rewards',
+        component: () => import('pages/user/Rewards.vue'),
         meta: {
           requiresAuth: true
         }
