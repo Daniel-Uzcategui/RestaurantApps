@@ -119,7 +119,7 @@ export default {
           'nombre': fullname,
           'typePayment': tipoPago,
           'status': this.estatus_options[obj.status]['label'],
-          'paid': obj.paid.toFixed(2),
+          'paid': obj.paid,
           'factura': obj.factura,
           'table': tableOrder,
           'typeService': typeService

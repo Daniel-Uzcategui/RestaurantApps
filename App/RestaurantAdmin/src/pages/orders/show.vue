@@ -18,7 +18,7 @@
           <q-input label="Factura" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
         </div>
         <div class="header-cell col-3">
-          <q-input label="Monto" :value="(order.paid).toFixed(2)"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label"  />
+          <q-input label="Monto" :value="(order.paid)"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disabled />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
@@ -84,6 +84,7 @@
                 dense
                 autofocus
                 type="number"
+                disabled
               />
           </q-td>
           <q-td key="price" :props="props">
@@ -93,6 +94,7 @@
                 dense
                 autofocus
                 type="number"
+                disabled
               />
           </q-td>
         </q-tr>
