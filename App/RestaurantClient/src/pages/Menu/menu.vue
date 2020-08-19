@@ -26,7 +26,7 @@
          </q-tabs>
         </q-card-section>
          <q-card-section v-if="!promo">
-           <div class="flex justify-around fontsize-12">
+           <div class="flex justify-around text-h7">
             <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="item in filteredMenu" separator :key="item.id" style="width: 300px;">
                <q-item v-ripple>
                   <q-item-section avatar top>
@@ -54,7 +54,7 @@
            </div>
          </q-card-section>
          <q-card-section v-if="promo">
-           <div class="flex justify-around fontsize-10">
+           <div class="flex justify-around text-h7">
              <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
             <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" v-for="item in promoData" separator :key="item.id" style="width: 300px;">
                <q-item v-ripple>
@@ -79,6 +79,7 @@
                      </q-item-label>
                   </q-item-section>
                </q-item>
+               <q-separator />
             </q-list>
            </div>
          </q-card-section>
