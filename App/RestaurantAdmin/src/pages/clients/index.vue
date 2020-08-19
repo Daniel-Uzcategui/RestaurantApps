@@ -36,7 +36,7 @@
               />
           </q-td>
           <q-td key="phone" :props="props">
-            <q-input filled :value="props.row.phone" type="text" float-label="Float Label" mask="(###) ### - ####" disabled/>
+            <q-input filled :value="props.row.phone" type="text" float-label="Float Label"  disabled/>
           </q-td>
         </q-tr>
       </template>
