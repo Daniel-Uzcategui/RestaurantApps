@@ -133,6 +133,9 @@ export default {
       })
     }
   },
+  created () {
+    this.bindConfigs()
+  },
   mounted () {
     this.bindLocalizations()
   },

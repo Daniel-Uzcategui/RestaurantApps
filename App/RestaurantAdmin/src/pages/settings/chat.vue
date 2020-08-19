@@ -90,7 +90,14 @@ export default {
       this.saveConfig({ value, id, key })
       value = this.status
       key = 'status'
-      this.saveConfig({ value, id, key }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+      this.saveConfig({ value, id, key })
+      this.$q.dialog({
+        title: '',
+        message: 'Se han guardo exitosamente los ajustes',
+        cancel: false,
+        persistent: true
+      }).onOk(() => {
+      })
     },
     afterBindigChat () {
       if (this.config.key !== '') {
