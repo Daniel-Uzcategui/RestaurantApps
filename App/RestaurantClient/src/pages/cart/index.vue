@@ -101,9 +101,9 @@
                      :done="step > 1"
                      >
                      <div class="q-pa-sm" >
-                       <q-radio v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 label="Delivery + 3$" />
-                       <q-radio v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
-                       <q-radio v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
+                       <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 label="Delivery"/>
+                       <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                       <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                      </div>
                      <addresses v-if="tipEnvio == 1" v-model="addId"/>
                      <q-stepper-navigation>
@@ -190,6 +190,12 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
+    ...mapGetters('config', ['configurations']),
+    config () {
+      return this.configurations.find(obj => {
+        return obj.source === 'paymentServ'
+      })
+    },
     promoData () {
       var prom = []
       this.promos.forEach(e => {
@@ -216,6 +222,7 @@ export default {
       CheckAv: 1,
       confirm: false,
       tipEnvio: null,
+      lbDelivery: 'Deli',
       addId: null,
       step: 1,
       maximizedToggle: true,
@@ -233,14 +240,18 @@ export default {
   },
   created () {
     this.bindLocalizations()
+    this.bindConfigs()
     console.log(this.cart)
     console.log(this.$refs)
+    console.log('configurations')
+    console.log(this.configurations)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
+    ...mapActions('config', ['bindConfigs']),
     showme () {
       this.$nextTick(() => console.log(this.$refs))
     },
