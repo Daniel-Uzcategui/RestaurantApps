@@ -1,7 +1,8 @@
 {
   "projects": {
     "default": "restaurant-testnet",
-    "QA": "qa-restaurant-testnet"
+    "QA": "qa-restaurant-testnet",
+    "luz": "ecrhwei8"
   },
   "targets": {
     "restaurant-testnet": {
@@ -15,6 +16,13 @@
       "hosting": {
         "admin": [
           "qa-admin-testnet"
+        ]
+      }
+    },
+    "ecrhwei8": {
+      "hosting": {
+        "admin": [
+          "ecrhwei8-admin"
         ]
       }
     }
