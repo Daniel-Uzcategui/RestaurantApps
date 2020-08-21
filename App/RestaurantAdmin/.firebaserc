@@ -2,7 +2,7 @@
   "projects": {
     "default": "restaurant-testnet",
     "QA": "qa-restaurant-testnet",
-    "luz": "ecrhwei8"
+    "ecr": "ecrhwei8"
   },
   "targets": {
     "restaurant-testnet": {

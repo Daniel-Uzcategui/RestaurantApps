@@ -3,22 +3,11 @@ const admin = require('firebase-admin')
 admin.initializeApp()
 const db = admin.firestore()
 
-exports.facturasSequence = functions.firestore
+exports.CheckCart = functions.firestore
   .document('orders/{ordersId}')
   .onCreate(async (change, context) => {
     // Get an object representing the document
     // e.g. {'name': 'Marie', 'age': 66}
-    var countRef = db.collection('counters').doc('orders')
-    // Atomically increment the population of the city by 50.
-    countRef.update({
-      factura: admin.firestore.FieldValue.increment(1)
-    })
-    var counter = await db.collection('counters').doc('orders').get()
-    change.ref.set({
-      factura: counter.data().factura
-    }, {
-      merge: true
-    })
     const newValue = change.data()
     const sede = newValue.sede
     const cart = newValue.cart
@@ -79,7 +68,24 @@ exports.facturasSequence = functions.firestore
       merge: true
     })
   })
-
+exports.facturasSequence = functions.firestore
+  .document('orders/{ordersId}')
+  .onCreate(async (change, context) => {
+    // Get an object representing the document
+    // e.g. {'name': 'Marie', 'age': 66}
+    var countRef = db.collection('counters').doc('orders')
+    // Atomically increment the population of the city by 50.
+    countRef.update({
+      factura: admin.firestore.FieldValue.increment(1)
+    }).then(async () => {
+      var counter = await db.collection('counters').doc('orders').get()
+      change.ref.set({
+        factura: counter.data().factura
+      }, {
+        merge: true
+      })
+    })
+  })
 async function getComponentPrice (compId, itemId) {
   var price = 0
   var compRef = db.collection('groupComp').doc(compId)
