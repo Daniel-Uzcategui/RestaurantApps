@@ -14,9 +14,6 @@
           </div>
           <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
        </q-card-section>
-     <div v-show="sede">
-      <div v-if="!config"><label class="error">Debe agregar una Horario a la Sede</label></div>
-    </div>
      <q-card-section>
       <div class="q-pa-md">SEDE</div>
       <q-select
@@ -35,7 +32,7 @@
             :days="days"
             name="dayHours"
             type="select"
-            :time-increment="60"
+            :time-increment="15"
             :localization="localization"
             color="#00af0b"
             @updated-hours="updatedHours"
@@ -62,7 +59,7 @@ export default {
     ...mapGetters('localization', ['localizations']),
     config () {
       return this.configs.find(obj => {
-        return obj.source === 'schedule' && obj.sede === this.sede
+        return obj.source === 'schedule' && obj.id === `sede${this.sede}`
       })
     },
     locList () {
@@ -75,7 +72,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveDay']),
+    ...mapActions('config', ['addConfig2', 'bindConfigs', 'saveDay']),
     ...mapActions('localization', ['bindLocalizations']),
     add () {
       if (this.days !== 'undefiend') {
@@ -84,7 +81,7 @@ export default {
           sede: this.sede,
           source: 'schedule'
         }
-        this.addConfig(payload)
+        this.addConfig2({ payload, doc: `sede${this.sede}` })
         this.$q.dialog({
           title: '',
           message: 'Se han guardo exitosamente los ajustes',

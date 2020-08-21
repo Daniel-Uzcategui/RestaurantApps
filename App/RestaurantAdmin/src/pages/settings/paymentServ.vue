@@ -87,7 +87,7 @@ export default {
     ...mapGetters('config', ['configs']),
     config () {
       return this.configs.find(obj => {
-        return obj.source === 'paymentServ'
+        return obj.id === 'paymentServ'
       })
     }
   },
@@ -110,7 +110,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
+    ...mapActions('config', ['addConfig2', 'bindConfigs', 'saveConfig']),
     add () {
       this.$q.loading.show()
       const payload = {
@@ -124,7 +124,7 @@ export default {
         price: this.price,
         source: 'paymentServ'
       }
-      this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+      this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
     validator () {
       if (this.statusDelivery === 0 && this.statusPickup === 0 && this.statusInlocal === 0) {

@@ -34,6 +34,7 @@
          </q-toolbar>
       </q-header>
       <q-drawer
+         v-if="$router.history.current.path !== '/editor/index'"
          v-model="leftDrawerOpen"
          show-if-above
          bordered
@@ -83,6 +84,10 @@ export default {
     }
   },
   created () {
+    if (window.sessionStorage.getItem('reloaded') !== 'yes') {
+      this.logoutUser()
+    }
+    window.sessionStorage.setItem('reloaded', 'yes')
     // Check that our app has access to the user id
     // from Firebase before the page renders
     this.bindOrders().then(x => { this.countOrder = this.orders.length })

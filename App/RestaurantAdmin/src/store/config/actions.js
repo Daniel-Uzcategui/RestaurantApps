@@ -17,6 +17,17 @@ export const saveConfig = firestoreAction((state, payload) => {
     })
 })
 
+export const saveConfig2 = firestoreAction(async (state, payload) => {
+  console.log(payload)
+  return firestore()
+    .collection('config')
+    .doc(payload.id)
+    .set({ ...payload }, { merge: true })
+    .then(() => {
+      console.log('updated!')
+    }).catch(e => console.error(e))
+})
+
 export const saveDay = firestoreAction((state, payload) => {
   console.log(payload)
   return firestore()
@@ -50,6 +61,17 @@ export const addConfig = firestoreAction((state, payload) => {
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
       console.log(payload)
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error)
+    })
+})
+export const addConfig2 = firestoreAction((state, payload) => {
+  return firestore().collection('config').doc(payload.doc)
+    .set(payload.payload)
+    .then(function (docRef) {
+      console.log('Document written with ID: ', payload.doc)
+      console.log(payload.payload)
     })
     .catch(function (error) {
       console.error('Error adding document: ', error)

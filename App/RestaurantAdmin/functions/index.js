@@ -74,17 +74,29 @@ exports.facturasSequence = functions.firestore
     // Get an object representing the document
     // e.g. {'name': 'Marie', 'age': 66}
     var countRef = db.collection('counters').doc('orders')
-    // Atomically increment the population of the city by 50.
-    countRef.update({
-      factura: admin.firestore.FieldValue.increment(1)
-    }).then(async () => {
-      var counter = await db.collection('counters').doc('orders').get()
-      change.ref.set({
-        factura: counter.data().factura
-      }, {
-        merge: true
+    if (!countRef.exists) {
+      console.log('No such document!')
+      countRef.set({
+        factura: 0
+      }).then(async () => {
+        change.ref.set({
+          factura: 0
+        }, {
+          merge: true
+        })
       })
-    })
+    } else {
+      countRef.update({
+        factura: admin.firestore.FieldValue.increment(1)
+      }).then(async () => {
+        var counter = await db.collection('counters').doc('orders').get()
+        change.ref.set({
+          factura: counter.data().factura
+        }, {
+          merge: true
+        })
+      })
+    }
   })
 async function getComponentPrice (compId, itemId) {
   var price = 0

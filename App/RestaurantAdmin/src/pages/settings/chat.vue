@@ -53,18 +53,16 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   created () {
-    this.bindConfigs().then(e => console.log(this.afterBindigChat()))
+    this.bindConfigs().then(() => this.afterBindigChat())
   },
   computed: {
     ...mapGetters('config', ['configs']),
     config () {
-      return this.configs.find(obj => {
-        return obj.source === 'chat'
-      })
+      return this.configs.find(e => e.id === 'chat')
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig', 'bindConfigs', 'saveConfig']),
+    ...mapActions('config', ['addConfig2', 'bindConfigs', 'saveConfig2']),
     add () {
       if (this.key === 0 || this.key.length === 0) {
         this.messageError = []
@@ -80,27 +78,31 @@ export default {
         status: this.status,
         source: 'chat'
       }
-      this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+      this.addConfig2({ payload, doc: 'chat' }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
     save () {
-      let value, id, key
-      value = this.key
-      id = this.config.id
-      key = 'key'
-      this.saveConfig({ value, id, key })
-      value = this.status
-      key = 'status'
-      this.saveConfig({ value, id, key })
-      this.$q.dialog({
+      // let value, id, key
+      // value = this.key
+      // key = 'key'
+      let key = this.key
+      let status = this.status
+      this.saveConfig2({ id: 'chat', key, status }).then(() => this.$q.dialog({
         title: '',
         message: 'Se han guardo exitosamente los ajustes',
         cancel: false,
         persistent: true
-      }).onOk(() => {
-      })
+      })).catch(e => this.$q.dialog({
+        title: '',
+        message: 'Hubo un error al agregar los ajustes, porfavor contactar con el administrador',
+        cancel: false,
+        persistent: true
+      }))
+      // value = this.status
+      // key = 'status'
+      // this.saveConfig({ value, id, key })
     },
     afterBindigChat () {
-      if (this.config.key !== '') {
+      if (typeof this.config !== 'undefined') {
         this.key = this.config.key
         this.status = this.config.status
       }

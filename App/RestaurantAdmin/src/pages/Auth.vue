@@ -145,8 +145,14 @@ export default {
       cedula: null
     }
   },
+  created () {
+    if (window.sessionStorage.getItem('reloaded') !== 'yes') {
+      this.logoutUser()
+    }
+    window.sessionStorage.setItem('reloaded', 'yes')
+  },
   methods: {
-    ...mapActions('auth', ['createNewUser', 'loginUser']),
+    ...mapActions('auth', ['createNewUser', 'loginUser', 'logoutUser']),
     onSubmit () {
       const { email, password, nombre, apellido, cedula } = this
       this.$refs.emailAuthenticationForm.validate()

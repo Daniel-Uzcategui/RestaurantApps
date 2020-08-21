@@ -173,7 +173,7 @@ export default {
     },
     async chatServe (config) {
       console.log({ ...config })
-      if (config.tawkChat.active) {
+      if (config && config.tawkChat && config.tawkChat.active) {
         // eslint-disable-next-line
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
         window.Tawk_API.onBeforeLoad = function () {
