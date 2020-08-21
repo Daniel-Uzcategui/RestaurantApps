@@ -50,7 +50,7 @@
         data-cy="email"
         label="Email"
         type="email"
-        :rules="[val => !!val || '*Field is required', val => val.includes('@') && val.includes('.') || '*Please Provide a valid email']"
+        :rules="[val => !!val || '*Campo es requerido', val => val.includes('@') && val.includes('.') || '*Por favor ingrese un email valido']"
       >
        </q-input>
       <q-input
@@ -62,7 +62,7 @@
         color="primary"
         data-cy="password"
         label="Clave"
-        :rules="[val =&gt; !!val || '*Field is required']" :type="isPwd ? 'password' : 'text'"
+        :rules="[val =&gt; !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
         @keyup.enter="onSubmit(); $event.target.blur()"
       >
         <template v-slot:append>
@@ -79,7 +79,7 @@
         data-cy="verifyPassword"
         label="Confirmar Clave"
         v-model="passwordMatch"
-        :rules="[val => !!val || '*Field is required', val => val === password || '*Passwords don\'t match']"
+        :rules="[val => !!val || '*Campo es requerido', val => val === password || '*Clave y confirmación no son iguales']"
         :type="isPwd ? 'password' : 'text'"
         @keyup.enter="onSubmit(); $event.target.blur()"
       >
@@ -122,10 +122,10 @@ export default {
   name: 'Auth',
   computed: {
     getAuthType () {
-      return this.isRegistration ? 'Registrarse' : 'Login'
+      return this.isRegistration ? 'Registro' : 'Iniciar Sesión'
     },
     inverseGetAuthType () {
-      return this.isRegistration ? 'Login' : 'Registrarse'
+      return this.isRegistration ? 'Iniciar Sesión' : 'Registro'
     },
     isRegistration () {
       return this.$route.name === 'Register'

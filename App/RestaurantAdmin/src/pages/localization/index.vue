@@ -19,6 +19,31 @@
         <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
+       <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th>
+             Seleccione
+          </q-th>
+          <q-th>
+             Nombre
+          </q-th>
+          <q-th>
+            Ubicación
+          </q-th>
+          <q-th>
+             Estatus
+          </q-th>
+          <q-th  v-show="config.statusPickup">
+            Pick UP
+          </q-th>
+          <q-th  v-show="config.statusDelivery">
+            Delivery
+          </q-th>
+          <q-th  v-show="config.statusInlocal">
+            En local
+          </q-th>
+        </q-tr>
+      </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })">
            <q-td  auto-width>
@@ -33,21 +58,21 @@
            <q-td key="status" :props="props">
             {{estatus_options[props.row.status].label}}
           </q-td>
-           <q-td key="PickUP" :props="props">
+           <q-td v-show="config.statusPickup"  key="PickUP" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.PickUP, props.row.id, 'Pick UP')"
                 :value="props.row.PickUP"
                 color="#3c8dbc"
               />
           </q-td>
-          <q-td key="Delivery" :props="props">
+          <q-td v-show="config.statusDelivery" key="Delivery" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.Delivery, props.row.id, 'Delivery')"
                 :value="props.row.Delivery"
                 color="#3c8dbc"
               />
           </q-td>
-          <q-td key="Inlocal" :props="props">
+          <q-td  v-show="config.statusInlocal" key="Inlocal" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.Inlocal, props.row.id, 'Inlocal')"
                 :value="props.row.Inlocal"
@@ -100,7 +125,16 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('localization', ['localizations'])
+    ...mapGetters('localization', ['localizations']),
+    ...mapGetters('config', ['configs']),
+    config () {
+      return this.configs.find(obj => {
+        return obj.source === 'paymentServ'
+      })
+    }
+  },
+  created () {
+    this.bindConfigs()
   },
   mounted () {
     this.bindLocalizations()
@@ -137,6 +171,7 @@ export default {
       return objSelectedString
     },
     ...mapActions('localization', ['saveLocation', 'bindLocalizations']),
+    ...mapActions('config', ['bindConfigs']),
     softDelete () {
       let id = ''
       let value = 2

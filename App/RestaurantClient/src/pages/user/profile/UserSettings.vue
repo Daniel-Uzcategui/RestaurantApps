@@ -2,7 +2,7 @@
   <div class="user-settings full-width" v-if="currentUser">
     <q-form class="full-height q-pa-sm" @submit="saveUserData">
         <section class="user-info">
-            <h6 class="q-mt-none q-mb-md text-center">Edit Your Profile</h6>
+            <h6 class="q-mt-none q-mb-md text-center">Editar Perfil</h6>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
                 <q-input class="col" id="nombre" v-model="nombre" borderless="borderless" dense="dense" type="text"></q-input>
             </div>

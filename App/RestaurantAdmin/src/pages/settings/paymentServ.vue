@@ -6,7 +6,7 @@
           <div class="text-h5">Ajustes de Medios de Pagos y Tipos de Servicios</div>
           <div>
            <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="validator" icon="fas fa-save"/>
             </div>
             <div v-else>
               <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
@@ -26,7 +26,7 @@
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input
-          type="text"
+          type="number"
           float-label="Float Label"
           placeholder="Precio"
           outlined
@@ -126,6 +126,29 @@ export default {
       }
       this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
+    validator () {
+      if (this.statusDelivery === 0 && this.statusPickup === 0 && this.statusInlocal === 0) {
+        this.$q.dialog({
+          title: 'Error al guardar sección de tipo de servicios',
+          message: 'Debe seleccionar al menos un tipo de Servicio Activo ',
+          cancel: false,
+          persistent: true
+        }).onOk(() => {
+        })
+      } else {
+        if (this.statusPto === 0 && this.statusZelle === 0 && this.statusPaypal === 0 && this.statusCash === 0) {
+          this.$q.dialog({
+            title: 'Error al guardar sección de medios de pago',
+            message: 'Debe seleccionar al menos un medio de pago Activo ',
+            cancel: false,
+            persistent: true
+          }).onOk(() => {
+          })
+        } else {
+          this.save()
+        }
+      }
+    },
     save () {
       let value, id, key
       value = this.statusDelivery
@@ -154,7 +177,14 @@ export default {
       this.saveConfig({ value, id, key })
       value = this.price
       key = 'price'
-      this.saveConfig({ value, id, key }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+      this.saveConfig({ value, id, key })
+      this.$q.dialog({
+        title: '',
+        message: 'Se han guardo exitosamente los ajustes',
+        cancel: false,
+        persistent: true
+      }).onOk(() => {
+      })
     },
     afterBindigs () {
       if (this.config.source !== '') {

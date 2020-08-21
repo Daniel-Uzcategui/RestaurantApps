@@ -78,14 +78,20 @@ export default {
     ...mapActions('config', ['addConfig', 'bindConfigs', 'saveDay']),
     ...mapActions('localization', ['bindLocalizations']),
     add () {
-      this.$q.loading.show()
       if (this.days !== 'undefiend') {
         const payload = {
           days: this.days,
           sede: this.sede,
           source: 'schedule'
         }
-        this.addConfig(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+        this.addConfig(payload)
+        this.$q.dialog({
+          title: '',
+          message: 'Se han guardo exitosamente los ajustes',
+          cancel: false,
+          persistent: true
+        }).onOk(() => {
+        })
       }
     },
     getDays () {
