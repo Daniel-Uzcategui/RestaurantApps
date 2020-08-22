@@ -45,12 +45,14 @@ export default {
       selectedBLockProps: []
     }
   },
-  created () {
-    this.bindBlocks().then((e) => {
+  mounted () {
+    if (this.editor) {
       this.visible = false
-      let obj = e.find(e => e.id === 'blocks')
-      this.blocks = JSON.parse(JSON.stringify(obj.blocks))
-    })
+      let obj = this.editor.find(e => e.id === 'blocks')
+      if (typeof obj !== 'undefined') {
+        this.blocks = JSON.parse(JSON.stringify(obj.blocks))
+      }
+    }
   },
   watch: {
     editor (e) {

@@ -29,7 +29,7 @@
         <div class="header-cell col-xs-12 col-sm-6 col-md-5 col-lg-4">
           <q-btn v-if="localizacion_sede.length === 0" color="primary" class="q-py-md" label="Agregar Localizacion" icon="fas fa-map-marker-alt"/>
           <q-btn v-if="localizacion_sede.length > 0" color="primary" class="q-py-md" label="Localizacion Agregada" icon="fas fa-check"/>
-          <q-popup-edit :value="localizacion_sede" buttons>
+          <q-popup-edit persistent :value="localizacion_sede" buttons>
               <google-map
                 :center="center"
                 :markers="localizacion_sede" />
@@ -164,4 +164,6 @@ export default {
  padding-top: 20px
 .typeServices
  padding-left: 10px
+.pac-container
+ z-index: 99999999 !important
  </style>

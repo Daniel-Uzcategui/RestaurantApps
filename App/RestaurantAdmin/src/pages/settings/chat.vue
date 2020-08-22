@@ -115,8 +115,8 @@ export default {
       key: '',
       status: 1,
       estatus_options: [
-        { label: 'Activo', value: 0 },
-        { label: 'Inactivo', value: 1 }
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
       ]
     }
   }

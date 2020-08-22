@@ -7,3 +7,10 @@ a
   font-size 2em
   &:before
     opacity .9!important
+
+fluid-font-size($minimumSize = 12, $maximumSize = 18, $minimumViewportWidth = 300, $maximumViewportWidth = 2440)
+  font-size: 'calc(%spx + (%s - %s) * ((100vw - %spx) / (%s - %s))) !important' % ($minimumSize $maximumSize $minimumSize $minimumViewportWidth $maximumViewportWidth $minimumViewportWidth)
+
+for num in (8..56)
+  .fontsize-{num}
+    fluid-font-size num (num*2+2) 500 3840

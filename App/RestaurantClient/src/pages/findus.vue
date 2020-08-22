@@ -125,7 +125,13 @@ export default {
     },
     timeFormat (closes) {
       if (closes.toString().length === 4) {
-        closes = (closes > 1200 ? (closes - 1200).toString().slice(0, 2) : closes.toString().slice(0, 2)) + (closes.toString().slice(2, 4) === '00' ? '' : ':' + closes.toString().slice(2, 4)) + (closes > 1200 ? 'PM' : 'AM')
+        let first, second, hr
+        first = closes.toString().slice(0, 2)
+        first = (parseInt(first) % 12) || 12
+        if (first === 0) { first = 12 }
+        second = (closes.toString().slice(2, 4) === '00' ? '' : ':' + closes.toString().slice(2, 4))
+        hr = (closes >= 1200 ? 'PM' : 'AM')
+        closes = first + second + hr
       }
       if (closes.toString().length === 3) {
         closes = closes.toString().slice(0, 1) + (closes.toString().slice(1, 3) === '00' ? '' : ':' + closes.toString().slice(1, 3)) + 'AM'

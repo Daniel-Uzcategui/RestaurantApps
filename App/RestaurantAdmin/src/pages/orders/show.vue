@@ -15,7 +15,7 @@
           <q-input label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disabled/>
         </div>
         <div class="header-cell col-4">
-          <q-input label="Factura" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
+          <q-input label="Nro. Orden" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
         </div>
         <div class="header-cell col-3">
           <q-input label="Monto" :value="(order.paid)"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disabled />
@@ -49,7 +49,7 @@
             :options="typePayment_options" map-options emit-value label="Tipo de Pago" />
         </div>
         <div class="header-cell col-3">
-          <label>Comprobante de Pago</label><br>
+          <label>Comanda</label><br>
           <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
@@ -65,6 +65,19 @@
           <label><strong>Soporte de pago</strong></label>
           <viewer :img="order.photo"></viewer>
           <span>Presione en la imagen para ampliar</span>
+      </div>
+      </div>
+      <div v-if="order.typePayment == 3 && order.paypal && order.paypal.purchase_units" class="column items-center filled-soport">
+        <div class="col">
+          <div class="text-center text-bold q-pb-md">Soporte de pago Paypal</div>
+          <q-card>
+          <q-card-section>
+          <div >Email: {{order.paypal.payer.email_address}}</div>
+          <div >Nombre: {{order.paypal.payer.name.given_name}} {{order.paypal.payer.name.surname}}</div>
+          <div >Total: {{order.paypal.purchase_units[0].amount.value}} {{order.paypal.purchase_units[0].amount.currency_code}}</div>
+          <div >Fecha: {{new Date(order.paypal.create_time)}}</div>
+          </q-card-section>
+          </q-card>
       </div>
       </div>
      </div>

@@ -7,7 +7,8 @@
                                       placeholder="Buscar"
                                       ref="input"
                                       v-on:listeners="slotProps.listeners"
-                                      v-on:attrs="slotProps.attrs">
+                                      v-on:attrs="slotProps.attrs"
+                                      @keyup.enter.stop>
                         </q-input>
                     </template>
         </gmap-autocomplete>

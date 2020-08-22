@@ -16,14 +16,14 @@
       height="639px"
       >
       <q-carousel-slide v-for="(opt,index) in valOptions" :key="index" class="q-pa-none" :name="index" :img-src="opt.img">
-         <div class="full-height full-width flex flex-center" style="background-color: rgba(0, 0, 0, 0.68) !important;">
+         <div class="full-height full-width flex flex-center" :style="opt.slide_style">
             <div class="custom-caption">
                <div class="fontsize-56 main_line animation_2">{{opt.text_1 + ' '}}<span class="text-primary">{{opt.text_2}}</span></div>
                <br><br><br>
                <div class="fontsize-24 animation_1">{{opt.text_3}}<br> {{opt.text_4}}</div>
                <br><br><br>
                <div class="animation_2">
-                  <q-btn size="md" class="bg-primary" :label="opt.button_label"/>
+                  <q-btn size="md" class="bg-primary" :href="opt.button_link" type="a" target="__blank" :label="opt.button_label"/>
                </div>
             </div>
          </div>
@@ -50,7 +50,6 @@ export default {
       type: Number,
       required: true
     },
-
     child_index: {
       type: Number,
       required: true
@@ -71,6 +70,8 @@ export default {
           text_3: 'The Web as I envisaged it, we have not seen it yet. The future',
           text_4: 'is still so much bigger than the past.',
           button_label: 'READ MORE',
+          button_link: 'https://google.com',
+          slide_style: 'background-color: rgba(0, 0, 0, 0.68);',
           img: 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg'
         }]
       }
@@ -82,6 +83,8 @@ export default {
         if (typeof i.text_3 === 'undefined') { obj.text_3 = 'The Web as I envisaged it, we have not seen it yet. The future' } else { obj.text_3 = i.text_3 }
         if (typeof i.text_4 === 'undefined') { obj.text_4 = 'is still so much bigger than the past.' } else { obj.text_4 = i.text_4 }
         if (typeof i.button_label === 'undefined') { obj.button_label = 'READ MORE' } else { obj.button_label = i.button_label }
+        if (typeof i.button_link === 'undefined') { obj.button_link = 'https://google.com' } else { obj.button_link = i.button_link }
+        if (typeof i.slide_style === 'undefined') { obj.slide_style = 'background-color: rgba(0, 0, 0, 0.68);' } else { obj.slide_style = i.slide_style }
         if (typeof i.img === 'undefined') { obj.img = 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg' } else { obj.img = i.img }
         a.push(obj)
       }

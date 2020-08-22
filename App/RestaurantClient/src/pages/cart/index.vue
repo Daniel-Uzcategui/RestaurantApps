@@ -100,8 +100,8 @@
                      icon="add_comment"
                      :done="step > 1"
                      >
-                     <div class="q-pa-sm" >
-                       <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 label="Delivery"/>
+                     <div class="q-pa-sm" v-if="config">
+                       <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${config.price}`"/>
                        <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
                        <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                      </div>
@@ -196,6 +196,14 @@ export default {
         return obj.source === 'paymentServ'
       })
     },
+    tipoPago () {
+      var tip = []
+      if (this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red' }) }
+      if (this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green' }) }
+      if (this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue' }) }
+      if (this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
+      return tip
+    },
     promoData () {
       var prom = []
       this.promos.forEach(e => {
@@ -229,13 +237,7 @@ export default {
       ordenar: false,
       notifications: 0,
       leftDrawerOpen: false,
-      pagoSel: null,
-      tipoPago: [
-        { label: 'Punto de Venta', value: 0, color: 'red' },
-        { label: 'Efectivo ($)', value: 1, color: 'green' },
-        { label: 'Zelle', value: 2, color: 'blue' },
-        { label: 'Tarjeta o Paypal', value: 3, color: 'blue' }
-      ]
+      pagoSel: null
     }
   },
   created () {
@@ -289,9 +291,12 @@ export default {
         return item.stock[this.sede]
       }
     },
-    makeOrder () {
+    makeOrder (details) {
       if (this.tipEnvio !== '1') { this.addId = '' }
-      this.addOrder({ sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, paid: this.tipEnvio === '1' ? this.getTotalCarrito()[2] + 3 : this.getTotalCarrito()[2] }).then(e => { this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' }) })
+      this.addOrder({ paypal: details, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? this.getTotalCarrito()[2] + this.config.price : this.getTotalCarrito()[2] }).then(e => {
+        this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' })
+        this.$q.loading.hide()
+      }).catch(() => this.$q.loading.hide())
     },
     getTotalCarrito () {
       // console.log({ cart: this.cart })
@@ -412,17 +417,21 @@ export default {
               return actions.order.create({
                 purchase_units: [{
                   amount: {
-                    value: that.tipEnvio === '1' ? that.getTotalCarrito()[2] + 3 : that.getTotalCarrito()[2]
+                    value: that.tipEnvio === '1' ? parseFloat(that.getTotalCarrito()[2]) + parseFloat(that.config.price) : that.getTotalCarrito()[2]
                   }
                 }]
               })
             },
             onApprove: function (data, actions) {
               // This function captures the funds from the transaction.
+              that.$q.loading.show({
+                message: ''
+              })
+              console.log({ data })
               return actions.order.capture().then(function (details) {
                 // This function shows a transaction success message to your buyer.
                 console.log({ details })
-                that.makeOrder()
+                that.makeOrder(details)
               })
             }
           }).render('#paypal-button-container')

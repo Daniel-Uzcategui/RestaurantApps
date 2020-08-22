@@ -32,6 +32,23 @@
                :key="index"
                v-bind="link"
                />
+          <q-item
+            v-if="chat && chat.status && chat.key && Tawk_API !== null"
+            @click.native="Tawk_API.toggleVisibility()"
+            clickable
+          >
+            <q-item-section
+              avatar
+            >
+              <q-icon name="fas fa-comment" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>{{ 'Toggle Chat' }}</q-item-label>
+              <q-item-label caption>
+              </q-item-label>
+            </q-item-section>
+          </q-item>
          </q-list>
       </q-drawer>
       <q-page-container>
@@ -59,9 +76,20 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['config']),
+    ...mapGetters('config', ['configurations']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart']),
+    ...mapGetters('editor', ['editor']),
+    paymentServ () {
+      return this.configurations.find(obj => {
+        return obj.id === 'paymentServ'
+      })
+    },
+    chat () {
+      return this.configurations.find(obj => {
+        return obj.id === 'chat'
+      })
+    },
     getCartQ () {
       var amt = 0
       for (const i in this.cart) {
@@ -82,10 +110,9 @@ export default {
     }
   },
   created () {
-    // Check that our app has access to the user id
-    // from Firebase before the page renders
-    console.log({ rt: this.$router.currentRoute.fullPath })
-    console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
+    this.bindBlocks().then((e) => {
+      this.toggleColors()
+    })
     const online = window.navigator.onLine
     this.$q.loading.show({
       message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
@@ -93,27 +120,28 @@ export default {
       spinner: online ? QSpinnerGears : QSpinnerRadio,
       customClass: 'loader'
     })
+    this.bindConfigs().then(() => {
+      this.chatServe(this.chat)
+      this.PaypalServe(this.paymentServ)
+    })
   },
   async mounted () {
     const { currentUser } = this
-    console.log({ rt: this.$router })
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
       if (Object.keys(this.$router.currentRoute.meta).length === 0) {
         this.$q.loading.hide()
       }
     }
-    console.log({ t: this.currentUser })
     if (currentUser) {
       // Hide the loading screen if currentUser
       // is available before the page renders
-      console.log(this.currentUser)
       this.$q.loading.hide()
     }
-    this.chatServe(this.config)
     this.navigateFill()
   },
   data () {
     return {
+      Tawk_API: null,
       notifications: 0,
       blurLayout: false,
       leftDrawerOpen: false,
@@ -123,6 +151,8 @@ export default {
   methods: {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
+    ...mapActions('config', ['bindConfigs']),
+    ...mapActions('editor', ['bindBlocks']),
     navigateFill () {
       let navig = [{
         title: 'Inicio',
@@ -156,6 +186,12 @@ export default {
         link: '#/findus'
       },
       {
+        title: 'Mis Direcciones',
+        caption: '',
+        icon: 'fas fa-map-marked-alt',
+        link: '#/user/address'
+      },
+      {
         title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
         caption: '',
         icon: 'fas fa-sign-out-alt',
@@ -168,24 +204,57 @@ export default {
       }
     },
     toggleColors () {
+      console.log('editor', { ...this.editor })
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
+      if (this.editor) { var page = this.editor.find(e => e.id === 'page') }
+      if (page) {
+        if (!this.$q.dark.isActive) {
+          for (let key in page) {
+            if (key.includes('light')) {
+              var colorLabel = (key.replace('light', '')).toLowerCase()
+              colors.setBrand(colorLabel, page[key])
+            }
+          }
+        } else {
+          for (let key in page) {
+            if (key.includes('dark')) {
+              colorLabel = (key.replace('dark', '')).toLowerCase()
+              colors.setBrand(colorLabel, page[key])
+            }
+          }
+        }
+      }
     },
     async chatServe (config) {
-      console.log({ ...config })
-      if (config && config.tawkChat && config.tawkChat.active) {
+      var that = this
+      if (config && config.status && config.key) {
         // eslint-disable-next-line
-        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-        window.Tawk_API.onBeforeLoad = function () {
+        window.Tawk_API = {}, window.Tawk_LoadStart = new Date();
+        window.Tawk_API.onLoad = function () {
           console.log('Tawk loaded')
-          if (this.$q.platform.is.mobile) {
-            // wwindow.Tawk_API.hideWidget()
+          Vue.set(that, 'Tawk_API', window.Tawk_API)
+          if (that.$q.platform.is.mobile) {
+            window.Tawk_API.hideWidget()
           }
         };
         (async function () {
           var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0]
           s1.async = true
-          s1.src = `https://embed.tawk.to/${config.tawkChat.value}/default`
+          s1.src = `https://embed.tawk.to/${config.key}/default`
+          s1.charset = 'UTF-8'
+          s1.setAttribute('crossorigin', '*')
+          s0.parentNode.insertBefore(s1, s0)
+          return s1.src
+        })()
+      }
+    },
+    async PaypalServe (config) {
+      if (config && config.statusPaypal && config.PaypalApi) {
+        (async function () {
+          var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0]
+          s1.async = true
+          s1.src = `https://www.paypal.com/sdk/js?client-id=${config.PaypalApi}`
           s1.charset = 'UTF-8'
           s1.setAttribute('crossorigin', '*')
           s0.parentNode.insertBefore(s1, s0)

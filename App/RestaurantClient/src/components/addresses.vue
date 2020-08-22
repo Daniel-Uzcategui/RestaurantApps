@@ -34,14 +34,19 @@
           </q-btn>
         </q-bar>
       <q-card-section class="q-pt-none q-pa-md">
-    <q-input class="q-pa-sm" filled type="text" v-model="alias" label="Alias" />
-    <q-input class="q-pa-sm" filled type="text" v-model="estado" label="Estado" />
-    <q-input class="q-pa-sm" filled type="text" v-model="ciudad" label="Ciudad" />
-    <q-input class="q-pa-sm" filled type="text" v-model="municipio" label="Municipio" />
-    <q-input class="q-pa-sm" filled type="text" v-model="urb" label="Urbanización" />
-    <q-input class="q-pa-sm" filled type="text" v-model="calle" label="Calle" />
-    <q-input class="q-pa-sm" filled type="text" v-model="domicilio" label="Domicilio" />
-    <q-input class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" />
+        <q-form
+          ref="addrs"
+          class="q-gutter-md"
+        >
+      <q-input class="q-pa-sm" filled type="text" v-model="alias" label="Alias" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+      <q-input class="q-pa-sm" filled type="text" v-model="estado" label="Estado" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+      <q-input class="q-pa-sm" filled type="text" v-model="ciudad" label="Ciudad" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+      <q-input class="q-pa-sm" filled type="text" v-model="municipio" label="Municipio" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+      <q-input class="q-pa-sm" filled type="text" v-model="urb" label="Urbanización" :rules="[ val => val && val.length > 0 || 'Campo Requerido']" />
+      <q-input class="q-pa-sm" filled type="text" v-model="calle" label="Calle" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+      <q-input class="q-pa-sm" filled type="text" v-model="domicilio" label="Domicilio" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+      <q-input class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" />
+    </q-form>
     </q-card-section>
     <q-card-section class="q-pt-none q-pa-md">
     <google-map
@@ -51,7 +56,7 @@
     </q-card-section>
     <q-card-actions align="around">
         <q-btn color="secondary" v-close-popup >Cancelar</q-btn>
-        <q-btn color="primary" v-close-popup @click="newAddress()">Guardar</q-btn>
+        <q-btn color="primary" @click="$refs.addrs.validate().then(e => { if (e) {newAddress(); dialog = false}})">Guardar</q-btn>
       </q-card-actions>
        </q-card>
   </q-dialog>

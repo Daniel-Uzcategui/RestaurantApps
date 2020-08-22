@@ -71,6 +71,15 @@
           outlined :options="estatus_options" label="Paypal" />
         </div>
         </div>
+        <div v-if="statusPaypal" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuración Paypal</div>
+       </div>
+       <div v-if="statusPaypal" class="row header-container">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input v-model="PaypalApi" standout="bg-teal text-white"
+          outlined label="Paypal API" />
+        </div>
+        </div>
          <div class='filled'></div>
      </q-card>
   </div>
@@ -102,6 +111,7 @@ export default {
       statusZelle: 1,
       statusCash: 1,
       statusPaypal: 1,
+      PaypalApi: '',
       price: 0,
       estatus_options: [
         { label: 'Activo', value: 1 },
@@ -121,6 +131,7 @@ export default {
         statusZelle: this.statusZelle,
         statusCash: this.statusCash,
         statusPaypal: this.statusPaypal,
+        PaypalApi: this.PaypalApi,
         price: this.price,
         source: 'paymentServ'
       }
@@ -175,7 +186,10 @@ export default {
       value = this.statusPaypal
       key = 'statusPaypal'
       this.saveConfig({ value, id, key })
-      value = this.price
+      key = 'PaypalApi'
+      value = this.PaypalApi
+      this.saveConfig({ value, id, key })
+      value = parseFloat(this.price)
       key = 'price'
       this.saveConfig({ value, id, key })
       this.$q.dialog({
@@ -195,6 +209,7 @@ export default {
         this.statusZelle = this.config.statusZelle
         this.statusCash = this.config.statusCash
         this.statusPaypal = this.config.statusPaypal
+        this.PaypalApi = this.config.PaypalApi
         this.price = this.config.price
       }
     }

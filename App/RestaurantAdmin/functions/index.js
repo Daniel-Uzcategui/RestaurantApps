@@ -74,7 +74,8 @@ exports.facturasSequence = functions.firestore
     // Get an object representing the document
     // e.g. {'name': 'Marie', 'age': 66}
     var countRef = db.collection('counters').doc('orders')
-    if (!countRef.exists) {
+    var docRef = await countRef.get()
+    if (!docRef.exists) {
       console.log('No such document!')
       countRef.set({
         factura: 0

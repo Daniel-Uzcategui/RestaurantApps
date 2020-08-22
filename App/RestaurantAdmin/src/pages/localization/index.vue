@@ -33,13 +33,13 @@
           <q-th>
              Estatus
           </q-th>
-          <q-th  v-show="config.statusPickup">
+          <q-th  v-if="config && config.statusPickup">
             Pick UP
           </q-th>
-          <q-th  v-show="config.statusDelivery">
+          <q-th  v-if="config && config.statusDelivery">
             Delivery
           </q-th>
-          <q-th  v-show="config.statusInlocal">
+          <q-th  v-if="config && config.statusInlocal">
             En local
           </q-th>
         </q-tr>
@@ -55,24 +55,24 @@
            <q-td key="address" :props="props">
             {{ props.row.address }}
           </q-td>
-           <q-td key="status" :props="props">
+           <q-td key="status" v-if="estatus_options && estatus_options[props.row.status]" :props="props">
             {{estatus_options[props.row.status].label}}
           </q-td>
-           <q-td v-show="config.statusPickup"  key="PickUP" :props="props">
+           <q-td v-if="config && config.statusPickup"  key="PickUP" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.PickUP, props.row.id, 'Pick UP')"
                 :value="props.row.PickUP"
                 color="#3c8dbc"
               />
           </q-td>
-          <q-td v-show="config.statusDelivery" key="Delivery" :props="props">
+          <q-td v-if="config && config.statusDelivery" key="Delivery" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.Delivery, props.row.id, 'Delivery')"
                 :value="props.row.Delivery"
                 color="#3c8dbc"
               />
           </q-td>
-          <q-td  v-show="config.statusInlocal" key="Inlocal" :props="props">
+          <q-td  v-if="config && config.statusInlocal" key="Inlocal" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.Inlocal, props.row.id, 'Inlocal')"
                 :value="props.row.Inlocal"

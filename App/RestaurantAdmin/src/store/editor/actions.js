@@ -11,6 +11,16 @@ export const saveBlocks = firestoreAction((state, payload) => {
       console.log(`editor blocks updated!`)
     })
 })
+export const savePage = firestoreAction((state, payload) => {
+  console.log({ payload })
+  return firestore()
+    .collection('editor')
+    .doc('page')
+    .set(payload)
+    .then(() => {
+      console.log(`editor blocks updated!`)
+    })
+})
 /// ////// END Action ////////
 /// Bindings ////
 export const bindBlocks = firestoreAction(({ bindFirestoreRef }) => {

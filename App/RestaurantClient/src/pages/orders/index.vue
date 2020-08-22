@@ -123,7 +123,7 @@
                         Extras:  {{getTotalCarrito()[1].toFixed(2)}}
               </q-item-label>
               <q-item-label v-if="ordenDet.tipEnvio == 1">
-                        Delivery: 3.00
+                        Delivery: {{ordenDet.delivery}}
               </q-item-label>
               <q-item-label>
                         Total: $ {{ordenDet.paid}}
@@ -208,7 +208,8 @@ export default {
           table: x.table,
           tipEnvio: x.tipEnvio,
           typePayment: x.typePayment,
-          photo: x.photo
+          photo: x.photo,
+          delivery: x.delivery
         }
       })
       return ord.sort((a, b) => {
@@ -250,6 +251,7 @@ export default {
     },
     ...mapActions('address', ['bindAddress']),
     ...mapActions('order', ['bindOrders', 'saveOrder']),
+    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
     formatDate (e) {
       return date.formatDate(e.seconds * 1000, 'DD-MM')
     },
@@ -314,6 +316,10 @@ export default {
   created () {
     this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
     this.bindAddress(this.currentUser.id)
+    this.bindMenu()
+    this.bindCategorias()
+    this.bindPromos()
+    this.bindGroupComp()
   }
 }
 </script>

@@ -112,12 +112,20 @@ export default {
       }
     },
     geolocate: function () {
-      navigator.geolocation.getCurrentPosition(position => {
+      if (this.markers) {
+        console.log({ Marker: this.markers })
         this.centerClone = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
+          lat: this.markers[0].position.lat,
+          lng: this.markers[0].position.lng
         }
-      })
+      } else {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.centerClone = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        })
+      }
     },
     geolocalize () {
       navigator.geolocation.getCurrentPosition(position => {
