@@ -291,9 +291,11 @@ export default {
         return item.stock[this.sede]
       }
     },
-    makeOrder (details) {
+    makeOrder (paypal) {
       if (this.tipEnvio !== '1') { this.addId = '' }
-      this.addOrder({ paypal: details, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? this.getTotalCarrito()[2] + this.config.price : this.getTotalCarrito()[2] }).then(e => {
+      let order = { sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price) : this.getTotalCarrito()[2] }
+      if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
+      this.addOrder({ ...order }).then(e => {
         this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' })
         this.$q.loading.hide()
       }).catch(() => this.$q.loading.hide())

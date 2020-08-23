@@ -123,10 +123,10 @@
                         Extras:  {{getTotalCarrito()[1].toFixed(2)}}
               </q-item-label>
               <q-item-label v-if="ordenDet.tipEnvio == 1">
-                        Delivery: {{ordenDet.delivery}}
+                        Delivery: {{parseFloat(ordenDet.delivery).toFixed(2)}}
               </q-item-label>
               <q-item-label>
-                        Total: $ {{ordenDet.paid}}
+                        Total: $ {{parseFloat(ordenDet.paid).toFixed(2)}}
               </q-item-label>
             </q-item-section>
           </q-item>
