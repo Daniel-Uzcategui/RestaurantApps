@@ -129,14 +129,6 @@ export default {
       sede: null,
       days: [],
       default: {
-        'sunday': [
-          {
-            'open': '0800',
-            'close': '1700',
-            'id': '5ca5578b0c5c7',
-            'isOpen': true
-          }
-        ],
         'monday': [
           {
             'open': '0800',
@@ -188,6 +180,14 @@ export default {
             'open': '24hrs',
             'close': '24hrs',
             'id': '5ca5578b0c5f8',
+            'isOpen': true
+          }
+        ],
+        'sunday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5c7',
             'isOpen': true
           }
         ]

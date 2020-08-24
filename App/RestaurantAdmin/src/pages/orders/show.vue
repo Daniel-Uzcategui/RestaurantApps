@@ -15,7 +15,7 @@
           <q-input label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disabled/>
         </div>
         <div class="header-cell col-4">
-          <q-input label="Nro. Orden" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
+          <q-input label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disabled />
         </div>
         <div class="header-cell col-3">
           <q-input label="Monto" :value="(order.paid)"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disabled />

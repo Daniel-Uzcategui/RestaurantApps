@@ -177,7 +177,7 @@ export default {
   data () {
     return {
       columns: [
-        { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
+        { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
         { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre' },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService' },

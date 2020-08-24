@@ -59,7 +59,7 @@ export default {
   data () {
     return {
       columns: [
-        { name: 'factura', required: true, label: 'Factura', align: 'left', field: 'factura', sortable: true },
+        { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
         { name: 'typeService', required: true, label: 'Tipo Servicio', align: 'left', field: 'typeService', sortable: true },
         { name: 'typePayment', required: true, label: 'Tipo de Pago', align: 'left', field: 'typePayment', sortable: true },
         { name: 'paid', label: 'Pago Realizado', field: 'paid' }
