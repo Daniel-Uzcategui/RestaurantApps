@@ -28,8 +28,8 @@
         stack-label
         label="Seleccione"
       />
-      <div class="demo-container">
-        <div class="demo-component">
+      <div class="business-hours-container">
+        <div class="business-hours-component">
       <business-hours v-show="sede"
             :days="days"
             name="dayHours"
@@ -240,14 +240,12 @@ export default {
   padding-left: 30px
 .error
  color: red
-.demo-container
+.business-hours-container
   margin: 50px auto
   width: 800px
   font-family: -apple-system, Helvetica, Arial, sans-serif
   color: #3d4852
-.demo-component
+.business-hours-component
   width: 660px
   margin-bottom: 50px
-.demo-component.wide
-  width: 800px
 </style>
