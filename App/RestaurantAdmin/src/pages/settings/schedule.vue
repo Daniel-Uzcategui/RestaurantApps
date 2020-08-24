@@ -28,6 +28,8 @@
         stack-label
         label="Seleccione"
       />
+      <div class="demo-container">
+        <div class="demo-component">
       <business-hours v-show="sede"
             :days="days"
             name="dayHours"
@@ -35,8 +37,9 @@
             :time-increment="15"
             :localization="localization"
             color="#00af0b"
-            @updated-hours="updatedHours"
           ></business-hours>
+        </div>
+      </div>
       </q-card-section>
     </q-card>
     </div>
@@ -72,7 +75,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('config', ['addConfig2', 'bindConfigs', 'saveDay']),
+    ...mapActions('config', ['addConfig2', 'bindConfigs', 'saveConfig']),
     ...mapActions('localization', ['bindLocalizations']),
     add () {
       if (this.days !== 'undefiend') {
@@ -102,12 +105,20 @@ export default {
         }
       }
     },
-    updatedHours (val) {
+    updatedHours () {
+      console.log(this.days)
       let value, id, key
-      value = val
+      value = this.days
       id = this.config.id
-      key = Object.keys(val)[0]
-      this.saveDay({ value, id, key })
+      key = 'days'
+      this.saveConfig({ value, id, key })
+      this.$q.dialog({
+        title: '',
+        message: 'Se han guardo exitosamente los ajustes',
+        cancel: false,
+        persistent: true
+      }).onOk(() => {
+      })
     }
   },
   components: {
@@ -229,4 +240,14 @@ export default {
   padding-left: 30px
 .error
  color: red
+.demo-container
+  margin: 50px auto
+  width: 800px
+  font-family: -apple-system, Helvetica, Arial, sans-serif
+  color: #3d4852
+.demo-component
+  width: 660px
+  margin-bottom: 50px
+.demo-component.wide
+  width: 800px
 </style>
