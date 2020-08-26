@@ -152,21 +152,21 @@ export default {
       font-style: italic
 
     .quote
-      background: url(/statics/images/parallax.jpg);
+      background: url(/images/parallax.jpg);
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       background-repeat: no-repeat;
 
     .pricing
-      background: url(/statics/images/pricing.jpg);
+      background: url(/images/pricing.jpg);
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       background-repeat: no-repeat;
 
     .contact_us
-      background: url(/statics/images/contact_us.jpg);
+      background: url(/images/contact_us.jpg);
       background-size: cover;
       background-position: center;
       background-attachment: fixed;

@@ -3,6 +3,10 @@
     <div class=" q-pa-md menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <div class="text-h5 menuTop">Seleccionar Sede</div>
         <q-card flat class="my-card">
+          <q-card-section class="row justify-center">
+          <q-spinner-cube class="col" v-if="loading" size="lg" color="primary" />
+      <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p>
+      </q-card-section>
         <q-card-section v-for="i in localizations" :key="i.index">
           <q-btn class="full-width" color="primary" :label="i.name" @click="i.id === sede ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
@@ -32,7 +36,8 @@ export default {
   data () {
     return {
       dialog: false,
-      sedeIn: ''
+      sedeIn: null,
+      loading: true
     }
   },
   computed: {
@@ -57,6 +62,7 @@ export default {
   },
   created () {
     this.bindLocalizations().then(() => {
+      this.loading = false
       if (this.localizations.length === 1) {
         this.setSede(this.localizations[0]['id'])
         this.$router.push({ path: '/menu/menu' })

@@ -6,6 +6,10 @@
       <q-btn color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" label="Agregar" />
       <q-btn color="secondary" label="Eliminar" @click="deleteAddress({id: value})" />
     </q-btn-group>
+    <div class="row justify-center q-pa-md">
+      <q-spinner-cube class="col" v-if="loading" size="lg" color="primary" />
+      <p v-if="addressRadio.length === 0 && !loading" class="text-h4 text-center col">No existen direcciones asociadas a esta cuenta</p>
+    </div>
     <q-option-group
       :value="value"
       @input="(e) => $emit('input', e)"
@@ -136,11 +140,14 @@ export default {
   },
   mounted () {
     if (this.currentUser !== null) {
-      this.bindAddress(this.currentUser.id)
+      this.bindAddress(this.currentUser.id).then(() => {
+        this.loading = false
+      })
     }
   },
   data () {
     return {
+      loading: true,
       id: null,
       dialogType: null,
       alias: null,

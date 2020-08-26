@@ -3,6 +3,11 @@
       <q-card-section>
         <div class="text-h5 menuTop">Encuentranos</div>
       </q-card-section>
+      <q-card-section>
+        <div class="row justify-center q-pa-md">
+          <q-spinner-cube class="col" v-if="true" size="lg" color="primary" />
+        </div>
+      </q-card-section>
       <q-card-section class="q-pa-none">
         <google-map
           v-if="markers.length"
@@ -35,7 +40,7 @@ export default {
     }
   },
   created () {
-    this.bindLocalizations()
+    this.bindLocalizations().then(() => { this.loading = false })
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations'])
@@ -43,6 +48,7 @@ export default {
 
   data () {
     return {
+      loading: true,
       markup: [{
         position: { lat: 45.505834523198175, lng: -73.59815798950196 }
       }],

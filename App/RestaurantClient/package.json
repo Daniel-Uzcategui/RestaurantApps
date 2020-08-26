@@ -1,11 +1,9 @@
 {
   "name": "uploader",
   "version": "0.0.1",
-  "description": "User profile using Firebase, Vuexfire, and Google Cloud Storage",
-  "productName": "ECRA",
-  "cordovaId": "org.unico.wallet.app",
-  "capacitorId": "",
-  "author": "Adam K. Purdy <admin@kpapro.com>",
+  "description": "Chopzi ECRA",
+  "productName": "Chopzi",
+  "author": "Pfcevolution",
   "private": true,
   "scripts": {
     "dev": "cross-env QENV=development quasar dev",
@@ -20,6 +18,7 @@
     "@eosrio/hyperion-stream-client": "^0.3.6",
     "@quasar/extras": "^1.9.4",
     "axios": "^0.19.2",
+    "core-js": "3.0.0",
     "cross-env": "^7.0.2",
     "eosjs": "^20.0.3",
     "firebase": "^7.19.0",
@@ -30,13 +29,14 @@
     "vuexfire": "^3.2.2"
   },
   "devDependencies": {
-    "@quasar/app": "^1.9.6",
+    "@quasar/app": "2.0.0",
     "@quasar/quasar-app-extension-qenv": "^1.0.3",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.10.0",
     "eslint-loader": "^2.1.1",
-    "eslint-plugin-vue": "^5.0.0"
+    "eslint-plugin-vue": "^5.0.0",
+    "workbox-webpack-plugin": "5.0.0"
   },
   "engines": {
     "node": ">= 8.9.0",
@@ -44,6 +44,14 @@
     "yarn": ">= 1.6.0"
   },
   "browserslist": [
-    "last 1 version, not dead, ie >= 11"
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
   ]
 }

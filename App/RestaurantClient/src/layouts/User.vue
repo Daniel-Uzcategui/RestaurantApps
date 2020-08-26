@@ -140,23 +140,27 @@ export default {
       this.$q.loading.hide()
     }
     this.navigateFill()
-  },
-  updated () {
-    navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-      const messaging = firebase.messaging()
-      messaging
-        .requestPermission()
-        .then(() => {
-          console.log('Notif allowed')
-          return messaging.getToken()
-        })
-        .then(token => {
-          console.log('Token Is : ' + token)
-        })
-        .catch(err => {
-          console.error('No permission to send push', err)
-        })
-    })
+    if (currentUser) {
+      var that = this
+      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+        const messaging = firebase.messaging()
+        messaging
+          .requestPermission()
+          .then(() => {
+            console.log('Notif allowed')
+            return messaging.getToken()
+          })
+          .then(token => {
+            console.log('Token Is : ' + token)
+            if (!that.isAnonymous) {
+              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
+            }
+          })
+          .catch(err => {
+            console.error('No permission to send push', err)
+          })
+      })
+    }
   },
   data () {
     return {
@@ -170,6 +174,7 @@ export default {
   methods: {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
+    ...mapActions('user', ['setValue']),
     ...mapActions('config', ['bindConfigs']),
     ...mapActions('editor', ['bindBlocks']),
     navigateFill () {
@@ -291,6 +296,25 @@ export default {
   watch: {
     currentUser () {
       this.$q.loading.hide()
+      var that = this
+      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+        const messaging = firebase.messaging()
+        messaging
+          .requestPermission()
+          .then(() => {
+            console.log('Notif allowed')
+            return messaging.getToken()
+          })
+          .then(token => {
+            console.log('Token Is : ' + token)
+            if (!that.isAnonymous) {
+              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
+            }
+          })
+          .catch(err => {
+            console.error('No permission to send push', err)
+          })
+      })
     },
     Tawk_API () {
       console.log('asdasdasd')

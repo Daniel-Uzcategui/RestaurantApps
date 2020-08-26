@@ -46,7 +46,7 @@ export default {
     }
   },
   mounted () {
-    if (this.editor) {
+    if (this.editor.length) {
       this.visible = false
       let obj = this.editor.find(e => e.id === 'blocks')
       if (typeof obj !== 'undefined') {
@@ -56,6 +56,7 @@ export default {
   },
   watch: {
     editor (e) {
+      this.visible = false
       let obj = e.find(e => e.id === 'blocks')
       if (typeof obj !== 'undefined') {
         this.blocks = JSON.parse(JSON.stringify(obj.blocks))
