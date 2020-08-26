@@ -63,6 +63,22 @@
             </q-item-section>
           </q-item>
          </q-list>
+         <q-list style="width: 100%">
+         <q-expansion-item
+            expand-separator
+            icon="fas fa-newspaper"
+            label="Aplicar cupón"
+          >
+          <q-input v-model="text" label="Inserte código del cupón" />
+         </q-expansion-item>
+         <q-expansion-item
+            expand-separator
+            icon="fas fa-meteor"
+            label="Redimir Recompensa"
+          >
+          <q-input v-model="text" label="Inserte código del cupón" />
+         </q-expansion-item>
+         </q-list>
             <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true" label="Ordenar"/>
       </div>
       <q-dialog
@@ -198,10 +214,10 @@ export default {
     },
     tipoPago () {
       var tip = []
-      if (this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red' }) }
-      if (this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green' }) }
-      if (this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue' }) }
-      if (this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
+      if (this.config && this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red' }) }
+      if (this.config && this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green' }) }
+      if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue' }) }
+      if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
       return tip
     },
     promoData () {

@@ -44,11 +44,12 @@ module.exports = function (ctx) {
       //            (fastest compile time; minimum bundle size; most tedious)
       // * true   - Import everything from Quasar
       //            (not treeshaking Quasar; biggest bundle size; convenient)
-	  config: {
-			screen: {
-			bodyClasses: true // <<< add this
-				}
-		},
+
+      config: {
+        screen: {
+          bodyClasses: true // <<< add this
+        }
+      },
       all: 'auto',
 
       components: [
@@ -140,6 +141,7 @@ module.exports = function (ctx) {
     devServer: {
       // https: true,
       // port: 8080,
+      public: 'http://192.168.1.180:8080',
       open: true // opens browser window automatically
     },
 
