@@ -7,14 +7,17 @@
       </q-input>
       <q-card flat class="menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <q-card-section>
-               <div class="fontsize-18 menuTop">Catálogo</div>
+               <div class="fontsize-18 menuTop">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
                <div class="absolute-bottom-right q-pa-md" >
-                  <q-btn v-if="promoData.length || promo" fab color="secondary" :label="promo ? 'Volver' : 'Promociones'" @click="promo = !promo" />
+                <q-btn-group push>
+                  <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
+                  <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
+                </q-btn-group>
                </div>
             </q-card-section>
         <q-card-section class="wrapel">
          <q-tabs
-            v-if="!promo"
+            v-if="!promo && !rewards"
             class="wrapel"
             content-class="wrapel"
             >
@@ -25,7 +28,7 @@
             </q-tab>
          </q-tabs>
         </q-card-section>
-         <q-card-section v-if="!promo">
+         <q-card-section v-if="!promo && !rewards">
            <div class="flex justify-around text-h7">
             <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="item in filteredMenu" separator :key="item.id" style="width: 300px;">
                <q-item v-ripple>
@@ -53,7 +56,32 @@
             </q-list>
            </div>
          </q-card-section>
-         <q-card-section v-if="promo">
+         <q-card-section v-if="!promo && rewards">
+           <div class="flex justify-around text-h7">
+            <q-list @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" v-for="item in filteredMenu" v-show="Object.keys(pointsCat).some(r=> item.categoria.includes(r))" separator :key="item.id" style="width: 300px;">
+               <q-item v-ripple >
+                  <q-item-section avatar top>
+                     <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders" />
+                  </q-item-section>
+                  <q-item-section >
+                     <q-item-label lines="5">{{item.name}} </q-item-label>
+                     <q-item-label lines="1" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
+                     <q-item-label lines="1" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-item-label>
+                     <q-item-label overline>
+                        <q-icon color="yellow" size="0.8em" name="fas fa-star" />
+                        5.0
+                     </q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                     <q-item-label >$ 0.00
+                     </q-item-label>
+                  </q-item-section>
+               </q-item>
+               <q-separator />
+            </q-list>
+           </div>
+         </q-card-section>
+         <q-card-section v-if="promo && !rewards">
            <div class="flex justify-around text-h7">
              <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
             <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" v-for="item in promoData" separator :key="item.id" style="width: 300px;">
@@ -122,8 +150,8 @@
                <div class="text-h5 col">
                   <q-btn color="grey" @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="fas fa-minus" text-color="white" dense />
                   {{quantity}}
-                  <q-btn color="orange" @click="(checkAvail(displayVal.id, displayVal.prodType)[0] === 1) ? quantity++ : false" icon="fas fa-plus" text-color="white" dense >
-                     <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0" floating>MAX</q-badge>
+                  <q-btn color="orange" @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="fas fa-plus" text-color="white" dense >
+                     <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
                      <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
                         <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
                      </q-badge>
@@ -153,7 +181,7 @@
                <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
             </q-card-section>
             <q-card-actions vertical>
-               <q-btn v-if="required" @click="addToCart" v-close-popup color="primary">Añadir</q-btn>
+               <q-btn v-if="required" @click="addToCart(rewards)" v-close-popup color="primary">Añadir</q-btn>
                <q-btn v-if="!required" @click="showNotif" color="primary">Añadir</q-btn>
             </q-card-actions>
          </q-card>
@@ -191,6 +219,16 @@ export default {
         return y
       }, [])
     },
+    pointsCat () {
+      console.log({ User: this.currentUser })
+      var obj = this.currentUser.pointsCat
+      var objout = Object.keys(obj).reduce((p, c) => {
+        if (obj[c] >= 10) { p[c] = obj[c] }
+        return p
+      }, {})
+      console.log({ objout })
+      return objout
+    },
     promoData () {
       var prom = []
       this.promos.forEach(e => {
@@ -223,6 +261,7 @@ export default {
   },
   data () {
     return {
+      rewards: false,
       itComp: [],
       totSum: 0,
       required: false,
@@ -278,17 +317,18 @@ export default {
         })
       }
     },
-    addToCart () {
+    addToCart (rew) {
       if (this.displayVal.prodType === 0) {
-        this.addCart({
+        var toCart = {
           prodId: this.displayVal.id,
           name: this.displayVal.name,
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
-          prodType: this.displayVal.prodType,
-          rewards: 0
-        }).then(() => this.$q.notify({
+          prodType: this.displayVal.prodType
+        }
+        if (rew) { toCart = { ...toCart, reward: rew } }
+        this.addCart(toCart).then(() => this.$q.notify({
           message: 'Producto Añadido',
           color: 'secondary',
           position: 'bottom'
@@ -310,6 +350,38 @@ export default {
         })
         )
       }
+    },
+    checkAvailReward (item) {
+      if (!this.rewards) { return [true, true] }
+      console.log({ item })
+      var available = 0
+      var available2 = 0
+      var quant = this.quantity ? this.quantity + 1 : 2
+      var counter = 1
+      var exists = 0
+      var inCart = this.cart.filter(x => x.prodId === item.id && x.reward)
+      inCart.forEach(element => {
+        counter = element.quantity + counter
+      })
+      if (counter > 1) { exists = 1 }
+      quant = quant + counter - 1
+      var categories = item.categoria
+      var rewardCategories = Object.keys(this.pointsCat)
+      var intersection = categories.filter(x => rewardCategories.includes(x))
+      for (var cat of intersection) {
+        var points = this.pointsCat[cat]
+        console.log({ points })
+        if ((points - (quant * 10)) >= 0) {
+          console.log({ points, quant })
+          available++
+        }
+        if ((points - (counter * 10)) >= 0) {
+          console.log({ points, quant })
+          available2++
+        }
+      }
+      console.log({ available, available2 })
+      return [available, available2, exists]
     },
     checkAvail (id, type) {
       var exists = 0
@@ -370,12 +442,17 @@ export default {
         return [1, exists]
       }
     },
-    getMenuItem (id, type) {
+    getMenuItem (id, type, reward) {
+      reward = typeof reward === 'undefined' ? 0 : reward
       if (type === 0) {
         this.displayVal = this.filteredMenu.find((e) => {
           return e.id === id
         })
         this.displayVal.id = id
+        if (reward) {
+          this.displayVal.price = 0
+          this.displayVal.reward = 1
+        }
       } else {
         this.displayVal = this.promoData.find((e) => {
           return e.id === id

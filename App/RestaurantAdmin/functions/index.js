@@ -117,11 +117,11 @@ exports.RewardsPoints = functions.firestore
   .onUpdate(async (change, context) => {
     const newValue = change.after.data()
     const previousValue = change.before.data()
+    var user = previousValue.customer_id
+    var userRef = db.collection('users').doc(user)
+    const doc = await userRef.get()
     if (newValue.status === 3) {
       var paid = previousValue.paid
-      var user = previousValue.customer_id
-      var userRef = db.collection('users').doc(user)
-      const doc = await userRef.get()
       if (!doc.exists) {
         console.log('No such document!')
       } else {
@@ -166,6 +166,26 @@ exports.RewardsPoints = functions.firestore
             }
           }
         }
+      }
+    }
+    if (!doc.exists) {
+      console.log('No such document!')
+    } else {
+      var options = [
+        { label: 'Por Confirmar', value: 0 },
+        { label: 'Preparando su pedido', value: 1 },
+        { label: 'Orden en vía', value: 2 },
+        { label: 'Orden Entregada', value: 3 },
+        { label: 'Anulada', value: 4 }]
+      var status = options.find(e => e.value === newValue.status)
+      const userData = doc.data()
+      if (typeof userData.fcm !== 'undefined') {
+        return admin.messaging().sendToDevice([userData.fcm], { 'notification': {
+          'title': 'ChopZi',
+          'body': `${status.label}`,
+          'click_action': 'http://localhost:8080/#/orders/index',
+          'icon': 'app-logo-128x128.png'
+        } })
       }
     }
   })

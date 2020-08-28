@@ -4,6 +4,11 @@
       <q-card-section>
         <div class="text-h5 menuTop">Encuentranos</div>
       </q-card-section>
+      <q-card-section>
+        <div class="row justify-center q-pa-md">
+          <q-spinner-cube class="col" v-if="loading" size="lg" color="primary" />
+        </div>
+      </q-card-section>
       <q-card-section class="q-pa-none">
         <google-map
           v-if="markers.length"
@@ -57,6 +62,7 @@ export default {
   },
   created () {
     this.bindLocalizations().then(e => e.forEach(el => {
+      this.loading = false
       console.log({ el })
       this.distance2(el.localizacion_sede, el.id)
     })
@@ -153,6 +159,7 @@ export default {
   },
   data () {
     return {
+      loading: true,
       distances: {},
       weekdayEs: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
       weekdayUs: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
