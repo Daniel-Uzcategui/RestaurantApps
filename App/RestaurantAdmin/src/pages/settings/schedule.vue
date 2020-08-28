@@ -27,6 +27,7 @@
         map-options
         stack-label
         label="Seleccione"
+        @input="getDays"
       />
       <div class="business-hours-container">
         <div class="business-hours-component">
@@ -53,9 +54,7 @@ export default {
   created () {
     this.bindLocalizations()
     this.bindConfigs().then(e => this.getDays())
-  },
-  updated () {
-    this.getDays()
+    this.days = this.default
   },
   computed: {
     ...mapGetters('config', ['configs']),
@@ -96,10 +95,20 @@ export default {
     },
     getDays () {
       console.log('getDays')
+      console.log(this.config)
+      console.log(this.sede)
       if (this.sede) {
-        if (this.config) {
-          this.days = this.config.days
-          console.log(this.config.days)
+        if (typeof this.config !== 'undefined') {
+          let objMonday, objTuesday, objWednesday, objThursday, objFriday, objSaturday, objSunday
+          objMonday = JSON.parse(JSON.stringify(this.config.days.monday))
+          objTuesday = JSON.parse(JSON.stringify(this.config.days.tuesday))
+          objWednesday = JSON.parse(JSON.stringify(this.config.days.wednesday))
+          objThursday = JSON.parse(JSON.stringify(this.config.days.thursday))
+          objFriday = JSON.parse(JSON.stringify(this.config.days.friday))
+          objSaturday = JSON.parse(JSON.stringify(this.config.days.saturday))
+          objSunday = JSON.parse(JSON.stringify(this.config.days.sunday))
+          this.days = { monday: objMonday, tuesday: objTuesday, wednesday: objWednesday, thursday: objThursday, friday: objFriday, saturday: objSaturday, sunday: objSunday }
+          this.cache = 1
         } else {
           this.days = this.default
         }
@@ -128,6 +137,7 @@ export default {
     return {
       sede: null,
       days: [],
+      cache: 0,
       default: {
         'monday': [
           {
@@ -166,12 +176,6 @@ export default {
             'open': '0800',
             'close': '1600',
             'id': '5ca5578b0c5ec',
-            'isOpen': true
-          },
-          {
-            'open': '1900',
-            'close': '2200',
-            'id': '5ca5578b0c5f2',
             'isOpen': true
           }
         ],
