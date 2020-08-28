@@ -7,6 +7,9 @@
   "targets": {
     "restaurant-testnet": {
       "hosting": {
+        "headers": [
+          { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+        ],
         "client": [
           "client-restaurant-testnet"
         ]
@@ -14,6 +17,9 @@
     },
     "qa-restaurant-testnet": {
       "hosting": {
+        "headers": [
+          { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+        ],
         "client": [
           "qa-client-restaurant-web-app"
         ]
@@ -21,6 +27,9 @@
     },
     "ecrhwei8": {
       "hosting": {
+        "headers": [
+          { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+        ],
         "client": [
           "ecrhwei8-client"
         ]

@@ -17,15 +17,18 @@
         </q-item>
         <q-separator />
         <q-card-section v-for="(cat, index) in Object.keys(getUserData('pointsCat'))" :key="index" horizontal class="fontsize-12 row justify-between">
-          <q-card-section>
+          <q-card-section >
             <q-item-label lines="5" >
               {{getCategoryName(cat)}}
             </q-item-label>
           </q-card-section>
           <q-card-section>
+            <q-btn color="secondary" squared icon="fas fa-gift" dense class="q-mr-lg">
+              <q-badge color="red" floating class="">{{ parseInt(getUserData('pointsCat')[cat] / 10)}}</q-badge>
+            </q-btn>
             <q-rating
               readonly
-              :value="getUserData('pointsCat')[cat]"
+              :value="getUserData('pointsCat')[cat] % 10"
               max="10"
               size="1em"
               color="primary"
@@ -68,7 +71,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['currentUser', 'summary']),
+    ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['categorias']),
     editUserDialog: {
       get () {

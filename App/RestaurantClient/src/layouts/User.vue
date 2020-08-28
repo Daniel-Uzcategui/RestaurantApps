@@ -140,27 +140,7 @@ export default {
       this.$q.loading.hide()
     }
     this.navigateFill()
-    if (currentUser) {
-      var that = this
-      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        const messaging = firebase.messaging()
-        messaging
-          .requestPermission()
-          .then(() => {
-            console.log('Notif allowed')
-            return messaging.getToken()
-          })
-          .then(token => {
-            console.log('Token Is : ' + token)
-            if (!that.isAnonymous) {
-              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
-            }
-          })
-          .catch(err => {
-            console.error('No permission to send push', err)
-          })
-      })
-    }
+    this.setupNotif()
   },
   data () {
     return {
@@ -177,6 +157,27 @@ export default {
     ...mapActions('user', ['setValue']),
     ...mapActions('config', ['bindConfigs']),
     ...mapActions('editor', ['bindBlocks']),
+    setupNotif () {
+      var that = this
+      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+        const messaging = firebase.messaging()
+        messaging
+          .requestPermission()
+          .then(() => {
+            console.log('Notif allowed')
+            return messaging.getToken()
+          })
+          .then(token => {
+            console.log('Token Is : ' + token)
+            if (!that.isAnonymous && that.currentUser && that.currentUser.fcm !== token) {
+              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
+            }
+          })
+          .catch(err => {
+            console.error('No permission to send push', err)
+          })
+      })
+    },
     navigateFill () {
       let navig = [{
         title: 'Inicio',
@@ -214,6 +215,12 @@ export default {
         caption: '',
         icon: 'fas fa-map-marked-alt',
         link: '#/user/address'
+      },
+      {
+        title: 'Mis Recompensas',
+        caption: '',
+        icon: 'fas fa-gift',
+        link: '#/user/rewards'
       },
       {
         title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
@@ -296,25 +303,7 @@ export default {
   watch: {
     currentUser () {
       this.$q.loading.hide()
-      var that = this
-      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        const messaging = firebase.messaging()
-        messaging
-          .requestPermission()
-          .then(() => {
-            console.log('Notif allowed')
-            return messaging.getToken()
-          })
-          .then(token => {
-            console.log('Token Is : ' + token)
-            if (!that.isAnonymous) {
-              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
-            }
-          })
-          .catch(err => {
-            console.error('No permission to send push', err)
-          })
-      })
+      this.setupNotif()
     },
     Tawk_API () {
       console.log('asdasdasd')
