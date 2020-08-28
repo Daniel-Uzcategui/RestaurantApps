@@ -31,7 +31,7 @@
         autocomplete="current-password new-password"
         color="primary"
         data-cy="password"
-        label="Clave"
+        label="Contraseña"
         :rules="[val =&gt; !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
         @keyup.enter="onSubmit(); $event.target.blur()"
       >
@@ -47,9 +47,9 @@
         autocomplete="new-password"
         color="primary"
         data-cy="verifyPassword"
-        label="Confirmación clave"
+        label="Confirmación contraseña"
         v-model="passwordMatch"
-        :rules="[val => !!val || '*Campo es requerido', val => val === password || 'Clave y confirmación no son iguales']"
+        :rules="[val => !!val || '*Campo es requerido', val => val === password || 'contraseña y confirmación no son iguales']"
         :type="isPwd ? 'password' : 'text'"
         @keyup.enter="onSubmit(); $event.target.blur()"
       >
@@ -115,7 +115,7 @@
       >
       </q-btn>
       <p class="q-ma-sm text-center">
-          <router-link class="text-primary" to="forgotPassword">Olvido de Clave?</router-link>
+          <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
       </p>
     </q-form>
     </q-card-section>
@@ -163,8 +163,8 @@ export default {
           if (success) {
             this.$q.loading.show({
               message: this.isRegistration
-                ? 'Registering your account...'
-                : 'Authenticating your account...',
+                ? 'Registro de su cuenta...'
+                : 'Autenticando su cuenta...',
               backgroundColor: 'grey',
               spinner: QSpinnerGears,
               customClass: 'loader'
