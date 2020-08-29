@@ -1,0 +1,17 @@
+[debug] [2020-08-29T00:14:44.705Z] ----------------------------------------------------------------------
+[debug] [2020-08-29T00:14:44.708Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js use --add
+[debug] [2020-08-29T00:14:44.709Z] CLI Version:   8.6.0
+[debug] [2020-08-29T00:14:44.709Z] Platform:      win32
+[debug] [2020-08-29T00:14:44.709Z] Node Version:  v12.0.0
+[debug] [2020-08-29T00:14:44.711Z] Time:          Fri Aug 28 2020 20:14:44 GMT-0400 (Venezuela Time)
+[debug] [2020-08-29T00:14:44.711Z] ----------------------------------------------------------------------
+[debug] [2020-08-29T00:14:44.711Z] 
+[debug] [2020-08-29T00:14:44.729Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-29T00:14:44.730Z] > authorizing via signed-in user
+[debug] [2020-08-29T00:14:44.735Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-08-29T00:14:44.736Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-08-29T00:14:45.397Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 29 Aug 2020 00:14:45 GMT","server":"scaffolding on HTTPServer2","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-08-29T00:14:45.411Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects?pageSize=1000  
+ 
+[debug] [2020-08-29T00:14:46.335Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 29 Aug 2020 00:14:46 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
