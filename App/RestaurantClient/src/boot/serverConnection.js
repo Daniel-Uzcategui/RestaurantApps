@@ -1,23 +1,29 @@
 import firebaseService from '../services/firebase'
 
 export default ({ router, store, Vue }) => {
-  const config = process.env.environments.FIREBASE_CONFIG
-  firebaseService.fBInit(config)
-
-  // Tell the application what to do when the
-  // authentication state has changed
-  firebaseService.auth().onAuthStateChanged((currentUser) => {
-    firebaseService.handleOnAuthStateChanged(store, currentUser)
-  }, (error) => {
-    console.error(error)
-  })
-
-  // Setup the router to be intercepted on each route.
-  // This allows the application to halt rendering until
-  // Firebase is finished with its initialization process,
-  // and handle the user accordingly
-  firebaseService.routerBeforeEach(router, store)
-
-  Vue.prototype.$fb = firebaseService
-  store.$fb = firebaseService
+  console.log({ process: process.env.MODE })
+  if (process.env.environments.ENV_DEV !== 'Development') {
+    fetch('/__/firebase/init.json').then(async response => {
+      firebaseService.fBInit(await response.json())
+      firebaseService.auth().onAuthStateChanged((currentUser) => {
+        firebaseService.handleOnAuthStateChanged(store, currentUser)
+      }, (error) => {
+        console.error(error)
+      })
+      firebaseService.routerBeforeEach(router, store)
+      Vue.prototype.$fb = firebaseService
+      store.$fb = firebaseService
+    })
+  } else {
+    const config = process.env.environments.FIREBASE_CONFIG
+    firebaseService.fBInit(config)
+    firebaseService.auth().onAuthStateChanged((currentUser) => {
+      firebaseService.handleOnAuthStateChanged(store, currentUser)
+    }, (error) => {
+      console.error(error)
+    })
+    firebaseService.routerBeforeEach(router, store)
+    Vue.prototype.$fb = firebaseService
+    store.$fb = firebaseService
+  }
 }

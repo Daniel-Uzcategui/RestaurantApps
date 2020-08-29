@@ -1,7 +1,8 @@
 export default function () {
   return {
     editor: [{
-      blocks: []
+      blocks: [],
+      page: []
     }]
   }
 }

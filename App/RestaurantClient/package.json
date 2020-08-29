@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
     "build": "cross-env QENV=production quasar build",
-    "build-pwa": "cross-env QENV=development quasar build -m pwa",
+    "build-pwa": "cross-env QENV=dev-prod quasar build -m pwa",
     "build-qa": "cross-env QENV=qa quasar build",
     "build-ecr": "cross-env QENV=ecr quasar build"
   },

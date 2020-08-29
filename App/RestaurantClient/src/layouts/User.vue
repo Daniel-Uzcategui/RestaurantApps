@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main bg-image" :class="{ 'blur-layout': blurLayout }" view="hhh LpR fFf">
+   <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" view="hhh LpR fFf">
          <q-toolbar class="bg-transparent text-white" style="z-index: 100">
                 <q-btn fab
                 v-if="!leftDrawerOpen"
@@ -82,6 +82,10 @@ export default {
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart']),
     ...mapGetters('editor', ['editor']),
+    page () {
+      var obj = this.editor.find(e => e.id === 'page')
+      return typeof obj === 'undefined' ? {} : obj
+    },
     paymentServ () {
       return this.configurations.find(obj => {
         return obj.id === 'paymentServ'
@@ -238,20 +242,19 @@ export default {
       console.log('editor', { ...this.editor })
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
-      if (this.editor) { var page = this.editor.find(e => e.id === 'page') }
-      if (page) {
+      if (this.page) {
         if (!this.$q.dark.isActive) {
-          for (let key in page) {
+          for (let key in this.page) {
             if (key.includes('light')) {
               var colorLabel = (key.replace('light', '')).toLowerCase()
-              colors.setBrand(colorLabel, page[key])
+              colors.setBrand(colorLabel, this.page[key])
             }
           }
         } else {
-          for (let key in page) {
+          for (let key in this.page) {
             if (key.includes('dark')) {
               colorLabel = (key.replace('dark', '')).toLowerCase()
-              colors.setBrand(colorLabel, page[key])
+              colors.setBrand(colorLabel, this.page[key])
             }
           }
         }
@@ -312,6 +315,11 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+  @font-face
+    font-family: customfont;
+    src: url(https://fonts.googleapis.com/css?family=Karla);
+  .my-font
+    font-family: 'customfont';
   .main
     &.blur-layout
       -webkit-filter: blur(5px);
@@ -319,7 +327,7 @@ export default {
       -o-filter: blur(5px);
       -ms-filter: blur(5px);
       filter blur(5px)
-  .bg-image {
+  .default-bg-image {
     background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
     background-repeat: no-repeat;
     background-size: cover;
