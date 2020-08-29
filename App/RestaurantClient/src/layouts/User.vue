@@ -192,23 +192,16 @@ export default {
         link: '#/menu/index'
       },
       {
-        title: 'Perfil',
-        caption: '',
-        icon: 'fas fa-user',
-        link: '#',
-        click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
-      },
-      {
         title: 'Tus Ordenes',
         caption: '',
         icon: 'room_service',
         link: '#/orders/index'
       },
       {
-        title: 'Encuentranos',
+        title: 'Mis Recompensas',
         caption: '',
-        icon: 'fa fa-globe',
-        link: '#/findus'
+        icon: 'fas fa-gift',
+        link: '#/user/rewards'
       },
       {
         title: 'Mis Direcciones',
@@ -217,10 +210,17 @@ export default {
         link: '#/user/address'
       },
       {
-        title: 'Mis Recompensas',
+        title: 'Encuentranos',
         caption: '',
-        icon: 'fas fa-gift',
-        link: '#/user/rewards'
+        icon: 'fa fa-globe',
+        link: '#/findus'
+      },
+      {
+        title: 'Perfil',
+        caption: '',
+        icon: 'fas fa-user',
+        link: '#',
+        click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
       },
       {
         title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',

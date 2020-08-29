@@ -58,7 +58,8 @@
          </q-card-section>
          <q-card-section v-if="!promo && rewards">
            <div class="flex justify-around text-h7">
-            <q-list @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" v-for="item in filteredMenu" v-show="Object.keys(pointsCat).some(r=> item.categoria.includes(r))" separator :key="item.id" style="width: 300px;">
+            <q-list @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" v-for="item in filteredMenu"
+            v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" separator :key="item.id" style="width: 300px;">
                <q-item v-ripple >
                   <q-item-section avatar top>
                      <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders" />
@@ -221,7 +222,7 @@ export default {
     },
     pointsCat () {
       console.log({ User: this.currentUser })
-      var obj = this.currentUser.pointsCat
+      var obj = typeof this.currentUser.pointsCat === 'undefined' ? [] : this.currentUser.pointsCat
       var objout = Object.keys(obj).reduce((p, c) => {
         if (obj[c] >= 10) { p[c] = obj[c] }
         return p
@@ -366,7 +367,7 @@ export default {
       if (counter > 1) { exists = 1 }
       quant = quant + counter - 1
       var categories = item.categoria
-      var rewardCategories = Object.keys(this.pointsCat)
+      var rewardCategories = typeof this.pointsCat === 'undefined' ? [] : Object.keys(this.pointsCat)
       var intersection = categories.filter(x => rewardCategories.includes(x))
       for (var cat of intersection) {
         var points = this.pointsCat[cat]
