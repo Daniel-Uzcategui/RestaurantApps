@@ -8,6 +8,7 @@
                 </q-item-label>
             </q-item-section>
         </q-item>
+        <div v-if="getUserData('points') !== 0">
         <q-item>
           <q-item-section>
                 <q-item-label lines="2" class="text-center fontsize-18">
@@ -37,6 +38,8 @@
             />
           </q-card-section>
         </q-card-section>
+        </div>
+        <div v-if="getUserData('points') === 0" >No hay Recompensas disponibles</div>
     </q-card>
   </div>
 </template>
@@ -87,11 +90,12 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     ...mapActions('menu', ['bindCategorias']),
     getUserData (attr) {
-      return (this.currentUser[attr]) ? this.currentUser[attr] : 'Please update your profile'
+      return (this.currentUser[attr]) ? this.currentUser[attr] : 0
     },
     getCategoryName (id) {
       console.log({ ...this.categorias })
-      var cat = this.categorias.find(e => e.id === id)
+      var cat = typeof this.categorias === 'undefined' ? 0 : this.categorias.find(e => e.id === id)
+      console.log('getCategoryName')
       console.log({ cat })
       if (typeof cat === 'undefined') { return null }
       return cat.name
