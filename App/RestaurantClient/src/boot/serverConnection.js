@@ -2,7 +2,7 @@ import firebaseService from '../services/firebase'
 
 export default ({ router, store, Vue }) => {
   console.log({ process: process.env.MODE })
-  if (process.env.environments.ENV_DEV !== 'Development') {
+  if (process.env.MODE === 'pwa') {
     fetch('/__/firebase/init.json').then(async response => {
       firebaseService.fBInit(await response.json())
       firebaseService.auth().onAuthStateChanged((currentUser) => {
