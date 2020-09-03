@@ -23,9 +23,10 @@ exports.CheckCart = functions.firestore
         }
       })
     }
-    // var userRef = db.collection('users').doc(newValue.customer_id)
-    // const doc = await userRef.get()
-    // const userData = doc.data()
+    var userRef = db.collection('users').doc(newValue.customer_id)
+    const doc = await userRef.get()
+    const userData = doc.data()
+    var pointsCat = userData.pointsCat
     for (let prod in cart) {
       if (cart[prod].prodType === 0) {
         var reference = db.collection('menu').doc(cart[prod].prodId)
@@ -35,11 +36,38 @@ exports.CheckCart = functions.firestore
         })
         var menu = await reference.get()
         var menuDoc = menu.data()
-        if (!cart[prod].rewards) {
+        if (!cart[prod].reward) {
           var discount = typeof menuDoc.discount !== 'undefined' ? menuDoc.discount : 0
           var prodPrice = parseFloat((menuDoc.price * (100 - discount) / 100).toFixed(2))
           sumPaid = (cart[prod].quantity * prodPrice) + sumPaid
           newcart[prod].prodPrice = prodPrice
+        } else {
+          let enoughPoints = 0
+          let prodCat = cart[prod].category
+          var catEnough = ''
+          if (typeof prodCat === 'undefined') { prodCat = [] }
+          var intsect = Object.keys(pointsCat).filter(value => cart[prod].category.includes(value))
+          if (intsect.length) {
+            for (let cat of intsect) {
+              let points = pointsCat[cat]
+              if ((points - (cart[prod].quantity * 10)) >= 0) {
+                enoughPoints++
+                catEnough = cat
+              }
+            }
+            if (enoughPoints) {
+              let amount = cart[prod].quantity * 10
+              let decrement = admin.firestore.FieldValue.increment(-amount)
+              userRef.update({
+                [`pointsCat.${catEnough}`]: decrement
+              })
+            } else {
+              discount = typeof menuDoc.discount !== 'undefined' ? menuDoc.discount : 0
+              prodPrice = parseFloat((menuDoc.price * (100 - discount) / 100).toFixed(2))
+              sumPaid = (cart[prod].quantity * prodPrice) + sumPaid
+              newcart[prod].prodPrice = prodPrice
+            }
+          }
         }
         for (var items of cart[prod].items) {
           if (typeof items.quantity === 'undefined') {
@@ -49,12 +77,12 @@ exports.CheckCart = functions.firestore
           sumPaid = sumPaid + ((items.price * items.quantity) * cart[prod].quantity)
         }
       } else {
-        var multiplier = prod.quantity
-        var products = prod.prods
+        let multiplier = prod.quantity
+        let products = prod.prods
         products.forEach((e) => {
-          var reference = db.collection('menu').doc(e.id)
-          var amount = multiplier * e.quantity
-          var decrement = admin.firestore.FieldValue.increment(-amount)
+          let reference = db.collection('menu').doc(e.id)
+          let amount = multiplier * e.quantity
+          let decrement = admin.firestore.FieldValue.increment(-amount)
           reference.update({
             [`stock.${sede}`]: decrement
           })
@@ -140,7 +168,7 @@ exports.RewardsPoints = functions.firestore
         }
         const cart = previousValue.cart
         for (let prod of cart) {
-          if (prod.prodType === 0) {
+          if (prod.prodType === 0 && typeof prod.rewards === 'undefined') {
             var menuRef = db.collection('menu').doc(prod.prodId)
             const docMenu = await menuRef.get()
             var increment = admin.firestore.FieldValue.increment(prod.quantity)

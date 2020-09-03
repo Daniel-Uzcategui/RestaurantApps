@@ -326,7 +326,8 @@ export default {
           prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
-          prodType: this.displayVal.prodType
+          prodType: this.displayVal.prodType,
+          category: this.displayVal.categoria
         }
         if (rew) { toCart = { ...toCart, reward: rew } }
         this.addCart(toCart).then(() => this.$q.notify({
