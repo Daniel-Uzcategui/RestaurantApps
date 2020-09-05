@@ -18,22 +18,41 @@
         <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th>
+             Seleccione
+          </q-th>
+          <q-th>
+             Nombre
+          </q-th>
+          <q-th>
+            Apellido
+          </q-th>
+          <q-th>
+             Rol
+          </q-th>
+          <q-th>
+            Estatus
+          </q-th>
+        </q-tr>
+      </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer">
            <q-td auto-width>
             <q-checkbox v-model="props.selected" />
           </q-td>
-           <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
-            <div v-if="col.name !== 'Rol'">{{ col.value }}</div>
+           <q-td key="nombre" :props="props">
+            {{ props.row.nombre }}
+          </q-td>
+           <q-td key="apellido" :props="props">
+            {{ props.row.apellido }}
+          </q-td>
+           <q-td>
             <q-select
-                v-if="col.name === 'Rol'"
                 filled
-                :value="col.value"
-                @input="(e) => saved(e, col.value, props.row.id, `rol`)"
+                :value="props.row.rol"
+                @input="(e) => saved(e, props.row.rol, props.row.id, `rol`)"
                 @remove="(e) => removed({...e, id: props.row.id})"
                 use-input
                 use-chips
@@ -46,6 +65,15 @@
                 emit-value
                 stack-label
               />
+          </q-td>
+           <q-td key="status" :props="props">
+            <div v-if="props.row.status !== undefined" >
+             <q-toggle
+                @input="(e) => saved(e, props.row.status, props.row.id, 'status')"
+                :value="props.row.status"
+                color="#3c8dbc"
+              />
+            </div>
           </q-td>
         </q-tr>
       </template>
@@ -151,12 +179,16 @@ export default {
     return {
       selected: [],
       columns: [
-        { name: 'Name', required: true, label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
-        { name: 'LastName', required: true, label: 'Apellido', field: 'apellido' },
-        { name: 'Rol', required: true, label: 'Rol', field: 'rol' },
-        { name: 'Status', required: true, label: 'Estatus', field: 'status' }
+        { name: 'nombre', required: true, label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
+        { name: 'apellido', required: true, label: 'Apellido', field: 'apellido' },
+        { name: 'rol', required: true, label: 'Rol', field: 'rol' },
+        { name: 'status', required: true, label: 'Estatus', field: 'status' }
       ],
-      rolOpt: []
+      rolOpt: [],
+      estatus_options: [
+        { label: 'Activo', value: true },
+        { label: 'Inactivo', value: false }
+      ]
     }
   }
 }
