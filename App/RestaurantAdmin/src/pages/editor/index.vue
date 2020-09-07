@@ -257,32 +257,12 @@
                         Slide # {{idx}}
                         <div v-for="(prp1, idx1) in prp" :key="idx1">
                            <q-input
-                              :value="typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] !== 'undefined' ? typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1] === 'undefined'? prp1 : blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1]  : prp1"
-                              @input="(e) => {typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] === 'undefined' ?
-                              (Vue.set(blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index], 0 ,{
-                              text_1: 'WELCOME TO',
-                              text_2: 'ChopZi',
-                              text_3: 'The Web as I envisaged it, we have not seen it yet. The future',
-                              text_4: 'is still so much bigger than the past.',
-                              button_label: 'READ MORE',
-                              img: 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg'
-                              }),
-                              blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1] = e) :
-                              blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1] = e}"
+                              v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1]"
                               :placeholder="prp1" filled :label="idx1" />
                         </div>
                      </div>
                      <q-btn color="primary" label="Add Slide"
-                        @click="Vue.set(blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index], blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].length ,{
-                        text_1: 'WELCOME TO',
-                        text_2: 'ChopZi',
-                        text_3: 'The Web as I envisaged it, we have not seen it yet. The future',
-                        text_4: 'is still so much bigger than the past.',
-                        button_label: 'READ MORE',
-                        button_link: '#',
-                        slide_style: '',
-                        img: 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg'
-                        });
+                        @click="Vue.set(blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index], blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].length ,{});
                         prop.push({
                         text_1: 'WELCOME TO',
                         text_2: 'ChopZi',
@@ -306,7 +286,7 @@
                leave-active-class="animated fadeOut">
                <div v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
                   <div v-if="block.child.length" @mouseover=" admin ? (block.hover = true) : false" @mouseleave="admin ? block.hover = false : false">
-                     <q-btn v-if="block.hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:99999"  text-color="black" class="handle float-left"/>
+                     <q-btn v-if="block.hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
                      <draggable :is="admin ? 'draggable' : 'div'" class="row justify-around reverse-wrap flex-center" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
                         <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e)}" />
                      </draggable>
@@ -419,7 +399,8 @@ export default {
     },
     placeHoldClick (e) {
       this.selectedBLock = e.block_info
-      this.selectedBLockProps = e.props_info
+      Vue.set(this, 'selectedBLockProps', e.props_info)
+      console.log({ selectedBLockProps: this.selectedBLockProps, props: e.props_info })
       console.log({ ...this.blocks })
     }
   }

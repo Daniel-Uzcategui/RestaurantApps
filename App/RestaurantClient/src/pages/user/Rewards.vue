@@ -12,7 +12,7 @@
         <q-item>
           <q-item-section>
                 <q-item-label lines="2" class="text-center fontsize-18">
-                  {{ getUserData('points') }} pts
+                  {{ (getUserData('points')).toFixed(2) }} pts
                 </q-item-label>
             </q-item-section>
         </q-item>

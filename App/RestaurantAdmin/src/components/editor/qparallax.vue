@@ -2,7 +2,7 @@
 <q-parallax @click="click" :style="valStyle"
       :src="valImg"
     >
-      <h1 :style="title_style">{{title}}</h1>
+      <h1 :style="title_style" :class="title_class">{{title}}</h1>
 </q-parallax>
 </template>
 <script>
@@ -15,6 +15,10 @@ export default {
       default: 'My first Landing Page'
     },
     title_style: {
+      type: String,
+      default: ''
+    },
+    title_class: {
       type: String,
       default: ''
     },

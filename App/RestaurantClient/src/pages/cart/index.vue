@@ -71,13 +71,6 @@
           >
           <q-input v-model="text" label="Inserte código del cupón" />
          </q-expansion-item>
-         <q-expansion-item
-            expand-separator
-            icon="fas fa-meteor"
-            label="Redimir Recompensa"
-          >
-          <q-input v-model="text" label="Inserte código del cupón" />
-         </q-expansion-item>
          </q-list>
             <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true" label="Ordenar"/>
       </div>
