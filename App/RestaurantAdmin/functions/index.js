@@ -6,7 +6,7 @@ const db = admin.firestore()
 exports.CheckCart = functions.firestore
   .document('orders/{ordersId}')
   .onCreate(async (change, context) => {
-    // Get an object representing the document
+    // Get an object representing the documen
     // e.g. {'name': 'Marie', 'age': 66}
     const newValue = change.data()
     const sede = newValue.sede
@@ -91,7 +91,7 @@ exports.CheckCart = functions.firestore
     }
     change.ref.set({
       cart: newcart,
-      paid: sumPaid
+      paid: parseFloat(sumPaid.toFixed(2))
     }, {
       merge: true
     })
@@ -161,7 +161,7 @@ exports.RewardsPoints = functions.firestore
             merge: true
           })
         } else {
-          var points = admin.firestore.FieldValue.increment(paid)
+          let points = admin.firestore.FieldValue.increment(paid)
           userRef.update({
             points: points
           })
