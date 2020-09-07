@@ -20,6 +20,12 @@
             type="text" float-label="Float Label" placeholder="Correo Electrónico" />
           <q-input label="Telefono"  :value="client.phone"    @input="(e) => saved(e, this.$route.query.client_Id, 'phone')"
             type="text" float-label="Float Label" placeholder="Telefono" />
+          <label>Estatus</label>
+          <q-select map-options emit-value standout="bg-teal text-white"
+          :value="client.status"
+          @input="(e) => saved(e,  this.$route.query.client_Id, 'status')"
+          :options="estatus_client" />
+          <br>
           <q-input  label="Dirección" :value="addressDelivery"
             filled type="textarea" placeholder="Dirección"  />
         </div>
@@ -82,6 +88,10 @@ export default {
         { label: 'Pick-up', value: 0 },
         { label: 'Delivery', value: 1 },
         { label: 'In-Local', value: 2 }
+      ],
+      estatus_client: [
+        { label: 'Activo', value: true },
+        { label: 'Inactivo', value: false }
       ],
       addressDelivery: ''
     }
