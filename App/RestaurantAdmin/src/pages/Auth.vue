@@ -53,6 +53,20 @@
         :rules="[val => !!val || '*Campo es requerido', val => val.includes('@') && val.includes('.') || '*Por favor ingrese un email valido']"
       >
        </q-input>
+       <q-select map-options emit-value standout="bg-teal text-white"
+          v-model="sexo"
+          v-if="isRegistration"
+          :options="sexo_options"
+          label="Sexo" />
+        <q-input  label="Fecha de Nacimiento" v-if="isRegistration" class="filled" v-model="fecnac" :rules="['fecnac']">
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy>
+              <q-date v-model="fecnac" :locale="Local_ES" mask="DD-MM-YYYY" ></q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
       <q-input
         square
         clearable
@@ -98,27 +112,48 @@
               </q-btn>
             </div>
           </q-card-section>
-      <q-btn
+       <div v-if="isRegistration">
+        <q-checkbox v-model="checkTerms"/><q-btn flat color="primary" label="Terminos y Condiciones " v-ripple @click.native="getTermsDialog();" />
+       </div>
+      <q-btn id="btnRegistro"
         class="full-width q-mt-md"
         color="primary"
-        data-cy="submit"
         type="submit"
         :label="getAuthType"
       >
       </q-btn>
-      <p class="q-ma-sm text-center">
+      <p v-if="!isRegistration" class="q-ma-sm text-center">
           <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
       </p>
+     <q-dialog v-model="viewTermsDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
+             <terms></terms>
+     </q-dialog>
     </q-form>
     </q-card-section>
     </q-card>
+    <q-dialog v-model="validationError">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Error</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+         Debe Acpetar los Terminos y Condiciones para continuar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import { QSpinnerGears } from 'quasar'
+import terms from '../pages/Terms.vue'
 export default {
+  components: {
+    terms
+  },
   name: 'Auth',
   computed: {
     getAuthType () {
@@ -142,7 +177,24 @@ export default {
       passwordMatch: null,
       nombre: null,
       apellido: null,
-      cedula: null
+      cedula: null,
+      sexo: null,
+      fecnac: null,
+      checkTerms: false,
+      viewTermsDialog: false,
+      validationError: false,
+      sexo_options: [
+        { label: 'Masculino', value: 'M' },
+        { label: 'Femenino', value: 'F' }
+      ],
+      Local_ES: {
+        /* starting with Sunday */
+        days: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
+        daysShort: 'Dom_Lun_Mar_Mié_Jue_Vie_Sáb'.split('_'),
+        months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
+        monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
+        firstDayOfWeek: 1
+      }
     }
   },
   created () {
@@ -153,8 +205,12 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser', 'logoutUser']),
+    getTermsDialog () {
+      console.log('getTermsDialog')
+      this.viewTermsDialog = true
+    },
     onSubmit () {
-      const { email, password, nombre, apellido, cedula } = this
+      const { email, password, nombre, apellido, cedula, sexo, fecnac } = this
       this.$refs.emailAuthenticationForm.validate()
         .then(async success => {
           if (success) {
@@ -168,7 +224,12 @@ export default {
             })
             try {
               if (this.isRegistration) {
-                await this.createNewUser({ email, password, nombre, apellido, cedula })
+                if (this.checkTerms) {
+                  await this.createNewUser({ email, password, nombre, apellido, cedula, sexo, fecnac })
+                } else {
+                  this.validationError = true
+                  return
+                }
               } else {
                 await this.loginUser({ email, password })
               }
@@ -198,5 +259,7 @@ export default {
   width:80px;
   height:80px;
   border-radius:150px;
-}
+  }
+.filled
+  padding-top: 20px;
 </style>
