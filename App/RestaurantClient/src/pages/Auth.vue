@@ -18,7 +18,7 @@
         autocomplete="email"
         color="primary"
         data-cy="email"
-        label="EMAIL"
+        label="Email"
         type="email"
         :rules="[val => !!val || '*Campo es requerido', val => val.includes('@') && val.includes('.') || '*Por favor ingrese un email valido']"
       >
@@ -90,12 +90,43 @@
         clearable
         v-model="phone"
         v-if="isRegistration"
-        label="teléfono"
+        label="Teléfono"
         color="primary"
         type="number"
         @keyup.enter="onSubmit(); $event.target.blur()"
       />
-      <q-card-section>
+        <q-input  label="Fecha de Nacimiento" v-if="isRegistration" class="filled" v-model="fecnac" :rules="['fecnac']">
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy>
+              <q-date v-model="fecnac" :locale="Local_ES" mask="DD-MM-YYYY" ></q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+      <q-select map-options emit-value standout="bg-teal text-white"
+          v-model="sexo"
+          v-if="isRegistration"
+          :options="sexo_options"
+          label="Sexo" />
+      <div v-if="isRegistration">
+        <q-checkbox v-model="checkTerms"/><q-btn flat color="primary" label="Terminos y Condiciones " v-ripple @click.native="getTermsDialog();" />
+       </div>
+      <q-btn
+        class="full-width q-mt-md"
+        color="primary"
+        data-cy="submit"
+        type="submit"
+        :label="getAuthType"
+      >
+      </q-btn>
+      <p v-if="!isRegistration" class="q-ma-sm text-center">
+          <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
+      </p>
+      <q-dialog v-model="viewTermsDialog" persistent="persistent" @before-hide="setBlur">
+             <terms></terms>
+     </q-dialog>
+     <q-card-section>
             <div class="text-center q-pa-md q-gutter-md">
               <q-btn round color="indigo-7" icon="fab fa-facebook-f" />
               <q-btn round color="red-8">
@@ -106,27 +137,32 @@
               </q-btn>
             </div>
           </q-card-section>
-      <q-btn
-        class="full-width q-mt-md"
-        color="primary"
-        data-cy="submit"
-        type="submit"
-        :label="getAuthType"
-      >
-      </q-btn>
-      <p class="q-ma-sm text-center">
-          <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
-      </p>
     </q-form>
     </q-card-section>
     </q-card>
+    <q-dialog v-model="validationError">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Error</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+       <q-card-section>
+         Debe Acpetar los Terminos y Condiciones para continuar
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import { QSpinnerGears } from 'quasar'
+import terms from '../pages/Terms.vue'
 export default {
+  components: {
+    terms
+  },
   name: 'Auth',
   computed: {
     getAuthType () {
@@ -151,13 +187,34 @@ export default {
       nombre: null,
       apellido: null,
       cedula: null,
-      phone: null
+      phone: null,
+      sexo: null,
+      fecnac: null,
+      checkTerms: false,
+      viewTermsDialog: false,
+      validationError: false,
+      sexo_options: [
+        { label: 'Masculino', value: 'M' },
+        { label: 'Femenino', value: 'F' }
+      ],
+      Local_ES: {
+        /* starting with Sunday */
+        days: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
+        daysShort: 'Dom_Lun_Mar_Mié_Jue_Vie_Sáb'.split('_'),
+        months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
+        monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
+        firstDayOfWeek: 1
+      }
     }
   },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser']),
+    getTermsDialog () {
+      console.log('getTermsDialog')
+      this.viewTermsDialog = true
+    },
     onSubmit () {
-      const { email, password, nombre, apellido, cedula, phone } = this
+      const { email, password, nombre, apellido, cedula, phone, sexo, fecnac } = this
       this.$refs.emailAuthenticationForm.validate()
         .then(async success => {
           if (success) {
@@ -171,7 +228,12 @@ export default {
             })
             try {
               if (this.isRegistration) {
-                await this.createNewUser({ email, password, nombre, apellido, cedula, phone })
+                if (this.checkTerms) {
+                  await this.createNewUser({ email, password, nombre, apellido, cedula, phone, sexo, fecnac })
+                } else {
+                  this.validationError = true
+                  return
+                }
               } else {
                 await this.loginUser({ email, password })
               }
@@ -197,4 +259,6 @@ export default {
   margin auto
   max-width 30em
   width 100%
+.filled
+  padding-top: 20px;
 </style>
