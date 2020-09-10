@@ -6,9 +6,10 @@ export const addUserToUsersCollection = async (state, userRef) => {
   let DateIn = currentDate.toLocaleString()
   let status = true
   let admin = true
+  let rol = 'Client'
   const
     { email, nombre, apellido, cedula, id, phone, sexo, fecnac } = state,
-    user = new User({ email, nombre, apellido, cedula, id, phone, sexo, fecnac, status, admin, DateIn })
+    user = new User({ email, nombre, apellido, cedula, id, phone, sexo, fecnac, status, admin, rol, DateIn })
   return userRef.set(user)
 }
 
@@ -17,12 +18,13 @@ export const createNewUser = async function ({ dispatch, commit }, data) {
   let currentDate = new Date()
   let status = true
   let admin = true
+  let rol = 'Client'
   let DateIn = currentDate.toLocaleString()
   const { email, password, nombre, apellido, cedula, phone, sexo, fecnac } = data
   const fbAuthResponse = await $fb.createUserWithEmail(email, password)
   const id = fbAuthResponse.user.uid
   const userRef = $fb.userRef('users', id)
-  return addUserToUsersCollection({ email, nombre, apellido, cedula, id, phone, sexo, fecnac, status, admin, DateIn }, userRef)
+  return addUserToUsersCollection({ email, nombre, apellido, cedula, id, phone, sexo, fecnac, status, admin, rol, DateIn }, userRef)
 }
 
 export const loginUser = async function ({ commit }, payload) {

@@ -101,17 +101,6 @@
           <q-icon class="cursor-pointer" :name="isPwd ? 'visibility_off' : 'visibility'" @click="isPwd = !isPwd" />
         </template>
       </q-input>
-      <q-card-section>
-            <div class="text-center q-pa-md q-gutter-md">
-              <q-btn round color="indigo-7" icon="fab fa-facebook-f" />
-              <q-btn round color="red-8">
-                <q-icon name="fab fa-google-plus-g" size="1.2rem" />
-              </q-btn>
-              <q-btn round color="light-blue-5">
-                <q-icon name="fab fa-twitter" size="1.2rem" />
-              </q-btn>
-            </div>
-          </q-card-section>
        <div v-if="isRegistration">
         <q-checkbox v-model="checkTerms"/><q-btn flat color="primary" label="Terminos y Condiciones " v-ripple @click.native="getTermsDialog();" />
        </div>
@@ -128,6 +117,17 @@
      <q-dialog v-model="viewTermsDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
              <terms></terms>
      </q-dialog>
+      <q-card-section>
+            <div class="text-center q-pa-md q-gutter-md">
+              <q-btn round color="indigo-7" icon="fab fa-facebook-f" />
+              <q-btn round color="red-8">
+                <q-icon name="fab fa-google-plus-g" size="1.2rem" />
+              </q-btn>
+              <q-btn round color="light-blue-5">
+                <q-icon name="fab fa-twitter" size="1.2rem" />
+              </q-btn>
+            </div>
+          </q-card-section>
     </q-form>
     </q-card-section>
     </q-card>

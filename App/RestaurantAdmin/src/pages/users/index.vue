@@ -4,7 +4,7 @@
       <q-table class="table"
       title="Usuarios"
       color="primary"
-      :data="users"
+      :data="getUsers"
       :columns="columns"
       :dense="$q.screen.lt.md"
       row-key="id"
@@ -108,12 +108,26 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('user', ['users'])
+    ...mapGetters('user', ['users']),
+    getUsers () {
+      let userFilter = []
+      let userDetail
+      for (userDetail of this.users) {
+        if (userDetail.rol !== 'Client') {
+          userFilter.push(userDetail)
+        }
+      }
+      console.log({ userFilter })
+      return userFilter
+    }
   },
   mounted () {
     this.bindusers()
-    console.log(this.users)
     this.rolOpt = this.getPages()
+  },
+  created () {
+    console.log('user1')
+    console.log(this.user)
   },
   methods: {
     ...mapActions('menu', ['setValue', 'delValue']),
