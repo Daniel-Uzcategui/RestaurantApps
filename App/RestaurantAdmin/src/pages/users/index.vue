@@ -4,7 +4,7 @@
       <q-table class="table"
       title="Usuarios"
       color="primary"
-      :data="getUsers"
+      :data="users"
       :columns="columns"
       :dense="$q.screen.lt.md"
       row-key="id"
@@ -34,6 +34,9 @@
           </q-th>
           <q-th>
             Estatus
+          </q-th>
+          <q-th>
+           Tipo de Aplicación
           </q-th>
         </q-tr>
       </template>
@@ -74,6 +77,12 @@
                 color="#3c8dbc"
               />
             </div>
+          </q-td>
+          <q-td key="typeAccess" :props="props">
+            <q-select map-options emit-value standout="bg-teal text-white"
+            :value="props.row.typeAccess"
+            @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'typeAccess')"
+            :options="typeAccess_options" />
           </q-td>
         </q-tr>
       </template>
@@ -124,10 +133,6 @@ export default {
   mounted () {
     this.bindusers()
     this.rolOpt = this.getPages()
-  },
-  created () {
-    console.log('user1')
-    console.log(this.user)
   },
   methods: {
     ...mapActions('menu', ['setValue', 'delValue']),
@@ -196,12 +201,13 @@ export default {
         { name: 'nombre', required: true, label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
         { name: 'apellido', required: true, label: 'Apellido', field: 'apellido' },
         { name: 'rol', required: true, label: 'Rol', field: 'rol' },
-        { name: 'status', required: true, label: 'Estatus', field: 'status' }
+        { name: 'status', required: true, label: 'Estatus', field: 'status' },
+        { name: 'typeAccess', required: true, label: 'Tipo de Aplicación', field: 'typeAccess' }
       ],
       rolOpt: [],
-      estatus_options: [
-        { label: 'Activo', value: true },
-        { label: 'Inactivo', value: false }
+      typeAccess_options: [
+        { label: 'Cliente', value: 'Client' },
+        { label: 'Administrativo', value: 'Admin' }
       ]
     }
   }

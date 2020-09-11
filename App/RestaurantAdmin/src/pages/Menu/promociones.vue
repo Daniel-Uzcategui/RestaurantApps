@@ -81,8 +81,6 @@
                 label="Opciones"
               />
           </q-td>
-          </q-tr>
-            <q-tr v-show="props.expand" :props="props">
               <q-td key="prods" :props="props">
               <q-select
                 filled
@@ -113,6 +111,23 @@
           </q-td>
           <q-td colspan="100%" >
           </q-td>
+          </q-tr>
+          <q-tr v-show="props.expand" :props="props">
+          <q-td colspan="4">
+            <div class="business-hours-container">
+             <div class="business-hours-component">
+               <h5>Horarios</h5>
+              <business-hours
+                  :days="days"
+                  name="dayHours"
+                  type="select"
+                  :time-increment="15"
+                  :localization="localization"
+                  color="#00af0b"
+                ></business-hours>
+              </div>
+            </div>
+            </q-td>
           </q-tr>
          </template>
       </q-table>
@@ -159,10 +174,12 @@ const columns2 = [
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
+import BusinessHours from 'vue-business-hours'
 export default {
   mixins: [ QUploaderBase ],
   components: {
-    'fbq-uploader': () => import('../../components/FBQUploader.vue')
+    'fbq-uploader': () => import('../../components/FBQUploader.vue'),
+    BusinessHours
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'promos', 'groupComp']),
@@ -199,7 +216,95 @@ export default {
       photoType: '',
       photoUpload: false,
       noSelect: false,
-      filterOptions: []
+      filterOptions: [],
+      default: {
+        'monday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5d1',
+            'isOpen': true
+          }
+        ],
+        'tuesday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5d8',
+            'isOpen': true
+          }
+        ],
+        'wednesday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5df',
+            'isOpen': true
+          }
+        ],
+        'thursday': [
+          {
+            'open': '0800',
+            'close': '1600',
+            'id': '5ca5578b0c5e6',
+            'isOpen': true
+          }
+        ],
+        'friday': [
+          {
+            'open': '0800',
+            'close': '1600',
+            'id': '5ca5578b0c5ec',
+            'isOpen': true
+          }
+        ],
+        'saturday': [
+          {
+            'open': '0800',
+            'close': '1600',
+            'id': '5ca5578b0c5f8',
+            'isOpen': true
+          }
+        ],
+        'sunday': [
+          {
+            'open': '0800',
+            'close': '1700',
+            'id': '5ca5578b0c5c7',
+            'isOpen': true
+          }
+        ]
+      },
+      localization: {
+        'switchOpen': 'Habilitada',
+        'switchClosed': 'Desabilitado',
+        'placeholderOpens': 'Abre',
+        'placeholderCloses': 'Cerrado',
+        'addHours': 'Agregar horas',
+        'open': {
+          'invalidInput': 'Ingrese una hora de apertura en el formato de 12 horas (es decir, 08:00 a.m.). También puede ingresar las "24 horas".',
+          'greaterThanNext': 'Ingrese un horario de apertura que sea anterior al horario de cierre.',
+          'lessThanPrevious': 'Ingrese un horario de apertura posterior al horario de cierre anterior.',
+          'midnightNotLast': 'La medianoche solo se puede seleccionar para la última hora de cierre del día.'
+        },
+        'close': {
+          'invalidInput': 'Ingrese una hora de cierre en el formato de 12 horas (es decir, 05:00 PM). También puede ingresar "24 horas" o "Medianoche".',
+          'greaterThanNext': 'Ingrese una hora de cierre que sea posterior a la hora de apertura.',
+          'lessThanPrevious': 'Ingrese una hora de cierre anterior a la próxima hora de apertura.',
+          'midnightNotLast': 'La medianoche solo se puede seleccionar para la última hora de cierre del día.'
+        },
+        't24hours': '24 horas',
+        'midnight': 'Medianoche',
+        'days': {
+          'sunday': 'Domingo',
+          'monday': 'Lunes',
+          'tuesday': 'Martes',
+          'wednesday': 'Miércoles',
+          'thursday': 'Jueves',
+          'friday': 'Viernes',
+          'saturday': 'Sábado'
+        }
+      }
     }
   },
   created () {
@@ -218,6 +323,7 @@ export default {
     this.bindItem()
     this.bindItemGroup()
     this.bindGroupComp()
+    this.days = this.default
   },
   methods: {
     validate (value) {
