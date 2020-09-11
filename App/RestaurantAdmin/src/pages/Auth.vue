@@ -10,8 +10,7 @@
             </div>
             </q-card-section>
     <q-card-section>
-      {{validarUsers}}<br>
-    <q-form class="authentication q-px-sm q-pt-xl" ref="emailAuthenticationForm" @submit="onSubmit">
+     <q-form class="authentication q-px-sm q-pt-xl" ref="emailAuthenticationForm" @submit="onSubmit">
        <q-input
         square
         clearable
@@ -173,7 +172,7 @@ export default {
     getUser () {
       let Access = false
       for (let i = 0; i < this.users.length; i++) {
-        if (this.users[i].email === this.email && this.users[i].typeAccess === 'Admin') {
+        if (this.users[i].email === this.email && this.users[i].typeAccess === 'Admin' && this.users[i].status === true) {
           Access = true
         }
       }
