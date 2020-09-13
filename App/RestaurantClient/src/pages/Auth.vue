@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { QSpinnerGears } from 'quasar'
 import terms from '../pages/Terms.vue'
 export default {
@@ -165,6 +165,7 @@ export default {
   },
   name: 'Auth',
   computed: {
+    ...mapGetters('user', ['users']),
     getAuthType () {
       return this.isRegistration ? 'Registro' : 'Iniciar Sesión'
     },
@@ -176,6 +177,15 @@ export default {
     },
     routeAuthentication () {
       return this.isRegistration ? '/auth/login' : '/auth/register'
+    },
+    getUser () {
+      let Access = false
+      for (let i = 0; i < this.users.length; i++) {
+        if (this.users[i].email === this.email && this.users[i].status === true) {
+          Access = true
+        }
+      }
+      return Access
     }
   },
   data () {
@@ -193,6 +203,7 @@ export default {
       checkTerms: false,
       viewTermsDialog: false,
       validationError: false,
+      validarUsers: false,
       sexo_options: [
         { label: 'Masculino', value: 'M' },
         { label: 'Femenino', value: 'F' }
@@ -207,8 +218,12 @@ export default {
       }
     }
   },
+  mounted () {
+    this.bindusers()
+  },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser']),
+    ...mapActions('user', ['bindusers']),
     getTermsDialog () {
       console.log('getTermsDialog')
       this.viewTermsDialog = true
@@ -237,7 +252,15 @@ export default {
               } else {
                 await this.loginUser({ email, password })
               }
-              this.$router.push({ path: '/home' })
+              this.validarUsers = this.getUser
+              if (this.validarUsers) {
+                this.$router.push({ path: '/home' })
+              } else {
+                this.$q.notify({
+                  message: `Acceso no permitido`,
+                  color: 'negative'
+                })
+              }
             } catch (err) {
               console.error(err)
               this.$q.notify({

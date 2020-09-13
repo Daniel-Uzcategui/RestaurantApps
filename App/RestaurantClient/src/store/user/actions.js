@@ -21,6 +21,11 @@ export const updateUserData = async function ({ state }, payload) {
   return userRef('users', payload.id).update(payload)
 }
 
+export const bindusers = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindusers')
+  return bindFirestoreRef('users', firestore().collection('users'))
+})
+
 export const dcc = async function ({ commit }, payload) {
   const $fb = this.$fb
   return $fb.docGet('users')
