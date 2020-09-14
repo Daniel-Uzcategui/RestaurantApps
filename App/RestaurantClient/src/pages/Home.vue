@@ -19,7 +19,6 @@
 /* eslint-disable vue/no-unused-components vue/valid-v-on */
 /* eslint-disable vue/require-component-is */
 /* eslint-disable vue/no-unused-components */
-import draggable from 'vuedraggable'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
@@ -29,10 +28,14 @@ export default {
     'my-card': () => import('../components/editor/mycard'),
     'place-holder': () => import('../components/editor/placeHolder'),
     'qheader': () => import('../components/editor/qheader'),
+    'qfooter': () => import('../components/editor/qfooter'),
     'qparallax': () => import('../components/editor/qparallax'),
     'qcarousel': () => import('../components/editor/qcarousel'),
+    'qTextBlock': () => import('../components/editor/qTextBlock'),
     'customHtml': () => import('../components/editor/customHtml'),
-    draggable
+    'findus': () => import('../components/editor/findus'),
+    'qimg': () => import('../components/editor/qimg'),
+    'fbq-uploader': () => import('../components/FBQUploader.vue')
   },
   data () {
     return {

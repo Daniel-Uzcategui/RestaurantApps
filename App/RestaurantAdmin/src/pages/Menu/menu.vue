@@ -167,7 +167,7 @@
           :prefixPath="prefixPath"
           @uploaded="uploadComplete"
           document='menu'
-        ></fbq-uploader>
+        />
     </q-dialog>
     <q-dialog v-model="noSelect">
       <q-card>

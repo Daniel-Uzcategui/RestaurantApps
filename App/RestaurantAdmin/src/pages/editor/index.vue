@@ -7,7 +7,11 @@
                <q-menu>
                   <q-list dense style="min-width: 100px">
                      <q-item clickable v-close-popup>
-                        <q-item-section @click="page_options = !page_options">Page Options</q-item-section>
+                        <q-item-section @click="page_options = !page_options"><span>Page Options <q-icon name="fas fa-check" v-if="page_options"/></span>
+                        </q-item-section>
+                     </q-item>
+                     <q-item clickable v-close-popup>
+                        <q-item-section @click="app_options = !app_options"><span>App Options <q-icon name="fas fa-check" v-if="app_options"/></span></q-item-section>
                      </q-item>
                   </q-list>
                </q-menu>
@@ -16,7 +20,7 @@
             <q-btn color="white" text-color="white" icon="fas fa-chevron-left" flat label="Exit" to="/home"/>
          </q-bar>
          <div class="text-h5 q-pa-md">
-            Page Builder
+            {{ app_options ? 'App Builder' : 'Page Builder'}}
          </div>
          <q-btn color="primary" @click="saveB" label="Save" />
          <q-card v-if="page_options" class="my-card">
@@ -229,7 +233,8 @@
                </q-expansion-item>
             </q-card-section>
          </q-card>
-         <q-card v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'" class="my-card">
+         <q-input type="textarea" v-if="app_options" v-model="insertCss" label="CSS" />
+         <q-card v-if="!app_options && selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'" class="my-card">
             <q-card-section>
                <q-input readonly filled v-model="selectedBLock.block_index" label="Selected Block" />
                <q-input readonly filled v-model="selectedBLock.child_index" label="Selected Child" />
@@ -250,7 +255,12 @@
             </q-card-section>
             <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'">
                <div v-for="(prop, index) in selectedBLockProps" :key="index">
-                  <q-input autogrow v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean'" :placeholder="prop" filled v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
+                  <q-input v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index === 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" >
+                     <template v-slot:append>
+                        <q-btn @click="photoGallery = true; imgsbi = selectedBLock.block_index; imgsbc = selectedBLock.child_index; imgsi = index" round dense flat icon="add" />
+                     </template>
+                  </q-input>
+                  <q-input autogrow v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
                   <q-toggle v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop === 'boolean'" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
                   <div v-if="index !== 'block_index' && index !== 'child_index' && Array.isArray(prop)">
                      <div class="text-center" v-for="(prp, idx) in prop" :key="idx">
@@ -279,7 +289,7 @@
          </q-card>
       </q-drawer>
       <div :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
-         <draggable :is="admin ? 'draggable' : 'div'" :list="blocks" @start="admin ? drag=true : drag=false" @end="drag=false" handle=".handle">
+         <draggable :is="admin ? 'draggable' : 'div'" v-if="!app_options" :list="blocks" @start="admin ? drag=true : drag=false" @end="drag=false" handle=".handle">
             <transition-group
                appear
                enter-active-class="animated fadeIn"
@@ -294,10 +304,51 @@
                </div>
             </transition-group>
          </draggable>
+         <iframe id="iframe1" src="http://localhost:8081/" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
       </div>
-      <div v-if="true" class="row justify-center q-pa-md">
+      <div v-if="!app_options" class="row justify-center q-pa-md">
          <q-btn fab color="blue" @click="addBlock()" text-color="white" label="+" />
       </div>
+      <q-dialog v-model="photoGallery" transition-hide="scale" transition-show="scale">
+         <q-card class="full-width q-pa-none">
+            <q-card-section>
+                  <p class="text-h5">
+                     Photo Picker
+                  </p>
+                  <p class="text-caption">
+                     (Try using small image sizes to ensure quick loading speeds)
+                  </p>
+            </q-card-section>
+            <q-card-section>
+               <fbq-uploader
+                  class="full-width"
+                  label="Please Upload a Photo"
+                  :meta="meta"
+                  prefixPath="/Editor/Photos/"
+                  myPath="something"
+                  @uploaded="uploadComplete"
+                  document="editor"
+               ></fbq-uploader>
+            </q-card-section>
+            <q-card-section v-if="Object.keys(gallery).length === 0">
+                  <p class="text-center">
+                     There are no pictures available, please upload one.
+                  </p>
+            </q-card-section>
+            <q-card-section>
+               <q-img
+               @click="blocks[imgsbi].child[imgsbc].props[imgsi] = gallery[photo]"
+               :src="gallery[photo]"
+               style="height: 140px; max-width: 150px"
+               v-for="(photo, index) in Object.keys(gallery)"
+               :key="index"
+               />
+            </q-card-section>
+         </q-card>
+      </q-dialog>
+      <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
+
+    </q-dialog>
    </div>
 </template>
 <script>
@@ -307,18 +358,33 @@ import draggable from 'vuedraggable'
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 // eslint-disable-next-line no-unused-vars
-import { colors } from 'quasar'
+import { colors, QUploaderBase } from 'quasar'
 export default {
   computed: {
-    ...mapGetters('editor', ['editor'])
+    ...mapGetters('editor', ['editor']),
+    meta () {
+      return {
+        id: '123',
+        photoType: this.photoType
+      }
+    },
+    gallery () {
+      return this.editor.find(e => e.id === 'photo')
+    }
   },
+  mixins: [ QUploaderBase ],
   components: {
     'my-card': () => import('../../components/editor/mycard'),
     'place-holder': () => import('../../components/editor/placeHolder'),
     'qheader': () => import('../../components/editor/qheader'),
+    'qfooter': () => import('../../components/editor/qfooter'),
     'qparallax': () => import('../../components/editor/qparallax'),
     'qcarousel': () => import('../../components/editor/qcarousel'),
     'qTextBlock': () => import('../../components/editor/qTextBlock'),
+    'customHtml': () => import('../../components/editor/customHtml'),
+    'findus': () => import('../../components/editor/findus'),
+    'qimg': () => import('../../components/editor/qimg'),
+    'fbq-uploader': () => import('../../components/FBQUploader.vue'),
     draggable
   },
   data () {
@@ -326,13 +392,22 @@ export default {
       colors: colors,
       page: {},
       page_options: false,
+      app_options: false,
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'qTextBlock'],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
       blocks: [],
+      insertCss: '',
       selectedBLock: { block_index: null, child_index: null },
-      selectedBLockProps: []
+      selectedBLockProps: [],
+      photoType: '',
+      photoUpload: false,
+      photoGallery: false,
+      galleryModel: {},
+      imgsbi: null,
+      imgsbc: null,
+      imgsi: null
     }
   },
   created () {
@@ -340,14 +415,16 @@ export default {
       let obj = e.find(e => e.id === 'blocks')
       let pageobj = e.find(e => e.id === 'page')
       if (obj.blocks) { this.blocks = JSON.parse(JSON.stringify(obj.blocks)) }
+      if (obj.css) { this.insertCss = obj.css }
       if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
     })
   },
   methods: {
-    ...mapActions('editor', ['saveBlocks', 'savePage', 'bindBlocks']),
+    ...mapActions('editor', ['saveBlocks', 'savePage', 'bindBlocks', 'saveCss']),
     saveB () {
       this.saveBlocks(this.blocks)
       this.savePage(this.page)
+      this.saveCss(this.insertCss)
     },
     log (e) {
       console.log(e)
@@ -402,6 +479,20 @@ export default {
       Vue.set(this, 'selectedBLockProps', e.props_info)
       console.log({ selectedBLockProps: this.selectedBLockProps, props: e.props_info })
       console.log({ ...this.blocks })
+    },
+    resetPhotoType () {
+      this.photoType = ''
+    },
+    uploadComplete (info) {
+      console.log(this.prefixPath)
+      console.log(this.currentUser)
+      let fileNames = []
+      info.files.forEach(file => fileNames.push(file))
+      this.photoUpload = false
+      this.$q.notify({
+        message: `Successfully uploaded your photo: ${fileNames}`,
+        color: 'positive'
+      })
     }
   }
 }

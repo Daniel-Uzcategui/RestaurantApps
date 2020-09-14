@@ -5,7 +5,7 @@
             <q-icon name="fas fa-search" />
          </template>
       </q-input>
-      <q-card flat class="menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+      <q-card flat class="menudiv menucontainer" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <q-card-section>
                <div class="fontsize-18 menuTop">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
                <div class="absolute-bottom-right q-pa-md" >
@@ -29,31 +29,33 @@
          </q-tabs>
         </q-card-section>
          <q-card-section v-if="!promo && !rewards">
-           <div class="flex justify-around text-h7">
-            <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="item in filteredMenu" separator :key="item.id" style="width: 300px;">
-               <q-item v-ripple>
-                  <q-item-section avatar top>
-                     <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders" />
-                  </q-item-section>
-                  <q-item-section >
+           <div class="row justify-around">
+            <div v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="item in filteredMenu" separator :key="item.id" >
+               <div class="menuitemcont">
+                 <div class="menuitem row">
+                  <div class="menuphotocont">
+                     <img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders menuphoto" />
+                  </div>
+                  <div class="menutextcont">
+                      <div class="menutext relative-position">
                      <q-item-label lines="5">{{item.name}} </q-item-label>
-                     <q-item-label lines="1" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
-                     <q-item-label lines="1" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-item-label>
-                     <q-item-label overline>
-                        <q-icon color="yellow" size="0.8em" name="fas fa-star" />
-                        5.0
-                     </q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                     <q-badge style="margin-top: 15px; margin-right: 20px" color="red" floating rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
+                     <q-item-label lines="3" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
+                     <q-item-label lines="3" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-item-label>
+                     </div>
+                  </div>
+                  <div class="menupricecont" >
+                    <div class="menuprice">
+                     <q-badge color="red" rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
                      <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                      </q-item-label>
                      <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                      </q-item-label>
-                  </q-item-section>
-               </q-item>
-               <q-separator />
-            </q-list>
+                    </div>
+                  </div>
+                  </div>
+               </div>
+               <q-separator class="menuseparator" />
+            </div>
            </div>
          </q-card-section>
          <q-card-section v-if="!promo && rewards">
@@ -68,10 +70,11 @@
                      <q-item-label lines="5">{{item.name}} </q-item-label>
                      <q-item-label lines="1" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
                      <q-item-label lines="1" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-item-label>
+                     <!--
                      <q-item-label overline>
                         <q-icon color="yellow" size="0.8em" name="fas fa-star" />
                         5.0
-                     </q-item-label>
+                     </q-item-label> !-->
                   </q-item-section>
                   <q-item-section side>
                      <q-item-label >$ 0.00
@@ -94,10 +97,10 @@
                      <q-item-label lines="1">{{item.name}} </q-item-label>
                      <q-item-label lines="1" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
                      <q-item-label lines="1" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-item-label>
-                     <q-item-label overline>
+                     <!--<q-item-label overline>
                         <q-icon color="yellow" size="0.8em" name="fas fa-star" />
                         5.0
-                     </q-item-label>
+                     </q-item-label> !-->
                   </q-item-section>
                   <q-item-section side>
                      <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
@@ -126,12 +129,14 @@
          <q-card class="">
             <q-bar>
                <q-space />
+               <!--
                <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
                   <q-tooltip v-if="maximizedToggle" content-class=" text-primary">Minimize</q-tooltip>
                </q-btn>
                <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
                   <q-tooltip v-if="!maximizedToggle" content-class=" text-primary">Maximize</q-tooltip>
                </q-btn>
+               !-->
                <q-btn dense flat icon="close" v-close-popup>
                   <q-tooltip content-class=" text-primary">Close</q-tooltip>
                </q-btn>
@@ -140,10 +145,10 @@
             <q-card-section class="q-pa-lg row">
                <div class="text-h5 col">
                   {{displayVal.name}}
-                  <q-item-label class="text-h6">
+                  <!--<q-item-label class="text-h6">
                      <q-icon color="yellow" size="1em" name="fas fa-star" />
                      5.0
-                  </q-item-label>
+                  </q-item-label> !-->
                </div>
                <q-icon name="far fa-heart" color="red" class="text-h6"/>
             </q-card-section>
@@ -491,4 +496,25 @@ export default {
     border-top-right-radius 50px
     border-bottom-left-radius 50px
     border-bottom-right-radius 50px
+  .menuitem
+    width 300px
+  .menutextcont
+    min-width 100px
+    position relative
+    margin-left 5px
+  .menuprice
+    min-width 80px
+    position relative
+    text-align end
+  .menuphoto
+    min-width 80px
+    position relative
+  .menutextcont
+    display flex
+    justify-content center
+    align-items center
+  .menupricecont
+    display flex
+    justify-content center
+    align-items center
 </style>

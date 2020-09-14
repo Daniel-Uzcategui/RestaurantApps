@@ -13,6 +13,10 @@ export default {
     },
     document: {
       type: String
+    },
+    myPath: {
+      type: String,
+      default: 'none'
     }
   },
   computed: {
@@ -78,10 +82,11 @@ export default {
         { userRef, storageRef } = this.$fb,
         index = this.filesUploading.length,
         fileSuffix = file.type.split('/')[1],
-        uploadImageStorageRef = storageRef(`${this.prefixPath}${fileSuffix}`),
+        filePreffix = file.name.split('.')[0] + file.size,
+        uploadImageStorageRef = this.myPath === 'none' ? storageRef(`${this.prefixPath}${fileSuffix}`) : storageRef(`${this.prefixPath}${filePreffix}`),
         profileImageStorageRef = uploadImageStorageRef.put(file),
         STATE_CHANGED = this.$fb.self().storage.TaskEvent.STATE_CHANGED
-
+      console.log({ file })
       return new Promise((resolve, reject) => {
         // Firebase UploadTask Event
         profileImageStorageRef.on(
@@ -105,7 +110,11 @@ export default {
               this.updateComponent(index, 0, 'uploaded')
               const link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
               console.log({ doc: this.document, meta: meta.photoType, link })
-              userRef(this.document, meta.photoType).update({ [`photo`]: link })
+              if (this.myPath === 'none') {
+                userRef(this.document, meta.photoType).update({ [`photo`]: link })
+              } else {
+                userRef(this.document, 'photo').set({ [filePreffix]: link }, { merge: true })
+              }
               this.$emit('uploaded', { files: [ file.name ] })
             })
             resolve()

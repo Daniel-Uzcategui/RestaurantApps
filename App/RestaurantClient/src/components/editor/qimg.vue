@@ -1,9 +1,13 @@
 <template>
-<q-parallax @click="click" :style="valStyle"
-      :src="valImg"
-    >
-      <h1 :style="title_style" :class="title_class">{{title}}</h1>
-</q-parallax>
+<div @click="click" :class="image_container_class" :style="image_container_style" style="margin-bottom: -6px;">
+    <img :style="img_style"
+    :class="img_class"
+          :src="valImg"
+        >
+    <div :class="title_container_class" :style="title_container_style">
+      <div v-html="title" :class="title_class" :style="title_style"></div>
+    </div>
+</div>
 </template>
 <script>
 /* eslint-disable camelcase */
@@ -22,11 +26,31 @@ export default {
       type: String,
       default: ''
     },
+    title_container_style: {
+      type: String,
+      default: ''
+    },
+    title_container_class: {
+      type: String,
+      default: ''
+    },
     img: {
       type: String,
       default: ''
     },
     img_style: {
+      type: String,
+      default: ''
+    },
+    img_class: {
+      type: String,
+      default: ''
+    },
+    image_container_style: {
+      type: String,
+      default: ''
+    },
+    image_container_class: {
       type: String,
       default: ''
     },
@@ -68,6 +92,11 @@ export default {
     })
   },
   methods: {
+    css2obj (css) {
+      const r = /(?<=^|;)\s*([^:]+)\s*:\s*([^;]+)\s*/g, o = {}
+      css.replace(r, (m, p, v) => { o[p] = v })
+      return o
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {

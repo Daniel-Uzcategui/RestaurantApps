@@ -1,12 +1,13 @@
 <template>
    <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" view="hhh LpR fFf">
          <q-toolbar class="bg-transparent text-white" style="z-index: 100">
-                <q-btn fab
+                <q-btn flat
                 v-if="!leftDrawerOpen"
                color="primary"
                dense
                round
                icon='fas fa-bars'
+               class="burgericon"
               name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
                exact />
@@ -14,17 +15,18 @@
                   <user-settings></user-settings>
                </q-dialog>
                <div class="absolute-right">
-                 <q-btn to="/cart/index" color="white" flat icon="fas fa-shopping-cart" >
+                 <q-btn to="/cart/index" color="white" class="carticon" flat icon="fas fa-shopping-cart" >
                    <q-badge color="red" floating>{{getCartQ}}</q-badge>
                  </q-btn>
-               <q-toggle color="primary" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+               <q-toggle color="primary" class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
                </div>
          </q-toolbar>
       <q-drawer
+         overlay
          on-layout="hide"
          :content-class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'"
          v-model="leftDrawerOpen"
-         bordered
+         behavior="mobile"
          >
          <q-list>
             <Nav
@@ -115,9 +117,12 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     this.bindBlocks().then((e) => {
       this.toggleColors()
+      console.log({ bindblock: e })
+      var obj = e.find(e => e.id === 'blocks')
+      this.insCss(obj === 'undefined' ? '' : obj.css === 'undefined' ? '' : obj.css)
     })
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -296,6 +301,12 @@ export default {
         })()
       }
     },
+    insCss (css) {
+      var s1 = document.createElement('style'), s0 = document.getElementsByTagName('script')[0]
+      s1.innerHTML = css
+      s0.parentNode.insertBefore(s1, s0)
+      return s1.src
+    },
     setBlur () {
       this.blurLayout = !this.blurLayout
     },
@@ -304,6 +315,11 @@ export default {
     }
   },
   watch: {
+    editor (e) {
+      console.log('editor updated')
+      var obj = e.find(e => e.id === 'blocks')
+      this.insCss(obj === 'undefined' ? '' : obj.css === 'undefined' ? '' : obj.css)
+    },
     currentUser () {
       this.$q.loading.hide()
       this.setupNotif()
@@ -328,7 +344,7 @@ export default {
       -ms-filter: blur(5px);
       filter blur(5px)
   .default-bg-image {
-    background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
+    background-image: url(https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FSEDE1818437?alt=media&token=aa48f8c3-51e1-4227-b6e1-23ee1ead7df1);
     background-repeat: no-repeat;
     background-size: cover;
   }

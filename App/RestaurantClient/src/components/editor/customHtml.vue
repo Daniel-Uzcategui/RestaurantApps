@@ -1,5 +1,5 @@
 <template>
-  <span @click="click" v-html="html"></span>
+  <div @click="click" v-html="html"></div>
 </template>
 <script>
 /* eslint-disable camelcase */

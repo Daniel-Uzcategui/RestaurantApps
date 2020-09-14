@@ -1,23 +1,31 @@
 <template>
-  <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
-        <q-img v-if="!no_image && valImg !== '' && icon === '' && !parallax" :src="valImg" :style="valImgStyle"/>
-        <q-parallax
-          v-if="!no_image && valImg !== '' && icon === '' && parallax"
-          :src="valImg"
-          :style="valImgStyle"
+   <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
+     <div :class="image_container_class" :style="image_container_style">
+      <img
+        v-if="!no_image && valImg !== '' && icon === '' && !parallax"
+        :src="valImg"
+        :class="img_class"
+        :style="valImgStyle"
         />
-        <div class="row justify-center" v-if="!no_image && icon !== '' && valImg == ''">
-          <q-icon class="text-center col q-pa-md" size="lg" :name="icon" />
-        </div>
-        <q-card-section v-if="text !== '' && caption !== ''">
-          <div v-if="title !== ''" class="text-h6" :class="title_class" :style="title_style">{{title}}</div>
-          <div v-if="caption !== ''" class="text-subtitle2" :class="caption_class" :style="caption_style">{{caption}}</div>
-        </q-card-section>
-
-        <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style">
-          {{ text }}
-        </q-card-section>
-  </q-card>
+      </div>
+      <q-parallax
+         v-if="!no_image && valImg !== '' && icon === '' && parallax"
+         :src="valImg"
+         :style="valImgStyle"
+         />
+      <div class="row justify-center" v-if="!no_image && icon !== '' && valImg == ''">
+         <q-icon class="text-center col q-pa-md" size="lg" :name="icon" />
+      </div>
+      <q-card-section :class="title_container_class" :style="title_container_style" v-if="title !== '' || caption !== ''">
+         <div v-if="title !== ''" class="text-h6" :class="title_class" :style="title_style" v-html="title"></div>
+         <div v-if="caption !== ''" class="text-subtitle2" :class="caption_class" :style="caption_style" v-html="caption"></div>
+      </q-card-section>
+      <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style" v-html="text">
+      </q-card-section>
+      <q-card-section v-if="button" class="row justify-center" :style="btn_container_style" :class="btn_container_class">
+        <q-btn no-caps :color="btn_color" :rounded="btn_rounded" :text-color="btn_text_color" :style="btn_style" :class="btn_class" :label="btn_label" />
+      </q-card-section>
+   </q-card>
 </template>
 <script>
 /* eslint-disable camelcase */
@@ -44,6 +52,14 @@ export default {
       type: String,
       default: ''
     },
+    title_container_style: {
+      type: String,
+      default: ''
+    },
+    title_container_class: {
+      type: String,
+      default: ''
+    },
     caption: {
       type: String,
       default: 'by John Doe'
@@ -64,6 +80,18 @@ export default {
       type: String,
       default: 'height: 200px; width: 100%;'
     },
+    img_class: {
+      type: String,
+      default: ''
+    },
+    image_container_class: {
+      type: String,
+      default: ''
+    },
+    image_container_style: {
+      type: String,
+      default: ''
+    },
     text: {
       type: String,
       default: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`
@@ -77,6 +105,42 @@ export default {
       default: ''
     },
     icon: {
+      type: String,
+      default: ''
+    },
+    button: {
+      type: Boolean,
+      default: () => false
+    },
+    btn_color: {
+      type: String,
+      default: ''
+    },
+    btn_text_color: {
+      type: String,
+      default: ''
+    },
+    btn_label: {
+      type: String,
+      default: ''
+    },
+    btn_rounded: {
+      type: Boolean,
+      default: () => false
+    },
+    btn_style: {
+      type: String,
+      default: ''
+    },
+    btn_class: {
+      type: String,
+      default: ''
+    },
+    btn_container_style: {
+      type: String,
+      default: ''
+    },
+    btn_container_class: {
       type: String,
       default: ''
     },
@@ -142,6 +206,11 @@ export default {
     })
   },
   methods: {
+    css2obj (css) {
+      const r = /(?<=^|;)\s*([^:]+)\s*:\s*([^;]+)\s*/g, o = {}
+      css.replace(r, (m, p, v) => { o[p] = v })
+      return o
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {

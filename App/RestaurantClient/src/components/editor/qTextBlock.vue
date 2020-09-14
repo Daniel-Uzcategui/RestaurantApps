@@ -1,38 +1,50 @@
 <template>
-<q-parallax @click="click" :style="valStyle"
-      :src="valImg"
-    >
-      <h1 :style="title_style" :class="title_class">{{title}}</h1>
-</q-parallax>
+  <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
+        <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style">
+          {{ text }}
+        </q-card-section>
+  </q-card>
 </template>
 <script>
 /* eslint-disable camelcase */
 export default {
   name: 'my-card',
   props: {
-    title: {
+    styles: {
       type: String,
-      default: 'My first Landing Page'
+      default: 'max-width: 350px;'
     },
-    title_style: {
+    classes: {
       type: String,
       default: ''
     },
-    title_class: {
+    text: {
+      type: String,
+      default: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`
+    },
+    text_style: {
       type: String,
       default: ''
     },
-    img: {
+    text_class: {
       type: String,
       default: ''
     },
-    img_style: {
-      type: String,
-      default: ''
+    dark: {
+      type: Boolean,
+      default: () => false
     },
-    global_styles: {
-      type: String,
-      default: ''
+    square: {
+      type: Boolean,
+      default: () => false
+    },
+    flat: {
+      type: Boolean,
+      default: () => false
+    },
+    bordered: {
+      type: Boolean,
+      default: () => false
     },
     block_index: {
       type: Number,
@@ -46,15 +58,9 @@ export default {
   },
   computed: {
     valStyle () {
-      const { global_styles } = this
-      if (global_styles === '') return ''
-      return global_styles
-    },
-    valImg () {
-      // eslint-disable-next-line no-unused-vars
-      const { img, icon } = this
-      if (img === '') return 'https://cdn.quasar.dev/img/parallax2.jpg'
-      return img
+      const { styles } = this
+      if (styles === '') return 'max-width: 350px;'
+      return styles
     }
   },
   mounted () {
