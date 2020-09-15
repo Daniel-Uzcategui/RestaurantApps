@@ -122,7 +122,7 @@ export default {
       this.toggleColors()
       console.log({ bindblock: e })
       var obj = e.find(e => e.id === 'blocks')
-      this.insCss(obj === 'undefined' ? '' : obj.css === 'undefined' ? '' : obj.css)
+      this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
     })
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -318,7 +318,7 @@ export default {
     editor (e) {
       console.log('editor updated')
       var obj = e.find(e => e.id === 'blocks')
-      this.insCss(obj === 'undefined' ? '' : obj.css === 'undefined' ? '' : obj.css)
+      this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
     },
     currentUser () {
       this.$q.loading.hide()

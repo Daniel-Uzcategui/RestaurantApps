@@ -11,7 +11,10 @@
                         </q-item-section>
                      </q-item>
                      <q-item clickable v-close-popup>
-                        <q-item-section @click="app_options = !app_options"><span>App Options <q-icon name="fas fa-check" v-if="app_options"/></span></q-item-section>
+                        <q-item-section @click="app_options = !app_options"><span>{{app_options ? 'Page Builder' : 'App Builder'}}</span></q-item-section>
+                     </q-item>
+                     <q-item clickable v-close-popup>
+                        <q-item-section @click="photoGallery = true"><span>Open image bucket</span></q-item-section>
                      </q-item>
                   </q-list>
                </q-menu>
@@ -22,7 +25,13 @@
          <div class="text-h5 q-pa-md">
             {{ app_options ? 'App Builder' : 'Page Builder'}}
          </div>
-         <q-btn color="primary" @click="saveB" label="Save" />
+         <div v-if="app_options" class="text-h6 q-pa-md">
+            Disclaimer: This option is in early stages, Custom css will only be applied to production. You can save and load protype values, but you will only be able to preview the changes by saving to production.
+         </div>
+         <div class="row justify-between">
+            <q-btn color="primary" @click="SaveReq = true" label="Save" />
+            <q-btn color="primary" @click="loadReq = true" label="Load" />
+         </div>
          <q-card v-if="page_options" class="my-card">
             <q-card-section>
                <div class="text-h5">
@@ -40,7 +49,15 @@
                         filled
                         type="textarea"
                         label="Page Style"
-                        />
+                        >
+                     <template v-slot:append>
+                        <q-icon name="edit">
+                           <q-popup-edit persistent buttons v-model="page.style" content-class="text-white">
+                              <prism-editor @keyup.enter.stop class="my-editor" v-model="page.style" :highlight="highlighter" line-numbers></prism-editor>
+                           </q-popup-edit>
+                        </q-icon>
+                     </template>
+                     </q-input>
                   </q-card-section>
                </q-expansion-item>
             </q-card-section>
@@ -233,7 +250,15 @@
                </q-expansion-item>
             </q-card-section>
          </q-card>
-         <q-input type="textarea" v-if="app_options" v-model="insertCss" label="CSS" />
+         <q-input type="textarea" v-if="app_options" v-model="insertCss" label="CSS" >
+            <template v-slot:append>
+                        <q-icon name="edit">
+                           <q-popup-edit persistent buttons v-model="insertCss" content-class="text-white">
+                              <prism-editor @keyup.enter.stop class="my-editor" v-model="insertCss" :highlight="highlighter" line-numbers></prism-editor>
+                           </q-popup-edit>
+                        </q-icon>
+                     </template>
+                     </q-input>
          <q-card v-if="!app_options && selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'" class="my-card">
             <q-card-section>
                <q-input readonly filled v-model="selectedBLock.block_index" label="Selected Block" />
@@ -304,17 +329,17 @@
                </div>
             </transition-group>
          </draggable>
-         <iframe id="iframe1" src="http://localhost:8081/" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
+         <iframe id="iframe1" src="https://client-restaurant-testnet.web.app/#/" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
       </div>
       <div v-if="!app_options" class="row justify-center q-pa-md">
          <q-btn fab color="blue" @click="addBlock()" text-color="white" label="+" />
       </div>
-      <q-dialog v-model="photoGallery" transition-hide="scale" transition-show="scale">
+      <q-dialog @hide="imgsbi=null; imgsbc=null; imgsi=null" v-model="photoGallery" transition-hide="scale" transition-show="scale" >
          <q-card class="full-width q-pa-none">
-            <q-card-section>
-                  <p class="text-h5">
+            <q-card-section class="bg-secondary text-white">
+                  <div class="text-h5">
                      Photo Picker
-                  </p>
+                  </div>
                   <p class="text-caption">
                      (Try using small image sizes to ensure quick loading speeds)
                   </p>
@@ -322,7 +347,7 @@
             <q-card-section>
                <fbq-uploader
                   class="full-width"
-                  label="Please Upload a Photo"
+                  label="Photo Uploader"
                   :meta="meta"
                   prefixPath="/Editor/Photos/"
                   myPath="something"
@@ -335,9 +360,10 @@
                      There are no pictures available, please upload one.
                   </p>
             </q-card-section>
-            <q-card-section>
+            <q-card-section class="row justify-between">
                <q-img
-               @click="blocks[imgsbi].child[imgsbc].props[imgsi] = gallery[photo]"
+               v-ripple
+               @click="imgsbi !== null ? (blocks[imgsbi].child[imgsbc].props[imgsi] = gallery[photo]) : copyToClip(gallery[photo])"
                :src="gallery[photo]"
                style="height: 140px; max-width: 150px"
                v-for="(photo, index) in Object.keys(gallery)"
@@ -349,6 +375,33 @@
       <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
 
     </q-dialog>
+    <q-dialog v-model="SaveReq" transition-hide="scale" transition-show="scale">
+       <q-card class="my-card">
+       <q-card-section>
+       <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
+       <q-input v-model="newVerAlias" label="New Version Alias">
+          <template v-slot:append>
+            <q-btn @click="saveV()" round dense flat icon="add" />
+         </template>
+       </q-input>
+       </q-card-section>
+       <q-card-section class="row justify-between">
+          <q-btn color="primary" @click="saveB(true)" label="Save to Prototype" />
+       <q-btn color="secondary" @click="saveB(false)" label="Save to Production" />
+       </q-card-section>
+       </q-card>
+    </q-dialog>
+    <q-dialog v-model="loadReq" transition-hide="scale" transition-show="scale">
+       <q-card class="my-card">
+       <q-card-section>
+       <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
+       </q-card-section>
+       <q-card-section class="row justify-between">
+          <q-btn color="primary" @click="loadB(true)" label="Load Prototype" />
+       <q-btn color="secondary" @click="loadB(false)" label="Load Production" />
+       </q-card-section>
+       </q-card>
+    </q-dialog>
    </div>
 </template>
 <script>
@@ -358,7 +411,13 @@ import draggable from 'vuedraggable'
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 // eslint-disable-next-line no-unused-vars
-import { colors, QUploaderBase } from 'quasar'
+import { colors, QUploaderBase, copyToClipboard } from 'quasar'
+import { PrismEditor } from 'vue-prism-editor'
+import 'vue-prism-editor/dist/prismeditor.min.css'
+import { highlight, languages } from 'prismjs/components/prism-core'
+import 'prismjs/components/prism-clike'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/themes/prism-tomorrow.css'
 export default {
   computed: {
     ...mapGetters('editor', ['editor']),
@@ -370,6 +429,13 @@ export default {
     },
     gallery () {
       return this.editor.find(e => e.id === 'photo')
+    },
+    versions () {
+      let obj = this.editor.find(e => e.id === 'versions')
+      console.log({ versions: obj })
+      if (typeof obj === 'undefined') { obj = {} }
+      console.log({ versions: obj })
+      return obj
     }
   },
   mixins: [ QUploaderBase ],
@@ -385,6 +451,7 @@ export default {
     'findus': () => import('../../components/editor/findus'),
     'qimg': () => import('../../components/editor/qimg'),
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
+    PrismEditor,
     draggable
   },
   data () {
@@ -407,7 +474,12 @@ export default {
       galleryModel: {},
       imgsbi: null,
       imgsbc: null,
-      imgsi: null
+      imgsi: null,
+      verSel: null,
+      SaveReq: false,
+      loadReq: false,
+      saveSelect: '',
+      newVerAlias: ''
     }
   },
   created () {
@@ -420,11 +492,41 @@ export default {
     })
   },
   methods: {
-    ...mapActions('editor', ['saveBlocks', 'savePage', 'bindBlocks', 'saveCss']),
-    saveB () {
-      this.saveBlocks(this.blocks)
-      this.savePage(this.page)
-      this.saveCss(this.insertCss)
+    ...mapActions('editor', ['saveBlocks', 'savePage', 'bindBlocks', 'saveCss', 'saveVer']),
+    saveV () {
+      if (this.newVerAlias !== '') {
+        this.saveVer(this.newVerAlias)
+      }
+    },
+    saveB (e) {
+      let preffix = ''
+      if (e) { preffix = this.saveSelect }
+      this.$q.dialog({
+        title: 'Confirm',
+        message: `Would you like to save to ${e ? preffix : 'Production'}?`,
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.saveBlocks({ payload: this.blocks, doc: preffix })
+        this.savePage({ payload: this.page, doc: preffix })
+        this.saveCss({ payload: this.insertCss, doc: preffix })
+      })
+    },
+    loadB (i) {
+      let preffix = ''
+      if (i) { preffix = this.saveSelect }
+      this.$q.dialog({
+        title: 'Confirm',
+        message: `Would you like to Load ${i ? preffix : 'Production'}?`,
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        let obj = this.editor.find(e => e.id === 'blocks' + preffix)
+        let pageobj = this.editor.find(e => e.id === 'page' + preffix)
+        if (obj.blocks) { this.blocks = JSON.parse(JSON.stringify(obj.blocks)) }
+        if (obj.css) { this.insertCss = obj.css }
+        if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
+      })
     },
     log (e) {
       console.log(e)
@@ -493,6 +595,24 @@ export default {
         message: `Successfully uploaded your photo: ${fileNames}`,
         color: 'positive'
       })
+    },
+    highlighter (code) {
+      return highlight(code, languages.js) // languages.<insert language> to return html with markup
+    },
+    copyToClip (e) {
+      copyToClipboard(e)
+        .then(() => {
+          this.$q.notify({
+            message: `Copied image url to Clipboard`,
+            color: 'positive'
+          })
+        })
+        .catch(() => {
+          this.$q.notify({
+            message: `Error copying url to Clipboard`,
+            color: 'positive'
+          })
+        })
     }
   }
 }
@@ -503,5 +623,16 @@ export default {
     background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
     background-repeat: no-repeat;
     background-size: cover;
+  }
+  .my-editor {
+    background: #2d2d2d;
+    color: #ccc;
+    font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px;
+  }
+  .prism-editor__textarea:focus {
+    outline: none;
   }
 </style>
