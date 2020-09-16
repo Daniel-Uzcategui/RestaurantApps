@@ -61,7 +61,6 @@
                 input-debounce="0"
                 :options="typeFree"
                 :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.value"
                 style="width: 250px"
                 stack-label
                 emit-value
@@ -85,7 +84,6 @@
                 input-debounce="0"
                 :options="filterOptions"
                 :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.id"
                 @filter="filterFn"
                 style="width: 250px"
                 stack-label
@@ -102,7 +100,6 @@
                 input-debounce="0"
                 :options="typeOpts"
                 :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.value"
                 style="width: 250px"
                 stack-label
                 emit-value
@@ -118,7 +115,6 @@
                 input-debounce="0"
                 :options="typeFree"
                 :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.value"
                 style="width: 250px"
                 stack-label
                 emit-value
