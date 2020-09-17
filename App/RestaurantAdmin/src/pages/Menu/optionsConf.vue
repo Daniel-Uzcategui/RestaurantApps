@@ -60,8 +60,8 @@
                 use-input
                 input-debounce="0"
                 :options="typeFree"
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.value"
+                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
                 style="width: 250px"
                 stack-label
                 emit-value
@@ -84,8 +84,8 @@
                 use-chips
                 input-debounce="0"
                 :options="filterOptions"
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.id"
+                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
                 @filter="filterFn"
                 style="width: 250px"
                 stack-label
@@ -101,8 +101,8 @@
                 use-input
                 input-debounce="0"
                 :options="typeOpts"
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.value"
+                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
                 style="width: 250px"
                 stack-label
                 emit-value
@@ -117,8 +117,8 @@
                 use-input
                 input-debounce="0"
                 :options="typeFree"
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.value"
+                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
                 style="width: 250px"
                 stack-label
                 emit-value

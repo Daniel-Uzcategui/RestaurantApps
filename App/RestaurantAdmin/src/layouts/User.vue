@@ -101,6 +101,26 @@ export default {
     })
   },
   async mounted () {
+    this.bindEnv().then(e => {
+      console.log({ environment: e })
+      let ver = localStorage.getItem('envVer')
+      if (ver === null) {
+        localStorage.setItem('envVer', e.version)
+      } else if (ver !== e.version) {
+        this.$q.dialog({
+          title: 'Nueva Version',
+          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas acutalizaciones?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          localStorage.setItem('envVer', e.version)
+          this.getNewVer()
+        })
+      }
+      if (ver === e.version) {
+        console.log('App is in the newer version')
+      }
+    })
     console.log({ rt: this.$router })
     const { currentUser } = this
     if (currentUser) {
@@ -259,6 +279,10 @@ export default {
   methods: {
     ...mapActions('auth', ['logoutUser']),
     ...mapActions('order', ['bindOrders']),
+    ...mapActions('config', ['bindEnv']),
+    getNewVer () {
+      window.location.reload(true)
+    },
     showNotif () {
       console.log({ ntf: this.$refs['mediapl'] })
       this.$refs['mediapl'].play()

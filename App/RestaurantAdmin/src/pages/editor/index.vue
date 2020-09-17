@@ -486,8 +486,8 @@ export default {
     this.bindBlocks().then((e) => {
       let obj = e.find(e => e.id === 'blocks')
       let pageobj = e.find(e => e.id === 'page')
-      if (obj.blocks) { this.blocks = JSON.parse(JSON.stringify(obj.blocks)) }
-      if (obj.css) { this.insertCss = obj.css }
+      if (obj && obj.blocks) { this.blocks = JSON.parse(JSON.stringify(obj.blocks)) }
+      if (obj && obj.css) { this.insertCss = obj.css }
       if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
     })
   },

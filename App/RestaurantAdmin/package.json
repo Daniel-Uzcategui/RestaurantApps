@@ -1,11 +1,11 @@
 {
-  "name": "uploader",
-  "version": "0.0.1",
-  "description": "User profile using Firebase, Vuexfire, and Google Cloud Storage",
+  "name": "chopziadmin",
+  "version": "1.0",
+  "description": "",
   "productName": "ECRA",
-  "cordovaId": "org.unico.wallet.app",
+  "cordovaId": "org.chopzi.web.app",
   "capacitorId": "",
-  "author": "Adam K. Purdy <admin@kpapro.com>",
+  "author": "Praforca",
   "private": true,
   "scripts": {
     "dev": "cross-env QENV=development quasar dev",

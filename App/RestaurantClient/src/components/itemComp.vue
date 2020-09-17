@@ -61,6 +61,7 @@
       <div v-if="component.type === 2">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
+        {{component}}
         <q-list v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section>
@@ -111,10 +112,12 @@ export default {
       var group = []
       var comp = Array.from(this.comp)
       var groupComp = Array.from(this.groupComp)
+      console.log({ grpcomp: this.groupComp })
       comp.forEach(element => {
         var grp = groupComp.find(x => x.id === element)
         if (typeof groupComp !== 'undefined' && typeof grp !== 'undefined') {
           var items = this.item.filter(x => x.group_id.includes(grp.group_id))
+          console.log({ items: items, item: this.item, grp: grp })
           group.push({ ...grp, id: element, items })
         }
       })
@@ -159,6 +162,7 @@ export default {
     }
   },
   mounted () {
+    console.log({ comp: this.comp, value: this.value, readOnly: this.readOnly })
     if (this.Group.length === 0) {
       this.$emit('update-comp', true)
     }
@@ -175,6 +179,7 @@ export default {
     ...mapActions('menu', ['bindItem', 'bindGroupComp', 'bindCategorias', 'bindPromos']),
     getComponent (id, val) {
       var comp = this.groupComp.find(x => x.id === id)
+      console.log({ getcomp: this.comp })
       if (typeof comp === 'undefined') { return null }
       return comp[val]
     },

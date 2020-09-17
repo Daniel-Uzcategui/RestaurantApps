@@ -5,7 +5,10 @@ export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configs', firestore().collection('config'), { reset: false })
 })
-
+export const bindEnv = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindEnv')
+  return bindFirestoreRef('environment', firestore().collection('environment').doc('version'), { reset: false })
+})
 export const saveConfig = firestoreAction((state, payload) => {
   console.log(payload)
   return firestore()

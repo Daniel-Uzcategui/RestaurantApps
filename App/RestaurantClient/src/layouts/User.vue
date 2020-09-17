@@ -119,6 +119,7 @@ export default {
   },
   async created () {
     this.bindBlocks().then((e) => {
+      this.$q.loading.hide()
       this.toggleColors()
       console.log({ bindblock: e })
       var obj = e.find(e => e.id === 'blocks')
@@ -137,6 +138,26 @@ export default {
     })
   },
   async mounted () {
+    this.bindEnv().then(e => {
+      console.log({ environment: e })
+      let ver = localStorage.getItem('envVer')
+      if (ver === null) {
+        localStorage.setItem('envVer', e.version)
+      } else if (ver !== e.version) {
+        this.$q.dialog({
+          title: 'Nueva Version',
+          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas acutalizaciones?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          localStorage.setItem('envVer', e.version)
+          this.getNewVer()
+        })
+      }
+      if (ver === e.version) {
+        console.log('App is in the newer version')
+      }
+    })
     const { currentUser } = this
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
       if (Object.keys(this.$router.currentRoute.meta).length === 0) {
@@ -164,8 +185,11 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
-    ...mapActions('config', ['bindConfigs']),
+    ...mapActions('config', ['bindConfigs', 'bindEnv']),
     ...mapActions('editor', ['bindBlocks']),
+    getNewVer () {
+      window.location.reload(true)
+    },
     setupNotif () {
       var that = this
       navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
@@ -343,11 +367,6 @@ export default {
       -o-filter: blur(5px);
       -ms-filter: blur(5px);
       filter blur(5px)
-  .default-bg-image {
-    background-image: url(https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FSEDE1818437?alt=media&token=aa48f8c3-51e1-4227-b6e1-23ee1ead7df1);
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
   .bluriframe {
   -webkit-filter: blur(5px);
   -moz-filter: blur(5px);
