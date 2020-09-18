@@ -1,7 +1,7 @@
 <template>
    <div class="q-pa-md">
-           <q-table
-           dense
+         <q-table
+         dense
          :data="promos"
          :columns="columns2"
          title="Promociones"
@@ -116,14 +116,15 @@
           <q-td colspan="4">
             <div class="business-hours-container">
              <div class="business-hours-component">
-               <h5>Horarios</h5>
+              <h5>Horarios</h5>
               <business-hours
-                  :days="days"
+                  :days="getDays(props.row.id)"
                   name="dayHours"
                   type="select"
                   :time-increment="15"
                   :localization="localization"
                   color="#00af0b"
+                  @updated-hours="updatedHours(props.row.id)"
                 ></business-hours>
               </div>
             </div>
@@ -217,6 +218,8 @@ export default {
       photoUpload: false,
       noSelect: false,
       filterOptions: [],
+      show_days: [],
+      showBussinesHours: [],
       default: {
         'monday': [
           {
@@ -323,9 +326,13 @@ export default {
     this.bindItem()
     this.bindItemGroup()
     this.bindGroupComp()
-    this.days = this.default
   },
   methods: {
+    promo (id) {
+      return this.promos.find(obj => {
+        return obj.id === id
+      })
+    },
     validate (value) {
       return value >= 0 || 'error'
     },
@@ -339,7 +346,6 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
-      console.log({ value })
       this.setValue({ payload: { value, id, key }, collection: 'promos' })
     },
     saved2 (value, initialValue, id, key) {
@@ -440,6 +446,36 @@ export default {
           )
         }
       })
+    },
+    updatedHours (id) {
+      let value, key
+      value = this.show_days[id]
+      key = 'days'
+      console.log(`row = ${id}, name  = ${key}`)
+      console.log(value)
+      this.setValue({ payload: { value, id, key }, collection: 'promos' })
+    },
+    getDays (id) {
+      let days = []
+      // console.log('getDays')
+      // console.log(id)
+      this.showBussinesHours[id] = true
+      if (this.promo(id).days) {
+        let objMonday, objTuesday, objWednesday, objThursday, objFriday, objSaturday, objSunday
+        objMonday = JSON.parse(JSON.stringify(this.promo(id).days.monday))
+        objTuesday = JSON.parse(JSON.stringify(this.promo(id).days.tuesday))
+        objWednesday = JSON.parse(JSON.stringify(this.promo(id).days.wednesday))
+        objThursday = JSON.parse(JSON.stringify(this.promo(id).days.thursday))
+        objFriday = JSON.parse(JSON.stringify(this.promo(id).days.friday))
+        objSaturday = JSON.parse(JSON.stringify(this.promo(id).days.saturday))
+        objSunday = JSON.parse(JSON.stringify(this.promo(id).days.sunday))
+        days = { monday: objMonday, tuesday: objTuesday, wednesday: objWednesday, thursday: objThursday, friday: objFriday, saturday: objSaturday, sunday: objSunday }
+        this.show_days[id] = days
+      } else {
+        this.show_days[id] = this.default
+      }
+      // console.log(this.show_days[id])
+      return this.show_days[id]
     }
   }
 }
