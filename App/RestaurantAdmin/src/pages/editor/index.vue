@@ -16,10 +16,16 @@
                      <q-item clickable v-close-popup>
                         <q-item-section @click="photoGallery = true"><span>Open image bucket</span></q-item-section>
                      </q-item>
+                     <q-item clickable v-close-popup>
+                        <q-item-section @click="download()"><span>Export Project</span></q-item-section>
+                     </q-item>
+                     <q-item clickable v-close-popup>
+                        <q-item-section @click="importDialog = true"><span>Import Project</span></q-item-section>
+                     </q-item>
                   </q-list>
                </q-menu>
             </div>
-            <q-space />
+            <q-space/>
             <q-btn color="white" text-color="white" icon="fas fa-chevron-left" flat label="Exit" to="/home"/>
          </q-bar>
          <div class="text-h5 q-pa-md">
@@ -379,7 +385,7 @@
        <q-card class="my-card">
        <q-card-section>
        <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
-       <q-input v-model="newVerAlias" label="New Version Alias">
+       <q-input v-model="newVerAlias" label="Add new prototype Version Alias">
           <template v-slot:append>
             <q-btn @click="saveV()" round dense flat icon="add" />
          </template>
@@ -402,6 +408,21 @@
        </q-card-section>
        </q-card>
     </q-dialog>
+    <q-dialog v-model="importDialog" transition-hide="scale" transition-show="scale">
+       <q-card class="my-card">
+       <q-card-section>
+       <q-file
+            v-model="importFile"
+            label="Pick one file"
+            filled
+            style="max-width: 300px"
+         />
+       </q-card-section>
+       <q-card-section class="row justify-between">
+          <q-btn color="primary" @click="loadImport()" label="Load Imported file" />
+       </q-card-section>
+       </q-card>
+    </q-dialog>
    </div>
 </template>
 <script>
@@ -411,7 +432,7 @@ import draggable from 'vuedraggable'
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 // eslint-disable-next-line no-unused-vars
-import { colors, QUploaderBase, copyToClipboard } from 'quasar'
+import { colors, QUploaderBase, copyToClipboard, exportFile } from 'quasar'
 import { PrismEditor } from 'vue-prism-editor'
 import 'vue-prism-editor/dist/prismeditor.min.css'
 import { highlight, languages } from 'prismjs/components/prism-core'
@@ -428,7 +449,8 @@ export default {
       }
     },
     gallery () {
-      return this.editor.find(e => e.id === 'photo')
+      let gal = this.editor.find(e => e.id === 'photo')
+      return gal === null || typeof gal === 'undefined' ? {} : gal
     },
     versions () {
       let obj = this.editor.find(e => e.id === 'versions')
@@ -479,7 +501,9 @@ export default {
       SaveReq: false,
       loadReq: false,
       saveSelect: '',
-      newVerAlias: ''
+      newVerAlias: '',
+      importDialog: false,
+      importFile: null
     }
   },
   created () {
@@ -493,6 +517,16 @@ export default {
   },
   methods: {
     ...mapActions('editor', ['saveBlocks', 'savePage', 'bindBlocks', 'saveCss', 'saveVer']),
+    download () {
+      exportFile('ChopziPage.json', JSON.stringify({ blocks: this.blocks, css: this.insertCss, page: this.page }))
+    },
+    async loadImport () {
+      let file = await this.importFile.text()
+      let toObject = JSON.parse(file)
+      if (toObject && toObject.blocks) { this.blocks = toObject.blocks }
+      if (toObject && toObject.css) { this.insertCss = toObject.css }
+      if (toObject && toObject.page) { this.page = toObject.page }
+    },
     saveV () {
       if (this.newVerAlias !== '') {
         this.saveVer(this.newVerAlias)

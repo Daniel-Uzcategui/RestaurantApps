@@ -11,7 +11,7 @@
             </q-item-section>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
-              <q-item-label caption>{{items.descripcion}}</q-item-label>
+              <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label v-if="!component.free" caption>$ {{(items.price).toFixed(2)}}</q-item-label>
@@ -33,7 +33,7 @@
             </q-item-section>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
-              <q-item-label caption>{{items.descripcion}}</q-item-label>
+              <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label v-if="!component.free" caption>$ {{(items.price).toFixed(2)}}</q-item-label>
@@ -58,7 +58,7 @@
             </q-item-section>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
-              <q-item-label caption>{{items.descripcion}}</q-item-label>
+              <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label v-if="!component.free" caption>$ {{(items.price).toFixed(2)}}</q-item-label>
