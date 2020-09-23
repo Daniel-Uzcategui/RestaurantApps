@@ -272,6 +272,29 @@ export default {
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
+        },
+        {
+          title: 'Reportes',
+          caption: '',
+          icon: 'fa fa-print',
+          separator: true,
+          tree: [
+            {
+              children: [
+              /*  { label: 'Ventas Generales',
+                  link: 'generalSales',
+                  handler: (node) => this.onClickReports(node) }, */
+                { label: 'Ventas  x Sedes',
+                  link: 'locationSales',
+                  handler: (node) => this.onClickReports(node) }
+              /*  { label: 'Categorias',
+                  link: 'rcategories',
+                  handler: (node) => this.onClickReports(node) },
+                { label: 'Productos',
+                  link: 'rproducts',
+                  handler: (node) => this.onClickReports(node) } */
+              ]
+            }]
         }
       ]
     }
@@ -303,6 +326,9 @@ export default {
     },
     onClickOption (node) {
       this.$router.push({ path: '/settings/' + node.link })
+    },
+    onClickReports (node) {
+      this.$router.push({ path: '/reports/' + node.link })
     }
   },
   watch: {
