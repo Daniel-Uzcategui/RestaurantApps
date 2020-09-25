@@ -303,6 +303,48 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/reports',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'generalSales',
+        name: 'generalSales',
+        component: () => import('pages/reports/generalSales.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Ventas Generales'
+        }
+      },
+      {
+        path: 'locationSales',
+        name: 'locationSales',
+        component: () => import('pages/reports/locationSales.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Ventas x Sedes'
+        }
+      },
+      {
+        path: 'rcategories',
+        name: 'rcategories',
+        component: () => import('pages/reports/rcategories.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Categorias'
+        }
+      },
+      {
+        path: 'rproducts',
+        name: 'products',
+        component: () => import('pages/reports/rproducts.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Productos'
+        }
+      }
+    ]
   }
 ]
 

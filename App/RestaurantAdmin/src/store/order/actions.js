@@ -6,6 +6,11 @@ export const bindOrders = firestoreAction(({ bindFirestoreRef }) => {
   return bindFirestoreRef('orders', firestore().collection('orders').orderBy('factura', 'desc'))
 })
 
+export const reportBindOrders = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindorders')
+  return bindFirestoreRef('orders', firestore().collection('orders'))
+})
+
 export const saveOrder = firestoreAction((state, payload) => {
   return firestore()
     .collection('orders')
