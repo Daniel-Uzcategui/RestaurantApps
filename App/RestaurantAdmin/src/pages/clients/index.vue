@@ -88,7 +88,7 @@ export default {
     ...mapGetters('client', ['clients'])
   },
   mounted () {
-    this.bindClients()
+    this.bindOnlyClients()
     console.log(this.clients)
   },
   methods: {
@@ -120,7 +120,7 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.clients.length}`
     },
-    ...mapActions('client', ['deleteClient', 'bindClients']),
+    ...mapActions('client', ['deleteClient', 'bindOnlyClients']),
     deleted () {
       if (this.selected.length > 0) {
         this.$q.dialog({
