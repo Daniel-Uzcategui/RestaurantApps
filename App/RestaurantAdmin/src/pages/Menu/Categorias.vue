@@ -39,7 +39,33 @@
                 autofocus
               />
            </q-td>
-
+              <q-td>
+                <div  class="q-pa-md row items-start q-gutter-md" key="color" :props="props">
+               <q-color
+                 default-value="#285de0"
+                :value="props.row.color"
+                 default-view="palette"
+                :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
+                 @change="val => saved(val, props.row.color, props.row.id, 'color')"
+                 style="max-width: 250px"
+                 />
+              </div>
+             </q-td>
+             <q-td>
+                <div  class="q-pa-md row items-start q-gutter-md" key="textcolor" :props="props">
+               <q-color
+                 default-value="#285de0"
+                :value="props.row.textcolor"
+                 default-view="palette"
+                 :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
+                 @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
+                 style="max-width: 250px"
+                 />
+              </div>
+             </q-td>
+             <q-td key="priority" :props="props">
+              <q-input @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense autofocus />
+           </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
@@ -47,7 +73,6 @@
                 color="#3c8dbc"
               />
           </q-td>
-
           <q-td key="categorias" :props="props">
             <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
             <q-popup-edit v-model.number="props.row.FechaAct">
@@ -83,6 +108,9 @@
 const columns = [
   { name: 'desc', style: 'min-width: 280px; width: 280px', align: 'left', label: 'Nombre', field: 'name' },
   { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'color', align: 'left', label: 'Color de fondo', field: 'color' },
+  { name: 'textcolor', align: 'left', label: 'Color del texto ', field: 'textcolor' },
+  { name: 'priority', style: 'min-width: 10px; width: 10px', align: 'left', label: 'Prioridad ', field: 'priority' },
   { name: 'estatus', align: 'left', label: 'Activar', field: 'estatus' }
 ]
 
