@@ -74,6 +74,8 @@ export default function () {
           }
         ]
       }
-    ]
+    ],
+    version: null,
+    manifest: {}
   }
 }

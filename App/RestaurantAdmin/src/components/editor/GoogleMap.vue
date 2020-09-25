@@ -63,14 +63,14 @@ export default {
   mounted () {
     this.geolocate()
     this.$nextTick(() => {
-      console.log({ ref: this.$refs })
+      // console.log({ ref: this.$refs })
       this.opensearch = true
     })
   },
 
   methods: {
     addMark (e) {
-      console.log({ e })
+      // console.log({ e })
       this.centerClone = e.latLng
       var clickedLocation = e.latLng
       if (typeof this.readOnly !== 'undefined' && this.readOnly === true) { return }

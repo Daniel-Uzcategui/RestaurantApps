@@ -4,5 +4,6 @@
     "add_qenv_to_gitignore": false
   },
   "@quasar/qmediaplayer": {},
-  "qdecimal": {}
+  "qdecimal": {},
+  "firebase-messaging": {}
 }

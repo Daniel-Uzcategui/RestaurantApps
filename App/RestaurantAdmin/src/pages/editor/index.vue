@@ -22,6 +22,9 @@
                      <q-item clickable v-close-popup>
                         <q-item-section @click="importDialog = true"><span>Import Project</span></q-item-section>
                      </q-item>
+                     <q-item clickable v-close-popup>
+                        <q-item-section @click="appProperties = true"><span>App Properties</span></q-item-section>
+                     </q-item>
                   </q-list>
                </q-menu>
             </div>
@@ -29,14 +32,37 @@
             <q-btn color="white" text-color="white" icon="fas fa-chevron-left" flat label="Exit" to="/home"/>
          </q-bar>
          <div class="text-h5 q-pa-md">
-            {{ app_options ? 'App Builder' : 'Page Builder'}}
+            {{ app_options ? 'App Builder ' : 'Page Builder '}} <span class="text-caption"> ({{saveSelected === '' ? 'Production' : saveSelected}})</span>
          </div>
          <div v-if="app_options" class="text-h6 q-pa-md">
             Disclaimer: This option is in early stages, Custom css will only be applied to production. You can save and load protype values, but you will only be able to preview the changes by saving to production.
          </div>
          <div class="row justify-between">
-            <q-btn color="primary" @click="SaveReq = true" label="Save" />
+            <q-btn color="primary" @click="SaveReq = true" label="Save Project" />
             <q-btn color="primary" @click="loadReq = true" label="Load" />
+         </div>
+         <div class="q-pa-md text-h7">
+            <div>Selected page:</div>
+            <div>{{selectedPage === null ? '/' : selectedPage}}</div>
+         </div>
+         <!-- <div>
+             <q-btn color="primary" @click="savePages" label="Save Page" />
+         </div> -->
+         <div>
+            <q-tree
+               :nodes="pagesNode"
+               default-expand-all
+               :selected.sync="selectedPage"
+               node-key="route"
+               labelKey="path"
+            />
+         </div>
+         <div class="q-pl-sm q-pr-sm">
+            <q-input v-model="newPageName" label="Add child page to selected">
+               <template v-slot:append>
+                  <q-btn @click="addPage()" round dense flat icon="add" />
+               </template>
+            </q-input>
          </div>
          <q-card v-if="page_options" class="my-card">
             <q-card-section>
@@ -291,7 +317,17 @@
                         <q-btn @click="photoGallery = true; imgsbi = selectedBLock.block_index; imgsbc = selectedBLock.child_index; imgsi = index" round dense flat icon="add" />
                      </template>
                   </q-input>
-                  <q-input autogrow v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
+                  <q-input
+                        v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index"
+                        >
+                     <template v-slot:append>
+                        <q-icon name="edit">
+                           <q-popup-edit persistent buttons v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" content-class="text-white">
+                              <prism-editor @keyup.enter.stop class="my-editor" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :highlight="highlighter" line-numbers></prism-editor>
+                           </q-popup-edit>
+                        </q-icon>
+                     </template>
+                     </q-input>
                   <q-toggle v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop === 'boolean'" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
                   <div v-if="index !== 'block_index' && index !== 'child_index' && Array.isArray(prop)">
                      <div class="text-center" v-for="(prp, idx) in prop" :key="idx">
@@ -335,12 +371,12 @@
                </div>
             </transition-group>
          </draggable>
-         <iframe id="iframe1" src="https://client-restaurant-testnet.web.app/#/" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
+         <iframe id="iframe1" :src="ifrHtml" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
       </div>
       <div v-if="!app_options" class="row justify-center q-pa-md">
          <q-btn fab color="blue" @click="addBlock()" text-color="white" label="+" />
       </div>
-      <q-dialog @hide="imgsbi=null; imgsbc=null; imgsi=null" v-model="photoGallery" transition-hide="scale" transition-show="scale" >
+      <q-dialog @hide="imgsbi=null; imgsbc=null; imgsi=null; iconmodel=null" v-model="photoGallery" transition-hide="scale" transition-show="scale" >
          <q-card class="full-width q-pa-none">
             <q-card-section class="bg-secondary text-white">
                   <div class="text-h5">
@@ -368,13 +404,17 @@
             </q-card-section>
             <q-card-section class="row justify-between">
                <q-img
-               v-ripple
-               @click="imgsbi !== null ? (blocks[imgsbi].child[imgsbc].props[imgsi] = gallery[photo]) : copyToClip(gallery[photo])"
-               :src="gallery[photo]"
-               style="height: 140px; max-width: 150px"
-               v-for="(photo, index) in Object.keys(gallery)"
-               :key="index"
-               />
+                  v-ripple
+                  @click="imgsbi !== null ? (blocks[imgsbi].child[imgsbc].props[imgsi] = gallery[photo]) : copyToClip(gallery[photo]); iconmodel !== null ? appicons[iconmodel] = gallery[photo] : null; photoGallery = false"
+                  :src="gallery[photo]"
+                  style="height: 140px; max-width: 150px"
+                  v-for="(photo, index) in Object.keys(gallery)"
+                  :key="index"
+               >
+               <div class="absolute-bottom text-subtitle1 text-center">
+                  {{photo}}
+               </div>
+               </q-img>
             </q-card-section>
          </q-card>
       </q-dialog>
@@ -392,8 +432,8 @@
        </q-input>
        </q-card-section>
        <q-card-section class="row justify-between">
-          <q-btn color="primary" @click="saveB(true)" label="Save to Prototype" />
-       <q-btn color="secondary" @click="saveB(false)" label="Save to Production" />
+          <q-btn color="primary" @click="saveSelect !== '' ? saveB(true) : null" label="Save to Prototype" />
+       <q-btn color="secondary" @click="saveB(false);" label="Save to Production" />
        </q-card-section>
        </q-card>
     </q-dialog>
@@ -403,8 +443,8 @@
        <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
        </q-card-section>
        <q-card-section class="row justify-between">
-          <q-btn color="primary" @click="loadB(true)" label="Load Prototype" />
-       <q-btn color="secondary" @click="loadB(false)" label="Load Production" />
+          <q-btn color="primary" @click="loadB(true);" label="Load Prototype" />
+       <q-btn color="secondary" @click="loadB(false);" label="Load Production" />
        </q-card-section>
        </q-card>
     </q-dialog>
@@ -419,7 +459,45 @@
          />
        </q-card-section>
        <q-card-section class="row justify-between">
-          <q-btn color="primary" @click="loadImport()" label="Load Imported file" />
+          <q-btn color="primary" @click="loadImport(); importDialog = false;" label="Load Imported file" />
+       </q-card-section>
+       </q-card>
+    </q-dialog>
+    <q-dialog v-model="appProperties" transition-hide="scale" transition-show="scale">
+       <q-card class="my-card">
+       <q-card-section>
+       <q-input placeholder="name" v-model="app_name" label="name" />
+         <q-input placeholder="short_name" v-model="app_short_name" label="short_name" />
+         <q-input placeholder="description" v-model="app_description" label="description" />
+         <q-input placeholder="display" v-model="app_display" label="display" />
+       <q-input placeholder="128x128" v-model="appicons.icon128x128" label="icon128x128" >
+         <template v-slot:append>
+            <q-btn @click="photoGallery = true; iconmodel = 'icon128x128'" round dense flat icon="add" />
+         </template>
+       </q-input>
+       <q-input placeholder="192x192" v-model="appicons.icon192x192" label="icon192x192" >
+         <template v-slot:append>
+            <q-btn @click="photoGallery = true; iconmodel = 'icon192x192'" round dense flat icon="add" />
+         </template>
+       </q-input>
+       <q-input placeholder="256x256" v-model="appicons.icon256x256" label="icon256x256" >
+         <template v-slot:append>
+            <q-btn @click="photoGallery = true; iconmodel = 'icon256x256'" round dense flat icon="add" />
+         </template>
+       </q-input>
+       <q-input placeholder="384x384" v-model="appicons.icon384x384" label="icon384x384" >
+         <template v-slot:append>
+            <q-btn @click="photoGallery = true; iconmodel = 'icon384x384'" round dense flat icon="add" />
+         </template>
+       </q-input>
+       <q-input placeholder="512x512" v-model="appicons.icon512x512" label="icon512x512" >
+         <template v-slot:append>
+            <q-btn @click="photoGallery = true; iconmodel = 'icon512x512'" round dense flat icon="add" />
+         </template>
+       </q-input>
+       </q-card-section>
+       <q-card-section class="row justify-between">
+          <q-btn color="primary" @click="saveMan(); appProperties = false;" label="Save" />
        </q-card-section>
        </q-card>
     </q-dialog>
@@ -442,6 +520,7 @@ import 'prismjs/themes/prism-tomorrow.css'
 export default {
   computed: {
     ...mapGetters('editor', ['editor']),
+    ...mapGetters('config', ['version']),
     meta () {
       return {
         id: '123',
@@ -454,10 +533,13 @@ export default {
     },
     versions () {
       let obj = this.editor.find(e => e.id === 'versions')
-      console.log({ versions: obj })
+      // console.log({ versions: obj })
       if (typeof obj === 'undefined') { obj = {} }
-      console.log({ versions: obj })
+      // console.log({ versions: obj })
       return obj
+    },
+    ifrHtml () {
+      if (this.version !== null) { return 'https://' + this.version.clientDomain + '.web.app' } else { return null }
     }
   },
   mixins: [ QUploaderBase ],
@@ -470,6 +552,7 @@ export default {
     'qcarousel': () => import('../../components/editor/qcarousel'),
     'qTextBlock': () => import('../../components/editor/qTextBlock'),
     'customHtml': () => import('../../components/editor/customHtml'),
+    'customJS': () => import('../../components/editor/customJS'),
     'findus': () => import('../../components/editor/findus'),
     'qimg': () => import('../../components/editor/qimg'),
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
@@ -478,6 +561,18 @@ export default {
   },
   data () {
     return {
+      app_name: '',
+      app_short_name: '',
+      app_description: '',
+      app_display: '',
+      appicons: {
+        icon128x128: '',
+        icon192x192: '',
+        icon256x256: '',
+        icon384x384: '',
+        icon512x512: ''
+      },
+      iconmodel: null,
       colors: colors,
       page: {},
       page_options: false,
@@ -485,7 +580,7 @@ export default {
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
       blocks: [],
       insertCss: '',
       selectedBLock: { block_index: null, child_index: null },
@@ -501,38 +596,185 @@ export default {
       SaveReq: false,
       loadReq: false,
       saveSelect: '',
+      saveSelected: '',
       newVerAlias: '',
       importDialog: false,
-      importFile: null
+      importFile: null,
+      appProperties: false,
+      addedPages: {},
+      pagesNode: [{
+        path: '/',
+        route: '/'
+      }],
+      newPageName: '',
+      selectedPage: '/'
     }
   },
-  created () {
+  mounted () {
+    console.log('Heeelllooo')
+    this.bindEnv()
+    this.bindManifest().then(e => {
+      console.log({ manifest: e }, 'Manifest')
+      if (typeof e !== 'undefined') {
+        this.app_name = typeof e.name !== 'undefined' ? e.name : ''
+        this.app_short_name = typeof e.short_name !== 'undefined' ? e.name : ''
+        this.app_description = typeof e.description !== 'undefined' ? e.description : ''
+        this.app_display = typeof e.display !== 'undefined' ? e.display : ''
+        Vue.set(this.appicons, 'icon128x128', typeof e.icons && typeof e.icons.icon128x128 !== 'undefined' ? e.icons.icon128x128 : '')
+        Vue.set(this.appicons, 'icon192x192', typeof e.icons && typeof e.icons.icon192x192 !== 'undefined' ? e.icons.icon192x192 : '')
+        Vue.set(this.appicons, 'icon256x256', typeof e.icons && typeof e.icons.icon256x256 !== 'undefined' ? e.icons.icon256x256 : '')
+        Vue.set(this.appicons, 'icon384x384', typeof e.icons && typeof e.icons.icon384x384 !== 'undefined' ? e.icons.icon384x384 : '')
+        Vue.set(this.appicons, 'icon512x512', typeof e.icons && typeof e.icons.icon512x512 !== 'undefined' ? e.icons.icon512x512 : '')
+      }
+    })
     this.bindBlocks().then((e) => {
+      console.log({ download: JSON.parse(JSON.stringify(e)) })
       let obj = e.find(e => e.id === 'blocks')
       let pageobj = e.find(e => e.id === 'page')
-      if (obj && obj.blocks) { this.blocks = JSON.parse(JSON.stringify(obj.blocks)) }
+      let routes = e.find(e => e.id === 'routes')
       if (obj && obj.css) { this.insertCss = obj.css }
       if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
+      if (routes) { this.pagesNode = [JSON.parse(JSON.stringify(routes))] }
+      if (obj && obj.blocks) {
+        for (let key of Object.keys(obj)) {
+          if (key !== 'css') {
+            Vue.set(this, key, JSON.parse(JSON.stringify(obj[key])))
+          }
+        }
+      }
     })
   },
+  watch: {
+    blocks (e) {
+      let preffix = this.selectedPage.replace(/\//g, '')
+      this['blocks' + preffix] = this.blocks
+      console.log({ to: 'blocks' + preffix, blocks: this['blocks' + preffix] })
+    },
+    selectedPage (e) {
+      let preffix = e.replace(/\//g, '')
+      let preffix2 = this.saveSelected
+      let obj = this.editor.find(e => e.id === 'blocks' + preffix2)
+      if (obj) {
+        this.blocks = obj['blocks' + preffix]
+      } else { this.blocks = [] }
+    }
+  },
   methods: {
-    ...mapActions('editor', ['saveBlocks', 'savePage', 'bindBlocks', 'saveCss', 'saveVer']),
+    ...mapActions('editor', ['saveBlocks', 'saveBlocks2', 'savePage', 'bindBlocks', 'saveCss', 'saveVer', 'saveRoutes']),
+    ...mapActions('config', ['bindEnv', 'bindManifest', 'saveManifest']),
+    addPage () {
+      let parent = this.pagesNode[0]
+      let route = this.selectedPage === null ? '/' : this.selectedPage
+      const stack = []
+      let node, ii
+      stack.push(parent)
+      while (stack.length > 0) {
+        node = stack.pop()
+        if (node.route === route) {
+          console.log(stack, node.path, route)
+          if (typeof node.children === 'undefined') {
+            Vue.set(node, 'children', [])
+          }
+          let find = node.children.find(r => r.path === this.newPageName)
+          if (typeof find !== 'undefined') {
+            return this.$q.notify({
+              message: 'Duplicated page name in the same directory',
+              color: 'warning'
+            })
+          }
+          if (this.newPageName === '') {
+            return this.$q.notify({
+              message: 'Page name cannot be empty',
+              color: 'warning'
+            })
+          }
+          let leroute = this.selectedPage !== '/' && this.selectedPage !== null ? this.selectedPage + '/' + this.newPageName : '/pg/' + this.newPageName
+          Vue.set(this, 'blocks' + leroute.replace(/\//g, ''), [])
+          Vue.set(node.children, node.children.length, {
+            path: this.newPageName,
+            route: leroute })
+          return [node.path] // return whatever you want here!!!
+        } else if (node.children && node.children.length) {
+          for (ii = 0; ii < node.children.length; ii += 1) {
+            stack.push(node.children[ii])
+          }
+        }
+      }
+      return null
+    },
+    saveMan () {
+      this.saveManifest({
+        'name': this.app_name,
+        'short_name': this.app_short_name,
+        'description': this.app_description,
+        'display': this.app_display,
+        'start_url': '.',
+        'icons': {
+          icon128x128: this.appicons.icon128x128,
+          icon192x192: this.appicons.icon192x192,
+          icon256x256: this.appicons.icon256x256,
+          icon384x384: this.appicons.icon384x384,
+          icon512x512: this.appicons.icon512x512
+        },
+        'orientation': 'portrait',
+        'background_color': '#ffffff',
+        'theme_color': '#027be3'
+      })
+    },
     download () {
-      exportFile('ChopziPage.json', JSON.stringify({ blocks: this.blocks, css: this.insertCss, page: this.page }))
+      this.selectedPage = ''
+      let node, ii
+      let stack = []
+      let out = {}
+      let parent = this.pagesNode[0]
+      stack.push(parent)
+      while (stack.length > 0) {
+        node = stack.pop()
+        if (typeof node.children !== 'undefined') {
+          for (ii = 0; ii < node.children.length; ii += 1) {
+            console.log(node.children[ii].route.replace(/\//g, ''))
+            out['blocks' + node.children[ii].route.replace(/\//g, '')] = this['blocks' + node.children[ii].route.replace(/\//g, '')]
+            stack.push(node.children[ii])
+          }
+        }
+      }
+      exportFile('ChopziPage.json', JSON.stringify({ ...out, blocks: this.blocks, css: this.insertCss, page: this.page, routes: this.pagesNode[0] }))
     },
     async loadImport () {
       let file = await this.importFile.text()
       let toObject = JSON.parse(file)
-      if (toObject && toObject.blocks) { this.blocks = toObject.blocks }
-      if (toObject && toObject.css) { this.insertCss = toObject.css }
-      if (toObject && toObject.page) { this.page = toObject.page }
+      if (toObject && toObject.blocks) { this.blocks = toObject.blocks } else { this.blocks = [] }
+      if (toObject && toObject.css) { this.insertCss = toObject.css } else { this.insertCss = '' }
+      if (toObject && toObject.page) { this.page = toObject.page } else { this.page = {} }
+      if (toObject && toObject.routes) { this.routes = [toObject.routes] } else {
+        this.routes = [{
+          path: '/',
+          route: '/'
+        }]
+      }
+      if (toObject) {
+        for (let key of Object.keys(toObject)) {
+          if (key !== 'css' && key !== 'page' && key !== 'routes' && key !== 'blocks') {
+            if (typeof this[key] === 'undefined') {
+              Vue.set(this, key, toObject[key])
+            } else {
+              this[key] = toObject[key]
+            }
+          }
+        }
+      }
     },
     saveV () {
       if (this.newVerAlias !== '') {
         this.saveVer(this.newVerAlias)
       }
     },
+    savePages () {
+      let preffix = this.saveSelected + this.selectedPage.replace(/\//g, '')
+      this.saveBlocks({ payload: this.blocks, doc: preffix })
+    },
     saveB (e) {
+      this.selectedPage = ''
       let preffix = ''
       if (e) { preffix = this.saveSelect }
       this.$q.dialog({
@@ -541,8 +783,24 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
+        this.SaveReq = false
         this.saveBlocks({ payload: this.blocks, doc: preffix })
+        let node, ii
+        let stack = []
+        let parent = this.pagesNode[0]
+        stack.push(parent)
+        while (stack.length > 0) {
+          node = stack.pop()
+          if (typeof node.children !== 'undefined') {
+            for (ii = 0; ii < node.children.length; ii += 1) {
+              console.log(node.children[ii].route.replace(/\//g, ''))
+              this.saveBlocks2({ payload: this['blocks' + node.children[ii].route.replace(/\//g, '')], pagename: 'blocks' + node.children[ii].route.replace(/\//g, ''), doc: preffix })
+              stack.push(node.children[ii])
+            }
+          }
+        }
         this.savePage({ payload: this.page, doc: preffix })
+        this.saveRoutes({ payload: this.pagesNode[0], doc: preffix })
         this.saveCss({ payload: this.insertCss, doc: preffix })
       })
     },
@@ -555,15 +813,34 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
+        this.saveSelected = this.saveSelect
+        this.loadReq = false
         let obj = this.editor.find(e => e.id === 'blocks' + preffix)
         let pageobj = this.editor.find(e => e.id === 'page' + preffix)
-        if (obj.blocks) { this.blocks = JSON.parse(JSON.stringify(obj.blocks)) }
-        if (obj.css) { this.insertCss = obj.css }
-        if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
+        let routes = this.editor.find(e => e.id === 'routes' + preffix)
+        if (obj && obj.blocks) {
+          for (let key of Object.keys(obj)) {
+            if (key !== 'css') {
+              if (typeof this[key] === 'undefined') {
+                Vue.set(this, key, JSON.parse(JSON.stringify(obj[key])))
+              } else {
+                this[key] = JSON.parse(JSON.stringify(obj[key]))
+              }
+            }
+          }
+        }
+        if (obj && obj.css) { this.insertCss = obj.css } else { this.insertCss = '' }
+        if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) } else { this.page = {} }
+        if (routes) { this.pagesNode = [JSON.parse(JSON.stringify(routes))] } else {
+          this.pagesNode = [{
+            path: '/',
+            route: '/'
+          }]
+        }
       })
     },
     log (e) {
-      console.log(e)
+      // console.log(e)
     },
     childMounted (e) {
       // console.log(this, 'Child Mounted')
@@ -603,7 +880,7 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
-        console.log('OK')
+        // console.log('OK')
         that.blocks.splice(e.block, 1)
       })
     },
@@ -613,15 +890,15 @@ export default {
     placeHoldClick (e) {
       this.selectedBLock = e.block_info
       Vue.set(this, 'selectedBLockProps', e.props_info)
-      console.log({ selectedBLockProps: this.selectedBLockProps, props: e.props_info })
-      console.log({ ...this.blocks })
+      // console.log({ selectedBLockProps: this.selectedBLockProps, props: e.props_info })
+      // console.log({ ...this.blocks })
     },
     resetPhotoType () {
       this.photoType = ''
     },
     uploadComplete (info) {
-      console.log(this.prefixPath)
-      console.log(this.currentUser)
+      // console.log(this.prefixPath)
+      // console.log(this.currentUser)
       let fileNames = []
       info.files.forEach(file => fileNames.push(file))
       this.photoUpload = false

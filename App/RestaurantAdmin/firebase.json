@@ -1,12 +1,16 @@
 {
   "hosting": {
     "target": "admin",
-    "public": "dist/spa",
+    "public": "dist/pwa",
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
-      }
+        "source": "/getmanifest",
+        "function": "GetManifest"
+      },
+      {
+        "source": "/getmanifestadm",
+        "function": "GetManifestAdmin"
+      } 
     ]
   }
 }

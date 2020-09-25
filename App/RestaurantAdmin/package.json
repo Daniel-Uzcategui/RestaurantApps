@@ -1,10 +1,8 @@
 {
   "name": "chopziadmin",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "",
-  "productName": "ECRA",
-  "cordovaId": "org.chopzi.web.app",
-  "capacitorId": "",
+  "productName": "Chopzi ECRA",
   "author": "Praforca",
   "private": true,
   "scripts": {
@@ -23,14 +21,16 @@
     "@quasar/extras": "^1.6.0",
     "axios": "^0.19.2",
     "babel": "^6.23.0",
+    "core-js": "3.0.0",
     "cross-env": "^7.0.2",
     "dom-to-image-more": "^2.8.0",
     "eosjs": "^20.0.3",
-    "firebase": "^7.15.3",
+    "firebase": "^7.21.0",
     "gmap-vue": "^1.4.0",
     "jspdf": "^1.5.3",
     "prismjs": "^1.21.0",
     "quasar": "^1.9.9",
+    "quasar-app-extension-firebase-messaging": "^0.1.1",
     "v-money": "^0.8.1",
     "v-viewer": "^1.5.1",
     "vue-business-hours": "^1.4.1",
@@ -39,7 +39,7 @@
     "vuexfire": "^3.2.2"
   },
   "devDependencies": {
-    "@quasar/app": "^1.6.0",
+    "@quasar/app": "2.1.0",
     "@quasar/quasar-app-extension-qenv": "^1.0.0",
     "@quasar/quasar-app-extension-qmediaplayer": "^1.0.27",
     "@vue/eslint-config-standard": "^4.0.0",
@@ -47,7 +47,8 @@
     "eslint": "^5.10.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
-    "quasar-app-extension-qdecimal": "^1.0.0-beta.3"
+    "quasar-app-extension-qdecimal": "^1.0.0-beta.3",
+    "workbox-webpack-plugin": "5.0.0"
   },
   "engines": {
     "node": ">= 8.9.0",
@@ -55,6 +56,14 @@
     "yarn": ">= 1.6.0"
   },
   "browserslist": [
-    "last 1 version, not dead, ie >= 11"
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
   ]
 }

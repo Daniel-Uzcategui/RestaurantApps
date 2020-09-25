@@ -61,7 +61,8 @@
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio } from 'quasar'
-
+import * as firebase from 'firebase/app'
+import '@firebase/messaging'
 export default {
   name: 'UserLayout',
   components: {
@@ -91,7 +92,7 @@ export default {
     // Check that our app has access to the user id
     // from Firebase before the page renders
     this.bindOrders().then(x => { this.countOrder = this.orders.length })
-    console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
+    // console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
     const online = window.navigator.onLine
     this.$q.loading.show({
       message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
@@ -102,40 +103,48 @@ export default {
   },
   async mounted () {
     this.bindEnv().then(e => {
-      console.log({ environment: e })
+      // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
       if (ver === null) {
         localStorage.setItem('envVer', e.version)
       } else if (ver !== e.version) {
         this.$q.dialog({
           title: 'Nueva Version',
-          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas acutalizaciones?',
+          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
           cancel: true,
           persistent: true
         }).onOk(() => {
           localStorage.setItem('envVer', e.version)
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+              for (let registration of registrations) {
+                registration.update()
+              }
+            })
+          }
           this.getNewVer()
         })
       }
       if (ver === e.version) {
-        console.log('App is in the newer version')
+        // console.log('App is in the newer version')
       }
     })
-    console.log({ rt: this.$router })
+    // console.log({ rt: this.$router })
     const { currentUser } = this
     if (currentUser) {
       // Hide the loading screen if currentUser
       // is available before the page renders
-      console.log(this.currentUser)
+      // console.log(this.currentUser)
       this.$q.loading.hide()
     }
+    this.setupNotif()
   },
   data () {
     return {
       audio: {
         sources: [
           {
-            src: 'http://soundbible.com/grab.php?id=2155&type=mp3',
+            src: 'https://soundbible.com/grab.php?id=2155&type=mp3',
             type: 'audio/mp3'
           }
         ]
@@ -280,11 +289,33 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     ...mapActions('order', ['bindOrders']),
     ...mapActions('config', ['bindEnv']),
+    ...mapActions('menu', ['setValue']),
+    setupNotif () {
+      var that = this
+      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+        const messaging = firebase.messaging()
+        messaging
+          .requestPermission()
+          .then(() => {
+            // console.log('Notif allowed')
+            return messaging.getToken()
+          })
+          .then(token => {
+            // console.log('Token Is : ' + token)
+            if (!that.isAnonymous && that.currentUser && that.currentUser.fcm !== token) {
+              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
+            }
+          })
+          .catch(err => {
+            console.error('No permission to send push', err)
+          })
+      })
+    },
     getNewVer () {
       window.location.reload(true)
     },
     showNotif () {
-      console.log({ ntf: this.$refs['mediapl'] })
+      // console.log({ ntf: this.$refs['mediapl'] })
       this.$refs['mediapl'].play()
       this.$q.notify({
         message: `Nueva Orden!`,
@@ -308,6 +339,7 @@ export default {
   watch: {
     currentUser () {
       this.$q.loading.hide()
+      this.setupNotif()
     },
     orders () {
       if (this.initAudio === 0) {
@@ -316,10 +348,11 @@ export default {
         }
         this.initAudio = 1
       } else {
-        if (this.orders.length > this.countOrder) {
+        if (this.initAudio === 2 && this.orders.length > this.countOrder) {
           this.countOrder = this.orders.length
           this.showNotif()
         }
+        this.initAudio = 2
       }
     }
   }

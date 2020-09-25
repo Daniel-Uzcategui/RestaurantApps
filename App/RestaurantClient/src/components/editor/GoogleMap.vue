@@ -63,14 +63,14 @@ export default {
   mounted () {
     this.geolocate()
     this.$nextTick(() => {
-      console.log({ ref: this.$refs })
+      // console.log({ ref: this.$refs })
       this.opensearch = true
     })
   },
 
   methods: {
     addMark (e) {
-      console.log({ e })
+      // console.log({ e })
       this.centerClone = e.latLng
       var clickedLocation = e.latLng
       if (typeof this.readOnly !== 'undefined' && this.readOnly === true) { return }
@@ -113,7 +113,7 @@ export default {
     },
     geolocate: function () {
       if (this.markers) {
-        console.log({ Marker: this.markers })
+        // console.log({ Marker: this.markers })
         this.centerClone = {
           lat: this.markers[0].position.lat,
           lng: this.markers[0].position.lng
@@ -129,7 +129,7 @@ export default {
     },
     geolocalize () {
       navigator.geolocation.getCurrentPosition(position => {
-        console.log({ position })
+        // console.log({ position })
         let latLng = {
           lat: position.coords.latitude,
           lng: position.coords.longitude

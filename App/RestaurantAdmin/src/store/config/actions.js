@@ -5,9 +5,22 @@ export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configs', firestore().collection('config'), { reset: false })
 })
-export const bindEnv = firestoreAction(({ bindFirestoreRef }) => {
+export const bindEnv = firestoreAction(async ({ bindFirestoreRef }) => {
   console.log('bindEnv')
-  return bindFirestoreRef('environment', firestore().collection('environment').doc('version'), { reset: false })
+  return bindFirestoreRef('version', firestore().collection('environment').doc('version'), { reset: false })
+})
+export const bindManifest = firestoreAction(async ({ bindFirestoreRef }) => {
+  console.log('bindManifest')
+  return bindFirestoreRef('manifest', firestore().collection('environment').doc('manifest'), { reset: false })
+})
+export const saveManifest = firestoreAction(async (state, payload) => {
+  return firestore()
+    .collection('environment')
+    .doc('manifest')
+    .set(payload, { merge: true })
+    .then(() => {
+      console.log(`manifest updated!`)
+    })
 })
 export const saveConfig = firestoreAction((state, payload) => {
   console.log(payload)

@@ -26,6 +26,10 @@ const routes = [
     ]
   },
   {
+    path: '/pg',
+    component: () => import('layouts/User.vue')
+  },
+  {
     path: '/auth',
     component: () => import('layouts/Basic.vue'),
     children: [

@@ -1,6 +1,6 @@
 {
   "name": "chopzi",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Chopzi ECRA",
   "productName": "Chopzi",
   "author": "Pfcevolution",
@@ -17,20 +17,20 @@
   },
   "dependencies": {
     "@eosrio/hyperion-stream-client": "^0.3.6",
-    "@quasar/extras": "^1.9.4",
+    "@quasar/extras": "^1.9.5",
     "axios": "^0.19.2",
     "core-js": "3.0.0",
     "cross-env": "^7.0.2",
     "eosjs": "^20.0.3",
     "firebase": "^7.19.0",
     "gmap-vue": "^1.2.1",
-    "quasar": "^1.13.1",
+    "quasar": "^1.14.0",
     "quasar-app-extension-firebase-messaging": "^0.1.1",
     "vuedraggable": "^2.24.0",
     "vuexfire": "^3.2.2"
   },
   "devDependencies": {
-    "@quasar/app": "2.0.0",
+    "@quasar/app": "2.1.0",
     "@quasar/quasar-app-extension-qenv": "^1.0.3",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",

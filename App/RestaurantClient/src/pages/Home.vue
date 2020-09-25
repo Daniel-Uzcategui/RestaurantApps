@@ -4,7 +4,7 @@
       <div v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
         <div v-if="block.child.length">
           <div  class="row justify-around reverse-wrap flex-center">
-                <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e)}" />
+                <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
           </div>
         </div>
       </div>
@@ -33,15 +33,16 @@ export default {
     'qcarousel': () => import('../components/editor/qcarousel'),
     'qTextBlock': () => import('../components/editor/qTextBlock'),
     'customHtml': () => import('../components/editor/customHtml'),
+    'customJS': () => import('../components/editor/customJS'),
     'findus': () => import('../components/editor/findus'),
-    'qimg': () => import('../components/editor/qimg'),
-    'fbq-uploader': () => import('../components/FBQUploader.vue')
+    'qimg': () => import('../components/editor/qimg')
+
   },
   data () {
     return {
       visible: true,
       admin: false,
-      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml'],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
       blocks: [
       ],
       selectedBLock: { block_index: null, child_index: null },
@@ -69,15 +70,15 @@ export default {
   methods: {
     ...mapActions('editor', ['saveBlocks', 'bindBlocks']),
     log (e) {
-      console.log(e)
+      // console.log(e)
     },
     childMounted (e) {
-      console.log({ e }, 'Child Mounted')
+      // console.log({ e }, 'Child Mounted')
     },
     placeHoldClick (e) {
       this.selectedBLock = e.block_info
       this.selectedBLockProps = e.props_info
-      console.log({ ...this.blocks })
+      // console.log({ ...this.blocks })
     }
   }
 }

@@ -23,7 +23,7 @@
       <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style" v-html="text">
       </q-card-section>
       <q-card-section v-if="button" class="row justify-center" :style="btn_container_style" :class="btn_container_class">
-        <q-btn no-caps :color="btn_color" :rounded="btn_rounded" :text-color="btn_text_color" :style="btn_style" :class="btn_class" :label="btn_label" />
+        <q-btn type="a" no-caps :color="btn_color" :href="btn_href" :rounded="btn_rounded" :text-color="btn_text_color" :style="btn_style" :class="btn_class" :label="btn_label" />
       </q-card-section>
    </q-card>
 </template>
@@ -121,6 +121,10 @@ export default {
       default: ''
     },
     btn_label: {
+      type: String,
+      default: ''
+    },
+    btn_href: {
       type: String,
       default: ''
     },

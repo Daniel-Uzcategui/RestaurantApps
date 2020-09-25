@@ -1,9 +1,9 @@
 <template>
 <div @click="click" :class="image_container_class" :style="image_container_style" style="margin-bottom: -6px;">
-    <img :style="img_style"
+    <q-img :style="img_style"
     :class="img_class"
           :src="valImg"
-        >
+        />
     <div :class="title_container_class" :style="title_container_style">
       <div v-html="title" :class="title_class" :style="title_style"></div>
     </div>

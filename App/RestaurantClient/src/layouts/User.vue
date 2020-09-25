@@ -1,24 +1,23 @@
 <template>
    <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" view="hhh LpR fFf">
-         <q-toolbar class="bg-transparent text-white" style="z-index: 100">
+         <q-toolbar style="z-index: 100">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
-               color="primary"
                dense
                round
                icon='fas fa-bars'
                class="burgericon"
-              name="cart"
+               name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
                exact />
                <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
                   <user-settings></user-settings>
                </q-dialog>
                <div class="absolute-right">
-                 <q-btn to="/cart/index" color="white" class="carticon" flat icon="fas fa-shopping-cart" >
+                 <q-btn to="/cart/index" class="carticon" flat icon="fas fa-shopping-cart" >
                    <q-badge color="red" floating>{{getCartQ}}</q-badge>
                  </q-btn>
-               <q-toggle color="primary" class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+               <q-toggle class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
                </div>
          </q-toolbar>
       <q-drawer
@@ -121,9 +120,10 @@ export default {
     this.bindBlocks().then((e) => {
       this.$q.loading.hide()
       this.toggleColors()
-      console.log({ bindblock: e })
+      // console.log({ bindblock: e })
       var obj = e.find(e => e.id === 'blocks')
       this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
+      this.addRoutes()
     })
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -139,23 +139,30 @@ export default {
   },
   async mounted () {
     this.bindEnv().then(e => {
-      console.log({ environment: e })
+      // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
       if (ver === null) {
         localStorage.setItem('envVer', e.version)
       } else if (ver !== e.version) {
         this.$q.dialog({
           title: 'Nueva Version',
-          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas acutalizaciones?',
+          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
           cancel: true,
           persistent: true
         }).onOk(() => {
           localStorage.setItem('envVer', e.version)
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+              for (let registration of registrations) {
+                registration.update()
+              }
+            })
+          }
           this.getNewVer()
         })
       }
       if (ver === e.version) {
-        console.log('App is in the newer version')
+        // console.log('App is in the newer version')
       }
     })
     const { currentUser } = this
@@ -187,6 +194,30 @@ export default {
     ...mapActions('user', ['setValue']),
     ...mapActions('config', ['bindConfigs', 'bindEnv']),
     ...mapActions('editor', ['bindBlocks']),
+    addRoutes () {
+      let { routes } = this.$router.options
+      console.log({ routes }, 'Routes', { ...this.editor })
+      let routerAdd = this.editor.find(e => e.id === 'routes')
+      if (typeof routerAdd !== 'undefined') {
+        let routeData = routes.find(r => r.path === '/pg')
+        let node, ii
+        let stack = []
+        let parent = routerAdd
+        stack.push(parent)
+        while (stack.length > 0) {
+          node = stack.pop()
+          if (typeof node.children !== 'undefined') {
+            for (ii = 0; ii < node.children.length; ii += 1) {
+              node.children[ii].component = () => import('pages/pgs.vue')
+              stack.push(node.children[ii])
+            }
+          }
+        }
+        routeData.children = routerAdd.children
+        this.$router.addRoutes([routeData])
+        console.log({ routes }, 'Routes2')
+      }
+    },
     getNewVer () {
       window.location.reload(true)
     },
@@ -197,11 +228,11 @@ export default {
         messaging
           .requestPermission()
           .then(() => {
-            console.log('Notif allowed')
+            // console.log('Notif allowed')
             return messaging.getToken()
           })
           .then(token => {
-            console.log('Token Is : ' + token)
+            // console.log('Token Is : ' + token)
             if (!that.isAnonymous && that.currentUser && that.currentUser.fcm !== token) {
               that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
             }
@@ -264,11 +295,11 @@ export default {
       }]
       for (let i of navig) {
         Vue.set(this.nav, this.nav.length, i)
-        console.log({ i })
+        // console.log({ i })
       }
     },
     toggleColors () {
-      console.log('editor', { ...this.editor })
+      // console.log('editor', { ...this.editor })
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
       if (this.page) {
@@ -295,7 +326,7 @@ export default {
         // eslint-disable-next-line
         window.Tawk_API = {}, window.Tawk_LoadStart = new Date();
         window.Tawk_API.onLoad = function () {
-          console.log('Tawk loaded')
+          // console.log('Tawk loaded')
           Vue.set(that, 'Tawk_API', window.Tawk_API)
           if (that.$q.platform.is.mobile) {
             window.Tawk_API.hideWidget()
@@ -340,7 +371,7 @@ export default {
   },
   watch: {
     editor (e) {
-      console.log('editor updated')
+      // console.log('editor updated')
       var obj = e.find(e => e.id === 'blocks')
       this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
     },
@@ -349,7 +380,7 @@ export default {
       this.setupNotif()
     },
     Tawk_API () {
-      console.log('asdasdasd')
+      // console.log('asdasdasd')
     }
   }
 }

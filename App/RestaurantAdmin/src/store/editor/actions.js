@@ -10,6 +10,16 @@ export const saveBlocks = firestoreAction((state, payload) => {
       console.log(`editor blocks updated!`)
     })
 })
+export const saveBlocks2 = firestoreAction((state, payload) => {
+  console.log({ payload })
+  return firestore()
+    .collection('editor')
+    .doc('blocks' + payload.doc)
+    .set({ [payload.pagename]: JSON.parse(JSON.stringify(payload.payload)) }, { merge: true })
+    .then(() => {
+      console.log(`editor blocks updated!`)
+    })
+})
 export const saveCss = firestoreAction((state, payload) => {
   return firestore()
     .collection('editor')
@@ -25,7 +35,16 @@ export const savePage = firestoreAction((state, payload) => {
     .doc('page' + payload.doc)
     .set(payload.payload)
     .then(() => {
-      console.log(`editor blocks updated!`)
+      console.log(`editor page updated!`)
+    })
+})
+export const saveRoutes = firestoreAction((state, payload) => {
+  return firestore()
+    .collection('editor')
+    .doc('routes' + payload.doc)
+    .set(payload.payload)
+    .then(() => {
+      console.log(`editor routes updated!`)
     })
 })
 export const saveVer = firestoreAction((state, payload) => {

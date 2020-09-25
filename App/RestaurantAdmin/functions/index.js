@@ -140,6 +140,160 @@ async function getComponentPrice (compId, itemId) {
   }
   return price
 }
+exports.GetManifest = functions.https.onRequest(async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  const reqRef = db.collection('environment').doc('manifest')
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    res.send({
+      'name': 'Chopzi',
+      'short_name': 'chopzi',
+      'description': 'Chopzi ECRA',
+      'display': 'standalone',
+      'start_url': '.',
+      'icons': [
+        {
+          'src': 'icons/icon-128x128.png',
+          'sizes': '128x128',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-192x192.png',
+          'sizes': '192x192',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-256x256.png',
+          'sizes': '256x256',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-384x384.png',
+          'sizes': '384x384',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-512x512.png',
+          'sizes': '512x512',
+          'type': 'image/png'
+        }
+      ],
+      'orientation': 'portrait',
+      'background_color': '#ffffff',
+      'theme_color': '#027be3'
+    })
+  } else {
+    let pre = doc.data()
+    let icons = [{
+      'src': pre.icons.icon128x128,
+      'sizes': '128x128',
+      'type': 'image/png'
+    },
+    {
+      'src': pre.icons.icon192x192,
+      'sizes': '192x192',
+      'type': 'image/png'
+    },
+    {
+      'src': pre.icons.icon256x256,
+      'sizes': '256x256',
+      'type': 'image/png'
+    },
+    {
+      'src': pre.icons.icon384x384,
+      'sizes': '384x384',
+      'type': 'image/png'
+    },
+    {
+      'src': pre.icons.icon512x512,
+      'sizes': '512x512',
+      'type': 'image/png'
+    }]
+    pre.icons = icons
+    return res.send({ ...pre })
+  }
+})
+exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  const reqRef = db.collection('environment').doc('manifest')
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    res.send({
+      'name': 'Chopzi-admin',
+      'short_name': 'chopzi-admin',
+      'description': 'Chopzi ECRA Admin',
+      'display': 'standalone',
+      'start_url': '.',
+      'icons': [
+        {
+          'src': 'icons/icon-128x128.png',
+          'sizes': '128x128',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-192x192.png',
+          'sizes': '192x192',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-256x256.png',
+          'sizes': '256x256',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-384x384.png',
+          'sizes': '384x384',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-512x512.png',
+          'sizes': '512x512',
+          'type': 'image/png'
+        }
+      ],
+      'orientation': 'portrait',
+      'background_color': '#ffffff',
+      'theme_color': '#027be3'
+    })
+  } else {
+    let pre = doc.data()
+    let icons = [
+      {
+        'src': 'icons/icon-128x128.png',
+        'sizes': '128x128',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-192x192.png',
+        'sizes': '192x192',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-256x256.png',
+        'sizes': '256x256',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-384x384.png',
+        'sizes': '384x384',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-512x512.png',
+        'sizes': '512x512',
+        'type': 'image/png'
+      }
+    ]
+    pre.icons = icons
+    pre.name = 'Chopzi-admin-' + pre.name
+    pre.short_name = 'Chopzi-admin-' + pre.short_name
+    return res.send({ ...pre })
+  }
+})
 exports.RewardsPoints = functions.firestore
   .document('orders/{ordersId}')
   .onUpdate(async (change, context) => {
