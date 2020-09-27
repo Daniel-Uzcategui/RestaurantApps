@@ -15,7 +15,7 @@ export const saveBlocks2 = firestoreAction((state, payload) => {
   return firestore()
     .collection('editor')
     .doc('blocks' + payload.doc)
-    .set({ [payload.pagename]: JSON.parse(JSON.stringify(payload.payload)) }, { merge: true })
+    .set({ addedPages: JSON.parse(JSON.stringify(payload.payload)) }, { merge: true })
     .then(() => {
       console.log(`editor blocks updated!`)
     })

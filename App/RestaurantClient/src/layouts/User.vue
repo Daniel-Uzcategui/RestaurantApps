@@ -233,8 +233,8 @@ export default {
           })
           .then(token => {
             // console.log('Token Is : ' + token)
-            if (!that.isAnonymous && that.currentUser && that.currentUser.fcm !== token) {
-              that.setValue({ payload: { value: token, id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
+            if (!that.isAnonymous && that.currentUser && (typeof that.currentUser.fcm === 'string' || typeof that.currentUser.fcm === 'undefined' || !that.currentUser.fcm.includes(token))) {
+              that.setValue({ payload: { value: typeof that.currentUser.fcm === 'undefined' || typeof that.currentUser.fcm === 'string' ? [token] : [...that.currentUser.fcm, token], id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
             }
           })
           .catch(err => {

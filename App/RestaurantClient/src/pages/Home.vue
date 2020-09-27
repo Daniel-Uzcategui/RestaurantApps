@@ -53,8 +53,8 @@ export default {
     if (this.editor.length) {
       this.visible = false
       let obj = this.editor.find(e => e.id === 'blocks')
-      if (typeof obj !== 'undefined') {
-        this.blocks = JSON.parse(JSON.stringify(obj.blocks))
+      if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
+        this.blocks = JSON.parse(JSON.stringify(obj.addedPages['Home']))
       }
     }
   },
@@ -62,13 +62,13 @@ export default {
     editor (e) {
       this.visible = false
       let obj = e.find(e => e.id === 'blocks')
-      if (typeof obj !== 'undefined') {
-        this.blocks = JSON.parse(JSON.stringify(obj.blocks))
+      if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
+        this.blocks = JSON.parse(JSON.stringify(obj.addedPages['Home']))
       }
     }
   },
   methods: {
-    ...mapActions('editor', ['saveBlocks', 'bindBlocks']),
+    ...mapActions('editor', ['bindBlocks']),
     log (e) {
       // console.log(e)
     },

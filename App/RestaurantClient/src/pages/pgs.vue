@@ -56,9 +56,9 @@ export default {
     let full = this.fullPath
     if (this.editor.length) {
       this.visible = false
-      let obj = this.editor.find(e => e.id === 'blocks' + full.replace(/\//g, ''))
+      let obj = this.editor.find(e => e.id === 'blocks')
       if (typeof obj !== 'undefined') {
-        this.blocks = JSON.parse(JSON.stringify(obj.blocks))
+        this.blocks = JSON.parse(JSON.stringify(obj.addedPages[full.replace(/\//g, '')]))
       }
     }
   },
@@ -69,9 +69,9 @@ export default {
       // console.log(this.fullPath)
       if (this.editor.length) {
         this.visible = false
-        let obj = this.editor.find(e => e.id === 'blocks' + full.replace(/\//g, ''))
+        let obj = this.editor.find(e => e.id === 'blocks')
         if (typeof obj !== 'undefined') {
-          this.blocks = JSON.parse(JSON.stringify(obj.blocks))
+          this.blocks = JSON.parse(JSON.stringify(obj.addedPages[full.replace(/\//g, '')]))
         }
       }
     },

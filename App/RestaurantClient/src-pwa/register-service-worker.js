@@ -12,13 +12,11 @@ register('firebase-messaging-sw.js', {
   // registrationOptions: { scope: './' },
 
   ready (registration) {
-    var that = this
-    console.log('Service worker is active.', { registration }, { that })
+    console.log('Service worker is active.')
   },
 
   registered (registration) {
-    var that = this
-    console.log('Service worker has been registered.', { registration }, { that })
+    console.log('Service worker has been registered.')
   },
 
   cached (/* registration */) {

@@ -628,17 +628,17 @@ export default {
       }
     })
     this.bindBlocks().then((e) => {
-      console.log({ download: JSON.parse(JSON.stringify(e)) })
       let obj = e.find(e => e.id === 'blocks')
       let pageobj = e.find(e => e.id === 'page')
       let routes = e.find(e => e.id === 'routes')
       if (obj && obj.css) { this.insertCss = obj.css }
       if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
       if (routes) { this.pagesNode = [JSON.parse(JSON.stringify(routes))] }
-      if (obj && obj.blocks) {
-        for (let key of Object.keys(obj)) {
-          if (key !== 'css') {
-            Vue.set(this, key, JSON.parse(JSON.stringify(obj[key])))
+      if (obj && obj.addedPages) {
+        this.blocks = obj.addedPages['Home']
+        for (let key of Object.keys(obj.addedPages)) {
+          if (key) {
+            Vue.set(this.addedPages, key, JSON.parse(JSON.stringify(obj.addedPages[key])))
           }
         }
       }
@@ -646,17 +646,27 @@ export default {
   },
   watch: {
     blocks (e) {
-      let preffix = this.selectedPage.replace(/\//g, '')
-      this['blocks' + preffix] = this.blocks
-      console.log({ to: 'blocks' + preffix, blocks: this['blocks' + preffix] })
+      let preffix
+      if (this.selectedPage === null) { preffix = '' } else {
+        preffix = this.selectedPage.replace(/\//g, '')
+      }
+      if (preffix !== '') {
+        this.addedPages[preffix] = this.blocks
+      } else {
+        this.addedPages['Home'] = this.blocks
+      }
     },
     selectedPage (e) {
-      let preffix = e.replace(/\//g, '')
-      let preffix2 = this.saveSelected
-      let obj = this.editor.find(e => e.id === 'blocks' + preffix2)
-      if (obj) {
-        this.blocks = obj['blocks' + preffix]
-      } else { this.blocks = [] }
+      let preffix
+      console.log('selectedpage', e)
+      if (e === null) { preffix = '' } else {
+        preffix = e.replace(/\//g, '')
+      }
+      if (preffix !== '') {
+        console.log(preffix)
+        console.log(this.addedPages, 'Added pages')
+        if (this.addedPages && this.addedPages[preffix]) { this.blocks = this.addedPages[preffix] } else { this.selectedPage = '' }
+      } else { this.blocks = this.addedPages['Home'] }
     }
   },
   methods: {
@@ -689,7 +699,7 @@ export default {
             })
           }
           let leroute = this.selectedPage !== '/' && this.selectedPage !== null ? this.selectedPage + '/' + this.newPageName : '/pg/' + this.newPageName
-          Vue.set(this, 'blocks' + leroute.replace(/\//g, ''), [])
+          Vue.set(this.addedPages, leroute.replace(/\//g, ''), [])
           Vue.set(node.children, node.children.length, {
             path: this.newPageName,
             route: leroute })
@@ -723,22 +733,7 @@ export default {
     },
     download () {
       this.selectedPage = ''
-      let node, ii
-      let stack = []
-      let out = {}
-      let parent = this.pagesNode[0]
-      stack.push(parent)
-      while (stack.length > 0) {
-        node = stack.pop()
-        if (typeof node.children !== 'undefined') {
-          for (ii = 0; ii < node.children.length; ii += 1) {
-            console.log(node.children[ii].route.replace(/\//g, ''))
-            out['blocks' + node.children[ii].route.replace(/\//g, '')] = this['blocks' + node.children[ii].route.replace(/\//g, '')]
-            stack.push(node.children[ii])
-          }
-        }
-      }
-      exportFile('ChopziPage.json', JSON.stringify({ ...out, blocks: this.blocks, css: this.insertCss, page: this.page, routes: this.pagesNode[0] }))
+      exportFile('ChopziPage.json', JSON.stringify({ addedPages: this.addedPages, css: this.insertCss, page: this.page, routes: this.pagesNode[0] }))
     },
     async loadImport () {
       let file = await this.importFile.text()
@@ -752,17 +747,7 @@ export default {
           route: '/'
         }]
       }
-      if (toObject) {
-        for (let key of Object.keys(toObject)) {
-          if (key !== 'css' && key !== 'page' && key !== 'routes' && key !== 'blocks') {
-            if (typeof this[key] === 'undefined') {
-              Vue.set(this, key, toObject[key])
-            } else {
-              this[key] = toObject[key]
-            }
-          }
-        }
-      }
+      if (toObject && toObject.addedPages) { this.selectedPage = ''; this.addedPages = toObject.addedPages; this.blocks = this.addedPages['Home'] } else { this.addedPages = {} }
     },
     saveV () {
       if (this.newVerAlias !== '') {
@@ -784,21 +769,8 @@ export default {
         persistent: true
       }).onOk(() => {
         this.SaveReq = false
-        this.saveBlocks({ payload: this.blocks, doc: preffix })
-        let node, ii
-        let stack = []
-        let parent = this.pagesNode[0]
-        stack.push(parent)
-        while (stack.length > 0) {
-          node = stack.pop()
-          if (typeof node.children !== 'undefined') {
-            for (ii = 0; ii < node.children.length; ii += 1) {
-              console.log(node.children[ii].route.replace(/\//g, ''))
-              this.saveBlocks2({ payload: this['blocks' + node.children[ii].route.replace(/\//g, '')], pagename: 'blocks' + node.children[ii].route.replace(/\//g, ''), doc: preffix })
-              stack.push(node.children[ii])
-            }
-          }
-        }
+        // this.saveBlocks({ payload: this.blocks, doc: preffix })
+        this.saveBlocks2({ payload: this.addedPages, doc: preffix })
         this.savePage({ payload: this.page, doc: preffix })
         this.saveRoutes({ payload: this.pagesNode[0], doc: preffix })
         this.saveCss({ payload: this.insertCss, doc: preffix })
@@ -818,16 +790,10 @@ export default {
         let obj = this.editor.find(e => e.id === 'blocks' + preffix)
         let pageobj = this.editor.find(e => e.id === 'page' + preffix)
         let routes = this.editor.find(e => e.id === 'routes' + preffix)
-        if (obj && obj.blocks) {
-          for (let key of Object.keys(obj)) {
-            if (key !== 'css') {
-              if (typeof this[key] === 'undefined') {
-                Vue.set(this, key, JSON.parse(JSON.stringify(obj[key])))
-              } else {
-                this[key] = JSON.parse(JSON.stringify(obj[key]))
-              }
-            }
-          }
+        this.addedPages = typeof obj.addedPages === 'undefined' ? {} : obj.addedPages
+        if (obj.addedPages['Home']) {
+          this.selectedPage = ''
+          this.blocks = obj.addedPages['Home']
         }
         if (obj && obj.css) { this.insertCss = obj.css } else { this.insertCss = '' }
         if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) } else { this.page = {} }

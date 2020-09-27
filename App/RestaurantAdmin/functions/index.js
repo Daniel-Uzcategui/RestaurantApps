@@ -362,7 +362,7 @@ exports.RewardsPoints = functions.firestore
       var status = options.find(e => e.value === newValue.status)
       const userData = doc.data()
       if (typeof userData.fcm !== 'undefined') {
-        return admin.messaging().sendToDevice([userData.fcm], { 'notification': {
+        return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
           'title': 'ChopZi',
           'body': `${status.label}`,
           'click_action': 'http://localhost:8080/#/orders/index',
