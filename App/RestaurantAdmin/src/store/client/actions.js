@@ -12,7 +12,12 @@ export const saveClient = firestoreAction((state, payload) => {
     })
 })
 
+export const bindOnlyClients = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindOnlyClients')
+  return bindFirestoreRef('clients', firestore().collection('users').where('typeAccess', '==', 'Client').orderBy('email'))
+})
+
 export const bindClients = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindClients')
-  return bindFirestoreRef('clients', firestore().collection('users'))
+  return bindFirestoreRef('clients', firestore().collection('users').orderBy('email'))
 })
