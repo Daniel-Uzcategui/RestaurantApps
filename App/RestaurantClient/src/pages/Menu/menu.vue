@@ -1,14 +1,14 @@
 <template>
   <div>
-    <q-input class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
+    <q-input v-if="false" class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
       <template v-slot:prepend>
         <q-icon name="fas fa-search" />
       </template>
    </q-input>
-     <q-card flat class="menu-div" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-      <q-card-section>
+     <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+      <q-card-section class="q-pt-xl">
          <div class="fontsize-18 header-title">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
-         <div class="absolute-bottom-right q-pa-md" >
+         <div class="absolute-bottom-right" >
             <q-btn-group push>
                <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
                <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
@@ -30,7 +30,7 @@
                         <div class="item-content">
                             <div class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                               <div class="container-photo">
-                                  <img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders menuphoto" />
+                                  <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders menuphoto" />
                               </div>
                               <div class="text-content">
                                   <div class="text-bold relative-position">
@@ -472,6 +472,14 @@ export default {
 </script>
 
 <style lang="stylus">
+  .menuphoto
+    -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
+  .burgericon
+    color: black !important
+  .carticon
+    color: black !important
+  .toggleicon
+    color: black !important
   .wrapel .no-wrap
     flex-wrap: wrap !important
   .menu-div

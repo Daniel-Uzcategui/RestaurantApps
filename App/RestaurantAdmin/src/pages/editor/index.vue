@@ -41,6 +41,70 @@
             <q-btn color="primary" @click="SaveReq = true" label="Save Project" />
             <q-btn color="primary" @click="loadReq = true" label="Load" />
          </div>
+         <q-card v-if="app_options">
+            <q-card-section>
+                  <q-expansion-item class="text-h6" label="Order Wheel Colors">
+                     <q-card-section class="row justify-between">
+                        <q-btn
+                           filled
+                           class="text-white col-6"
+                           v-model="page.knob.knob0"
+                           label="Por confirmar"
+                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob0 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob0};`"
+                           >
+                           <q-popup-edit v-model="page.knob.knob0">
+                              <q-color v-model="page.knob.knob0" />
+                           </q-popup-edit>
+                        </q-btn>
+                        <q-btn
+                           filled
+                           class="text-white col-6"
+                           v-model="page.knob.knob1"
+                           label="Preparando su pedido"
+                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob1 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob1};`"
+                           >
+                           <q-popup-edit v-model="page.knob.knob1">
+                              <q-color v-model="page.knob.knob1" />
+                           </q-popup-edit>
+                        </q-btn>
+                        <q-btn
+                           filled
+                           class="text-white col-6"
+                           v-model="page.knob.knob2"
+                           label="Orden en vía"
+                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob2 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob2};`"
+                           >
+                           <q-popup-edit v-model="page.knob.knob2">
+                              <q-color v-model="page.knob.knob2" />
+                           </q-popup-edit>
+                        </q-btn>
+                        <q-btn
+                           filled
+                           class="text-white col-6"
+                           v-model="page.knob.knob3"
+                           label="Orden entregada"
+                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob3 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob3};`"
+                           >
+                           <q-popup-edit v-model="page.knob.knob3">
+                              <q-color v-model="page.knob.knob3" />
+                           </q-popup-edit>
+                        </q-btn>
+                        <q-btn
+                           filled
+                           class="text-white col-6"
+                           v-model="page.knob.knob4"
+                           label="Anulada"
+                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob4 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob4};`"
+                           >
+                           <q-popup-edit v-model="page.knob.knob4">
+                              <q-color v-model="page.knob.knob4" />
+                           </q-popup-edit>
+                        </q-btn>
+                     </q-card-section>
+                  </q-expansion-item>
+               </q-card-section>
+            </q-card>
+         <div v-if="!app_options">
          <div class="q-pa-md text-h7">
             <div>Selected page:</div>
             <div>{{selectedPage === null ? '/' : selectedPage}}</div>
@@ -63,6 +127,7 @@
                   <q-btn @click="addPage()" round dense flat icon="add" />
                </template>
             </q-input>
+         </div>
          </div>
          <q-card v-if="page_options" class="my-card">
             <q-card-section>
@@ -282,7 +347,7 @@
                </q-expansion-item>
             </q-card-section>
          </q-card>
-         <q-input type="textarea" v-if="app_options" v-model="insertCss" label="CSS" >
+         <q-input type="textarea" v-if="app_options" v-model="insertCss" label="Global CSS" >
             <template v-slot:append>
                         <q-icon name="edit">
                            <q-popup-edit persistent buttons v-model="insertCss" content-class="text-white">
@@ -362,8 +427,8 @@
                enter-active-class="animated fadeIn"
                leave-active-class="animated fadeOut">
                <div v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
-                  <div v-if="block.child.length" @mouseover=" admin ? (block.hover = true) : false" @mouseleave="admin ? block.hover = false : false">
-                     <q-btn v-if="block.hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
+                  <div v-if="block.child.length" @mouseover=" admin ? (hover = true) : false" @mouseleave="admin ? hover = false : false">
+                     <q-btn v-if="hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
                      <draggable :is="admin ? 'draggable' : 'div'" class="row justify-around reverse-wrap flex-center" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
                         <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e)}" />
                      </draggable>
@@ -574,7 +639,7 @@ export default {
       },
       iconmodel: null,
       colors: colors,
-      page: {},
+      page: { knob: {} },
       page_options: false,
       app_options: false,
       admin: true,
@@ -593,6 +658,7 @@ export default {
       imgsbc: null,
       imgsi: null,
       verSel: null,
+      hover: false,
       SaveReq: false,
       loadReq: false,
       saveSelect: '',
@@ -633,6 +699,9 @@ export default {
       let routes = e.find(e => e.id === 'routes')
       if (obj && obj.css) { this.insertCss = obj.css }
       if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
+      if (typeof this.page.knob === 'undefined') { Vue.set(this.page, 'knob', {}) } else {
+        Vue.set(this.page, 'knob', this.page.knob)
+      }
       if (routes) { this.pagesNode = [JSON.parse(JSON.stringify(routes))] }
       if (obj && obj.addedPages) {
         this.blocks = obj.addedPages['Home']
@@ -741,8 +810,10 @@ export default {
       if (toObject && toObject.blocks) { this.blocks = toObject.blocks } else { this.blocks = [] }
       if (toObject && toObject.css) { this.insertCss = toObject.css } else { this.insertCss = '' }
       if (toObject && toObject.page) { this.page = toObject.page } else { this.page = {} }
-      if (toObject && toObject.routes) { this.routes = [toObject.routes] } else {
-        this.routes = [{
+      if (toObject && toObject.routes) {
+        Vue.set(this.pagesNode, 0, toObject.routes)
+      } else {
+        this.pagesNode = [{
           path: '/',
           route: '/'
         }]
@@ -797,7 +868,7 @@ export default {
         }
         if (obj && obj.css) { this.insertCss = obj.css } else { this.insertCss = '' }
         if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) } else { this.page = {} }
-        if (routes) { this.pagesNode = [JSON.parse(JSON.stringify(routes))] } else {
+        if (routes) { Vue.set(this.pagesNode, 0, JSON.parse(JSON.stringify(routes))) } else {
           this.pagesNode = [{
             path: '/',
             route: '/'

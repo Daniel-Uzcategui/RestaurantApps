@@ -30,13 +30,7 @@
         <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
           <q-select :value="order.status"
-            @input="(e) => { e !== 3 ? saved(e, this.$route.query.Order_Id, 'status') :
-              $q.dialog({
-                title: 'Alerta!',
-                message: 'Al colocar la orden como entregada se liberan los puntos de fidelidad al cliente, esto no se puede reversar '
-              }).onOk(() => {
-                saved(e, this.$route.query.Order_Id, 'status')
-              })
+            @input="(e) => { checkOrder(e)
             }"
             map-options
             emit-value
@@ -397,6 +391,28 @@ export default {
       })
       fullname = typeof objclients !== 'undefined' ? objclients.nombre + ' ' + objclients.apellido : 'No disponible'
       return fullname
+    },
+    checkOrder (e) {
+      switch (e) {
+        case 3:
+          this.$q.dialog({
+            title: 'Alerta!',
+            message: 'Al colocar la orden como entregada se liberan los puntos de fidelidad al cliente, esto no se puede reversar '
+          }).onOk(() => {
+            this.saved(e, this.$route.query.Order_Id, 'status')
+          })
+          break
+        case 4:
+          this.$q.dialog({
+            title: 'Alerta!',
+            message: 'Al colocar la orden como anulada se acutalizará el stock, esto no se puede reversar '
+          }).onOk(() => {
+            this.saved(e, this.$route.query.Order_Id, 'status')
+          })
+          break
+        default:
+          this.saved(e, this.$route.query.Order_Id, 'status')
+      }
     },
     getAddress (value) {
       let objaddress

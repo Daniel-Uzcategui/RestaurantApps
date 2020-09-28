@@ -299,11 +299,11 @@ exports.RewardsPoints = functions.firestore
   .onUpdate(async (change, context) => {
     const newValue = change.after.data()
     const previousValue = change.before.data()
-    var user = previousValue.customer_id
-    var userRef = db.collection('users').doc(user)
+    let user = previousValue.customer_id
+    let userRef = db.collection('users').doc(user)
     const doc = await userRef.get()
     if (newValue.status === 3) {
-      var paid = previousValue.paid
+      let paid = previousValue.paid
       if (!doc.exists) {
         console.log('No such document!')
       } else {
@@ -323,14 +323,14 @@ exports.RewardsPoints = functions.firestore
         const cart = previousValue.cart
         for (let prod of cart) {
           if (prod.prodType === 0 && typeof prod.rewards === 'undefined') {
-            var menuRef = db.collection('menu').doc(prod.prodId)
+            let menuRef = db.collection('menu').doc(prod.prodId)
             const docMenu = await menuRef.get()
-            var increment = admin.firestore.FieldValue.increment(prod.quantity)
+            let increment = admin.firestore.FieldValue.increment(prod.quantity)
             if (!docMenu.exists) {
               console.log('No such document!')
             } else {
               const docMenuData = docMenu.data()
-              for (var cat of docMenuData.categoria) {
+              for (let cat of docMenuData.categoria) {
                 if (typeof userData.pointsCat === 'undefined' || typeof userData.pointsCat[cat] === 'undefined') {
                   userRef.set({
                     pointsCat: {
@@ -344,6 +344,43 @@ exports.RewardsPoints = functions.firestore
                     [`pointsCat.${cat}`]: increment
                   })
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (newValue.status === 4) {
+      if (!doc.exists) {
+        console.log('No such document!')
+        return
+      } else {
+        const cart = previousValue.cart
+        const sede = previousValue.sede
+        for (let prod of cart) {
+          if (prod.prodType === 0) {
+            var menuRef = db.collection('menu').doc(prod.prodId)
+            const docMenu = await menuRef.get()
+            let increment = admin.firestore.FieldValue.increment(prod.quantity)
+            if (!docMenu.exists) {
+              console.log('No such document!')
+            } else {
+              menuRef.update({
+                [`stock.${sede}`]: increment
+              })
+            }
+          }
+          if (prod.prodType === 1) {
+            for (let product of prod.prods) {
+              let menuRef = db.collection('menu').doc(product.id)
+              const docMenu = await menuRef.get()
+              let increment = admin.firestore.FieldValue.increment(product.quantity)
+              if (!docMenu.exists) {
+                console.log('No such document!')
+              } else {
+                menuRef.update({
+                  [`stock.${sede}`]: increment
+                })
               }
             }
           }

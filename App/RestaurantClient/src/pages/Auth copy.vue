@@ -1,16 +1,14 @@
 <template>
-  <q-page class="bgimage">
-    <q-card class="bg-transparent q-pt-xl relative-position" flat square>
-      <q-card-section class="relative-position">
-         <div class="absolute-right q-mr-xl">
+  <q-page class="items-center">
+    <q-card flat square>
+              <q-card-section class="bg-primary">
+            <h4 class="text-h5 text-white q-my-md">{{ getAuthType }}</h4>
+            <div class="absolute-bottom-right q-pr-md" style="transform: translateY(50%);">
               <q-btn fab :label="inverseGetAuthType" color="secondary" :to="routeAuthentication" />
             </div>
-      </q-card-section>
-      <q-card-section class="q-pt-xl q-pl-xl">
-            <h4 class="text-h3 q-my-md">{{ getAuthType }}</h4>
-      </q-card-section>
-  <q-card-section>
-    <q-form class="column authentication q-px-sm q-pl-xl" ref="emailAuthenticationForm" @submit="onSubmit">
+            </q-card-section>
+            <q-card-section>
+    <q-form class="authentication q-px-sm q-pt-xl" ref="emailAuthenticationForm" @submit="onSubmit">
       <q-input
         square
         clearable
@@ -115,8 +113,7 @@
         <q-checkbox v-model="checkTerms"/><q-btn flat color="primary" label="Terminos y Condiciones " v-ripple @click.native="getTermsDialog();" />
        </div>
       <q-btn
-        class="q-ma-xl"
-        rounded
+        class="full-width q-mt-md"
         color="primary"
         data-cy="submit"
         type="submit"
@@ -124,12 +121,12 @@
       >
       </q-btn>
       <p v-if="!isRegistration" class="q-ma-sm text-center">
-          <router-link class="text-primary" to="forgotPassword">¿Olvidaste tu contraseña?</router-link>
+          <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
       </p>
       <q-dialog v-model="viewTermsDialog" persistent="persistent" @before-hide="setBlur">
              <terms></terms>
      </q-dialog>
-     <q-card-section v-if="false">
+     <q-card-section>
             <div class="text-center q-pa-md q-gutter-md">
               <q-btn round color="indigo-7" icon="fab fa-facebook-f" />
               <q-btn round color="red-8">
@@ -281,16 +278,8 @@ export default {
 </script>
 
 <style lang="stylus">
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&display=swap')
-.bgimage
-  font-family 'Montserrat', sans-serif
-  background-image url(https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FINGRESA-min284486?alt=media&token=d624ff04-02ed-4482-9844-87a3c84f7d21)
-  -webkit-background-size cover
-  -moz-background-size cover
-  -o-background-size cover
-  background-size cover
 .authentication
+  margin auto
   max-width 30em
   width 100%
 .filled

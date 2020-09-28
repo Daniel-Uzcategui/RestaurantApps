@@ -1,6 +1,7 @@
 <template>
-   <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" view="hhh LpR fFf">
-         <q-toolbar style="z-index: 100">
+   <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : 'background-color: #1d1d1d;' + page.style" view="hhh LpR fFf">
+         <q-toolbar class="absolute-top q-pa-xl" style="z-index: 100">
+           <div class="relative-position full-width">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
                dense
@@ -10,15 +11,16 @@
                name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
                exact />
-               <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
-                  <user-settings></user-settings>
-               </q-dialog>
                <div class="absolute-right">
                  <q-btn to="/cart/index" class="carticon" flat icon="fas fa-shopping-cart" >
                    <q-badge color="red" floating>{{getCartQ}}</q-badge>
                  </q-btn>
                <q-toggle class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
                </div>
+            </div>
+            <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
+                  <user-settings></user-settings>
+               </q-dialog>
          </q-toolbar>
       <q-drawer
          overlay

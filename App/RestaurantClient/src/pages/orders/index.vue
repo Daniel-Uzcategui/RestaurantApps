@@ -1,36 +1,43 @@
 <template>
-  <q-page padding>
-    <q-card class="menudiv">
-    <q-card-section>
-    <div class="q-pa-md flex flex-center">
+  <q-page>
+    <q-card>
+    <q-card-section class="q-pa-xl text-h5 text-bold">
+      <div class="q-pt-xl">
+        Status de
+      </div>
+      <div>
+        sus pedidos
+      </div>
+    </q-card-section>
+    <q-card-section style="margin-left: 20vmin">
+    <div class="row">
       <q-spinner-cube v-if="loading" size="lg" color="primary" />
       <p v-if="orderSort.length === 0 && !loading" class="text-h4 text-center">No existen pasadas ordenes</p>
-      <q-list separator v-for="(items, index) in orderSort" :key="index">
+      <q-list class="col-6 q-pa-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
       <q-item @click="carritoDialog(items)" clickable v-ripple>
       <q-item-section>
-      <q-icon name="fas fa-dot-circle" size="100px" color="secondary" v-if="items.status == 4"/>
+      <q-icon name="fas fa-dot-circle" class="absolute-top" size="50px" :style="getcolor(items.status)" v-if="items.status == 4"/>
       <q-knob
+        class="absolute-top"
         v-if="items.status < 4"
         disable
         v-model="items.status"
         :max="3"
-        size="100px"
+        size="50px"
         :thickness="0.22"
-        color="primary"
         track-color="grey-3"
-        class="text-primary"
+        :style="getcolor(items.status)"
       >
     </q-knob>
     </q-item-section>
-    <q-item-section>
-      <q-item-label lines="2" class="text-h7 text-center">{{formatDate(items.dateIn)}}</q-item-label>
-    <q-item-label lines="2" class="text-h7 text-center">{{estatus_options[items.status]['label']}}</q-item-label>
-    <q-item-label lines="2" class="text-h7 text-center" v-if="typeof items.factura !== 'undefined'">Nro. Pedido: {{items.factura}}</q-item-label>
-    <q-item-label lines="2" class="text-h7 text-center" v-if="typeof items.factura === 'undefined'">Nro. Pedido: <q-spinner-cube color="primary" /></q-item-label>
-    <q-item-label lines="2" class="text-center" caption>Click para ver Detalles</q-item-label>
+    <q-item-section class="text-h6 text-left">
+      <q-item-label lines="2" >{{formatDate(items.dateIn)}}</q-item-label>
+    <q-item-label lines="2" >{{estatus_options[items.status]['label']}}</q-item-label>
+    <q-item-label lines="2"  v-if="typeof items.factura !== 'undefined'">Nro. Pedido: {{items.factura}}</q-item-label>
+    <q-item-label lines="2"  v-if="typeof items.factura === 'undefined'">Nro. Pedido: <q-spinner-cube color="primary" /></q-item-label>
+    <q-item-label lines="2" caption>Ver Detalles</q-item-label>
     </q-item-section>
       </q-item>
-      <q-separator/>
       </q-list>
   </div>
     </q-card-section>
@@ -192,6 +199,11 @@ export default {
     ...mapGetters('address', ['address']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'promos']),
+    ...mapGetters('editor', ['editor']),
+    page () {
+      var obj = this.editor.find(e => e.id === 'page')
+      return typeof obj === 'undefined' ? {} : obj
+    },
     orderSort () {
       var ord = this.orders.map(x => {
         return {
@@ -234,6 +246,13 @@ export default {
     }
   },
   methods: {
+    getcolor (e) {
+      if (this.page && this.page.knob && this.page.knob['knob' + e]) {
+        return 'color: ' + this.page.knob['knob' + e]
+      } else {
+        return 'color: #292810'
+      }
+    },
     saved (value, id, key) {
       this.saveOrder({ value, id, key })
       this.ordenDet.userComment = value
@@ -315,6 +334,7 @@ export default {
   },
   created () {
     this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
+    this.bindBlocks()
     this.bindAddress(this.currentUser.id)
     this.bindMenu()
     this.bindCategorias()
