@@ -25,7 +25,10 @@
                :key="index">
                <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
-                  <carousel :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[480, 2], [768, 4]]">
+                  <carousel
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-3x" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-3x" aria-hidden="true"></i>'
+                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[480, 2], [768, 4]]">
                       <slide :name="key"  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
                         <div class="item-content">
                             <div :id="key" class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor},transition]">
