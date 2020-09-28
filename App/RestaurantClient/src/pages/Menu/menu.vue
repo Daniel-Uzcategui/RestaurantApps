@@ -32,11 +32,10 @@
                     swipeable
                     animated
                     control-color="primary"
-                    navigation
+                    infinite
                     padding
                     arrows
-                    height="300px"
-                    class="bg-grey-1 shadow-2 rounded-borders"
+                    class="bg-transparent"
                   >
                       <q-carousel-slide :name="key"  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
                         <div class="item-content">
