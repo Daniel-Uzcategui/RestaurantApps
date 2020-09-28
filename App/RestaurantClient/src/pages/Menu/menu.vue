@@ -26,9 +26,10 @@
                <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
                   <div class="row justify-around">
-                      <div  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="item in filteredMenu" separator :key="item.id" >
+                     <img alt="anterior" src="~assets/left-arrow.png" class="left-arrow"  @click="leftArrow()"  >
+                      <div  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
                         <div class="item-content">
-                            <div class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
+                            <div :id="key" class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor},transition]">
                               <div class="container-photo">
                                   <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders menuphoto" />
                               </div>
@@ -51,6 +52,7 @@
                             </div>
                         </div>
                       </div>
+                           <img alt="" src="~assets/right-arrow.png" class="right-arrow" @click="rightArrow()" >
                   </div>
                 </q-card-section>
               </div>
@@ -269,7 +271,10 @@ export default {
       displayVal: {},
       quantity: 0,
       filteredMenu: [],
-      selectedCat: ''
+      selectedCat: '',
+      current: 0,
+      numProducts: 7,
+      displayProducts: true
     }
   },
   created () {
@@ -466,6 +471,32 @@ export default {
           )
         }
       })
+    },
+    leftArrow () {
+      if (this.current > 0) {
+        this.current = this.current - 1
+      } else {
+        this.current = this.numProducts - 3
+      }
+      console.log(this.current)
+      // $(".carrusel").animate({"left": -($('#product_'+current).position().left)}, 600);
+    },
+    rightArrow () {
+      console.log(this.numProducts)
+      console.log(this.current)
+      if (this.numProducts > this.current + 3) {
+        this.current = this.current + 1
+        console.log(this.current)
+      } else {
+        this.current = 0
+      }
+      // $(".carrusel").animate({"left": -($('#product_'+current).position().left)}, 600);
+      console.log(this.current)
+    },
+    transition (key) {
+      return {
+        transform: 'translate(212px)'
+      }
     }
   }
 }
@@ -527,6 +558,18 @@ export default {
     padding-top: 25%
 .promo
     padding-top: 3%
+.left-arrow
+    position:absolute;
+    left:10px;
+    z-index:1;
+    top:50%;
+    margin-top:-9px;
+.right-arrow
+    position:absolute;
+    right:10px;
+    z-index:1;
+    top:50%;
+    margin-top:-9px;
  /* ------------------------Tablets & Mobiles ---------------------------*/
 @media (max-width: 991px)
  .background-color
