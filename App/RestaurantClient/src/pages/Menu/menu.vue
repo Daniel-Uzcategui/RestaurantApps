@@ -25,9 +25,20 @@
                :key="index">
                <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
-                  <div class="row justify-around">
-                     <img alt="anterior" src="~assets/left-arrow.png" class="left-arrow"  @click="leftArrow()"  >
-                      <div  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
+                  <q-carousel
+                    v-model="slide"
+                    transition-prev="slide-right"
+                    transition-next="slide-left"
+                    swipeable
+                    animated
+                    control-color="primary"
+                    navigation
+                    padding
+                    arrows
+                    height="300px"
+                    class="bg-grey-1 shadow-2 rounded-borders"
+                  >
+                      <q-carousel-slide :name="key"  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
                         <div class="item-content">
                             <div :id="key" class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor},transition]">
                               <div class="container-photo">
@@ -51,9 +62,8 @@
                               </div>
                             </div>
                         </div>
-                      </div>
-                           <img alt="" src="~assets/right-arrow.png" class="right-arrow" @click="rightArrow()" >
-                  </div>
+                      </q-carousel-slide>
+                  </q-carousel>
                 </q-card-section>
               </div>
                <q-separator vertical class="menuseparator" />
@@ -274,7 +284,8 @@ export default {
       selectedCat: '',
       current: 0,
       numProducts: 7,
-      displayProducts: true
+      displayProducts: true,
+      slide: 1
     }
   },
   created () {
