@@ -26,6 +26,7 @@
     "gmap-vue": "^1.2.1",
     "quasar": "^1.14.0",
     "quasar-app-extension-firebase-messaging": "^0.1.1",
+    "vue-carousel": "^0.18.0",
     "vuedraggable": "^2.24.0",
     "vuexfire": "^3.2.2"
   },

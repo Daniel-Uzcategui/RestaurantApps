@@ -25,23 +25,12 @@
                :key="index">
                <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
-                  <q-carousel
-                    v-model="slide"
-                    transition-prev="slide-right"
-                    transition-next="slide-left"
-                    swipeable
-                    animated
-                    control-color="primary"
-                    infinite
-                    padding
-                    arrows
-                    class="bg-transparent"
-                  >
-                      <q-carousel-slide :name="key"  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
+                  <carousel :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[480, 2], [768, 4]]">
+                      <slide :name="key"  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
                         <div class="item-content">
                             <div :id="key" class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor},transition]">
                               <div class="container-photo">
-                                  <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="rounded-borders menuphoto" />
+                                  <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="menuphoto" />
                               </div>
                               <div class="text-content">
                                   <div class="text-bold relative-position">
@@ -61,8 +50,8 @@
                               </div>
                             </div>
                         </div>
-                      </q-carousel-slide>
-                  </q-carousel>
+                      </slide>
+                  </carousel>
                 </q-card-section>
               </div>
                <q-separator vertical class="menuseparator" />
@@ -196,9 +185,12 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex'
+import { Carousel, Slide } from 'vue-carousel'
 export default {
   components: {
-    'itemcomp': () => import('../../components/itemComp.vue')
+    'itemcomp': () => import('../../components/itemComp.vue'),
+    Carousel,
+    Slide
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
