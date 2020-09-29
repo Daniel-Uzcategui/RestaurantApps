@@ -15,10 +15,10 @@
             </q-btn-group>
          </div>
       </q-card-section>
-      <q-card-section class="wrapel"> <!---Seccion catalogo --->
+      <q-card-section class="wrapel flex flex-center" > <!---Seccion catalogo --->
          <q-tabs vertical
             v-if="!promo && !rewards"
-            class="wrapel"
+            class="wrapel "
             content-class="wrapel"
             >
             <div class="wrapel background-color" content-class="wrapel"  v-for="(tabs, index) in categorias"
@@ -26,8 +26,8 @@
                <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
                   <carousel
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-3x" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-3x" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[480, 2], [768, 4]]">
                       <slide :name="key"  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
                         <div class="item-content">
@@ -548,7 +548,7 @@ export default {
     margin-left 5%
     padding-top 5%
 .background-color
-    margin:40px auto;
+    margin:10px auto;
     border-radius: 20px
     width: 90% !important
     height: 60%
@@ -559,7 +559,7 @@ export default {
     padding-top: 20px
 .container-photo
     width: 100%
-    padding-left: 35%
+    padding-left: 45%
     padding-top: 25%
 .promo
     padding-top: 3%
