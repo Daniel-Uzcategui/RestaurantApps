@@ -1,23 +1,30 @@
 <template>
   <q-page padding>
         <div class="menudiv2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <div class="text-h5 menuTop">Carrito</div>
-
-         <q-list v-for="(item, index) in cart" :key="index" style="width: 100%">
-            <q-item>
-              <q-item-section>
+         <div class="text-h5 menuTop q-mt-md">Carrito</div>
+         <div class="column items-center">
+         <q-list v-for="(item, index) in cart" :key="index" class="full-width">
+            <q-item class="row justify-between">
+              <q-item-section class="col">
                 <div class="row">
-                <q-btn color="primary" @click="delCartItem(index)">x</q-btn>
-                <div class="q-ma-md">
-                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="bg-primary q-ma-lg rounded-borders" />
+                <q-btn v-if="$q.screen.gt.sm" color="primary" class="q-ma-md q-mr-lg" style="height: 25px; width: 25px;" size="xs" round @click="delCartItem(index)" icon="clear"></q-btn>
+                <div>
+                <div class="q-ma-md position-relative">
+                  <q-btn v-if="$q.screen.lt.md" color="black" class="q-ma-md q-ml-lg absolute-top-left" style="height: 25px; width: 25px;" size="xs" round @click="delCartItem(index)" icon="clear"></q-btn>
+                  <div class="bg-primary" style="border-radius: 15px">
+                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="q-ma-md rounded-borders" />
+                  </div>
+                </div>
                 </div>
                 </div>
                </q-item-section>
-               <q-item-section>
-                  <q-item-label >{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
-                  <q-item-label >$ {{item.prodPrice}}</q-item-label>
+               <q-item-section :style="$q.screen.lt.sm ? 'margin-left: 62px;' : ''" :class="$q.screen.lt.md ? 'col column items-end' : ''">
+                 <div>
+                   <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
+                  <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{item.prodPrice}}</q-item-label>
+                 </div>
                </q-item-section>
-               <q-item-section>
+               <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">
                 <q-item-label class="text-h6 row">
                   <div class="text-weight-thin">{{item.quantity}}</div>
                   <q-btn-group  style="transform: rotateZ(90deg); border-radius: 0.5em">
@@ -52,34 +59,38 @@
                   </q-item-label>
                </q-item-section>
             </q-item>
-            <q-separator />
          </q-list>
-         <q-list>
+         <q-card class="q-pa-lg" style="border-radius: 28px; min-width: 40vmin">
+           <q-card-section>
            <p v-if="cart.length == 0" class="text-h4 text-center">No ha seleccionado productos</p>
-          <q-item v-if="cart.length" >
-            <q-item-section class="text-h5 text-right">
-              <q-item-label v-if="getTotalCarrito()[1] > 0">
-                        Subtotal: {{getTotalCarrito()[0].toFixed(2)}}
-              </q-item-label>
-              <q-item-label v-if="getTotalCarrito()[1].toFixed(2) > 0">
-                        Extras:  + <u> {{getTotalCarrito()[1].toFixed(2)}} </u>
-              </q-item-label>
-              <q-item-label>
-                        Total: $ {{getTotalCarrito()[2].toFixed(2)}}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-         </q-list>
-         <q-list style="width: 100%">
-         <q-expansion-item
-            expand-separator
-            icon="fas fa-newspaper"
-            label="Aplicar cupón"
-          >
-          <q-input v-model="text" label="Inserte código del cupón" />
-         </q-expansion-item>
-         </q-list>
-            <q-btn name="cart" class="full-width" rounded color="primary" icon="fas fa-cash-register" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true" label="Ordenar"/>
+            <div v-if="cart.length" >
+            <div class="text-h7 text-left">
+              <div class="row" v-if="getTotalCarrito()[1] > 0">
+                       <p class="col-6"> Subtotal: </p> <p class="text-right">{{getTotalCarrito()[0].toFixed(2)}}</p>
+              </div>
+              <div class="row" v-if="getTotalCarrito()[1].toFixed(2) > 0">
+                        <p class="col-6">Extras:</p>  <p class="text-right col-6"> + <u> {{getTotalCarrito()[1].toFixed(2)}} </u> </p>
+              </div>
+              <div class="row">
+                  <p class="col-6">Total:</p> <p class="text-right col-6">$ {{getTotalCarrito()[2].toFixed(2)}}</p>
+              </div>
+            </div>
+          </div>
+          </q-card-section>
+          <q-separator inset />
+          <q-card-section class="q-pa-lg">
+            <div class="text-caption text-center">Ingresar Código del cupón</div>
+            <div class="column items-center">
+            <q-input v-model="text" style="width: 60%" />
+            </div>
+          </q-card-section>
+          <q-card-actions class="q-pa-md column items-center">
+            <q-btn name="cart" no-caps class="q-pr-xl q-pl-xl text-weight-thin" rounded color="primary" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true">
+            Siguiente
+            </q-btn>
+          </q-card-actions>
+         </q-card>
+         </div>
       </div>
       <q-dialog
          content-class="full-width q-pa-lg"
