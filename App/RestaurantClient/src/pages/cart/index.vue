@@ -1,26 +1,33 @@
 <template>
   <q-page padding>
-        <div class="q-pa-md menudiv" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+        <div class="menudiv2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
          <div class="text-h5 menuTop">Carrito</div>
 
          <q-list v-for="(item, index) in cart" :key="index" style="width: 100%">
             <q-item>
               <q-item-section>
-                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="rounded-borders" />
+                <div class="row">
+                <q-btn color="primary" @click="delCartItem(index)">x</q-btn>
+                <div class="q-ma-md">
+                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="bg-primary q-ma-lg rounded-borders" />
+                </div>
+                </div>
                </q-item-section>
                <q-item-section>
                   <q-item-label >{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
                   <q-item-label >$ {{item.prodPrice}}</q-item-label>
-                  <q-btn style="width: 50px" size="xs" color="primary" @click="delCartItem(index)" dense>Eliminar</q-btn>
                </q-item-section>
                <q-item-section>
-                <q-item-label class="text-h6">
-                    <q-btn size="0.5em" color="grey" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-minus" text-color="white" dense />
-                    {{item.quantity}}
-                    <q-btn size="0.5em" color="orange" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-plus" text-color="white" dense >
+                <q-item-label class="text-h6 row">
+                  <div class="text-weight-thin">{{item.quantity}}</div>
+                  <q-btn-group  style="transform: rotateZ(90deg); border-radius: 0.5em">
+                    <q-btn size="0.3em" class="q-pl-xs" color="white" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-chevron-left" text-color="dark" dense >
                       <q-badge color="red" v-if="item.avail === 0" floating style="left: 10px; right: auto;">max</q-badge>
                       <q-badge color="red" v-if="item.avail == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
                     </q-btn>
+                     <q-btn size="0.3em" color="white" text-color="black" label="│" dense/>
+                    <q-btn size="0.3em" class="q-pr-xs" color="white" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-chevron-right" text-color="dark" dense />
+                  </q-btn-group>
                 </q-item-label>
                </q-item-section>
             </q-item>

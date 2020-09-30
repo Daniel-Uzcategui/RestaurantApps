@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : 'background-color: #1d1d1d;' + page.style" view="hhh LpR fFf">
+   <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #ffffff;' + page.style : 'background-color: #1d1d1d;' + page.style" view="hhh LpR fFf">
          <q-toolbar class="absolute-top q-pa-xl" style="z-index: 100">
            <div class="relative-position full-width">
                 <q-btn flat

@@ -16,8 +16,8 @@
           <q-separator />
         </q-list>
       </div>
-    <div v-if="!readOnly">
-    <div v-for="(component, index) in Group" :key="index">
+    <div class="row justify between" v-if="!readOnly">
+    <div style="min-width: 300px" v-for="(component, index) in Group" :key="index">
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
@@ -43,6 +43,9 @@
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
               <q-checkbox
+                checked-icon="fas fa-dot-circle"
+                unchecked-icon="fas fa-circle"
+                icon="fas fa-circle"
                 @input="(x,e)=> checkBoxInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, e, x)"
                 :value="value.length ? (typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined') ? true : false : false"
                 :disable="value.findIndex(el => el.item === items.id && el.component === component.id)===(-1) && value.filter(x => x['component'] === component.id).length >= component.max"
