@@ -8,14 +8,14 @@
      <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <q-card-section class="q-pt-xl">
          <div class="fontsize-18 header-title">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
-         <div class="absolute-bottom-right" >
-            <q-btn-group push>
-               <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
-               <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
+         <div>
+            <q-btn-group style="z-index: 10; position: fixed; top: 50%; right: 0; transform: rotate(-90deg); margin-right: -40px"  push>
+               <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift fa-rotate-90" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
+               <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc fa-rotate-90" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
             </q-btn-group>
          </div>
       </q-card-section>
-      <q-card-section class="wrapel" > <!---Seccion catalogo --->
+      <q-card-section class="wrapel q-pa-none q-ma-none" > <!---Seccion catalogo --->
          <q-tabs vertical
             v-if="!promo && !rewards"
             class="wrapel "
@@ -29,10 +29,10 @@
                   :loop="true"
                   navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
                   navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
-                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 1], [375, 2], [830, 3], [1080, 4]]" >
+                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
                         <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                            <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
+                            <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                               <div class="container-photo">
                                   <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                               </div>
@@ -50,8 +50,8 @@
                                        </q-item-label>
                                     </div>
                                  </div>
-                                 <q-tooltip v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                                 <q-tooltip v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
+                                 <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
+                                 <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
                            </div>
                           </div>
                         </slide>
@@ -85,8 +85,8 @@
                             </q-item-label>
                         </div>
                      </div>
-                     <q-tooltip v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                     <q-tooltip v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-tooltip>
                   </div>
                </div>
             </slide>
@@ -99,7 +99,7 @@
             :loop="true"
             navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
             navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
-            :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 1], [375, 2], [830, 3], [1080, 4]]" >
+            :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="item in promoData" :key="item.id" >
                <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                   <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
@@ -121,8 +121,8 @@
                            </q-item-label>
                         </div>
                      </div>
-                     <q-tooltip v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                     <q-tooltip v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
                   </div>
                </div>
             </slide>
@@ -143,27 +143,31 @@
             <q-bar class="bg-transparent">
                <q-space />
                <q-btn dense flat icon="close" v-close-popup>
-                  <q-tooltip content-class=" text-primary">Close</q-tooltip>
+                  <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-            <q-card-section horizontal style="margin-right: 20vmin">
-               <q-card-section>
-                  <div style="background-color: yellow; border-radius: 30px;">
-                     <div class="dialogphoto">
-                        <q-img class="menuphoto" :style="$q.screen.gt.xs ? 'min-width: 500px;' : null" style="border-bottom-left-radius: 50px; max-height: 500px;" v-if="displayVal.photo" contain :src=displayVal.photo />
+            <q-card-section class="q-pt-xl flex flex-center">
+               <div class="column items-center" style="min-width: 320px">
+                  <div class="diagphcont" :style="dgbg">
+                     <div class="diagphcont2">
+                        <q-img class="diagph" v-if="displayVal.photo" contain :src=displayVal.photo />
                      </div>
                   </div>
-                  <div class="q-pa-lg">
-                     <div class="text-h5 flex flex-center">
-                        <div>
-                           <q-btn class="q-ma-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
-                           <q-btn class="q-pl-lg q-pr-lg" color="white" rounded text-color="black" :label="quantity" />
-                           <q-btn class="q-ma-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
+                  <div>
+                     <div class="column items-center">
+                        <div class="q-pt-lg">
+                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
+                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
+                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
                               <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
                               <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
                                  <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
                               </q-badge>
                            </q-btn>
+                        </div>
+                        <div>
+                        <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="required && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!required && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
                      <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length == 0">
@@ -172,24 +176,24 @@
                      </q-item-label>
                      <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
                   </div>
-               </q-card-section>
-               <q-card-section class="q-pa-lg">
+               </div>
+               <div class="q-pa-lg"  style="min-width: 320px">
                   <div class="text-h4">
                      {{displayVal.name}}
                   </div>
-                  <div class="q-pt-lg text-h5 text-grey" style="letter-spacing: 0.094em; line-height: 35px;" v-html=displayVal.descripcion>
+                  <div class="q-pt-lg text-h5 text-grey" style="max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;" v-html=displayVal.descripcion>
                   </div>
                   <div class="row justify-between q-pa-none">
                      <div class="q-pt-md">
-                        <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length">
-                           Total $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
-                           <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
-                        </q-item-label>
+                        <div v-if="displayVal.discount > 0 && displayVal.groupComp.length">
+                           Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
+                           <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
+                        </div>
                         <q-item-label class="text-h6" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                      </div>
                      <q-card-actions vertical>
-                        <q-btn class="q-pl-md q-pr-md" v-if="required" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
-                        <q-btn class="q-pl-md q-pr-md" v-if="!required" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="required && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="!required && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                      </q-card-actions>
                   </div>
                   <itemcomp
@@ -199,9 +203,7 @@
                   @update-comp="(e) => {required = e}"
                   @update-tot="(e) => {totSum = e}"
                   />
-               </q-card-section>
-            </q-card-section>
-            <q-card-section>
+               </div>
             </q-card-section>
          </q-card>
       </q-dialog>
@@ -282,6 +284,7 @@ export default {
   },
   data () {
     return {
+      dgbg: 'inherit',
       rewards: false,
       itComp: [],
       totSum: 0,
@@ -508,72 +511,89 @@ export default {
 </script>
 
 <style lang="stylus">
-  .menuphoto-xs
-    -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
-    width 72px
-    height 72px
-    z-index 9
-  .menuphoto-md
-    -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
-    width 80px
-    height 80px
-    z-index 9
-  .burgericon
-    color: black !important
-  .carticon
-    color: black !important
-  .toggleicon
-    color: black !important
-  .wrapel .no-wrap
-    flex-wrap: wrap !important
-  .menu-div
-    border-top-left-radius 50px
-    border-top-right-radius 50px
-    border-bottom-left-radius 50px
-    border-bottom-right-radius 50px
-  .text-content
-    min-width 100px
-    position relative
-    margin-left 5px
- .item-xs
-    color: black
-    border-radius: 20px
-    width: 90px !important
-    height: 180px
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
-  .item-md
-    color: black
-    border-radius: 20px
-    width: 124px !important
-    height: 250px
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
-  .item-content-md
-    margin-left 20%
-    width: 166px
-    height: 300px
-    text-align: center
- .item-content-xs
-    margin-left 20%
-    width: 130px
-    height: 230px
-    text-align: center
- .price-content
-    display: flex
-    justify-content: center
-    align-items: center
-    text-align: center !important
-    width: 100%
+.diagphcont
+  min-width 205.75px
+  min-height 186.15px
+  width 26.25vmin
+  height 23.75vmin
+  background-color #FFD63D
+  border-radius 30px
+.diagphcont2
+  margin auto
+  min-width 184.52px
+  min-height 184.52px
+  width 23vmin
+  position relative
+.diagph
+  min-width 184.52px
+  min-height 184.52px
+  position absolute
+  top -7vmin
+  -webkit-filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
+.menuphoto-xs
+  -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
+  width: 72px
+  height: 72px
+.menuphoto-md
+  -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
+  width: 95px
+  height: 95px
+.burgericon
+  color: black !important
+.carticon
+  color: black !important
+.toggleicon
+  color: black !important
+.wrapel .no-wrap
+  flex-wrap: wrap !important
+.menu-div
+  border-top-left-radius 50px
+  border-top-right-radius 50px
+  border-bottom-left-radius 50px
+  border-bottom-right-radius 50px
+.text-content
+  min-width 100px
+  position relative
+  margin-left 5px
+.item-xs
+  color: black
+  border-radius: 20px
+  width: 90px !important
+  height: 180px
+  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+.item-md
+  color: black
+  border-radius: 20px
+  width: 124px !important
+  height: 250px
+  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+.item-content-md
+  margin-left 20%
+  width: 166px
+  height: 300px
+  text-align: center
+.item-content-xs
+  margin-left 20%
+  width: 130px
+  height: 230px
+  text-align: center
+.price-content
+  display: flex
+  justify-content: center
+  align-items: center
+  text-align: center !important
+  width: 100%
 .header-title
     height 5%
     margin-left 5%
     padding-top 5%
- .background-color
-    margin:40px auto;
-    border-radius: 20px
-    width: 90% !important
-    height: 60%
-    background-color: #e0dada
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+.background-color
+  margin:40px auto;
+  border-radius: 20px
+  width: 90% !important
+  height: 60%
+  background-color: #e0dada
+  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
 .header-tabs
     padding-top: 30px
     padding-bottom: 20px
