@@ -36,6 +36,7 @@
                                   <q-img :src=item.photo  class="menuphoto" color="primary"  text-color="white"/>
                               </div>
                            </div>
+                          </div>
                         </slide>
                      </carousel>
                   </q-card-section>

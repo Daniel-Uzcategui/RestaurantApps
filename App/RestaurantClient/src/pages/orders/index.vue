@@ -1,7 +1,7 @@
 <template>
   <q-page>
-    <q-card>
-    <q-card-section class="q-pa-xl text-h5 text-bold">
+    <q-card flat square class="bg-dark text-white">
+    <q-card-section class="q-pa-xl text-h5 text-bold" :class="$q.screen.lt.md ? 'text-center' : ''">
       <div class="q-pt-xl">
         Status de
       </div>
@@ -9,11 +9,11 @@
         sus pedidos
       </div>
     </q-card-section>
-    <q-card-section style="margin-left: 20vmin">
-    <div class="row">
+    <q-card-section :style="$q.screen.gt.sm ? 'margin-left: 20vmin' : ''">
+    <div class="row justify-center">
       <q-spinner-cube v-if="loading" size="lg" color="primary" />
       <p v-if="orderSort.length === 0 && !loading" class="text-h4 text-center">No existen pasadas ordenes</p>
-      <q-list class="col-6 q-pa-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
+      <q-list style="min-width: 320px" :class="'q-pa-' + $q.screen.name" class="col-6 q-pb-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
       <q-item @click="carritoDialog(items)" clickable v-ripple>
       <q-item-section>
       <q-icon name="fas fa-dot-circle" class="absolute-top" size="50px" :style="getcolor(items.status)" v-if="items.status == 4"/>
@@ -35,7 +35,7 @@
     <q-item-label lines="2" >{{estatus_options[items.status]['label']}}</q-item-label>
     <q-item-label lines="2"  v-if="typeof items.factura !== 'undefined'">Nro. Pedido: {{items.factura}}</q-item-label>
     <q-item-label lines="2"  v-if="typeof items.factura === 'undefined'">Nro. Pedido: <q-spinner-cube color="primary" /></q-item-label>
-    <q-item-label lines="2" caption>Ver Detalles</q-item-label>
+    <q-item-label lines="2" caption class="text-grey">Ver detalles</q-item-label>
     </q-item-section>
       </q-item>
       </q-list>
