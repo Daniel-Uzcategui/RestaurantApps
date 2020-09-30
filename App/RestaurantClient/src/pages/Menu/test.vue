@@ -1,71 +1,97 @@
 <template>
    <div>
-      <q-card-section v-if="!promo && !rewards">
-        <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-         <carousel
-            :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
-            :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 1], [375, 2], [830, 3], [1080, 4]]" >
-            <slide class="row justify-center" :name="key" v-for="item in promoData" :key="item.id" >
-               <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                  <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
-                     <div class="container-photo">
-                        <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
-                     </div>
-                     <div class="text-caption">
-                        <div class="text-bold relative-position">
-                           <q-item-label lines="5">{{item.name}} </q-item-label>
-                        </div>
-                     </div>
-                     <div class="price-content" >
-                        <div>
-                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
-                              $ {{parseFloat(item.price).toFixed(2)}}
-                              <q-badge color="red" floating rounded v-if="item.discount > 0" >Descuento {{item.discount}}%</q-badge>
-                           </q-item-label>
-                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                           </q-item-label>
-                        </div>
-                     </div>
-                     <q-tooltip v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                     <q-tooltip v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
+<q-list v-for="(item, index) in cart" :key="index" class="full-width">
+            <q-item class="row justify-between">
+              <q-item-section class="col">
+                <div class="row">
+                <div>
+                <div class="q-ma-md position-relative">
+                  <div class="bg-primary" style="border-radius: 15px">
+                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="q-ma-md rounded-borders" />
                   </div>
-               </div>
-            </slide>
-         </carousel>
-      </q-card-section>
-      <!-- Seccion de promociones -->
-      <q-card-section v-if="promo && !rewards">
-         <div class="flex justify-around text-h7 background-color promo">
-            <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-            <q-list @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" v-for="item in promoData" :key="item.id" >
-               <div class="item-content">
-                  <div class="item row" :style="[{'background-color':'#ffd538'},{'color': '#000000'}]">
-                     <div class="container-photo">
-                        <q-img :src=item.photo width="80px" color="primary" text-color="white" class="rounded-borders" />
-                     </div>
-                     <div class="text-content">
-                        <div class="text-bold relative-position">
-                           <q-item-label lines="1">{{item.name}} </q-item-label>
-                           <q-item-label lines="1" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
-                           <q-item-label lines="1" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-item-label>
-                        </div>
-                     </div>
-                     <div class="price-content" >
-                        <div>
-                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
-                              $ {{parseFloat(item.price).toFixed(2)}}
-                              <q-badge color="red" floating rounded v-if="item.discount > 0" >Descuento {{item.discount}}%</q-badge>
-                           </q-item-label>
-                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                           </q-item-label>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </q-list>
-         </div>
-      </q-card-section>
+                </div>
+                </div>
+                </div>
+               </q-item-section>
+               <q-item-section :style="$q.screen.lt.sm ? 'margin-left: 62px;' : ''" :class="$q.screen.lt.md ? 'col column items-end' : ''">
+                 <div>
+                   <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
+                  <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{item.prodPrice}}</q-item-label>
+                 </div>
+               </q-item-section>
+               <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">
+                <q-item-label class="text-h6 row">
+                  <div class="text-weight-thin">{{item.quantity}}</div>
+                  <q-btn-group  style="transform: rotateZ(90deg); border-radius: 0.5em">
+                    <q-btn size="0.3em" class="q-pl-xs" color="white" icon="fas fa-chevron-left" text-color="dark" dense >
+                      <q-badge color="red" v-if="item.avail === 0" floating style="left: 10px; right: auto;">max</q-badge>
+                      <q-badge color="red" v-if="item.avail == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
+                    </q-btn>
+                     <q-btn size="0.3em" color="white" text-color="black" label="│" dense/>
+                    <q-btn size="0.3em" class="q-pr-xs" color="white" icon="fas fa-chevron-right" text-color="dark" dense />
+                  </q-btn-group>
+                </q-item-label>
+               </q-item-section>
+            </q-item>
+            <q-item >
+              <q-item-section>
+                  <itemcomp
+                  :value="item.items"
+                  :readOnly="true"
+                  />
+               </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section class="text-h6 text-right">
+                  <q-item-label v-if="totalItComp (item.items)">
+                    SubTotal:        {{(item.prodPrice * item.quantity).toFixed(2)}}
+                  </q-item-label>
+                  <q-item-label v-if="totalItComp (item.items)">
+                    Extras:     + <u> {{ ((totalItComp (item.items)) * item.quantity).toFixed(2) }} </u>
+                  </q-item-label>
+                  <q-item-label>
+                    Total:      $ {{((parseFloat(item.prodPrice) + totalItComp (item.items)) * item.quantity).toFixed(2)}}
+                  </q-item-label>
+               </q-item-section>
+            </q-item>
+         </q-list>
+
+         <q-list :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'" v-for="(item, index) in carrito" :key="index" style="width: 100%">
+            <q-item>
+              <q-item-section>
+                  <q-img width="80px" color="primary" text-color="white" class="rounded-borders" />
+               </q-item-section>
+               <q-item-section>
+                  <q-item-label >{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
+               </q-item-section>
+               <q-item-section>
+                <q-item-label class="text-h7 text-bold">
+                    Cantidad: {{item.quantity}}
+                </q-item-label>
+               </q-item-section>
+            </q-item>
+            <q-item >
+              <q-item-section>
+                  <itemcomp
+                  :value="item.items"
+                  :readOnly="true"
+                  />
+               </q-item-section>
+            </q-item>
+            <q-item v-if="carrito.length > 1">
+              <q-item-section class="text-h6 text-right">
+                  <q-item-label v-if="totalItComp (item.items)">
+                    SubTotal:        {{(item.prodPrice * item.quantity).toFixed(2)}}
+                  </q-item-label>
+                  <q-item-label v-if="totalItComp (item.items)">
+                    Extras:     + <u> {{ ((totalItComp (item.items)) * item.quantity).toFixed(2) }} </u>
+                  </q-item-label>
+                  <q-item-label>
+                    Total:      $ {{((parseFloat(item.prodPrice) + totalItComp (item.items)) * item.quantity).toFixed(2)}}
+                  </q-item-label>
+               </q-item-section>
+            </q-item>
+            <q-separator />
+         </q-list>
    </div>
 </template>

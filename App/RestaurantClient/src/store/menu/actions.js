@@ -7,7 +7,12 @@ export const addCart = async function ({ commit }, payload) {
   return commit('addCart', payload)
 }
 export const setSede = async function ({ commit }, payload) {
-  return commit('setSede', payload)
+  try {
+    console.log({ setsede: payload })
+    return commit('setSede', payload)
+  } catch (e) {
+    console.error(e)
+  }
 }
 export const modCartVal = async function ({ commit }, payload) {
   return commit('modCartVal', payload)

@@ -116,20 +116,22 @@ export const logoutUser = () => {
 export const routerBeforeEach = async (router, store) => {
   router.beforeEach(async (to, from, next) => {
     try {
-      await ensureAuthIsInitialized(store)
-      if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (typeof to === 'undefined' || typeof next === 'undefined') { return }
+      let waitforme = await ensureAuthIsInitialized(store)
+      console.log({ waitforme })
+      if (waitforme && to.matched.some(record => record.meta.requiresAuth)) {
         if (isAuthenticated(store)) {
           console.log('trueee')
-          next()
+          if (typeof next !== 'undefined') { next() }
         } else {
           console.log('falseeee')
-          next('/auth/login')
+          if (typeof next !== 'undefined') { next('/auth/login') }
         }
       } else if ((to.path === '/auth/register' && isAuthenticated(store)) ||
         (to.path === '/auth/login' && isAuthenticated(store))) {
-        next()
+        if (typeof next !== 'undefined') { next() }
       } else {
-        next()
+        if (typeof next !== 'undefined') { next() }
       }
     } catch (err) {
       Notify.create({

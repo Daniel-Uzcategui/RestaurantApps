@@ -54,7 +54,7 @@
                   <q-item-label v-if="totalItComp(item.items)">
                     Extras:     + <u> {{ ((totalItComp(item.items)) * item.quantity).toFixed(2) }} </u>
                   </q-item-label>
-                  <q-item-label>
+                  <q-item-label >
                     Total:      $ {{(parseFloat(parseFloat(item.prodPrice) + totalItComp(item.items)) * item.quantity).toFixed(2)}}
                   </q-item-label>
                </q-item-section>
@@ -214,7 +214,7 @@ export default {
     'itemcomp': () => import('../../components/itemComp.vue')
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'listextras', 'sede', 'promos']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['configurations']),
@@ -281,6 +281,7 @@ export default {
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindConfigs']),
+    ...mapActions('editor', ['bindBlocks']),
     showme () {
       this.$nextTick(() => console.log(this.$refs))
     },

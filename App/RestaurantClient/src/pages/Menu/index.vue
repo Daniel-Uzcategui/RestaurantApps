@@ -51,15 +51,19 @@ export default {
     ...mapActions('menu', ['setSede']),
     ...mapMutations('menu', ['delCart']),
     getLocById (id) {
-      console.log(this.localizations)
-      console.log(id)
-      if (id === null || this.cart.length === 0) {
-        this.setSede(this.sedeIn.id)
-        this.$router.push({ path: '/menu/menu' })
-        return
+      try {
+        console.log(this.localizations)
+        console.log(id)
+        if (id === null || this.cart.length === 0) {
+          this.setSede(this.sedeIn.id)
+          this.$router.push({ path: '/menu/menu' })
+          return
+        }
+        var name = this.localizations.find(x => x.id === id)
+        return name.name
+      } catch (e) {
+        console.log(e)
       }
-      var name = this.localizations.find(x => x.id === id)
-      return name.name
     }
   },
   created () {

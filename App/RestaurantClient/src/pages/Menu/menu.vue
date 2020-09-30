@@ -63,6 +63,8 @@
          </q-card-section>
          <!--- Fin Seccion catalogo --->
          <q-card-section v-if="!promo && rewards">
+           <div class="background-color">
+               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
             <carousel
             :loop="true"
             navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
@@ -91,9 +93,12 @@
                </div>
             </slide>
          </carousel>
+           </div>
          </q-card-section>
          <!-- Seccion de promociones -->
          <q-card-section v-if="promo && !rewards">
+           <div class="background-color">
+               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
             <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
          <carousel
             :loop="true"
@@ -127,6 +132,7 @@
                </div>
             </slide>
          </carousel>
+           </div>
          </q-card-section>
       </q-card>
       <q-dialog
@@ -146,9 +152,9 @@
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-            <q-card-section class="q-pt-xl flex flex-center">
-               <div class="column items-center" style="min-width: 320px">
-                  <div class="diagphcont" :style="dgbg">
+            <q-card-section class="q-pt-xl row justify-center">
+               <div class="column items-center col-4" style="min-width: 320px">
+                  <div class="diagphcont q-pt-lg" :style="dgbg">
                      <div class="diagphcont2">
                         <q-img class="diagph" v-if="displayVal.photo" contain :src=displayVal.photo />
                      </div>
@@ -177,7 +183,7 @@
                      <q-item-label class="text-h5" v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
                   </div>
                </div>
-               <div class="q-pa-lg"  style="min-width: 320px">
+               <div class="q-pa-lg col-8"  style="min-width: 320px">
                   <div class="text-h4">
                      {{displayVal.name}}
                   </div>
@@ -205,6 +211,42 @@
                   />
                </div>
             </q-card-section>
+            <q-card-section>
+              <div class="background-color">
+               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">Más productos</div>
+             <carousel
+                  :loop="true"
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
+                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
+                      <slide class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
+                        <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
+                            <div @click="checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#393939'},{'color': '#FFFFFF'}]">
+                              <div class="container-photo">
+                                  <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
+                              </div>
+                              <div class="text-caption">
+                                    <div class="text-bold relative-position">
+                                       <q-item-label lines="5">{{item.name}} </q-item-label>
+                                    </div>
+                                 </div>
+                                 <div class="price-content" >
+                                    <div>
+                                       <q-badge color="red" rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
+                                       <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
+                                       </q-item-label>
+                                       <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
+                                       </q-item-label>
+                                    </div>
+                                 </div>
+                                 <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0]">*No Disponible*</q-tooltip>
+                                 <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0]">*Máx en el Carrito*</q-tooltip>
+                           </div>
+                          </div>
+                        </slide>
+                     </carousel>
+              </div>
+           </q-card-section>
          </q-card>
       </q-dialog>
    </div>
@@ -416,11 +458,11 @@ export default {
       console.log({ available, available2 })
       return [available, available2, exists]
     },
-    checkAvail (id, type) {
+    checkAvail (id, type, diag) {
       var exists = 0
       if (typeof id === 'undefined' || typeof type === 'undefined') { return false }
       if (type === 0) {
-        var counter = this.quantity
+        var counter = diag ? 0 : this.quantity
         var inCart = this.cart.filter(x => x.prodId === id)
         var product = this.filteredMenu.find(x => x.id === id)
         inCart.forEach(element => {
@@ -448,7 +490,7 @@ export default {
         if (typeof promotion !== 'undefined') {
           for (let e in promotion.prods) {
             product = promotion.prods[e]
-            counter = this.quantity * product.quantity
+            counter = (diag ? 0 : this.quantity) * product.quantity
             inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
             inCart.forEach(element => {
               counter = element.quantity + counter
@@ -528,7 +570,7 @@ export default {
   min-width 184.52px
   min-height 184.52px
   position absolute
-  top -7vmin
+  top -50%
   -webkit-filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
 .menuphoto-xs
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
