@@ -1,57 +1,39 @@
 <template>
-   <div>
-      <q-input v-if="false" class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
-         <template v-slot:prepend>
-            <q-icon name="fas fa-search" />
-         </template>
-      </q-input>
-      <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <q-card-section class="q-pt-xl">
-            <div class="fontsize-18 header-title">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
-            <div class="absolute-bottom-right" >
-               <q-btn-group push>
-                  <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
-                  <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
-               </q-btn-group>
-            </div>
-         </q-card-section>
-         <q-card-section class="wrapel flex flex-center" >
-            <!---Seccion catalogo --->
-            <q-tabs vertical
-               v-if="!promo && !rewards"
-               class="wrapel "
-               content-class="wrapel"
-               >
-               <div class="wrapel background-color" content-class="wrapel"  v-for="(tabs, index) in categorias"
-                  :key="index">
-                  <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
-                  <q-card-section v-if="!promo && !rewards">
-                     <carousel
-                        navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" aria-hidden="true"></i>'
-                        navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" aria-hidden="true"></i>'
-                        :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[480, 2], [768, 4]]">
-                        <slide :name="key"  @click.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" separator :key="item.id" >
-                           <div class="item-content">
-                              <div :id="key" class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor},transition]">
-                                 <div class="container-photo">
-                                    <q-img :src=item.photo width="80px" height="80px" color="primary" text-color="white" class="menuphoto" />
-                                 </div>
-                                 <div class="text-content">
-                                    <div class="text-bold relative-position">
-                                       <q-item-label lines="5">{{item.name}} </q-item-label>
-                                       <q-item-label lines="3" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-item-label>
-                                       <q-item-label lines="3" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-item-label>
-                                    </div>
-                                 </div>
-                                 <div class="price-content" >
-                                    <div>
-                                       <q-badge color="red" rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
-                                       <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
-                                       </q-item-label>
-                                       <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                                       </q-item-label>
-                                    </div>
-                                 </div>
+  <div>
+    <q-input v-if="false" class="q-pa-lg" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
+      <template v-slot:prepend>
+        <q-icon name="fas fa-search" />
+      </template>
+   </q-input>
+     <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+      <q-card-section class="q-pt-xl">
+         <div class="fontsize-18 header-title">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
+         <div class="absolute-bottom-right" >
+            <q-btn-group push>
+               <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
+               <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
+            </q-btn-group>
+         </div>
+      </q-card-section>
+      <q-card-section class="wrapel" > <!---Seccion catalogo --->
+         <q-tabs vertical
+            v-if="!promo && !rewards"
+            class="wrapel "
+            content-class="wrapel"
+            >
+            <div class="wrapel background-color" content-class="wrapel"  v-for="(tabs, index) in categorias"
+               :key="index">
+               <div class="header-tabs text-left text-bold text-h5">{{tabs.name}}</div>
+                <q-card-section v-if="!promo && !rewards">
+                  <carousel
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" aria-hidden="true"></i>'
+                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[480, 2], [768, 4]]" >
+                      <slide :name="key"  @click.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" v-for="(item, key) in filteredMenu" :key="item.id" >
+                        <div class="item-content" >
+                            <div :id="key" class="item row" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
+                              <div class="container-photo">
+                                  <q-img :src=item.photo  class="menuphoto" color="primary"  text-color="white"/>
                               </div>
                            </div>
                         </slide>
@@ -491,32 +473,6 @@ export default {
           )
         }
       })
-    },
-    leftArrow () {
-      if (this.current > 0) {
-        this.current = this.current - 1
-      } else {
-        this.current = this.numProducts - 3
-      }
-      console.log(this.current)
-      // $(".carrusel").animate({"left": -($('#product_'+current).position().left)}, 600);
-    },
-    rightArrow () {
-      console.log(this.numProducts)
-      console.log(this.current)
-      if (this.numProducts > this.current + 3) {
-        this.current = this.current + 1
-        console.log(this.current)
-      } else {
-        this.current = 0
-      }
-      // $(".carrusel").animate({"left": -($('#product_'+current).position().left)}, 600);
-      console.log(this.current)
-    },
-    transition (key) {
-      return {
-        transform: 'translate(212px)'
-      }
     }
   }
 }
@@ -525,6 +481,8 @@ export default {
 <style lang="stylus">
   .menuphoto
     -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
+    width: 80px
+    height: 80px
   .burgericon
     color: black !important
   .carticon
@@ -549,10 +507,11 @@ export default {
     height: 250px
     box-shadow: -4px 8px 18px rgba(0,0,0,.1)
  .item-content
-    width: 166px
+    margin-left 20%
+    width: 130px
     height: 300px
     text-align: center
-.price-content
+ .price-content
     display: flex
     justify-content: center
     align-items: center
@@ -562,34 +521,27 @@ export default {
     height 5%
     margin-left 5%
     padding-top 5%
-.background-color
-    margin:10px auto;
+ .background-color
+    margin:40px auto;
     border-radius: 20px
     width: 90% !important
     height: 60%
     background-color: #e0dada
     box-shadow: -4px 8px 18px rgba(0,0,0,.1)
 .header-tabs
-    padding-left: 20px
-    padding-top: 20px
+    padding-left: 30px
+    padding-top: 30px
+    padding-bottom: 20px
 .container-photo
     width: 100%
     padding-left: 45%
     padding-top: 25%
 .promo
     padding-top: 3%
-.left-arrow
-    position:absolute;
-    left:10px;
-    z-index:1;
-    top:50%;
-    margin-top:-9px;
-.right-arrow
-    position:absolute;
-    right:10px;
-    z-index:1;
-    top:50%;
-    margin-top:-9px;
+.VueCarousel-navigation-prev
+      left: 3% !important;
+.VueCarousel-navigation-next
+     right: 3% !important;
  /* ------------------------Tablets & Mobiles ---------------------------*/
 @media (max-width: 991px)
  .background-color
