@@ -42,7 +42,7 @@ import * as GmapVue from 'gmap-vue'
 
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyAiUb3VghW0YlWkGkx-nNbG_tLm3tKDnDM',
+    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
     libraries: 'places'
   }
 })

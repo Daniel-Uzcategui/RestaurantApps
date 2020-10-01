@@ -1,10 +1,10 @@
 <template>
   <div>
     <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-    <q-btn-group spread class="full-width">
-      <q-btn color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" label="Visualizar" />
-      <q-btn color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" label="Agregar" />
-      <q-btn color="secondary" label="Eliminar" @click="deleteAddress({id: value})" />
+    <q-btn-group rounded spread class="full-width">
+      <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
+      <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" icon="add" />
+      <q-btn no-caps color="secondary" icon="remove" @click="deleteAddress({id: value})" />
     </q-btn-group>
     <div class="row justify-center q-pa-md">
       <q-spinner-cube class="col" v-if="loading" size="lg" color="primary" />

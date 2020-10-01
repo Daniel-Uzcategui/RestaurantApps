@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
         <div class="menudiv2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-         <div class="text-h5 menuTop q-mt-md">Carrito</div>
+         <div class="text-h5 menuTop q-mt-md">Tu Carrito</div>
          <div class="column items-center">
          <q-list v-for="(item, index) in cart" :key="index" class="full-width">
             <q-item class="row justify-between">
@@ -66,7 +66,7 @@
             <div v-if="cart.length" >
             <div class="text-h7 text-left">
               <div class="row" v-if="getTotalCarrito()[1] > 0">
-                       <p class="col-6"> Subtotal: </p> <p class="text-right">{{getTotalCarrito()[0].toFixed(2)}}</p>
+                       <p class="col-6"> Subtotal: </p> <p class="text-right col-6">{{getTotalCarrito()[0].toFixed(2)}}</p>
               </div>
               <div class="row" v-if="getTotalCarrito()[1].toFixed(2) > 0">
                         <p class="col-6">Extras:</p>  <p class="text-right col-6"> + <u> {{getTotalCarrito()[1].toFixed(2)}} </u> </p>
@@ -81,7 +81,7 @@
           <q-card-section class="q-pa-lg">
             <div class="text-caption text-center">Ingresar Código del cupón</div>
             <div class="column items-center">
-            <q-input v-model="text" style="width: 60%" />
+            <q-input style="width: 60%" />
             </div>
           </q-card-section>
           <q-card-actions class="q-pa-md column items-center">
@@ -97,109 +97,79 @@
          square
          v-model="ordenar"
          persistent
-         :maximized="maximizedToggle"
+         maximized
          transition-show="slide-up"
          transition-hide="slide-down"
          @show="showme()"
          >
-         <q-card class="bg-secondary full-width">
-            <q-bar class="bg-primary">
+         <q-card class="bg-white full-width">
+            <q-bar class="bg-transparent">
                <q-space />
-               <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
-                  <q-tooltip v-if="maximizedToggle" content-class="bg-white text-primary">Minimize</q-tooltip>
-               </q-btn>
-               <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
-                  <q-tooltip v-if="!maximizedToggle" content-class="bg-white text-primary">Maximize</q-tooltip>
-               </q-btn>
                <q-btn dense flat icon="close" v-close-popup>
                   <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-               <q-stepper
-                  v-model="step"
-                  vertical
-                  color="primary"
-                  animated
-                  >
-                  <q-step
-                     :name="1"
-                     title="Seleccionar Tipo de Servicio"
-                     icon="add_comment"
-                     :done="step > 1"
+                  <div
+                      class="q-pa-xl row justify-center"
+                      v-if="step === 1"
                      >
-                     <div class="q-pa-sm" v-if="config">
-                       <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${config.price}`"/>
-                       <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
-                       <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
+                     <div class="col-6" style="min-width: 300px">
+                      <div class="q-pt-xl text-h4 text-bold">Tu carrito</div>
+                      <div class="q-pt-md">Seleccionar Tipo de Servicio</div>
+                      <q-list class="q-pa-sm" v-if="config">
+                          <q-item>
+                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${config.price}`"/>
+                          </q-item>
+                          <q-item>
+                            <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                          </q-item>
+                          <q-item>
+                            <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
+                        </q-item>
+                      </q-list>
+                      <div>
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 0 || tipEnvio == 2" @click="step = 2" label="Continuar" />
+                      </div>
                      </div>
-                     <addresses v-if="tipEnvio == 1" v-model="addId"/>
-                     <q-stepper-navigation>
-                        <q-btn color="primary" v-if="tipEnvio == 1 && addId != null" @click="step = 2" label="Continuar" />
-                        <q-btn color="primary" v-if="tipEnvio == 0 || tipEnvio == 2" @click="step = 2" label="Continuar" />
-                     </q-stepper-navigation>
-                  </q-step>
-                  <q-step
-                     :name="2"
-                     title="Seleccionar tipo de Pago"
-                     icon="settings"
-                     :done="step > 2"
-                  >
+                     <div class="col-6 q-pt-xl" style="min-width: 300px">
+                       <q-card class="q-pa-xl" style="border-radius: 28px">
+                         <div class="text-h5"> Mis direcciones</div>
+                         <addresses class="q-pt-md" v-model="addId"/>
+                       </q-card>
+                     </div>
+                  </div>
+                  <div
+                      class="q-pa-xl row justify-center"
+                      v-if="step === 2"
+                     >
+                     <div class="col-6" style="min-width: 300px">
+                      <div class="q-pt-xl q-pb-xl text-h4 text-bold">Formas de Pago</div>
                     <q-option-group
                       :options="tipoPago"
                       label="Tipo de Pago"
                       type="radio"
                       v-model="pagoSel"
                     />
-                    <q-stepper-navigation>
-                      <transition-group
-                        appear
-                        enter-active-class="animated fadeIn"
-                        leave-active-class="animated fadeOut"
-                      >
-                        <q-btn key="Continue" v-if="pagoSel === 0 || pagoSel" @click="pagoSel === 3 ? step = 3 : step = 4" color="primary" label="Continuar" />
-                        <q-btn key="Atras" flat @click="step = 1" color="primary" label="Atras" class="q-ml-sm" />
-                      </transition-group>
-                    </q-stepper-navigation>
-                  </q-step>
-                  <q-step
-                     v-if="step === 3"
-                     :name="3"
-                     title="Tarjeta o Paypal"
-                     icon="settings"
-                     :done="step > 4"
-                  >
-                    <div id="paypal-button-container" ref="payp"></div>
-                    <q-stepper-navigation>
-                      <transition-group
-                        appear
-                        enter-active-class="animated fadeIn"
-                        leave-active-class="animated fadeOut"
-                      >
-                        <q-btn key="Atras" flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
-                      </transition-group>
-                    </q-stepper-navigation>
-                  </q-step>
-                  <q-step
-                    :name="4"
-                    title="Finalizar"
-                    icon="fas fa-money"
-                  >
-                  <p class="text-h6" v-if="false">Total: $ {{tipEnvio == 1 ? (getTotalCarrito()[2] + 3).toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
-                  <q-btn flat @click="step = 2" color="primary" label="Atras" class="q-ml-sm" />
-                   <q-btn @click="confirm = true" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" label="Ordenar" />
-                  </q-step>
-               </q-stepper>
+                    <div class="q-pt-md">
+                        <p class="text-h6" v-if="true">Total: $ {{tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(config.price) : getTotalCarrito()[2]}}</p>
+                        <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
+                        <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
+                    </div>
+                  </div>
+                  <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 3"> <div id="paypal-button-container" ref="payp"></div> </div>
+                  </div>
          </q-card>
       </q-dialog>
       <q-dialog v-model="confirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
-          <span class="q-ml-sm">Confirmar Orden</span>
+          <span class="q-ml-sm">Porfavor confirme la orden</span>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Confirmar" @click="makeOrder()" color="primary" v-close-popup />
+          <q-btn no-caps flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn no-caps flat label="Confirmar" @click="makeOrder()" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -437,8 +407,8 @@ export default {
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()
     },
-    step () {
-      if (this.step === 3) {
+    pagoSel () {
+      if (this.pagoSel === 3) {
         this.$nextTick(() => {
           let that = this
           this.paypal.Buttons({
