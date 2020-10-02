@@ -16,15 +16,15 @@
           <q-separator />
         </q-list>
       </div>
-    <div class="row justify between" v-if="!readOnly">
-    <div style="min-width: 300px" v-for="(component, index) in Group" :key="index">
+    <div class="row justify-center" v-if="!readOnly">
+    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-xl text-white col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list class="full-width" v-for="(items, indice) in component.items" :key="indice">
+        <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
-              <q-radio :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id, component_name: component.name, name: items.name }) : JSON.stringify({ item: items.id, price: 0, component: component.id, component_name: component.name, name: items.name })" color="teal" />
+              <q-radio :dark="mode == 1" :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id, component_name: component.name, name: items.name }) : JSON.stringify({ item: items.id, price: 0, component: component.id, component_name: component.name, name: items.name })" color="teal" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
@@ -39,10 +39,11 @@
       <div v-if="component.type === 0">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list class="full-width" v-for="(items, indice) in component.items" :key="indice">
+        <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
               <q-checkbox
+                :dark="mode == 1"
                 checked-icon="fas fa-dot-circle"
                 unchecked-icon="fas fa-circle"
                 icon="fas fa-circle"
@@ -64,10 +65,12 @@
       <div v-if="component.type === 2">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list v-for="(items, indice) in component.items" :key="indice">
+        <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section>
               <q-slider
+                :color="mode == 1 ? 'positive' : 'primary'"
+                :dark="mode == 1"
                 @input="(x)=> qSliderInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, x)"
                 :value="value.length ? typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined' ? value.find(x => (x['component'] === component.id && x['item'] === items.id))['quantity'] : 0 : 0"
                 label-always
@@ -95,6 +98,10 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
+    mode: {
+      type: Number,
+      default: 0
+    },
     comp: {
       type: Array,
       default: () => []

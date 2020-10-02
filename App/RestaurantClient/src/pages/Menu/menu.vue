@@ -21,20 +21,21 @@
             class="wrapel "
             content-class="wrapel"
             >
-            <div class="wrapel background-color" content-class="wrapel"  v-for="(tabs, index) in categorias"
+            <div class="wrapel background-color" content-class="wrapel"  v-for="(tabs, index) in cats"
                :key="index">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
                   <carousel
+                  speed=2000
                   :loop="true"
                   navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
                   navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
-                        <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
+                        <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col position-relative" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                             <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                               <div class="container-photo">
-                                  <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
+                                  <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                               </div>
                               <div class="text-caption">
                                     <div class="text-bold relative-position">
@@ -152,16 +153,23 @@
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-            <q-card-section class="q-pt-xl row justify-center">
-               <div class="column items-center col-4" style="min-width: 320px">
-                  <div class="diagphcont q-pt-lg" :style="dgbg">
-                     <div class="diagphcont2">
+            <q-card-section class="q-pa-none q-pt-xl row justify-center">
+               <div class="column items-center col-4"
+                 style="min-width: 320px"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
+                  <div class="diagphcont relative-position q-pt-lg" :style="displayVal.disptype == 1 ? 'background-color: unset' : dgbg">
+                    <img
+                      v-if="displayVal.disptype == 1"
+                      style="position: absolute;
+                      width: 300%;
+                      top: -109%;
+                      left: -135%;" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FUnion%20166115595?alt=media&token=9618c4b1-6e55-4b1c-895d-e506d6436855" alt="">
+                     <div class="diagphcont2" style="position: absolute">
                         <q-img class="diagph" v-if="displayVal.photo" contain :src=displayVal.photo />
                      </div>
                   </div>
                   <div>
                      <div class="column items-center">
-                        <div class="q-pt-lg">
+                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" class="q-pt-lg">
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
@@ -171,7 +179,7 @@
                               </q-badge>
                            </q-btn>
                         </div>
-                        <div>
+                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
                         <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="required && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                         <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!required && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                         </div>
@@ -184,25 +192,27 @@
                   </div>
                </div>
                <div class="q-pa-lg col-8"  style="min-width: 320px">
-                  <div class="text-h4">
+                  <div :class="displayVal.disptype == 1 ? 'text-center text-h3 text-uppercase text-weight-medium' : 'text-h4'">
                      {{displayVal.name}}
                   </div>
-                  <div class="q-pt-lg text-h5 text-grey" style="max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;" v-html=displayVal.descripcion>
+                  <div :class="displayVal.disptype == 1 ? 'text-center text-h6' : ' text-h5 text-grey'" class="q-pt-lg" :style="displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;'" v-html=displayVal.descripcion>
                   </div>
                   <div class="row justify-between q-pa-none">
-                     <div class="q-pt-md">
+                     <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" class="q-pt-md">
                         <div v-if="displayVal.discount > 0 && displayVal.groupComp.length">
                            Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
                            <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
                         </div>
                         <q-item-label class="text-h6" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                      </div>
-                     <q-card-actions vertical>
+                     <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
                         <q-btn class="q-pl-md q-pr-md" v-if="required && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                         <q-btn class="q-pl-md q-pr-md" v-if="!required && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                      </q-card-actions>
                   </div>
                   <itemcomp
+                  v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0"
+                  :mode="typeof displayVal.disptype === 'undefined' ? 0 : displayVal.disptype"
                   class="q-pt-xl"
                   :comp="displayVal.groupComp"
                   :value="itComp"
@@ -211,7 +221,47 @@
                   />
                </div>
             </q-card-section>
-            <q-card-section>
+            <q-card-section class="q-pa-none q-ma-none" v-if="displayVal.disptype == 1">
+              <itemcomp
+                  :mode="1"
+                  class="q-pt-xl"
+                  :comp="displayVal.groupComp"
+                  :value="itComp"
+                  @update-comp="(e) => {required = e}"
+                  @update-tot="(e) => {totSum = e}"
+                  />
+            </q-card-section>
+            <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 1">
+              <div class="column items-center">
+                <div style="max-width: 300px; min-width: 40vmin; border-radius: 28px; background-color: #FFD63D" class="q-pa-xl">
+                  <div class="text-h7 text-center"> Cantidad </div>
+                <div class="q-pt-lg flex flex-center">
+                           <q-btn class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
+                           <q-btn :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
+                           <q-btn  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
+                              <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
+                              <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
+                                 <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
+                              </q-badge>
+                           </q-btn>
+                        </div>
+              <div class="column items-center">
+                     <div  class="q-pt-md">
+                        <div v-if="displayVal.discount > 0 && displayVal.groupComp.length">
+                           Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
+                           <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
+                        </div>
+                        <q-item-label class="text-h6" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
+                     </div>
+                     <div class="q-pt-lg" vertical>
+                        <q-btn class="q-pl-md q-pr-md" v-if="required" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="!required" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
               <div class="background-color">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">Más productos</div>
              <carousel
@@ -264,6 +314,10 @@ export default {
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
+    cats () {
+      let objs = this.categorias
+      return objs.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+    },
     origMenu () {
       return this.menu.reduce((y, x) => {
         if (x.estatus && x.estatus[this.sede]) {
@@ -278,6 +332,7 @@ export default {
             stock: x.stock,
             discount: x.discount,
             prodType: 0,
+            disptype: x.disptype,
             groupComp: typeof x.groupComp === 'undefined' ? [] : x.groupComp
           })
         }

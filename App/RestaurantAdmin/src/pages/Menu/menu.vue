@@ -145,6 +145,20 @@
              </q-decimal>
           </q-td>
         </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Display Type</label></q-td>
+          <q-td colspan="100%" key="disptype" :props="props">
+             <q-input
+                style="width: 100px"
+                filled
+                @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)"
+                :value="props.row.disptype ? props.row.disptype : 0"
+                autofocus
+                min="1" max="99999"
+                type="number"
+              />
+          </q-td>
+        </q-tr>
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Activar</label></q-td>
           <q-td  key="estatus" :props="props" >
@@ -194,6 +208,7 @@ const columns = [
   { name: 'stock', align: 'center', field: 'stock' },
   { name: 'discount', align: 'center', field: 'discount' },
   { name: 'price', align: 'center', field: 'price' },
+  { name: 'disptype', align: 'center', field: 'disptype' },
   { name: 'estatus', align: 'left', field: 'estatus' }
 ]
 import { QUploaderBase } from 'quasar'
