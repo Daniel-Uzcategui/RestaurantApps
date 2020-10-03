@@ -36,6 +36,10 @@
             <td class="td-detail-title">Cantidad en Cliente Recurrentes</td>
             <td class="td-detail" v-for="quantitycustomerSede in this.SalesSede[0].quantitycustomerSede" :key="quantitycustomerSede.QuantityOrden_id">{{quantitycustomerSede.QuantityOrder}} </td>
         </tr>
+        <tr>
+            <td class="td-detail-title">Comprar promedio por transacción</td>
+            <td class="td-detail" v-for="avQuantitycustomerSede in this.SalesSede[0].avQuantitycustomerSede" :key="avQuantitycustomerSede.avCustomerKey">{{avQuantitycustomerSede.avQuantityOrder}}</td>
+        </tr>
       </table>
     </q-card>
     </div>
@@ -77,6 +81,7 @@ export default {
       let QuantitySalesSede = []
       let QuantityCustomerSede = []
       let QuantityNwCustomerSede = []
+      let QuantityaverageCustomerSede = []
       let totalOrdersSales = []
       let totalCustomerSede = []
       let totalNwCustomerSede = []
@@ -84,13 +89,14 @@ export default {
       for (i = 0; i < this.localizations.length; i++) {
         obj = this.localizations[i]
         totalOrdersSales = this.totalOrdersSede(obj.id)
-        console.log(totalOrdersSales)
+        // console.log(totalOrdersSales)
         totalSalesSede.push({ mtoOrders: totalOrdersSales[0].totalSede.toFixed(2), mtoOrdenKey: i })
         QuantitySalesSede.push({ QuantityOrder: totalOrdersSales[0].quantitySalesSede, QuantityOrdenKey: i })
         totalCustomerSede.push({ mtoCustomer: totalOrdersSales[0].customerSede.toFixed(2), CustomerSedeKey: i })
         QuantityCustomerSede.push({ QuantityOrder: totalOrdersSales[0].quantitycustomerSede, QuantityCustomerKey: i })
         totalNwCustomerSede.push({ mtoNewCustomer: totalOrdersSales[0].newCustomerSede.toFixed(2), NwCustomerSedeKey: i })
         QuantityNwCustomerSede.push({ nwQuantityOrder: totalOrdersSales[0].newQuantitycustomerSede, QuantityNwCustomerKey: i })
+        QuantityaverageCustomerSede.push({ avQuantityOrder: totalOrdersSales[0].averageQuantitycustomerSede.toFixed(2), avCustomerKey: i })
       }
       SalesSede.push({
         'totalSede': totalSalesSede,
@@ -98,7 +104,8 @@ export default {
         'customerSede': totalCustomerSede,
         'quantitycustomerSede': QuantityCustomerSede,
         'newCustomerSede': totalNwCustomerSede,
-        'newQuantitycustomerSede': QuantityNwCustomerSede
+        'newQuantitycustomerSede': QuantityNwCustomerSede,
+        'avQuantitycustomerSede': QuantityaverageCustomerSede
       })
       return SalesSede
     }
@@ -121,7 +128,7 @@ export default {
       // naive encoding to csv format
       console.log({ cols: this.columns })
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
-        this.OrderClient.map(row => this.columns.map(col => wrapCsvValue(
+        this.SalesSede.map(row => this.columns.map(col => wrapCsvValue(
           typeof col.field === 'function'
             ? col.field(row)
             : row[col.field === void 0 ? col.name : col.field],
@@ -130,7 +137,7 @@ export default {
       ).join('\r\n')
 
       const status = exportFile(
-        'OrdenesClientes.csv',
+        'reportsLocationSales.csv',
         content,
         'text/csv'
       )
@@ -152,35 +159,52 @@ export default {
       let countCustomerSede = 0
       let countNewCustomerSede = 0
       let previousCustomer = ''
-
+      let cantidadOrderXclient = 0
+      let averageCustomerSede = 0
+      let cantidadXnew = 0
+      let indicadorSede = true
+      // console.log(this.orders)
       this.orders.filter(obj => {
         if (obj.sede === value) {
           paidOrder = parseFloat(obj.paid) + parseFloat(paidOrder)
           countSalesSede++
-          if (countCustomerSede === 0) {
+          // rutura de control por cliente
+          if (indicadorSede) {
             previousCustomer = obj.customer_id
+            indicadorSede = false
           }
-          if (previousCustomer === obj.customer_id) {
+          if (previousCustomer !== obj.customer_id) {
+            cantidadXnew = cantidadOrderXclient
+            cantidadOrderXclient = 0
             countCustomerSede++
-            customerPaidOrder = parseFloat(obj.paid) + parseFloat(paidOrder)
+            previousCustomer = obj.customer_id
+          } else {
+            cantidadOrderXclient++
+          }
+          customerPaidOrder = parseFloat(obj.paid) + parseFloat(customerPaidOrder)
+          if (cantidadXnew === 1) {
+            customerNwrPaidOrder = parseFloat(obj.paid) + parseFloat(customerNwrPaidOrder)
+            customerPaidOrder = parseFloat(customerPaidOrder) - parseFloat(obj.paid)
+            countNewCustomerSede++
           }
         }
-        return paidOrder
+        return 0
       })
-      if (countCustomerSede === 1) {
-        countNewCustomerSede++
-        customerNwrPaidOrder = customerPaidOrder
-        customerPaidOrder = 0
-        countCustomerSede = 0
+      if (cantidadOrderXclient > 1 && countCustomerSede === 0) {
+        countCustomerSede++
       }
-
+      if (paidOrder > 0 && countSalesSede > 0) {
+        averageCustomerSede = paidOrder / countSalesSede
+        // console.log(averageCustomerSede)
+      }
       Sales.push({
         'totalSede': paidOrder,
         'quantitySalesSede': countSalesSede,
         'customerSede': customerPaidOrder,
         'quantitycustomerSede': countCustomerSede,
         'newCustomerSede': customerNwrPaidOrder,
-        'newQuantitycustomerSede': countNewCustomerSede
+        'newQuantitycustomerSede': countNewCustomerSede,
+        'averageQuantitycustomerSede': averageCustomerSede
       })
       return Sales
     },
