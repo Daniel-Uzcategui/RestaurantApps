@@ -295,11 +295,11 @@ export default {
                   handler: (node) => this.onClickReports(node) }, */
                 { label: 'Ventas  x Sedes',
                   link: 'locationSales',
-                  handler: (node) => this.onClickReports(node) }
-              /*  { label: 'Categorias',
-                  link: 'rcategories',
                   handler: (node) => this.onClickReports(node) },
-                { label: 'Productos',
+                { label: 'Categorias',
+                  link: 'rcategories',
+                  handler: (node) => this.onClickReports(node) }
+                /* { label: 'Productos',
                   link: 'rproducts',
                   handler: (node) => this.onClickReports(node) } */
               ]
