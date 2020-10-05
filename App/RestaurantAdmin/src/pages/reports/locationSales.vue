@@ -5,7 +5,7 @@
      <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
-        <div class="text-h5">Ventas por Sede (en desarrollo) </div>
+        <div class="text-h5">Ventas por Sede</div>
        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </q-card-section>
        <div class="q-pb-sm">
@@ -33,31 +33,31 @@
         </tr>
         <tr class="">
             <td class="td-detail-title" >{{contentHeader[0]}}</td>
-            <td class="td-detail" v-for="totalSales in this.SalesSede[0].totalSede" :key="totalSales.mtoOrdenKey">{{totalSales.mtoOrders}} </td>
+            <td class="td-detail" v-for="totalSales in this.SalesSede[0].totalSede" :key="totalSales.mtoOrdenKey">{{totalSales.value}} </td>
         </tr>
         <tr class="">
             <td class="td-detail-title">{{contentHeader[1]}}</td>
-            <td class="td-detail" v-for="quantitySalesSede in this.SalesSede[0].quantitySalesSede" :key="quantitySalesSede.QuantityOrdenKey">{{quantitySalesSede.QuantityOrder}} </td>
+            <td class="td-detail" v-for="quantitySales in this.SalesSede[0].quantitySales" :key="quantitySales.QuantityOrdenKey">{{quantitySales.value}} </td>
         </tr>
         <tr class="">
             <td class="td-detail-title">{{contentHeader[2]}}</td>
-            <td class="td-detail" v-for="newCustomerSede in this.SalesSede[0].newCustomerSede" :key="newCustomerSede.NwCustomerSedeKey">{{newCustomerSede.mtoNewCustomer}} </td>
+            <td class="td-detail" v-for="newCustomerSede in this.SalesSede[0].newCustomerSede" :key="newCustomerSede.NwCustomerSedeKey">{{newCustomerSede.value}} </td>
         </tr>
         <tr>
             <td class="td-detail-title">{{contentHeader[3]}}</td>
-            <td class="td-detail" v-for="newQuantitycustomerSede in this.SalesSede[0].newQuantitycustomerSede" :key="newQuantitycustomerSede.QuantityNwCustomerKey">{{newQuantitycustomerSede.nwQuantityOrder}} </td>
+            <td class="td-detail" v-for="newquantityCustomer in this.SalesSede[0].newquantityCustomer" :key="newquantityCustomer.QuantityNwCustomerKey">{{newquantityCustomer.value}} </td>
         </tr>
         <tr>
             <td class="td-detail-title">{{contentHeader[4]}}</td>
-            <td class="td-detail" v-for="customerSede in this.SalesSede[0].customerSede" :key="customerSede.QuantityCustomerKey">{{customerSede.mtoCustomer}} </td>
+            <td class="td-detail" v-for="customerSede in this.SalesSede[0].customerSede" :key="customerSede.QuantityCustomerKey">{{customerSede.value}} </td>
         </tr>
         <tr>
             <td class="td-detail-title">{{contentHeader[5]}}</td>
-            <td class="td-detail" v-for="quantitycustomerSede in this.SalesSede[0].quantitycustomerSede" :key="quantitycustomerSede.QuantityOrden_id">{{quantitycustomerSede.QuantityOrder}} </td>
+            <td class="td-detail" v-for="quantityCustomer in this.SalesSede[0].quantityCustomer" :key="quantityCustomer.QuantityOrden_id">{{quantityCustomer.value}} </td>
         </tr>
         <tr>
             <td class="td-detail-title">{{contentHeader[6]}}</td>
-            <td class="td-detail" v-for="avQuantitycustomerSede in this.SalesSede[0].avQuantitycustomerSede" :key="avQuantitycustomerSede.avCustomerKey">{{avQuantitycustomerSede.avQuantityOrder}}</td>
+            <td class="td-detail" v-for="avquantityCustomer in this.SalesSede[0].avquantityCustomer" :key="avquantityCustomer.avCustomerKey">{{avquantityCustomer.value}}</td>
         </tr>
       </table>
     </q-card>
@@ -77,35 +77,35 @@ export default {
     ...mapGetters('localization', ['localizations']),
     SalesSede () {
       let SalesSede = []
-      let totalSalesSede = []
-      let QuantitySalesSede = []
-      let QuantityCustomerSede = []
-      let QuantityNwCustomerSede = []
-      let QuantityaverageCustomerSede = []
+      let totalSales = []
+      let quantitySales = []
+      let quantityCustomer = []
+      let quantityNwCustomer = []
+      let quantityAverageCustomer = []
       let totalOrdersSales = []
-      let totalCustomerSede = []
-      let totalNwCustomerSede = []
+      let totalCustomer = []
+      let totalNwCustomer = []
       let i, obj
       for (i = 0; i < this.localizations.length; i++) {
         obj = this.localizations[i]
         totalOrdersSales = this.totalOrdersSede(obj.id)
         // console.log(totalOrdersSales)
-        totalSalesSede.push({ mtoOrders: totalOrdersSales[0].totalSede.toFixed(2), mtoOrdenKey: i })
-        QuantitySalesSede.push({ QuantityOrder: totalOrdersSales[0].quantitySalesSede, QuantityOrdenKey: i })
-        totalCustomerSede.push({ mtoCustomer: totalOrdersSales[0].customerSede.toFixed(2), CustomerSedeKey: i })
-        QuantityCustomerSede.push({ QuantityOrder: totalOrdersSales[0].quantitycustomerSede, QuantityCustomerKey: i })
-        totalNwCustomerSede.push({ mtoNewCustomer: totalOrdersSales[0].newCustomerSede.toFixed(2), NwCustomerSedeKey: i })
-        QuantityNwCustomerSede.push({ nwQuantityOrder: totalOrdersSales[0].newQuantitycustomerSede, QuantityNwCustomerKey: i })
-        QuantityaverageCustomerSede.push({ avQuantityOrder: totalOrdersSales[0].averageQuantitycustomerSede.toFixed(2), avCustomerKey: i })
+        totalSales.push({ value: totalOrdersSales[0].totalSede.toFixed(2), mtoOrdenKey: i })
+        totalCustomer.push({ value: totalOrdersSales[0].customerSede.toFixed(2), CustomerSedeKey: i })
+        totalNwCustomer.push({ value: totalOrdersSales[0].newCustomerSede.toFixed(2), NwCustomerSedeKey: i })
+        quantityAverageCustomer.push({ value: totalOrdersSales[0].averagequantityCustomer.toFixed(2), avCustomerKey: i })
+        quantitySales.push({ value: totalOrdersSales[0].quantitySales, QuantityOrdenKey: i })
+        quantityCustomer.push({ value: totalOrdersSales[0].quantityCustomer, QuantityCustomerKey: i })
+        quantityNwCustomer.push({ value: totalOrdersSales[0].newquantityCustomer, QuantityNwCustomerKey: i })
       }
       SalesSede.push({
-        'totalSede': totalSalesSede,
-        'quantitySalesSede': QuantitySalesSede,
-        'customerSede': totalCustomerSede,
-        'quantitycustomerSede': QuantityCustomerSede,
-        'newCustomerSede': totalNwCustomerSede,
-        'newQuantitycustomerSede': QuantityNwCustomerSede,
-        'avQuantitycustomerSede': QuantityaverageCustomerSede
+        'totalSede': totalSales,
+        'quantitySales': quantitySales,
+        'customerSede': totalCustomer,
+        'quantityCustomer': quantityCustomer,
+        'newCustomerSede': totalNwCustomer,
+        'newquantityCustomer': quantityNwCustomer,
+        'avquantityCustomer': quantityAverageCustomer
       })
       return SalesSede
     }
@@ -127,7 +127,6 @@ export default {
     exportTable () {
       // naive encoding to csv format
       let content = '  '
-      let contentDetail = ''
       let sede
       for (let i = 0; i < this.localizations.length; i++) {
         sede = this.localizations[i]
@@ -136,18 +135,13 @@ export default {
       }
       content = content + '\r\n'
       console.log(this.SalesSede[0])
-      for (let i = 0; i < this.localizations.length - 1; i++) {
-        contentDetail = contentDetail + this.SalesSede[0].totalSede[i].mtoOrders + ','
-        contentDetail = contentDetail + this.SalesSede[0].quantitySalesSede[i].QuantityOrder + ','
-        contentDetail = contentDetail + this.SalesSede[0].customerSede[i].mtoCustomer + ','
-        contentDetail = contentDetail + this.SalesSede[0].quantitycustomerSede[i].QuantityOrder + ','
-        contentDetail = contentDetail + this.SalesSede[0].newCustomerSede[i].mtoNewCustomer + ','
-        contentDetail = contentDetail + this.SalesSede[0].newQuantitycustomerSede[i].nwQuantityOrder + ','
-        contentDetail = contentDetail + this.SalesSede[0].avQuantitycustomerSede[i].avQuantityOrder + ','
-        console.log(contentDetail)
-        contentDetail = contentDetail + '\r\n'
-      }
-      content = content + contentDetail
+      content = content + this.getColumns(this.contentHeader[0], this.SalesSede[0].totalSede)
+      content = content + this.getColumns(this.contentHeader[1], this.SalesSede[0].quantitySales)
+      content = content + this.getColumns(this.contentHeader[2], this.SalesSede[0].newCustomerSede)
+      content = content + this.getColumns(this.contentHeader[3], this.SalesSede[0].newquantityCustomer)
+      content = content + this.getColumns(this.contentHeader[4], this.SalesSede[0].customerSede)
+      content = content + this.getColumns(this.contentHeader[5], this.SalesSede[0].quantityCustomer)
+      content = content + this.getColumns(this.contentHeader[6], this.SalesSede[0].avquantityCustomer)
       const status = exportFile(
         'reportsLocationSales.csv',
         content,
@@ -211,12 +205,12 @@ export default {
       }
       Sales.push({
         'totalSede': paidOrder,
-        'quantitySalesSede': countSalesSede,
+        'quantitySales': countSalesSede,
         'customerSede': customerPaidOrder,
-        'quantitycustomerSede': countCustomerSede,
+        'quantityCustomer': countCustomerSede,
         'newCustomerSede': customerNwrPaidOrder,
-        'newQuantitycustomerSede': countNewCustomerSede,
-        'averageQuantitycustomerSede': averageCustomerSede
+        'newquantityCustomer': countNewCustomerSede,
+        'averagequantityCustomer': averageCustomerSede
       })
       return Sales
     },
@@ -225,6 +219,14 @@ export default {
         return obj.customer_id === value
       })
       return totalOrderCustomer.length
+    },
+    getColumns (title, obj) {
+      let column = title + ','
+      for (let i = 0; i < this.localizations.length; i++) {
+        column = column + obj[i].value + ','
+      }
+      column = column + '\r\n'
+      return column
     }
   },
 
@@ -239,7 +241,7 @@ export default {
         'Cantidad en Cliente Nuevos',
         'Montos en Cliente Recurrentes',
         'Cantidad en Cliente Recurrentes',
-        'Comprar promedio por transacción'
+        'Comprar promedio por transaccion'
       ]
     }
   }
