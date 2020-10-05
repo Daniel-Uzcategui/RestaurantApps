@@ -25,10 +25,10 @@
             <td class="" >
             <table>
                <tr>
-                <td class="" ></td>
+                <td class="" >{{SalesSede[0].totalSede[1].mtoOrders}}</td>
               </tr>
               <tr class="">
-               <td class="">0</td>
+               <td class="">{{SalesSede[0].totalSede[1].QuantityOrder }} </td>
               </tr>
               </table>
             </td>
@@ -68,38 +68,23 @@ export default {
     ...mapGetters('order', ['orders']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('localization', ['localizations']),
-    ...mapGetters('menu', ['categorias']),
+    ...mapGetters('menu', ['menu', 'categorias']),
     SalesSede () {
       let SalesSede = []
-      let totalSalesSede = []
-      let QuantitySalesSede = []
-      let QuantityCustomerSede = []
-      let QuantityNwCustomerSede = []
-      let QuantityaverageCustomerSede = []
+      let totalSales = []
       let totalOrdersSales = []
-      let totalCustomerSede = []
-      let totalNwCustomerSede = []
+      let quantitySales = []
       let i, obj
       for (i = 0; i < this.localizations.length; i++) {
         obj = this.localizations[i]
         totalOrdersSales = this.totalOrdersSede(obj.id)
         // console.log(totalOrdersSales)
-        totalSalesSede.push({ mtoOrders: totalOrdersSales[0].totalSede.toFixed(2), mtoOrdenKey: i })
-        QuantitySalesSede.push({ QuantityOrder: totalOrdersSales[0].quantitySalesSede, QuantityOrdenKey: i })
-        totalCustomerSede.push({ mtoCustomer: totalOrdersSales[0].customerSede.toFixed(2), CustomerSedeKey: i })
-        QuantityCustomerSede.push({ QuantityOrder: totalOrdersSales[0].quantitycustomerSede, QuantityCustomerKey: i })
-        totalNwCustomerSede.push({ mtoNewCustomer: totalOrdersSales[0].newCustomerSede.toFixed(2), NwCustomerSedeKey: i })
-        QuantityNwCustomerSede.push({ nwQuantityOrder: totalOrdersSales[0].newQuantitycustomerSede, QuantityNwCustomerKey: i })
-        QuantityaverageCustomerSede.push({ avQuantityOrder: totalOrdersSales[0].averageQuantitycustomerSede.toFixed(2), avCustomerKey: i })
+        totalSales.push({ value: totalOrdersSales[0].totalSede.toFixed(2), mtoOrdenKey: i })
+        quantitySales.push({ value: totalOrdersSales[0].quantitySales, QuantityOrdenKey: i })
       }
       SalesSede.push({
-        'totalSede': totalSalesSede,
-        'quantitySalesSede': QuantitySalesSede,
-        'customerSede': totalCustomerSede,
-        'quantitycustomerSede': QuantityCustomerSede,
-        'newCustomerSede': totalNwCustomerSede,
-        'newQuantitycustomerSede': QuantityNwCustomerSede,
-        'avQuantitycustomerSede': QuantityaverageCustomerSede
+        'totalSede': totalSales,
+        'quantitySales': quantitySales
       })
       return SalesSede
     }
@@ -109,12 +94,13 @@ export default {
     this.bindClients()
     this.bindLocalizations()
     this.bindCategorias()
+    this.bindMenu()
   },
   methods: {
     ...mapActions('order', ['reportBindOrders']),
     ...mapActions('client', ['bindClients']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('menu', ['bindCategorias']),
+    ...mapActions('menu', ['bindMenu', 'bindCategorias']),
     clientOrders (value) {
       return this.clients.find(obj => {
         return obj.id === value
@@ -150,14 +136,10 @@ export default {
       let Sales = []
       let paidOrder = 0
       let customerPaidOrder = 0
-      let customerNwrPaidOrder = 0
       let countSalesSede = 0
       let countCustomerSede = 0
-      let countNewCustomerSede = 0
       let previousCustomer = ''
       let cantidadOrderXclient = 0
-      let averageCustomerSede = 0
-      let cantidadXnew = 0
       let indicadorSede = true
       // console.log(this.orders)
       this.orders.filter(obj => {
@@ -170,37 +152,21 @@ export default {
             indicadorSede = false
           }
           if (previousCustomer !== obj.customer_id) {
-            cantidadXnew = cantidadOrderXclient
-            cantidadOrderXclient = 0
             countCustomerSede++
             previousCustomer = obj.customer_id
           } else {
             cantidadOrderXclient++
           }
           customerPaidOrder = parseFloat(obj.paid) + parseFloat(customerPaidOrder)
-          if (cantidadXnew === 1) {
-            customerNwrPaidOrder = parseFloat(obj.paid) + parseFloat(customerNwrPaidOrder)
-            customerPaidOrder = parseFloat(customerPaidOrder) - parseFloat(obj.paid)
-            countNewCustomerSede++
-          }
         }
         return 0
       })
       if (cantidadOrderXclient > 1 && countCustomerSede === 0) {
         countCustomerSede++
       }
-      if (paidOrder > 0 && countSalesSede > 0) {
-        averageCustomerSede = paidOrder / countSalesSede
-        // console.log(averageCustomerSede)
-      }
       Sales.push({
         'totalSede': paidOrder,
-        'quantitySalesSede': countSalesSede,
-        'customerSede': customerPaidOrder,
-        'quantitycustomerSede': countCustomerSede,
-        'newCustomerSede': customerNwrPaidOrder,
-        'newQuantitycustomerSede': countNewCustomerSede,
-        'averageQuantitycustomerSede': averageCustomerSede
+        'quantitySalesSede': countSalesSede
       })
       return Sales
     },

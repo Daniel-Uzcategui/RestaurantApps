@@ -8,14 +8,14 @@
         <div class="text-h5">Ventas por Sede</div>
        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </q-card-section>
-       <div class="q-pb-sm">
-     Filtros por Dias
+       <!--div class="q-pb-sm">
 <div class="q-pa-md" style="max-width: 300px">
+Filtros por Dias
   <q-input filled v-model="days">
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-            <q-date v-model="days" multiple>
+            <q-date v-model="days" range multiple>
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="Close" color="primary" flat />
               </div>
@@ -25,7 +25,7 @@
       </template>
     </q-input>
 </div>
-</div>
+</div!-->
       <table class="tableReports">
         <tr>
           <th class="td-detail-title"></th>
