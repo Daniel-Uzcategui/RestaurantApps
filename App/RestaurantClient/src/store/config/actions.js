@@ -9,3 +9,7 @@ export const bindEnv = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindEnv')
   return bindFirestoreRef('environment', firestore().collection('environment').doc('version'), { reset: false })
 })
+export const bindManif = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindEnv')
+  return bindFirestoreRef('manifest', firestore().collection('environment').doc('manifest'), { reset: false })
+})

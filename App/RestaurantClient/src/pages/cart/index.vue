@@ -128,14 +128,50 @@
                         </q-item>
                       </q-list>
                       <div>
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null" @click="step = 2" label="Continuar" />
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 0 || tipEnvio == 2" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                       </div>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 300px">
                        <q-card class="q-pa-xl" style="border-radius: 28px">
-                         <div class="text-h5"> Mis direcciones</div>
-                         <addresses class="q-pt-md" v-model="addId"/>
+                         <q-card-section>
+                           <div class="text-h5">¿Para cuando quiere su pedido?</div>
+                            <div class="q-gutter-sm">
+                              <q-radio v-model="orderWhen" val=0 label="Lo más pronto posible" />
+                              <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
+                            </div>
+                            <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
+                              <q-input v-model="orderDate" hint="Seleccione Fecha y hora">
+                                <template v-slot:prepend>
+                                  <q-icon name="event" class="cursor-pointer">
+                                    <q-popup-proxy transition-show="scale" transition-hide="scale">
+                                      <q-date v-model="orderDate" mask="YYYY-MM-DD HH:mm">
+                                        <div class="row items-center justify-end">
+                                          <q-btn v-close-popup label="Close" color="primary" flat />
+                                        </div>
+                                      </q-date>
+                                    </q-popup-proxy>
+                                  </q-icon>
+                                </template>
+
+                                <template v-slot:append>
+                                  <q-icon name="access_time" class="cursor-pointer">
+                                    <q-popup-proxy transition-show="scale" transition-hide="scale">
+                                      <q-time v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
+                                        <div class="row items-center justify-end">
+                                          <q-btn v-close-popup label="Close" color="primary" flat />
+                                        </div>
+                                      </q-time>
+                                    </q-popup-proxy>
+                                  </q-icon>
+                                </template>
+                              </q-input>
+                            </div>
+                         </q-card-section>
+                         <q-card-section>
+                          <div class="text-h5"> Mis direcciones</div>
+                          <addresses class="q-pt-md" v-model="addId"/>
+                         </q-card-section>
                        </q-card>
                      </div>
                   </div>
@@ -223,6 +259,8 @@ export default {
   },
   data () {
     return {
+      orderDate: null,
+      orderWhen: null,
       paypal: window.paypal,
       CheckAv: 1,
       confirm: false,
@@ -291,7 +329,11 @@ export default {
     },
     makeOrder (paypal) {
       if (this.tipEnvio !== '1') { this.addId = '' }
-      let order = { sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price) : this.getTotalCarrito()[2] }
+      let orderWhen = {
+        orderWhen: this.orderWhen,
+        dateWhen: this.dateWhen === null || typeof this.dateWhen === 'undefined' ? 'NA' : this.dateWhen
+      }
+      let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price) : this.getTotalCarrito()[2] }
       if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
       this.addOrder({ ...order }).then(e => {
         this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' })

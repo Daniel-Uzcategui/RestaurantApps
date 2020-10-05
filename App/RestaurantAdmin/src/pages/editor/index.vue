@@ -535,6 +535,11 @@
          <q-input placeholder="short_name" v-model="app_short_name" label="short_name" />
          <q-input placeholder="description" v-model="app_description" label="description" />
          <q-input placeholder="display" v-model="app_display" label="display" />
+      <q-input placeholder="favicon" v-model="appicons.favicon" label="favicon" >
+         <template v-slot:append>
+            <q-btn @click="photoGallery = true; iconmodel = 'favicon'" round dense flat icon="add" />
+         </template>
+       </q-input>
        <q-input placeholder="128x128" v-model="appicons.icon128x128" label="icon128x128" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'icon128x128'" round dense flat icon="add" />
@@ -631,6 +636,7 @@ export default {
       app_description: '',
       app_display: '',
       appicons: {
+        favicon: '',
         icon128x128: '',
         icon192x192: '',
         icon256x256: '',
@@ -686,6 +692,7 @@ export default {
         this.app_short_name = typeof e.short_name !== 'undefined' ? e.name : ''
         this.app_description = typeof e.description !== 'undefined' ? e.description : ''
         this.app_display = typeof e.display !== 'undefined' ? e.display : ''
+        Vue.set(this.appicons, 'favicon', typeof e.icons && typeof e.icons.favicon !== 'undefined' ? e.icons.favicon : '')
         Vue.set(this.appicons, 'icon128x128', typeof e.icons && typeof e.icons.icon128x128 !== 'undefined' ? e.icons.icon128x128 : '')
         Vue.set(this.appicons, 'icon192x192', typeof e.icons && typeof e.icons.icon192x192 !== 'undefined' ? e.icons.icon192x192 : '')
         Vue.set(this.appicons, 'icon256x256', typeof e.icons && typeof e.icons.icon256x256 !== 'undefined' ? e.icons.icon256x256 : '')
@@ -789,6 +796,7 @@ export default {
         'display': this.app_display,
         'start_url': '.',
         'icons': {
+          favicon: this.appicons.favicon,
           icon128x128: this.appicons.icon128x128,
           icon192x192: this.appicons.icon192x192,
           icon256x256: this.appicons.icon256x256,

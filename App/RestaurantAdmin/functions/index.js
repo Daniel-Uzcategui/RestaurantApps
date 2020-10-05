@@ -2,10 +2,9 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp()
 const db = admin.firestore()
-
 exports.CheckCart = functions.firestore
   .document('orders/{ordersId}')
-  .onCreate(async (change, context) => {
+  .onCreate(async (change) => {
     // Get an object representing the documen
     // e.g. {'name': 'Marie', 'age': 66}
     const newValue = change.data()
@@ -98,7 +97,7 @@ exports.CheckCart = functions.firestore
   })
 exports.facturasSequence = functions.firestore
   .document('orders/{ordersId}')
-  .onCreate(async (change, context) => {
+  .onCreate(async (change) => {
     // Get an object representing the document
     // e.g. {'name': 'Marie', 'age': 66}
     var countRef = db.collection('counters').doc('orders')
@@ -296,7 +295,7 @@ exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
 })
 exports.RewardsPoints = functions.firestore
   .document('orders/{ordersId}')
-  .onUpdate(async (change, context) => {
+  .onUpdate(async (change) => {
     const newValue = change.after.data()
     const previousValue = change.before.data()
     let user = previousValue.customer_id

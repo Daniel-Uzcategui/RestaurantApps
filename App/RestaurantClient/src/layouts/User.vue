@@ -140,6 +140,16 @@ export default {
     })
   },
   async mounted () {
+    this.bindManif().then(e => {
+      if (e.icons && e.icons.favicon) {
+        const favicon = document.getElementById('favicon')
+        favicon.setAttribute('href', e.icons.favicon)
+      }
+      if (e.name) {
+        const title = document.getElementById('apptitle')
+        title.innerText = e.name
+      }
+    })
     this.bindEnv().then(e => {
       // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
@@ -194,7 +204,7 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
-    ...mapActions('config', ['bindConfigs', 'bindEnv']),
+    ...mapActions('config', ['bindConfigs', 'bindEnv', 'bindManif']),
     ...mapActions('editor', ['bindBlocks']),
     addRoutes () {
       let { routes } = this.$router.options

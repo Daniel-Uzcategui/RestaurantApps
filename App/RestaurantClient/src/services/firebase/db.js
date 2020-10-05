@@ -40,9 +40,5 @@ export const docGet = (doc) => {
 export const storageRef = (storageLocation) => {
   return firebase.storage().ref(storageLocation)
 }
-export const GeoPoint = () => {
-  return firebase.firestore.GeoPoint
-}
-export const Timestamp = () => {
-  return firebase.firestore.Timestamp
-}
+const { Timestamp, GeoPoint } = firebase.firestore
+export { Timestamp, GeoPoint }
