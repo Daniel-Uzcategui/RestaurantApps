@@ -15,7 +15,7 @@
                  <q-btn to="/cart/index" class="carticon" flat icon="fas fa-shopping-cart" >
                    <q-badge color="red" floating>{{getCartQ}}</q-badge>
                  </q-btn>
-               <q-toggle class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
+               <q-toggle v-show="false" class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
                </div>
             </div>
             <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">

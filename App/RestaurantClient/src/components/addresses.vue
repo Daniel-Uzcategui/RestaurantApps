@@ -25,14 +25,8 @@
       transition-hide="slide-down"
     >
     <q-card :class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'">
-        <q-bar class="bg-primary">
+        <q-bar class="bg-transparent">
           <q-space />
-          <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
-            <q-tooltip v-if="maximizedToggle" content-class="bg-white text-primary">Minimize</q-tooltip>
-          </q-btn>
-          <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
-            <q-tooltip v-if="!maximizedToggle" content-class="bg-white text-primary">Maximize</q-tooltip>
-          </q-btn>
           <q-btn dense flat icon="close" v-close-popup>
             <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
           </q-btn>
@@ -59,8 +53,8 @@
       @update-mark="(e) => markers = e" />
     </q-card-section>
     <q-card-actions align="around">
-        <q-btn color="secondary" v-close-popup >Cancelar</q-btn>
-        <q-btn color="primary" @click="$refs.addrs.validate().then(e => { if (e) {newAddress(); dialog = false}})">Guardar</q-btn>
+        <q-btn color="secondary" v-close-popup no-caps rounded >Cancelar</q-btn>
+        <q-btn color="primary" no-caps rounded @click="$refs.addrs.validate().then(e => { if (e) {newAddress(); dialog = false}})">Guardar</q-btn>
       </q-card-actions>
        </q-card>
   </q-dialog>

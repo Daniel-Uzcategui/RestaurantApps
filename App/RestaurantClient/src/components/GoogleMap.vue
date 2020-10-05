@@ -10,7 +10,7 @@
                                       v-on:attrs="slotProps.attrs">
                         </q-input>
                     </template>
-        </gmap-autocomplete>  <q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" label="Localizarme" />
+        </gmap-autocomplete>  <div class="column items-center q-pa-md"><q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" no-caps rounded label="Localizarme" /></div>
     <gmap-map
       :center="centerClone"
       :zoom="12"
@@ -18,12 +18,11 @@
       @click="addMark"
       :options="{
    zoomControl: true,
-   mapTypeControl: true,
    scaleControl: false,
    streetViewControl: false,
    rotateControl: false,
    fullscreenControl: true,
-   disableDefaultUI: false
+   disableDefaultUI: true
  }"
     >
       <gmap-marker

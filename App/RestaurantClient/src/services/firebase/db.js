@@ -12,8 +12,6 @@ import 'firebase/storage'
 export const firestore = () => {
   return firebase.firestore()
 }
-const { Timestamp, GeoPoint } = firebase.firestore
-export { Timestamp, GeoPoint }
 /**
  * @param  {String} collectionName - Firestore collection name
  * @param  {String} id - Uid to assign to a doc in firestore collection
@@ -41,4 +39,10 @@ export const docGet = (doc) => {
  */
 export const storageRef = (storageLocation) => {
   return firebase.storage().ref(storageLocation)
+}
+export const GeoPoint = () => {
+  return firebase.firestore.GeoPoint
+}
+export const Timestamp = () => {
+  return firebase.firestore.Timestamp
 }

@@ -17,13 +17,13 @@
       style="width:100%;  height: 300px;"
       @click="addMark"
       :options="{
-   zoomControl: true,
-   mapTypeControl: true,
+   zoomControl: false,
+   mapTypeControl: false,
    scaleControl: false,
    streetViewControl: false,
    rotateControl: false,
    fullscreenControl: true,
-   disableDefaultUI: false
+   disableDefaultUI: true
  }"
     >
       <gmap-marker
