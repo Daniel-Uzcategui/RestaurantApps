@@ -262,7 +262,7 @@ export default {
         link: '#/home'
       },
       {
-        title: 'Catálogo',
+        title: 'Menú',
         caption: '',
         icon: 'menu_book',
         link: '#/menu/index'
