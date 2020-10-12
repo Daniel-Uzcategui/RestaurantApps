@@ -29,6 +29,15 @@ export const saveCss = firestoreAction((state, payload) => {
       console.log(`editor css updated!`)
     })
 })
+export const saveScCss = firestoreAction((state, payload) => {
+  return firestore()
+    .collection('editor')
+    .doc('blocks' + payload.doc)
+    .set({ scopedCss: payload.payload }, { merge: true })
+    .then(() => {
+      console.log(`editor css updated!`)
+    })
+})
 export const savePage = firestoreAction((state, payload) => {
   return firestore()
     .collection('editor')

@@ -356,6 +356,25 @@
                         </q-icon>
                      </template>
                      </q-input>
+         <q-card v-if="app_options" class="my-card">
+       <q-card-section>
+       <q-select v-model="scssSelect" :options="scopedCss" :option-label="(item) => item === null ? null : item.route" emit-value  :option-value="(item) => item === null ? null : item.route" label="Select Page route" />
+       <q-input v-model="newScss" label="Add new page route">
+          <template v-slot:append>
+            <q-btn @click="saveScss()" round dense flat icon="add" />
+         </template>
+       </q-input>
+       <q-input type="textarea" v-if="app_options && typeof scopedCss.find(e => e.route === scssSelect) !== 'undefined'" :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" label="Scoped CSS" >
+            <template v-slot:append>
+                        <q-icon name="edit">
+                           <q-popup-edit persistent buttons :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" content-class="text-white">
+                              <prism-editor @keyup.enter.stop class="my-editor" :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" :highlight="highlighter" line-numbers></prism-editor>
+                           </q-popup-edit>
+                        </q-icon>
+                     </template>
+                     </q-input>
+       </q-card-section>
+       </q-card>
          <q-card v-if="!app_options && selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'" class="my-card">
             <q-card-section>
                <q-input readonly filled v-model="selectedBLock.block_index" label="Selected Block" />
@@ -631,6 +650,9 @@ export default {
   },
   data () {
     return {
+      scssSelect: '',
+      newScss: '',
+      scopedCss: [],
       app_name: '',
       app_short_name: '',
       app_description: '',
@@ -705,6 +727,7 @@ export default {
       let pageobj = e.find(e => e.id === 'page')
       let routes = e.find(e => e.id === 'routes')
       if (obj && obj.css) { this.insertCss = obj.css }
+      if (obj && obj.scopedCss) { this.scopedCss = obj.scopedCss }
       if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) }
       if (typeof this.page.knob === 'undefined') { Vue.set(this.page, 'knob', {}) } else {
         Vue.set(this.page, 'knob', this.page.knob)
@@ -746,7 +769,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('editor', ['saveBlocks', 'saveBlocks2', 'savePage', 'bindBlocks', 'saveCss', 'saveVer', 'saveRoutes']),
+    ...mapActions('editor', ['saveBlocks', 'saveBlocks2', 'savePage', 'bindBlocks', 'saveCss', 'saveScCss', 'saveVer', 'saveRoutes']),
     ...mapActions('config', ['bindEnv', 'bindManifest', 'saveManifest']),
     addPage () {
       let parent = this.pagesNode[0]
@@ -810,13 +833,14 @@ export default {
     },
     download () {
       this.selectedPage = ''
-      exportFile('ChopziPage.json', JSON.stringify({ addedPages: this.addedPages, css: this.insertCss, page: this.page, routes: this.pagesNode[0] }))
+      exportFile('ChopziPage.json', JSON.stringify({ addedPages: this.addedPages, scopedCss: this.scopedCss, css: this.insertCss, page: this.page, routes: this.pagesNode[0] }))
     },
     async loadImport () {
       let file = await this.importFile.text()
       let toObject = JSON.parse(file)
       if (toObject && toObject.blocks) { this.blocks = toObject.blocks } else { this.blocks = [] }
       if (toObject && toObject.css) { this.insertCss = toObject.css } else { this.insertCss = '' }
+      if (toObject && toObject.scopedCss) { this.scopedCss = toObject.scopedCss } else { this.scopedCss = '' }
       if (toObject && toObject.page) { this.page = toObject.page } else { this.page = {} }
       if (toObject && toObject.routes) {
         Vue.set(this.pagesNode, 0, toObject.routes)
@@ -831,6 +855,11 @@ export default {
     saveV () {
       if (this.newVerAlias !== '') {
         this.saveVer(this.newVerAlias)
+      }
+    },
+    saveScss () {
+      if (this.newScss !== '') {
+        this.scopedCss.push({ route: this.newScss, css: '' })
       }
     },
     savePages () {
@@ -853,6 +882,7 @@ export default {
         this.savePage({ payload: this.page, doc: preffix })
         this.saveRoutes({ payload: this.pagesNode[0], doc: preffix })
         this.saveCss({ payload: this.insertCss, doc: preffix })
+        this.saveScCss({ payload: this.scopedCss, doc: preffix })
       })
     },
     loadB (i) {
@@ -875,6 +905,7 @@ export default {
           this.blocks = obj.addedPages['Home']
         }
         if (obj && obj.css) { this.insertCss = obj.css } else { this.insertCss = '' }
+        if (obj && obj.scopedCss) { this.scopedCss = obj.scopedCss } else { this.scopedCss = '' }
         if (pageobj) { this.page = JSON.parse(JSON.stringify(pageobj)) } else { this.page = {} }
         if (routes) { Vue.set(this.pagesNode, 0, JSON.parse(JSON.stringify(routes))) } else {
           this.pagesNode = [{

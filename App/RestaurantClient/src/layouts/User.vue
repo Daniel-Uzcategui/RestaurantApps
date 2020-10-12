@@ -1,6 +1,6 @@
 <template>
    <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #ffffff;' + page.style : 'background-color: #1d1d1d;' + page.style" view="hhh LpR fFf">
-         <q-toolbar class="absolute-top" style="z-index: 100">
+         <q-toolbar class="absolute-top logocont" style="z-index: 100">
            <div class="relative-position full-width">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
@@ -126,6 +126,14 @@ export default {
       var obj = e.find(e => e.id === 'blocks')
       this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
       this.addRoutes()
+      var css
+      let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
+      if (scopedCss !== '') {
+        css = scopedCss.find(e => e.route === this.fullPath)
+        if (typeof css !== 'undefined' && css !== '') {
+          this.insCss(css.css)
+        }
+      }
     })
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -191,8 +199,12 @@ export default {
     this.navigateFill()
     this.setupNotif()
   },
+  updated () {
+    this.fullPath = this.$router.history.current.fullPath
+  },
   data () {
     return {
+      fullPath: '',
       Tawk_API: null,
       notifications: 0,
       blurLayout: false,
@@ -208,7 +220,7 @@ export default {
     ...mapActions('editor', ['bindBlocks']),
     addRoutes () {
       let { routes } = this.$router.options
-      console.log({ routes }, 'Routes', { ...this.editor })
+      console.log(this.$router, 'Routes', { ...this.editor })
       let routerAdd = this.editor.find(e => e.id === 'routes')
       if (typeof routerAdd !== 'undefined') {
         let routeData = routes.find(r => r.path === '/pg')
@@ -393,6 +405,17 @@ export default {
     },
     Tawk_API () {
       // console.log('asdasdasd')
+    },
+    fullPath (d) {
+      var css
+      let obj = this.editor.find(e => e.id === 'blocks')
+      let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
+      if (scopedCss !== '') {
+        css = scopedCss.find(e => e.route === d)
+        if (typeof css !== 'undefined' && css !== '') {
+          this.insCss(css.css)
+        }
+      }
     }
   }
 }
