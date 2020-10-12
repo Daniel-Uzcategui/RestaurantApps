@@ -18,6 +18,12 @@
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="phone">Teléfono</label>
                 <q-input class="col" id="phone" v-model="phone" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
+           <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fecnac">Fecha  de Nac.</label>
+                 <q-input class="col" id="fecnac" v-model="fecnac" borderless="borderless" dense="dense"  readonly></q-input>
+          </div>
+          <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="sexo">Sexo</label>
+             <q-select map-options emit-value standout="bg-teal text-white"  v-model="sexo"  :options="sexo_options"  class="col"  />
+        </div>
         </section>
         <div class="row justify-between absolute-bottom q-my-lg q-px-md ">
             <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
@@ -38,7 +44,13 @@ export default {
       nombre: state.nombre,
       apellido: state.apellido,
       cedula: state.cedula,
-      phone: state.phone
+      phone: state.phone,
+      sexo: state.sexo,
+      fecnac: state.fecnac,
+      sexo_options: [
+        { label: 'Masculino', value: 'M' },
+        { label: 'Femenino', value: 'F' }
+      ]
     }
   },
   computed: {
@@ -53,7 +65,7 @@ export default {
     ...mapActions('user', ['updateUserData']),
     ...mapMutations('user', ['setEditUserDialog']),
     async saveUserData () {
-      const { currentUser, email, nombre, apellido, cedula, phone } = this
+      const { currentUser, email, nombre, apellido, cedula, phone, sexo, fecnac } = this
       this.$q.loading.show({
         message: 'Updating your data, please stand by...',
         customClass: 'text-h3, text-bold'
@@ -66,7 +78,9 @@ export default {
           nombre,
           apellido,
           cedula,
-          phone
+          phone,
+          sexo,
+          fecnac
         })
       } catch (err) {
         this.$q.notify({
