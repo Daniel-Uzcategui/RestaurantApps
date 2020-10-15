@@ -210,11 +210,6 @@ export default {
     })
   },
   methods: {
-    css2obj (css) {
-      const r = /(?<=^|;)\s*([^:]+)\s*:\s*([^;]+)\s*/g, o = {}
-      css.replace(r, (m, p, v) => { o[p] = v })
-      return o
-    },
     click () {
       this.$emit('click-edit', {
         block_info: {

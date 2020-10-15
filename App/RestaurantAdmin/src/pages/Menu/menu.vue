@@ -13,6 +13,12 @@
       no-data-label="No se encontraron registros"
     >
     <template v-slot:top-right>
+      <q-input color="white" dark filled class="q-pr-md" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'dispName')"
+                :value="menucfg.dispName ? menucfg.dispName : 'Catálogo'" label="Nombre de display" />
+      <q-toggle @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
+                :value="menucfg.iconsactive ? true : false" label="Activar iconos" left-label />
+      <q-toggle @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
+                :value="menucfg.menuactive ? true : false" label="Mostrar en Menú" left-label />
       <div class="q-pa-md">SEDE</div>
       <q-select
         bg-color="white"
@@ -222,6 +228,14 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
+    ...mapGetters('config', ['configs']),
+    menucfg () {
+      let men = this.configs.find(e => e.id === 'menu')
+      if (typeof men === 'undefined') {
+        return { menuactive: true }
+      }
+      return this.configs.find(e => e.id === 'menu')
+    },
     elmenu () {
       var sort = Array.from(this.menu)
       return sort.sort((a, b) => {
@@ -264,6 +278,7 @@ export default {
     this.bindCategorias()
     this.bindLocalizations()
     this.bindGroupComp()
+    this.bindConfigs()
     console.log({ cat: this.categorias, gr: this.groupComp })
   },
   methods: {
@@ -295,6 +310,10 @@ export default {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },
+    saved3 (value, initialValue, id, key) {
+      console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
+      this.setValue({ payload: { value, id, key }, collection: 'config' })
+    },
     saved2 (value, initialValue, id, key) {
       console.log({ key })
       if (value) { value = 1 } else { value = 0 }
@@ -306,6 +325,7 @@ export default {
     },
     ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
+    ...mapActions('config', ['bindConfigs']),
     /* delrow () {
       this.delrows({ payload: this.selected, collection: 'menu' })
     }, */

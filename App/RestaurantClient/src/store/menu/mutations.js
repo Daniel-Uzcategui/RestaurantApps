@@ -46,6 +46,11 @@ export function saveMenu (state, payload) {
   state.menu = payload
 }
 
+export function setFilter (state, payload) {
+  console.log(payload)
+  state.selectedFilter = payload
+}
+
 export const addMenuMut = firestoreAction((state, payload) => {
   return firestore()
     .collection('menu').add({

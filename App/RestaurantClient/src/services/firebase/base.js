@@ -48,7 +48,9 @@ export const ensureAuthIsInitialized = (store) => {
 export const fBInit = (config) => {
   return firebase.initializeApp(config)
 }
-
+export const appslength = () => {
+  return firebase.apps.length
+}
 /** Handle the auth state of the user and
  * set it in the auth store module
  * @param  {Object} store - Vuex Store

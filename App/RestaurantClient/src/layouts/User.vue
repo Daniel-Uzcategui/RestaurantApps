@@ -29,7 +29,7 @@
          v-model="leftDrawerOpen"
          behavior="mobile"
          >
-         <q-list>
+         <q-list class="q-pa-xl">
             <Nav
                v-for="(link, index) in nav"
                :key="index"
@@ -40,7 +40,7 @@
             @click.native="Tawk_API.toggleVisibility()"
             clickable
           >
-            <q-item-section
+            <q-item-section v-if="this.menucfg && this.menucfg.iconsactive"
               avatar
             >
               <q-icon name="fas fa-comment" />
@@ -83,8 +83,17 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['configurations']),
     ...mapGetters('auth', ['isAnonymous']),
-    ...mapGetters('menu', ['cart']),
+    ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('editor', ['editor']),
+    nav () {
+      return this.navigateFill()
+    },
+    menucfg () {
+      if (typeof this.configurations === 'undefined' && typeof this.configurations.find(e => e.id === 'menu') === 'undefined') {
+        return { menuactive: true, iconsactive: true }
+      }
+      return this.configurations.find(e => e.id === 'menu')
+    },
     page () {
       var obj = this.editor.find(e => e.id === 'page')
       return typeof obj === 'undefined' ? {} : obj
@@ -118,7 +127,7 @@ export default {
       }
     }
   },
-  async created () {
+  async mounted () {
     this.bindBlocks().then((e) => {
       this.$q.loading.hide()
       this.toggleColors()
@@ -134,7 +143,8 @@ export default {
           this.insCss(css.css)
         }
       }
-    })
+    }).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindFilters().catch(e => console.error('error fetching data firebase', { e }))
     const online = window.navigator.onLine
     this.$q.loading.show({
       message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
@@ -145,9 +155,7 @@ export default {
     this.bindConfigs().then(() => {
       this.chatServe(this.chat)
       this.PaypalServe(this.paymentServ)
-    })
-  },
-  async mounted () {
+    }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindManif().then(e => {
       if (e.icons && e.icons.favicon) {
         const favicon = document.getElementById('favicon')
@@ -157,7 +165,7 @@ export default {
         const title = document.getElementById('apptitle')
         title.innerText = e.name
       }
-    })
+    }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindEnv().then(e => {
       // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
@@ -184,7 +192,7 @@ export default {
       if (ver === e.version) {
         // console.log('App is in the newer version')
       }
-    })
+    }).catch(e => console.error('error fetching data firebase', { e }))
     const { currentUser } = this
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
       if (Object.keys(this.$router.currentRoute.meta).length === 0) {
@@ -196,8 +204,29 @@ export default {
       // is available before the page renders
       this.$q.loading.hide()
     }
-    this.navigateFill()
-    this.setupNotif()
+    function iOS () {
+      return [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ].includes(navigator.platform) ||
+  // iPad on iOS 13 detection
+  (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+    }
+    // eslint-disable-next-line no-undef
+    if (firebase.messaging.isSupported() && !iOS()) {
+      if (!firebase.apps.length) {
+        fetch('/__/firebase/init.json').then(async response => {
+          firebase.initializeApp(await response.json())
+          this.setupNotif()
+        }).catch(e => console.error('error fetching cfg firebase', { e }))
+      } else {
+        this.setupNotif()
+      }
+    }
   },
   updated () {
     this.fullPath = this.$router.history.current.fullPath
@@ -208,8 +237,7 @@ export default {
       Tawk_API: null,
       notifications: 0,
       blurLayout: false,
-      leftDrawerOpen: false,
-      nav: []
+      leftDrawerOpen: false
     }
   },
   methods: {
@@ -218,6 +246,7 @@ export default {
     ...mapActions('user', ['setValue']),
     ...mapActions('config', ['bindConfigs', 'bindEnv', 'bindManif']),
     ...mapActions('editor', ['bindBlocks']),
+    ...mapActions('menu', ['bindFilters', 'setFilter']),
     addRoutes () {
       let { routes } = this.$router.options
       console.log(this.$router, 'Routes', { ...this.editor })
@@ -246,6 +275,14 @@ export default {
       window.location.reload(true)
     },
     setupNotif () {
+      if (!('PushManager' in window)) {
+        console.log('Push messaging isn\'t supported.')
+        return
+      }
+      if (Notification.permission === 'denied') {
+        console.log('The user has blocked notifications.')
+        return
+      }
       var that = this
       navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
         const messaging = firebase.messaging()
@@ -267,18 +304,47 @@ export default {
       })
     },
     navigateFill () {
+      var mapping = []
+      var mapping2 = []
+      if (this.filters.length) {
+        mapping = this.filters.map(x => {
+          return {
+            title: x.name,
+            caption: x.descripcion,
+            icon: x.icon,
+            link: '#/menu/index',
+            click: () => { this.setFilter(x.id) }
+          }
+        })
+        console.log({ mapping })
+      }
+      if (this.menucfg && this.menucfg.menuactive) {
+        if (this.menucfg && this.menucfg.dispName) {
+          mapping2 = [{
+            title: this.menucfg.dispName,
+            caption: '',
+            icon: 'menu_book',
+            link: '#/menu/index',
+            click: () => { this.setFilter('') }
+          }]
+        } else {
+          mapping2 = [{
+            title: 'Catálogo',
+            caption: '',
+            icon: 'menu_book',
+            link: '#/menu/index',
+            click: () => { this.setFilter('') }
+          }]
+        }
+      }
+      mapping = [...mapping2, ...mapping]
       let navig = [{
         title: 'Inicio',
         caption: '',
         icon: 'fa fa-home',
         link: '#/home'
       },
-      {
-        title: 'Menú',
-        caption: '',
-        icon: 'menu_book',
-        link: '#/menu/index'
-      },
+      ...mapping,
       {
         title: 'Tus Ordenes',
         caption: '',
@@ -317,10 +383,11 @@ export default {
         link: '#',
         click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser() })() }
       }]
-      for (let i of navig) {
-        Vue.set(this.nav, this.nav.length, i)
-        // console.log({ i })
+      console.log({ men: this.menucfg })
+      if (this.menucfg && !this.menucfg.iconsactive) {
+        navig = navig.map(x => { return { ...x, icon: '' } })
       }
+      return navig
     },
     toggleColors () {
       // console.log('editor', { ...this.editor })

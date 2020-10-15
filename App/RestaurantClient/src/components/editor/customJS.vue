@@ -39,7 +39,7 @@ export default {
       let js = this.JS
       function somefunc () {
         // eslint-disable-next-line no-eval
-        (() => (() => eval(js))())()
+        eval(js)
       }
       somefunc()
     },

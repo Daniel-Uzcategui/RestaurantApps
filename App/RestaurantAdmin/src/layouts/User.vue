@@ -137,7 +137,16 @@ export default {
       // console.log(this.currentUser)
       this.$q.loading.hide()
     }
-    this.setupNotif()
+    if (firebase.messaging.isSupported()) {
+      if (!firebase.apps.length) {
+        fetch('/__/firebase/init.json').then(async response => {
+          firebase.initializeApp(await response.json())
+          this.setupNotif()
+        })
+      } else {
+        this.setupNotif()
+      }
+    }
   },
   data () {
     return {
@@ -184,6 +193,14 @@ export default {
           caption: '',
           icon: 'fas fa-utensils',
           link: '#/menu/menu',
+          separator: true,
+          tree: [{ children: [] }]
+        },
+        {
+          title: 'Filtros de Productos',
+          caption: '',
+          icon: 'fas fa-utensils',
+          link: '#/menu/menufilters',
           separator: true,
           tree: [{ children: [] }]
         },
@@ -314,6 +331,14 @@ export default {
     ...mapActions('config', ['bindEnv']),
     ...mapActions('menu', ['setValue']),
     setupNotif () {
+      if (!('PushManager' in window)) {
+        console.log('Push messaging isn\'t supported.')
+        return
+      }
+      if (Notification.permission === 'denied') {
+        console.log('The user has blocked notifications.')
+        return
+      }
       var that = this
       navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
         const messaging = firebase.messaging()

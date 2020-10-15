@@ -147,6 +147,15 @@ const routes = [
         }
       },
       {
+        path: 'menufilters',
+        name: 'menu_filters',
+        component: () => import('pages/menu/menufilters.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'menufilters'
+        }
+      },
+      {
         path: 'optionsconf',
         name: 'options_Config',
         component: () => import('pages/menu/optionsConf.vue'),

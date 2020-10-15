@@ -1,10 +1,13 @@
+import Axios from 'axios'
 import firebaseService from '../services/firebase'
 
 export default ({ router, store, Vue }) => {
-  console.log({ process: process.env.MODE })
   if (process.env.MODE === 'pwa') {
-    fetch('/__/firebase/init.json').then(async response => {
-      firebaseService.fBInit(await response.json())
+    Axios.get('/__/firebase/init.json').then(async response => {
+      const cfg = await response.data
+      if (!firebaseService.appslength()) {
+        firebaseService.fBInit(cfg)
+      }
       firebaseService.auth().onAuthStateChanged((currentUser) => {
         firebaseService.handleOnAuthStateChanged(store, currentUser)
       }, (error) => {
@@ -13,7 +16,7 @@ export default ({ router, store, Vue }) => {
       firebaseService.routerBeforeEach(router, store)
       Vue.prototype.$fb = firebaseService
       store.$fb = firebaseService
-    })
+    }).catch(e => console.error('error fetching firebase config', { e }))
   } else {
     const config = process.env.environments.FIREBASE_CONFIG
     firebaseService.fBInit(config)

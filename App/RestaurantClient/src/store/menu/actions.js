@@ -17,6 +17,11 @@ export const setSede = async function ({ commit }, payload) {
 export const modCartVal = async function ({ commit }, payload) {
   return commit('modCartVal', payload)
 }
+
+export const setFilter = async function ({ commit }, payload) {
+  return commit('setFilter', payload)
+}
+
 export const delCartItem = async function ({ commit }, payload) {
   return commit('delCartItem', payload)
 }
@@ -24,6 +29,14 @@ export const delCartItem = async function ({ commit }, payload) {
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
   return bindFirestoreRef('menu', firestore().collection('menu').where('softDelete', '==', 0), { reset: false })
+})
+export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindingFilters')
+  return bindFirestoreRef('filters', firestore()
+    .collection('filters')
+    .orderBy('softDelete', 'asc')
+    .orderBy('DateIn', 'desc')
+    .where('softDelete', '<', 1), { reset: false })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')

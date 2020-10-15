@@ -5,7 +5,7 @@ export const setValue = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)
     .doc(payload.payload.id)
-    .update({ [payload.payload.key]: payload.payload.value })
+    .set({ [payload.payload.key]: payload.payload.value }, { merge: true })
     .then(() => {
       console.log(`${payload.collection} updated!`)
     })
@@ -59,6 +59,14 @@ export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
   return bindFirestoreRef('menu', firestore()
     .collection('menu')
+    .orderBy('softDelete', 'asc')
+    .orderBy('DateIn', 'desc')
+    .where('softDelete', '<', 1), { reset: false })
+})
+export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindingFilters')
+  return bindFirestoreRef('filters', firestore()
+    .collection('filters')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
     .where('softDelete', '<', 1), { reset: false })

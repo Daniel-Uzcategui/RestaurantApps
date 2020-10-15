@@ -27,6 +27,8 @@ export const listcategorias = ({ categorias }) => {
 
 export const item = ({ item }) => item
 
+export const filters = ({ filters }) => filters
+
 export const itemGroup = ({ itemGroup }) => itemGroup
 
 export const groupComp = ({ groupComp }) => groupComp

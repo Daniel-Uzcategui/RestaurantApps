@@ -16,6 +16,7 @@ export default function () {
     promos: [],
     item: [],
     itemGroup: [],
-    groupComp: []
+    groupComp: [],
+    filters: []
   }
 }

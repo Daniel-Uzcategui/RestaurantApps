@@ -65,6 +65,10 @@ export const promos = ({ promos }) => {
   return arr
 }
 
+export const filters = ({ filters }) => filters
+
+export const selectedFilter = ({ selectedFilter }) => selectedFilter
+
 export const item = ({ item }) => item
 
 export const itemGroup = ({ itemGroup }) => itemGroup

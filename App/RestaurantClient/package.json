@@ -16,22 +16,19 @@
     "build-ecr": "cross-env QENV=ecr quasar build"
   },
   "dependencies": {
-    "@eosrio/hyperion-stream-client": "^0.3.6",
     "@quasar/extras": "^1.9.5",
     "axios": "^0.19.2",
     "core-js": "3.0.0",
     "cross-env": "^7.0.2",
-    "eosjs": "^20.0.3",
-    "firebase": "^7.19.0",
+    "firebase": "^7.23.0",
     "gmap-vue": "^1.2.1",
-    "quasar": "^1.14.0",
+    "quasar": "^1.14.1",
     "quasar-app-extension-firebase-messaging": "^0.1.1",
     "vue-carousel": "^0.18.0",
-    "vuedraggable": "^2.24.0",
     "vuexfire": "^3.2.2"
   },
   "devDependencies": {
-    "@quasar/app": "2.1.0",
+    "@quasar/app": "2.1.1",
     "@quasar/quasar-app-extension-qenv": "^1.0.3",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
@@ -46,14 +43,6 @@
     "yarn": ">= 1.6.0"
   },
   "browserslist": [
-    "last 10 Chrome versions",
-    "last 10 Firefox versions",
-    "last 4 Edge versions",
-    "last 7 Safari versions",
-    "last 8 Android versions",
-    "last 8 ChromeAndroid versions",
-    "last 8 FirefoxAndroid versions",
-    "last 10 iOS versions",
-    "last 5 Opera versions"
+    "defaults"
   ]
 }

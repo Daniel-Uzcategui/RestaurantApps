@@ -6,6 +6,8 @@ export default function () {
     cart: [],
     sede: null,
     promos: [],
+    filters: [],
+    selectedFilter: '',
     item: [{
       id: 1,
       price: 2,

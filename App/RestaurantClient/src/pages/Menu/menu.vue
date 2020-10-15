@@ -7,12 +7,19 @@
    </q-input>
      <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <q-card-section class="q-pt-xl">
-         <div class="fontsize-18 header-title">{{rewards ? 'Recompensas': promo ? 'Promociones' : 'Catálogo'}}</div>
+          <div class="row header-title">
+            <div class="fontsize-18">{{rewards ? 'Recompensas': promo ? 'Promociones' : selectedFilter === '' ? 'Catálogo' : (filters.find( e => e.id === selectedFilter).name)}}</div>
+            <q-btn dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
+          </div>
          <div>
-            <q-btn-group style="z-index: 10; position: fixed; top: 50%; right: 0; transform: rotate(-90deg); margin-right: -40px"  push>
-               <q-btn v-if="pointsCat && Object.keys(pointsCat).length  && !promo" color="primary" icon="fas fa-gift fa-rotate-90" :label="rewards ? 'Volver' : ''" @click="rewards = !rewards" />
-               <q-btn v-if="(promoData.length || promo)  && !rewards" color="secondary" icon="fab fa-creative-commons-nc fa-rotate-90" :label="promo ? 'Volver' : ''" @click="promo = !promo" />
-            </q-btn-group>
+            <q-list class="bg-dark" style="overflow: hidden; z-index: 10; position: fixed; top: 50%; right: 0; border-top-left-radius: 28px; margin-right: -15px; border-bottom-left-radius: 28px;">
+              <q-item v-ripple style="padding-left: 10px;" v-if="pointsCat && Object.keys(pointsCat).length  && !promo">
+                <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click="rewards = !rewards" />
+              </q-item>
+              <q-item v-ripple :ripple='false' style="padding-left: 10px;" v-if="(promoData.length || promo)  && !rewards">
+                <q-btn dense round flat color="white" icon="fab fa-creative-commons-nc" @click="promo = !promo" />
+              </q-item>
+            </q-list>
          </div>
       </q-card-section>
       <q-card-section class="wrapel q-pa-none q-ma-none" > <!---Seccion catalogo --->
@@ -20,18 +27,23 @@
             v-if="!promo && !rewards"
             class="wrapel "
             content-class="wrapel"
+            mobile-arrows
             >
-            <div class="wrapel background-color" content-class="wrapel"  v-for="(tabs, index) in cats"
-               :key="index">
+            <transition-group
+              name="list-complete"
+            >
+            <div class="wrapel background-color list-complete-item" content-class="wrapel"  v-for="tabs in filtercat()"
+               :key="tabs.id">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
                   <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-                      <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
-                        <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col position-relative" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
+                      <slide class="row justify-center" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
+                        <div v-if="typeof item.not === 'undefined'">
+                        <div  style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col position-relative" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                             <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                               <div class="container-photo">
                                   <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
@@ -54,10 +66,12 @@
                                  <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
                            </div>
                           </div>
+                        </div>
                         </slide>
                      </carousel>
                   </q-card-section>
                </div>
+            </transition-group>
                <q-separator vertical class="menuseparator" />
             </q-tabs>
          </q-card-section>
@@ -67,14 +81,14 @@
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
             <carousel
             :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
+            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
             :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 1], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
-               <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
+               <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                   <div @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                      <div class="container-photo">
-                        <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
+                        <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                      </div>
                      <div class="text-caption">
                         <div class="text-bold relative-position">
@@ -102,14 +116,14 @@
             <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
          <carousel
             :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
+            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
             :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="item in promoData" :key="item.id" >
-               <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
+               <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                   <div @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                      <div class="container-photo">
-                        <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
+                        <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                      </div>
                      <div class="text-caption">
                         <div class="text-bold relative-position">
@@ -155,7 +169,7 @@
             <q-card-section class="q-pa-none q-pt-xl row justify-center">
                <div class="column items-center col-4 q-pt-xl"
                  style="min-width: 320px"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
-                  <div class="diagphcont relative-position q-pt-lg" :style="displayVal.disptype == 1 ? 'background-color: unset' : dgbg">
+                  <div class="diagphcont relative-position q-pt-lg" :class="displayVal.disptype !== 1 ? 'column items-center' : ''" :style="displayVal.disptype == 1 ? 'background-color: unset' : dgbg">
                     <img
                       v-if="displayVal.disptype == 1"
                       style="position: absolute;
@@ -265,8 +279,8 @@
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">Más productos</div>
              <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
                         <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
@@ -311,11 +325,25 @@ export default {
     Slide
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'filters']),
     ...mapGetters('user', ['currentUser']),
+    ...mapGetters('config', ['configurations']),
     cats () {
       let objs = this.categorias
       return objs.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+    },
+    menucfg () {
+      if (typeof this.configurations === 'undefined' && typeof this.configurations.find(e => e.id === 'menu') === 'undefined') {
+        return { menuactive: true, iconsactive: true }
+      }
+      return this.configurations.find(e => e.id === 'menu')
+    },
+    filterop () {
+      let filter = this.filters.map(x => x.id)
+      if (this.menucfg.menuactive) {
+        filter = ['', ...filter]
+      }
+      return filter
     },
     origMenu () {
       return this.menu.reduce((y, x) => {
@@ -417,10 +445,42 @@ export default {
     }
   },
   methods: {
-    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
+    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setFilter']),
+    filtercat () {
+      console.log({ SelectedF: this.selectedFilter })
+      if (this.selectedFilter === '') { return this.cats } else if (this.filters && this.selectedFilter && this.cats) {
+        console.log(this.filters, this.selectedFilter, this.cats)
+        let thfilter = this.filters.find(e => e.id === this.selectedFilter)
+        console.log({ thfilter })
+        let filtered = this.cats.filter(x => thfilter.cats.includes(x.id))
+        console.log({ filtered })
+        return filtered
+      }
+      return []
+    },
+    nextFilter () {
+      console.log('nextfiter')
+      let index = this.filterop.findIndex((e) => e === this.selectedFilter)
+      console.log({ index })
+      console.log({ ff: this.filterop })
+      if (typeof this.filterop[index + 1] === 'undefined') {
+        console.log({ ff2: this.filterop })
+        this.setFilter(this.filterop[0])
+      } else {
+        console.log({ ff3: this.filterop })
+        this.setFilter(this.filterop[index + 1])
+      }
+    },
     filteredMenuCat (e) {
-      console.log({ filter: this.filteredMenu })
-      return this.filteredMenu.filter(x => x.categoria.includes(e))
+      console.log({ e, f: this.filteredMenu })
+      let filtered = []
+      if (Array.isArray(this.filteredMenu)) {
+        filtered = this.filteredMenu.filter(x => x.categoria.includes(e))
+      } else {
+        filtered = [{ id: 'kkfkff', not: true }]
+      }
+      console.log(JSON.stringify(filtered))
+      return filtered
     },
     showNotif () {
       this.$q.notify({
@@ -608,6 +668,7 @@ export default {
 
 <style lang="stylus" >
 .diagphcont
+  overflow: visible
   min-width 205.75px
   min-height 186.15px
   width 26.25vmin
@@ -615,22 +676,26 @@ export default {
   background-color #FFD63D
   border-radius 30px
 .diagphcont2
+  overflow: visible
   margin auto
   min-width 184.52px
   min-height 184.52px
   width 23vmin
   position relative
 .diagph
+  overflow: visible
   min-width 184.52px
   min-height 184.52px
   position absolute
   top -50%
   -webkit-filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
 .menuphoto-xs
+  overflow: visible !important
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   width: 72px
   height: 72px
 .menuphoto-md
+  overflow: visible !important
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   width: 95px
   height: 95px
@@ -697,12 +762,31 @@ export default {
     width: 100%
     padding-left: 45%
     padding-top: 25%
+.prbut
+  z-index: 10
+  position: fixed
+  top: 50%
+  right: 0
+  transform: rotate(-90deg)
+  margin-right: -40px
 .promo
     padding-top: 3%
+.list-complete-item
+  transition: all 1s
+.list-complete-enter
+  opacity: 0
+  transform: translateY(30px)
+.list-complete-leave-to
+  transition: all 0s
+  opacity: 0
+.list-complete-leave-active
+  position: absolute
 .VueCarousel-navigation-prev
-      left: 3% !important;
+    overflow: visible !important
+    left: 3% !important;
 .VueCarousel-navigation-next
-     right: 3% !important;
+    overflow: visible !important
+    right: 3% !important;
  /* ------------------------Tablets & Mobiles ---------------------------*/
 @media (max-width: 991px)
  .background-color
