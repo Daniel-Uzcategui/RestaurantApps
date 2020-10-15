@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env QENV=development quasar dev",
+    "dev-prod": "cross-env QENV=dev-prod quasar dev",
     "dev-pwa": "cross-env QENV=development quasar dev -m pwa",
     "dev-qa": "cross-env QENV=qa quasar dev",
     "lint": "eslint --ext .js,.vue src",
