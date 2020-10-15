@@ -34,9 +34,7 @@ export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingFilters')
   return bindFirestoreRef('filters', firestore()
     .collection('filters')
-    .orderBy('softDelete', 'asc')
-    .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '==', 0).where('estatus', '==', true), { reset: false })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')

@@ -84,7 +84,8 @@ const routes = [
       {
         path: 'index',
         name: 'index',
-        component: () => import('pages/menu/index.vue')
+        component: () => import('pages/menu/index.vue'),
+        props: route => ({ query: route.query.q })
       }
     ]
   },

@@ -9,7 +9,7 @@
       <q-card-section class="q-pt-xl">
           <div class="row header-title">
             <div class="fontsize-18">{{rewards ? 'Recompensas': promo ? 'Promociones' : selectedFilter === '' ? 'Catálogo' : (filters.find( e => e.id === selectedFilter).name)}}</div>
-            <q-btn dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
+            <q-btn v-if="filters.length" dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
           </div>
          <div>
             <q-list class="bg-dark" style="overflow: hidden; z-index: 10; position: fixed; top: 50%; right: 0; border-top-left-radius: 28px; margin-right: -15px; border-bottom-left-radius: 28px;">
@@ -23,16 +23,11 @@
          </div>
       </q-card-section>
       <q-card-section class="wrapel q-pa-none q-ma-none" > <!---Seccion catalogo --->
-         <q-tabs vertical
+         <div
             v-if="!promo && !rewards"
             class="wrapel "
-            content-class="wrapel"
-            mobile-arrows
             >
-            <transition-group
-              name="list-complete"
-            >
-            <div class="wrapel background-color list-complete-item" content-class="wrapel"  v-for="tabs in filtercat()"
+            <div class="wrapel background-color" content-class="wrapel"  v-for="tabs in filtercat()"
                :key="tabs.id">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
@@ -71,9 +66,8 @@
                      </carousel>
                   </q-card-section>
                </div>
-            </transition-group>
                <q-separator vertical class="menuseparator" />
-            </q-tabs>
+            </div>
          </q-card-section>
          <!--- Fin Seccion catalogo --->
          <q-card-section v-if="!promo && rewards">
@@ -668,140 +662,189 @@ export default {
 
 <style lang="stylus" >
 .diagphcont
-  overflow: visible
+  overflow visible !important
   min-width 205.75px
   min-height 186.15px
   width 26.25vmin
   height 23.75vmin
-  background-color #FFD63D
+  background-color #ffd63d
   border-radius 30px
+
 .diagphcont2
-  overflow: visible
+  overflow visible !important
   margin auto
   min-width 184.52px
   min-height 184.52px
   width 23vmin
   position relative
+
 .diagph
-  overflow: visible
+  overflow visible !important
   min-width 184.52px
   min-height 184.52px
   position absolute
   top -50%
   -webkit-filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
+
 .menuphoto-xs
-  overflow: visible !important
+  overflow visible !important
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
-  width: 72px
-  height: 72px
+  width 72px
+  height 72px
+
 .menuphoto-md
-  overflow: visible !important
+  overflow visible !important
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
-  width: 95px
-  height: 95px
+  width 95px
+  height 95px
+
 .burgericon
-  color: black
+  color #000
+
 .carticon
-  color: black
+  color #000
+
 .toggleicon
-  color: black
-.wrapel .no-wrap
-  flex-wrap: wrap !important
+  color #000
+
+.wrapel
+  .no-wrap
+    -ms-flex-wrap wrap !important
+    flex-wrap wrap !important
+
 .menu-div
   border-top-left-radius 50px
   border-top-right-radius 50px
   border-bottom-left-radius 50px
   border-bottom-right-radius 50px
+
 .text-content
   min-width 100px
   position relative
   margin-left 5px
+
 .item-xs
-  color: black
-  border-radius: 20px
-  width: 90px !important
-  height: 180px
-  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  color #000
+  border-radius 20px
+  width 90px !important
+  height 180px
+  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 .item-md
-  color: black
-  border-radius: 20px
-  width: 124px !important
-  height: 250px
-  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  color #000
+  border-radius 20px
+  width 124px !important
+  height 250px
+  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 .item-content-md
   margin-left 20%
-  width: 166px
-  height: 300px
-  text-align: center
+  width 166px
+  height 300px
+  text-align center
+
 .item-content-xs
   margin-left 20%
-  width: 130px
-  height: 230px
-  text-align: center
+  width 130px
+  height 230px
+  text-align center
+
 .price-content
-  display: flex
-  justify-content: center
-  align-items: center
-  text-align: center !important
-  width: 100%
+  display -webkit-box
+  display -ms-flexbox
+  display flex
+  -webkit-box-pack center
+  -ms-flex-pack center
+  justify-content center
+  -webkit-box-align center
+  -ms-flex-align center
+  align-items center
+  text-align center !important
+  width 100%
+
 .header-title
-    height 5%
-    margin-left 5%
-    padding-top 5%
+  height 5%
+  margin-left 5%
+  padding-top 5%
+
 .background-color
-  margin:40px auto;
-  border-radius: 20px
-  width: 90% !important
-  height: 60%
-  background-color: #e0dada
-  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  margin 40px auto
+  border-radius 20px
+  width 90% !important
+  height 60%
+  background-color #e0dada
+  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 .header-tabs
-    padding-top: 30px
-    padding-bottom: 20px
+  padding-top 30px
+  padding-bottom 20px
+
 .container-photo
-    width: 100%
-    padding-left: 45%
-    padding-top: 25%
+  width 100%
+  padding-left 45%
+  padding-top 25%
+
 .prbut
-  z-index: 10
-  position: fixed
-  top: 50%
-  right: 0
-  transform: rotate(-90deg)
-  margin-right: -40px
+  z-index 10
+  position fixed
+  top 50%
+  right 0
+  -webkit-transform rotate(-90deg)
+  -ms-transform rotate(-90deg)
+  transform rotate(-90deg)
+  margin-right -40px
+
 .promo
-    padding-top: 3%
+  padding-top 3%
+
 .list-complete-item
-  transition: all 1s
+  -webkit-transition all 1s
+  -o-transition all 1s
+  transition all 1s
+
 .list-complete-enter
-  opacity: 0
-  transform: translateY(30px)
+  opacity 0
+  -webkit-transform translateY(30px)
+  -ms-transform translateY(30px)
+  transform translateY(30px)
+
 .list-complete-leave-to
-  transition: all 0s
-  opacity: 0
+  -webkit-transition all 0s
+  -o-transition all 0s
+  transition all 0s
+  opacity 0
+
 .list-complete-leave-active
-  position: absolute
+  position absolute
+
 .VueCarousel-navigation-prev
-    overflow: visible !important
-    left: 3% !important;
+  overflow visible !important
+  left 3% !important
+
 .VueCarousel-navigation-next
-    overflow: visible !important
-    right: 3% !important;
- /* ------------------------Tablets & Mobiles ---------------------------*/
+  overflow visible !important
+  right 3% !important
+
 @media (max-width: 991px)
- .background-color
-    margin:40px auto;
-    border-radius: 20px
-    width: 90% !important
-    height: 90%
-    background-color: #e0dada
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  .background-color
+    margin 40px auto
+    border-radius 20px
+    width 90% !important
+    height 90%
+    background-color #e0dada
+    -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+    box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 @media (max-width: 660px)
   .background-color
-    margin:40px auto;
-    border-radius: 20px
-    width: 90% !important
-    height: 100%
-    background-color: #e0dada
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+    margin 40px auto
+    border-radius 20px
+    width 90% !important
+    height 100%
+    background-color #e0dada
+    -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+    box-shadow -4px 8px 18px rgba(0,0,0,0.1)
 </style>

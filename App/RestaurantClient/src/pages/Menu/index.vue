@@ -42,13 +42,19 @@ export default {
       loading: true
     }
   },
+  props: {
+    query: {
+      type: String,
+      default: null
+    }
+  },
   computed: {
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('menu', ['sede', 'cart'])
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('menu', ['setSede']),
+    ...mapActions('menu', ['setSede', 'setFilter']),
     ...mapMutations('menu', ['delCart']),
     getLocById (id) {
       try {
@@ -64,6 +70,11 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    }
+  },
+  mounted () {
+    if (this.query !== null) {
+      this.setFilter(this.query)
     }
   },
   created () {
