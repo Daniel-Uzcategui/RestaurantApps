@@ -170,8 +170,8 @@
                       width: 300%;
                       top: -109%;
                       left: -135%;" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FUnion%20166115595?alt=media&token=9618c4b1-6e55-4b1c-895d-e506d6436855" alt="">
-                     <div class="diagphcont2" style="position: absolute">
-                        <q-img class="diagph" :style="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 1 ? 'min-width: 250px; min-height: 250px; top: -81%;' : ''" v-if="displayVal.photo" contain :src=displayVal.photo />
+                     <div class="diagphcont2" style="position: absolute; overflow: visible !important">
+                        <q-img class="diagph" :img-style="{ overflow: 'visible !important' }" :style="typeof displayVal.disptype === 'undefined' ? 'overflow: visible !important;' : displayVal.disptype == 1 ? 'overflow: visible !important; min-width: 250px; min-height: 250px; top: -81%;' : 'overflow: visible !important;'" v-if="displayVal.photo" contain :src=displayVal.photo />
                      </div>
                   </div>
                   <div>

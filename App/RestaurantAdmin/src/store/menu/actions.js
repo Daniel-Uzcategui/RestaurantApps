@@ -5,6 +5,15 @@ export const setValue = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)
     .doc(payload.payload.id)
+    .update({ [payload.payload.key]: payload.payload.value })
+    .then(() => {
+      console.log(`${payload.collection} updated!`)
+    })
+})
+export const setValue2 = firestoreAction((state, payload) => {
+  return firestore()
+    .collection(payload.collection)
+    .doc(payload.payload.id)
     .set({ [payload.payload.key]: payload.payload.value }, { merge: true })
     .then(() => {
       console.log(`${payload.collection} updated!`)
