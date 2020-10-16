@@ -12,7 +12,7 @@
             <q-btn v-if="filters.length" dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
           </div>
          <div>
-            <q-list class="bg-dark" style="overflow: hidden; z-index: 10; position: fixed; top: 50%; right: 0; border-top-left-radius: 28px; margin-right: -15px; border-bottom-left-radius: 28px;">
+            <q-list class="bg-dark" style="overflow: hidden; z-index: 10; position: fixed; top: 50%; right: 0; border-top-left-radius: 28px; padding-right: -15px; border-bottom-left-radius: 28px;">
               <q-item v-ripple style="padding-left: 10px;" v-if="pointsCat && Object.keys(pointsCat).length  && !promo">
                 <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click="rewards = !rewards" />
               </q-item>
@@ -33,8 +33,8 @@
                 <q-card-section v-if="!promo && !rewards">
                   <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 10000;" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 10000;" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
                         <div v-if="typeof item.not === 'undefined'">
@@ -75,8 +75,8 @@
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
             <carousel
             :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
             :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 1], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -110,8 +110,8 @@
             <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
          <carousel
             :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
             :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="item in promoData" :key="item.id" >
                <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -160,9 +160,9 @@
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-            <q-card-section class="q-pa-none q-pt-xl row justify-center">
+            <q-card-section class="q-pa-none q-pt-xl row justify-center" style="overflow: visible !important">
                <div class="column items-center col-4 q-pt-xl"
-                 style="min-width: 320px"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
+                 style="min-width: 320px; overflow: visible !important"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
                   <div class="diagphcont relative-position q-pt-lg" :class="displayVal.disptype !== 1 ? 'column items-center' : ''" :style="displayVal.disptype == 1 ? 'background-color: unset' : dgbg">
                     <img
                       v-if="displayVal.disptype == 1"
@@ -171,7 +171,7 @@
                       top: -109%;
                       left: -135%;" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FUnion%20166115595?alt=media&token=9618c4b1-6e55-4b1c-895d-e506d6436855" alt="">
                      <div class="diagphcont2" style="position: absolute; overflow: visible !important">
-                        <q-img class="diagph" :img-style="{ overflow: 'visible !important' }" :style="typeof displayVal.disptype === 'undefined' ? 'overflow: visible !important;' : displayVal.disptype == 1 ? 'overflow: visible !important; min-width: 250px; min-height: 250px; top: -81%;' : 'overflow: visible !important;'" v-if="displayVal.photo" contain :src=displayVal.photo />
+                        <img class="diagph" :style="typeof displayVal.disptype === 'undefined' ? 'overflow: visible !important;' : displayVal.disptype == 1 ? 'overflow: visible !important; min-width: 250px; min-height: 250px; top: -81%;' : 'overflow: visible !important;'" v-if="displayVal.photo" contain :src=displayVal.photo >
                      </div>
                   </div>
                   <div>
@@ -273,8 +273,8 @@
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">Más productos</div>
              <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
                         <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
@@ -661,6 +661,8 @@ export default {
 </script>
 
 <style lang="stylus" >
+.q-img__content
+  overflow visible !important
 .diagphcont
   overflow visible !important
   min-width 205.75px
@@ -682,18 +684,22 @@ export default {
   overflow visible !important
   min-width 184.52px
   min-height 184.52px
+  width 100%
   position absolute
   top -50%
+  filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
   -webkit-filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
 
 .menuphoto-xs
   overflow visible !important
+  filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   width 72px
   height 72px
 
 .menuphoto-md
   overflow visible !important
+  filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   width 95px
   height 95px

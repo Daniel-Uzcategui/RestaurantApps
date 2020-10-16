@@ -24,6 +24,36 @@
          <div class="header-cell col-4">
           <q-input label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
         </div>
+        <div class="header-cell col-4">
+        <q-input label="Fecha de Entrega" v-if="order && order.orderWhen && order.orderWhen.orderWhen == '1'" v-model="orderDate" filled>
+            <template v-slot:prepend>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-date v-model="orderDate" mask="MM/D/YY, HH:mm">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-time v-model="orderDate" mask="MM/D/YY, HH:mm" format24h>
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-input label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
+        </div>
+        <div class="header-cell col-4">
+          <q-input label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
+        </div>
         <div class="header-cell col-4" v-if="order.tipEnvio==2">
           <q-input label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
         </div>
@@ -283,6 +313,11 @@ export default {
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
         { name: 'price', required: true, align: 'center', label: 'Precio/Unidad', field: 'price' }
       ],
+      tipo_servicio: [
+        { label: 'Pick-up', value: 0 },
+        { label: 'Delivery', value: 1 },
+        { label: 'En-Local', value: 2 }
+      ],
       puntoRef: '',
       addressDelivery: '',
       validationError: false,
@@ -299,6 +334,17 @@ export default {
       return this.orders.find(obj => {
         return obj.id === this.$route.query.Order_Id
       })
+    },
+    orderDate: {
+      get () {
+        let test = (new Date(this.order.orderWhen.orderDate.seconds * 1000)).toLocaleString('en-US', { timeStyle: 'short', dateStyle: 'short', hour12: false })
+        console.log({ test })
+        return test
+      },
+      set (value) {
+        console.log({ value })
+        this.saved(new Date(value), this.$route.query.Order_Id, 'orderWhen.orderDate')
+      }
     },
     detailOrder () {
       let productsOrder = []
@@ -335,6 +381,11 @@ export default {
         width: 170
       })
       doc.save('sample.pdf')
+    },
+    getTypeService (e) {
+      e = parseInt(e)
+      let tip = this.tipo_servicio.find(x => x.value === e)
+      return tip.label
     },
     downloadWithCSS () {
       /** WITH CSS */
