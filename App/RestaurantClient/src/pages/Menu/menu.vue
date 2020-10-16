@@ -186,6 +186,7 @@
                               </q-badge>
                            </q-btn>
                         </div>
+                        <q-btn round color="dark" :size="$q.screen.gt.xs ? 'md': 'xs'" @click="copyToClip(loc + '/#/menu/index?j=' +displayVal.prodType + '&t=' + displayVal.id + (selectedFilter !== '' ? '&q=' + selectedFilter : ''))" text-color="white" icon="fas fa-share-alt" class="q-ma-md"  />
                         <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
                         <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="required && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                         <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!required && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
@@ -312,6 +313,7 @@
 
 import { mapActions, mapGetters } from 'vuex'
 import { Carousel, Slide } from 'vue-carousel'
+import { copyToClipboard } from 'quasar'
 export default {
   components: {
     'itemcomp': () => import('../../components/itemComp.vue'),
@@ -319,7 +321,7 @@ export default {
     Slide
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['configurations']),
     cats () {
@@ -361,13 +363,11 @@ export default {
       }, [])
     },
     pointsCat () {
-      console.log({ User: this.currentUser })
       var obj = this.currentUser === null || typeof this.currentUser.pointsCat === 'undefined' ? [] : this.currentUser.pointsCat
       var objout = Object.keys(obj).reduce((p, c) => {
         if (obj[c] >= 10) { p[c] = obj[c] }
         return p
       }, {})
-      console.log({ objout })
       return objout
     },
     promoData () {
@@ -402,6 +402,7 @@ export default {
   },
   data () {
     return {
+      loc: window.location.origin,
       dgbg: 'inherit',
       rewards: false,
       itComp: [],
@@ -428,9 +429,16 @@ export default {
   created () {
     this.bindMenu().then(() => {
       this.filteredMenu = this.origMenu
+      if (!parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
     })
     this.bindCategorias()
-    this.bindPromos()
+    this.bindPromos().then(() => {
+      if (parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
+    })
     this.bindGroupComp()
   },
   watch: {
@@ -439,41 +447,65 @@ export default {
     }
   },
   methods: {
-    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setFilter']),
+    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
     filtercat () {
-      console.log({ SelectedF: this.selectedFilter })
       if (this.selectedFilter === '') { return this.cats } else if (this.filters && this.selectedFilter && this.cats) {
-        console.log(this.filters, this.selectedFilter, this.cats)
         let thfilter = this.filters.find(e => e.id === this.selectedFilter)
-        console.log({ thfilter })
         let filtered = this.cats.filter(x => thfilter.cats.includes(x.id))
-        console.log({ filtered })
         return filtered
       }
       return []
     },
+    copyToClip (e) {
+      copyToClipboard(e)
+        .then(() => {
+          this.$q.notify({
+            message: `URL Copiado al Clipboard`,
+            color: 'positive'
+          })
+        })
+        .catch(() => {
+          this.$q.notify({
+            message: `Error copiando url al Clipboard`,
+            color: 'positive'
+          })
+        })
+    },
+    productSelected () {
+      if (this.selectedProduct && this.selectedProduct !== '') {
+        try {
+          this.getMenuItem(this.selectedProduct, parseInt(this.selectedProdType))
+          this.display = true
+        } catch (e) {
+          this.$q.notify({
+            message: `Disculpe, el producto no se encuentra disponible en este momento`,
+            color: 'red',
+            actions: [
+              { label: 'X', color: 'white' }
+            ]
+          })
+          this.setProduct('')
+          this.setProdType('')
+        }
+        this.setProduct('')
+        this.setProdType('')
+      }
+    },
     nextFilter () {
-      console.log('nextfiter')
       let index = this.filterop.findIndex((e) => e === this.selectedFilter)
-      console.log({ index })
-      console.log({ ff: this.filterop })
       if (typeof this.filterop[index + 1] === 'undefined') {
-        console.log({ ff2: this.filterop })
         this.setFilter(this.filterop[0])
       } else {
-        console.log({ ff3: this.filterop })
         this.setFilter(this.filterop[index + 1])
       }
     },
     filteredMenuCat (e) {
-      console.log({ e, f: this.filteredMenu })
       let filtered = []
       if (Array.isArray(this.filteredMenu)) {
         filtered = this.filteredMenu.filter(x => x.categoria.includes(e))
       } else {
         filtered = [{ id: 'kkfkff', not: true }]
       }
-      console.log(JSON.stringify(filtered))
       return filtered
     },
     showNotif () {
@@ -536,7 +568,6 @@ export default {
     },
     checkAvailReward (item) {
       if (!this.rewards) { return [true, true] }
-      console.log({ item })
       var available = 0
       var available2 = 0
       var quant = this.quantity ? this.quantity + 1 : 2
@@ -553,17 +584,13 @@ export default {
       var intersection = categories.filter(x => rewardCategories.includes(x))
       for (var cat of intersection) {
         var points = this.pointsCat[cat]
-        console.log({ points })
         if ((points - (quant * 10)) >= 0) {
-          console.log({ points, quant })
           available++
         }
         if ((points - (counter * 10)) >= 0) {
-          console.log({ points, quant })
           available2++
         }
       }
-      console.log({ available, available2 })
       return [available, available2, exists]
     },
     checkAvail (id, type, diag) {
@@ -641,7 +668,6 @@ export default {
           return e.id === id
         })
         this.displayVal = { ...this.displayVal, prodType: 1, id: id }
-        console.log({ disp: this.displayVal })
       }
     },
     filterFn (val, update) {

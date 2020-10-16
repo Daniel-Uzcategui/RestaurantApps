@@ -46,6 +46,14 @@ export default {
     query: {
       type: String,
       default: null
+    },
+    queryprod: {
+      type: String,
+      default: null
+    },
+    qprodtype: {
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -54,7 +62,7 @@ export default {
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('menu', ['setSede', 'setFilter']),
+    ...mapActions('menu', ['setSede', 'setFilter', 'setProduct', 'setProdType']),
     ...mapMutations('menu', ['delCart']),
     getLocById (id) {
       try {
@@ -75,6 +83,12 @@ export default {
   mounted () {
     if (this.query !== null) {
       this.setFilter(this.query)
+    }
+    if (this.queryprod !== null) {
+      this.setProduct(this.queryprod)
+    }
+    if (this.qprodtype !== null) {
+      this.setProdType(this.qprodtype)
     }
   },
   created () {

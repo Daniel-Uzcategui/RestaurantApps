@@ -85,7 +85,7 @@ const routes = [
         path: 'index',
         name: 'index',
         component: () => import('pages/menu/index.vue'),
-        props: route => ({ query: route.query.q })
+        props: route => ({ query: route.query.q, queryprod: route.query.t, qprodtype: route.query.j })
       }
     ]
   },

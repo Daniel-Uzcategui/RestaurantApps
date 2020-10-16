@@ -8,6 +8,8 @@ export default function () {
     promos: [],
     filters: [],
     selectedFilter: '',
+    selectedProduct: '',
+    selectedProdType: '',
     item: [{
       id: 1,
       price: 2,
