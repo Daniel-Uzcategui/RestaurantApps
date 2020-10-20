@@ -41,77 +41,13 @@
             <q-btn color="primary" @click="SaveReq = true" label="Save Project" />
             <q-btn color="primary" @click="loadReq = true" label="Load" />
          </div>
-         <q-card v-if="app_options">
-            <q-card-section>
-                  <q-expansion-item class="text-h6" label="Order Wheel Colors">
-                     <q-card-section class="row justify-between">
-                        <q-btn
-                           filled
-                           class="text-white col-6"
-                           v-model="page.knob.knob0"
-                           label="Por confirmar"
-                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob0 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob0};`"
-                           >
-                           <q-popup-edit v-model="page.knob.knob0">
-                              <q-color v-model="page.knob.knob0" />
-                           </q-popup-edit>
-                        </q-btn>
-                        <q-btn
-                           filled
-                           class="text-white col-6"
-                           v-model="page.knob.knob1"
-                           label="Preparando su pedido"
-                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob1 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob1};`"
-                           >
-                           <q-popup-edit v-model="page.knob.knob1">
-                              <q-color v-model="page.knob.knob1" />
-                           </q-popup-edit>
-                        </q-btn>
-                        <q-btn
-                           filled
-                           class="text-white col-6"
-                           v-model="page.knob.knob2"
-                           label="Orden en vía"
-                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob2 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob2};`"
-                           >
-                           <q-popup-edit v-model="page.knob.knob2">
-                              <q-color v-model="page.knob.knob2" />
-                           </q-popup-edit>
-                        </q-btn>
-                        <q-btn
-                           filled
-                           class="text-white col-6"
-                           v-model="page.knob.knob3"
-                           label="Orden entregada"
-                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob3 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob3};`"
-                           >
-                           <q-popup-edit v-model="page.knob.knob3">
-                              <q-color v-model="page.knob.knob3" />
-                           </q-popup-edit>
-                        </q-btn>
-                        <q-btn
-                           filled
-                           class="text-white col-6"
-                           v-model="page.knob.knob4"
-                           label="Anulada"
-                           :style="typeof page.knob === 'undefined' || typeof page.knob.knob4 === 'undefined' ? `background: #292929` : `background: ${page.knob.knob4};`"
-                           >
-                           <q-popup-edit v-model="page.knob.knob4">
-                              <q-color v-model="page.knob.knob4" />
-                           </q-popup-edit>
-                        </q-btn>
-                     </q-card-section>
-                  </q-expansion-item>
-               </q-card-section>
-            </q-card>
+         {{app_options}}
+         <orderwheel v-if="app_options" v-model="page" />
          <div v-if="!app_options">
          <div class="q-pa-md text-h7">
             <div>Selected page:</div>
             <div>{{selectedPage === null ? '/' : selectedPage}}</div>
          </div>
-         <!-- <div>
-             <q-btn color="primary" @click="savePages" label="Save Page" />
-         </div> -->
          <div>
             <q-tree
                :nodes="pagesNode"
@@ -633,6 +569,8 @@ export default {
   },
   mixins: [ QUploaderBase ],
   components: {
+    'orderwheel': () => import('./components/orderwheel'),
+    'menudisplay': () => import('./components/menu'),
     'my-card': () => import('../../components/editor/mycard'),
     'place-holder': () => import('../../components/editor/placeHolder'),
     'qheader': () => import('../../components/editor/qheader'),
@@ -673,7 +611,7 @@ export default {
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus', 'menudisplay'],
       blocks: [],
       insertCss: '',
       selectedBLock: { block_index: null, child_index: null },

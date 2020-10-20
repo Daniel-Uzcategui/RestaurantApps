@@ -62,12 +62,10 @@ export default {
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('menu', ['setSede', 'setFilter', 'setProduct', 'setProdType']),
+    ...mapActions('menu', ['bindMenu', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede', 'setFilter', 'setProduct', 'setProdType']),
     ...mapMutations('menu', ['delCart']),
     getLocById (id) {
       try {
-        console.log(this.localizations)
-        console.log(id)
         if (id === null || this.cart.length === 0) {
           this.setSede(this.sedeIn.id)
           this.$router.push({ path: '/menu/menu' })
@@ -76,7 +74,7 @@ export default {
         var name = this.localizations.find(x => x.id === id)
         return name.name
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
   },
@@ -90,14 +88,18 @@ export default {
     if (this.qprodtype !== null) {
       this.setProdType(this.qprodtype)
     }
+    this.bindMenu()
+    this.bindCategorias()
+    this.bindPromos()
+    this.bindGroupComp()
   },
   created () {
     this.bindLocalizations().then(() => {
       this.loading = false
-      if (this.localizations.length === 1) {
-        this.setSede(this.localizations[0]['id'])
-        this.$router.push({ path: '/menu/menu' })
-      }
+      // if (this.localizations.length === 1) {
+      //   this.setSede(this.localizations[0]['id'])
+      //   this.$router.push({ path: '/menu/menu' })
+      // }
     })
   }
 }

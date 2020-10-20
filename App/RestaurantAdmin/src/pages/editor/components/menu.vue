@@ -1,0 +1,1 @@
+../../../../../RestaurantClient/src/pages/Menu/menu.vue

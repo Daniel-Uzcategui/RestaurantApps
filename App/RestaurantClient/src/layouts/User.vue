@@ -31,11 +31,12 @@
          >
          <q-list class="q-pa-xl">
             <Nav
+               v-ripple
                v-for="(link, index) in nav"
                :key="index"
                v-bind="link"
                />
-          <q-item
+          <q-item v-ripple
             v-if="chat && chat.status && chat.key && Tawk_API !== null"
             @click.native="Tawk_API.toggleVisibility()"
             clickable
@@ -81,32 +82,12 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations']),
+    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
-    ...mapGetters('editor', ['editor']),
+    ...mapGetters('editor', ['blocks', 'page', 'routes']),
     nav () {
       return this.navigateFill()
-    },
-    menucfg () {
-      if (typeof this.configurations === 'undefined' && typeof this.configurations.find(e => e.id === 'menu') === 'undefined') {
-        return { menuactive: true, iconsactive: true }
-      }
-      return this.configurations.find(e => e.id === 'menu')
-    },
-    page () {
-      var obj = this.editor.find(e => e.id === 'page')
-      return typeof obj === 'undefined' ? {} : obj
-    },
-    paymentServ () {
-      return this.configurations.find(obj => {
-        return obj.id === 'paymentServ'
-      })
-    },
-    chat () {
-      return this.configurations.find(obj => {
-        return obj.id === 'chat'
-      })
     },
     getCartQ () {
       var amt = 0
@@ -130,11 +111,9 @@ export default {
   async mounted () {
     this.bindBlocks().then((e) => {
       this.$q.loading.hide()
-      this.toggleColors()
       // console.log({ bindblock: e })
-      var obj = e.find(e => e.id === 'blocks')
+      var obj = e
       this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
-      this.addRoutes()
       var css
       let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
       if (scopedCss !== '') {
@@ -144,6 +123,8 @@ export default {
         }
       }
     }).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindRoutes().then(() => this.addRoutes()).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindPage().then(() => this.toggleColors()).catch(e => console.error('error fetching data firebase', { e }))
     this.bindFilters().catch(e => console.error('error fetching data firebase', { e }))
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -152,9 +133,12 @@ export default {
       spinner: online ? QSpinnerGears : QSpinnerRadio,
       customClass: 'loader'
     })
-    this.bindConfigs().then(() => {
-      this.chatServe(this.chat)
+    this.bindMenuCfg()
+    this.bindPaymentServ().then(() => {
       this.PaypalServe(this.paymentServ)
+    }).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindChat().then(() => {
+      this.chatServe(this.chat)
     }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindManif().then(e => {
       if (e.icons && e.icons.favicon) {
@@ -244,13 +228,12 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
-    ...mapActions('config', ['bindConfigs', 'bindEnv', 'bindManif']),
-    ...mapActions('editor', ['bindBlocks']),
+    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg']),
+    ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter']),
     addRoutes () {
       let { routes } = this.$router.options
-      console.log(this.$router, 'Routes', { ...this.editor })
-      let routerAdd = this.editor.find(e => e.id === 'routes')
+      let routerAdd = this.routes
       if (typeof routerAdd !== 'undefined') {
         let routeData = routes.find(r => r.path === '/pg')
         let node, ii
@@ -314,7 +297,10 @@ export default {
             caption: x.descripcion,
             icon: x.icon,
             link: '#/menu/index',
-            click: () => { this.setFilter(x.id) }
+            click: () => {
+              this.setFilter(x.id)
+              this.leftDrawerOpen = false
+            }
           }
         })
         console.log({ mapping })
@@ -326,7 +312,10 @@ export default {
             caption: '',
             icon: 'menu_book',
             link: '#/menu/index',
-            click: () => { this.setFilter('') }
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+            }
           }]
         } else {
           mapping2 = [{
@@ -334,41 +323,63 @@ export default {
             caption: '',
             icon: 'menu_book',
             link: '#/menu/index',
-            click: () => { this.setFilter('') }
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+            }
           }]
         }
       }
       mapping = [...mapping2, ...mapping]
+      if (this.paymentServ && this.paymentServ.statusRewards) {
+        mapping = [...mapping,
+          {
+            title: 'Mis Recompensas',
+            caption: '',
+            icon: 'fas fa-gift',
+            link: '#/user/rewards',
+            click: () => {
+              this.leftDrawerOpen = false
+            }
+          }
+        ]
+      }
       let navig = [{
         title: 'Inicio',
         caption: '',
         icon: 'fa fa-home',
-        link: '#/home'
+        link: '#/home',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
       },
       ...mapping,
       {
         title: 'Tus Ordenes',
         caption: '',
         icon: 'room_service',
-        link: '#/orders/index'
-      },
-      {
-        title: 'Mis Recompensas',
-        caption: '',
-        icon: 'fas fa-gift',
-        link: '#/user/rewards'
+        link: '#/orders/index',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
       },
       {
         title: 'Mis Direcciones',
         caption: '',
         icon: 'fas fa-map-marked-alt',
-        link: '#/user/address'
+        link: '#/user/address',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
       },
       {
         title: 'Encuentranos',
         caption: '',
         icon: 'fa fa-globe',
-        link: '#/findus'
+        link: '#/findus',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
       },
       {
         title: 'Perfil',
@@ -391,7 +402,6 @@ export default {
       return navig
     },
     toggleColors () {
-      // console.log('editor', { ...this.editor })
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
       if (this.page) {
@@ -462,9 +472,9 @@ export default {
     }
   },
   watch: {
-    editor (e) {
+    blocks (e) {
       // console.log('editor updated')
-      var obj = e.find(e => e.id === 'blocks')
+      var obj = e
       this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
     },
     currentUser () {
@@ -476,7 +486,7 @@ export default {
     },
     fullPath (d) {
       var css
-      let obj = this.editor.find(e => e.id === 'blocks')
+      let obj = this.blocks
       let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
       if (scopedCss !== '') {
         css = scopedCss.find(e => e.route === d)

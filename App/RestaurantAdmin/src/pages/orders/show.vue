@@ -83,8 +83,12 @@
          <div class="header-cell col-6">
             <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
+         <div class="flex-break q-pa-md"></div>
+        <div class="header-cell col-6" v-if="order.userComment">
+          <q-input label="punto de Referencia" :value="order.userComment"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
+        </div>
       </div>
-      <div v-if="order.typePayment == 1 || order.typePayment == 2" class="column items-center filled-soport">
+      <div v-if="(order.typePayment == 1 || order.typePayment == 2) && order.photo" class="column items-center filled-soport">
         <div class="col">
           <label><strong>Soporte de pago</strong></label>
           <viewer :img="order.photo"></viewer>

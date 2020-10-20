@@ -12,7 +12,7 @@ function iOS () {
   (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
 }
 // eslint-disable-next-line no-unused-vars
-const clientVer = '0.1'
+var clientVer = '0.2'
 // eslint-disable-next-line no-undef
 if (firebase.messaging.isSupported() && !iOS()) {
   fetch('/__/firebase/init.json').then(async response => {

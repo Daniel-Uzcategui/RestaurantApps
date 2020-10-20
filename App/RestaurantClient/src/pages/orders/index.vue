@@ -246,11 +246,7 @@ export default {
     ...mapGetters('address', ['address']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
-    ...mapGetters('editor', ['editor']),
-    page () {
-      var obj = this.editor.find(e => e.id === 'page')
-      return typeof obj === 'undefined' ? {} : obj
-    },
+    ...mapGetters('editor', ['page']),
     orderSort () {
       var ord = this.orders.map(x => {
         return {
@@ -318,7 +314,7 @@ export default {
     ...mapActions('address', ['bindAddress']),
     ...mapActions('order', ['bindOrders', 'saveOrder']),
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
-    ...mapActions('editor', ['bindBlocks']),
+    ...mapActions('editor', ['bindPage']),
     formatDate (e) {
       return date.formatDate(e.seconds * 1000, 'DD-MM')
     },
@@ -389,7 +385,7 @@ export default {
   },
   created () {
     this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
-    this.bindBlocks()
+    this.bindPage()
     this.bindAddress(this.currentUser.id)
     this.bindMenu()
     this.bindCategorias()
