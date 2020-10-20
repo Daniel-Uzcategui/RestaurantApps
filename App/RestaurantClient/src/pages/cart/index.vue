@@ -27,14 +27,18 @@
                <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">
                 <q-item-label class="text-h6 row">
                   <div class="text-weight-thin">{{item.quantity}}</div>
-                  <q-btn-group  style="transform: rotateZ(90deg); border-radius: 0.5em">
+                  <div class="relative-position">
+                  <q-btn-group  style="transform: rotateZ(90deg); height: 20px ; border-radius: 0.5em">
                     <q-btn size="0.3em" class="q-pl-xs" color="white" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-chevron-left" text-color="dark" dense >
-                      <q-badge color="red" v-if="item.avail === 0" floating style="left: 10px; right: auto;">max</q-badge>
-                      <q-badge color="red" v-if="item.avail == 2" floating style="left: 10px; right: auto;"><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
                     </q-btn>
                      <q-btn size="0.3em" color="white" text-color="black" label="│" dense/>
                     <q-btn size="0.3em" class="q-pr-xs" color="white" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-chevron-right" text-color="dark" dense />
                   </q-btn-group>
+                  <div style="top: -200%; position: absolute">
+                    <q-badge color="red" v-if="item.avail === 0" style="">max</q-badge>
+                      <q-badge color="red" v-if="item.avail == 2" style=""><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
+                  </div>
+                </div>
                 </q-item-label>
                </q-item-section>
             </q-item>
@@ -328,11 +332,13 @@ export default {
       }
     },
     makeOrder (paypal) {
+      this.$q.loading.show()
       if (this.tipEnvio !== '1') { this.addId = '' }
       let orderWhen = {
         orderWhen: this.orderWhen,
-        dateWhen: this.dateWhen === null || typeof this.dateWhen === 'undefined' ? 'NA' : this.dateWhen
+        orderDate: this.orderDate === null || typeof this.orderDate === 'undefined' ? 'NA' : new Date(this.orderDate)
       }
+      console.log({ orderWhen })
       let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price) : this.getTotalCarrito()[2] }
       if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
       this.addOrder({ ...order }).then(e => {

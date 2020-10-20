@@ -9,10 +9,10 @@
       <q-card-section class="q-pt-xl">
           <div class="row header-title">
             <div class="fontsize-18">{{rewards ? 'Recompensas': promo ? 'Promociones' : selectedFilter === '' ? 'Catálogo' : (filters.find( e => e.id === selectedFilter).name)}}</div>
-            <q-btn dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
+            <q-btn v-if="filters.length" dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
           </div>
          <div>
-            <q-list class="bg-dark" style="overflow: hidden; z-index: 10; position: fixed; top: 50%; right: 0; border-top-left-radius: 28px; margin-right: -15px; border-bottom-left-radius: 28px;">
+            <q-list class="bg-dark" style="overflow: hidden; z-index: 10; position: fixed; top: 50%; right: 0; border-top-left-radius: 28px; padding-right: -15px; border-bottom-left-radius: 28px;">
               <q-item v-ripple style="padding-left: 10px;" v-if="pointsCat && Object.keys(pointsCat).length  && !promo">
                 <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click="rewards = !rewards" />
               </q-item>
@@ -23,23 +23,18 @@
          </div>
       </q-card-section>
       <q-card-section class="wrapel q-pa-none q-ma-none" > <!---Seccion catalogo --->
-         <q-tabs vertical
+         <div
             v-if="!promo && !rewards"
             class="wrapel "
-            content-class="wrapel"
-            mobile-arrows
             >
-            <transition-group
-              name="list-complete"
-            >
-            <div class="wrapel background-color list-complete-item" content-class="wrapel"  v-for="tabs in filtercat()"
+            <div class="wrapel background-color" content-class="wrapel"  v-for="tabs in filtercat()"
                :key="tabs.id">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
                 <q-card-section v-if="!promo && !rewards">
                   <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 10000;" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 10000;" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
                         <div v-if="typeof item.not === 'undefined'">
@@ -71,9 +66,8 @@
                      </carousel>
                   </q-card-section>
                </div>
-            </transition-group>
                <q-separator vertical class="menuseparator" />
-            </q-tabs>
+            </div>
          </q-card-section>
          <!--- Fin Seccion catalogo --->
          <q-card-section v-if="!promo && rewards">
@@ -81,8 +75,8 @@
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
             <carousel
             :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
             :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 1], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -116,8 +110,8 @@
             <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
          <carousel
             :loop="true"
-            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+            navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
             :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
             <slide class="row justify-center" :name="key" v-for="item in promoData" :key="item.id" >
                <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -166,9 +160,9 @@
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-            <q-card-section class="q-pa-none q-pt-xl row justify-center">
+            <q-card-section class="q-pa-none q-pt-xl row justify-center" style="overflow: visible !important">
                <div class="column items-center col-4 q-pt-xl"
-                 style="min-width: 320px"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
+                 style="min-width: 320px; overflow: visible !important"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
                   <div class="diagphcont relative-position q-pt-lg" :class="displayVal.disptype !== 1 ? 'column items-center' : ''" :style="displayVal.disptype == 1 ? 'background-color: unset' : dgbg">
                     <img
                       v-if="displayVal.disptype == 1"
@@ -176,8 +170,8 @@
                       width: 300%;
                       top: -109%;
                       left: -135%;" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FUnion%20166115595?alt=media&token=9618c4b1-6e55-4b1c-895d-e506d6436855" alt="">
-                     <div class="diagphcont2" style="position: absolute">
-                        <q-img class="diagph" :style="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 1 ? 'min-width: 250px; min-height: 250px; top: -81%;' : ''" v-if="displayVal.photo" contain :src=displayVal.photo />
+                     <div class="diagphcont2" style="position: absolute; overflow: visible !important">
+                        <img class="diagph" :style="typeof displayVal.disptype === 'undefined' ? 'overflow: visible !important;' : displayVal.disptype == 1 ? 'overflow: visible !important; min-width: 250px; min-height: 250px; top: -81%;' : 'overflow: visible !important;'" v-if="displayVal.photo" contain :src=displayVal.photo >
                      </div>
                   </div>
                   <div>
@@ -279,8 +273,8 @@
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">Más productos</div>
              <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="margin-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="margin-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
                    :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                       <slide class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
                         <div :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
@@ -667,141 +661,196 @@ export default {
 </script>
 
 <style lang="stylus" >
+.q-img__content
+  overflow visible !important
 .diagphcont
-  overflow: visible
+  overflow visible !important
   min-width 205.75px
   min-height 186.15px
   width 26.25vmin
   height 23.75vmin
-  background-color #FFD63D
+  background-color #ffd63d
   border-radius 30px
+
 .diagphcont2
-  overflow: visible
+  overflow visible !important
   margin auto
   min-width 184.52px
   min-height 184.52px
   width 23vmin
   position relative
+
 .diagph
-  overflow: visible
+  overflow visible !important
   min-width 184.52px
   min-height 184.52px
+  width 100%
   position absolute
   top -50%
+  filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
   -webkit-filter drop-shadow(0px 35px 20px rgba(0,0,0,0.5))
+
 .menuphoto-xs
-  overflow: visible !important
+  overflow visible !important
+  filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
-  width: 72px
-  height: 72px
+  width 72px
+  height 72px
+
 .menuphoto-md
-  overflow: visible !important
+  overflow visible !important
+  filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
   -webkit-filter drop-shadow(-5px 6px 4px rgba(0,0,0,0.5))
-  width: 95px
-  height: 95px
+  width 95px
+  height 95px
+
 .burgericon
-  color: black
+  color #000
+
 .carticon
-  color: black
+  color #000
+
 .toggleicon
-  color: black
-.wrapel .no-wrap
-  flex-wrap: wrap !important
+  color #000
+
+.wrapel
+  .no-wrap
+    -ms-flex-wrap wrap !important
+    flex-wrap wrap !important
+
 .menu-div
   border-top-left-radius 50px
   border-top-right-radius 50px
   border-bottom-left-radius 50px
   border-bottom-right-radius 50px
+
 .text-content
   min-width 100px
   position relative
   margin-left 5px
+
 .item-xs
-  color: black
-  border-radius: 20px
-  width: 90px !important
-  height: 180px
-  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  color #000
+  border-radius 20px
+  width 90px !important
+  height 180px
+  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 .item-md
-  color: black
-  border-radius: 20px
-  width: 124px !important
-  height: 250px
-  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  color #000
+  border-radius 20px
+  width 124px !important
+  height 250px
+  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 .item-content-md
   margin-left 20%
-  width: 166px
-  height: 300px
-  text-align: center
+  width 166px
+  height 300px
+  text-align center
+
 .item-content-xs
   margin-left 20%
-  width: 130px
-  height: 230px
-  text-align: center
+  width 130px
+  height 230px
+  text-align center
+
 .price-content
-  display: flex
-  justify-content: center
-  align-items: center
-  text-align: center !important
-  width: 100%
+  display -webkit-box
+  display -ms-flexbox
+  display flex
+  -webkit-box-pack center
+  -ms-flex-pack center
+  justify-content center
+  -webkit-box-align center
+  -ms-flex-align center
+  align-items center
+  text-align center !important
+  width 100%
+
 .header-title
-    height 5%
-    margin-left 5%
-    padding-top 5%
+  height 5%
+  margin-left 5%
+  padding-top 5%
+
 .background-color
-  margin:40px auto;
-  border-radius: 20px
-  width: 90% !important
-  height: 60%
-  background-color: #e0dada
-  box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  margin 40px auto
+  border-radius 20px
+  width 90% !important
+  height 60%
+  background-color #e0dada
+  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 .header-tabs
-    padding-top: 30px
-    padding-bottom: 20px
+  padding-top 30px
+  padding-bottom 20px
+
 .container-photo
-    width: 100%
-    padding-left: 45%
-    padding-top: 25%
+  width 100%
+  padding-left 45%
+  padding-top 25%
+
 .prbut
-  z-index: 10
-  position: fixed
-  top: 50%
-  right: 0
-  transform: rotate(-90deg)
-  margin-right: -40px
+  z-index 10
+  position fixed
+  top 50%
+  right 0
+  -webkit-transform rotate(-90deg)
+  -ms-transform rotate(-90deg)
+  transform rotate(-90deg)
+  margin-right -40px
+
 .promo
-    padding-top: 3%
+  padding-top 3%
+
 .list-complete-item
-  transition: all 1s
+  -webkit-transition all 1s
+  -o-transition all 1s
+  transition all 1s
+
 .list-complete-enter
-  opacity: 0
-  transform: translateY(30px)
+  opacity 0
+  -webkit-transform translateY(30px)
+  -ms-transform translateY(30px)
+  transform translateY(30px)
+
 .list-complete-leave-to
-  transition: all 0s
-  opacity: 0
+  -webkit-transition all 0s
+  -o-transition all 0s
+  transition all 0s
+  opacity 0
+
 .list-complete-leave-active
-  position: absolute
+  position absolute
+
 .VueCarousel-navigation-prev
-    overflow: visible !important
-    left: 3% !important;
+  overflow visible !important
+  left 3% !important
+
 .VueCarousel-navigation-next
-    overflow: visible !important
-    right: 3% !important;
- /* ------------------------Tablets & Mobiles ---------------------------*/
+  overflow visible !important
+  right 3% !important
+
 @media (max-width: 991px)
- .background-color
-    margin:40px auto;
-    border-radius: 20px
-    width: 90% !important
-    height: 90%
-    background-color: #e0dada
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+  .background-color
+    margin 40px auto
+    border-radius 20px
+    width 90% !important
+    height 90%
+    background-color #e0dada
+    -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+    box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+
 @media (max-width: 660px)
   .background-color
-    margin:40px auto;
-    border-radius: 20px
-    width: 90% !important
-    height: 100%
-    background-color: #e0dada
-    box-shadow: -4px 8px 18px rgba(0,0,0,.1)
+    margin 40px auto
+    border-radius 20px
+    width 90% !important
+    height 100%
+    background-color #e0dada
+    -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+    box-shadow -4px 8px 18px rgba(0,0,0,0.1)
 </style>

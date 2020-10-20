@@ -312,7 +312,7 @@ export default {
     },
     saved3 (value, initialValue, id, key) {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.setValue({ payload: { value, id, key }, collection: 'config' })
+      this.setValue2({ payload: { value, id, key }, collection: 'config' })
     },
     saved2 (value, initialValue, id, key) {
       console.log({ key })
@@ -323,7 +323,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue', 'setValue2', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindConfigs']),
     /* delrow () {

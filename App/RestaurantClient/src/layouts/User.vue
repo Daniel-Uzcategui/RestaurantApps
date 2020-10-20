@@ -306,8 +306,9 @@ export default {
     navigateFill () {
       var mapping = []
       var mapping2 = []
-      if (this.filters.length) {
-        mapping = this.filters.map(x => {
+      var filtro = this.filters.filter(x => x.show === true)
+      if (filtro.length) {
+        mapping = filtro.map(x => {
           return {
             title: x.name,
             caption: x.descripcion,
