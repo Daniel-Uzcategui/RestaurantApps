@@ -295,6 +295,9 @@ export default {
                   handler: (node) => this.onClickOption(node) },
                 { label: 'Pagos y Servicios',
                   link: 'paymentServ',
+                  handler: (node) => this.onClickOption(node) },
+                { label: 'Tasa de cambio',
+                  link: 'rate',
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
