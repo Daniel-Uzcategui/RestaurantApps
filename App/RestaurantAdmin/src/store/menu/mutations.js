@@ -15,7 +15,9 @@ export function saveCategory (state, payload) {
   console.log(payload)
   state.categorias = payload
 }
-
+export function setSede (state, payload) {
+  state.sede = payload
+}
 export const addCatMut = firestoreAction((state, payload) => {
   return firestore()
     .collection('categorias').add({

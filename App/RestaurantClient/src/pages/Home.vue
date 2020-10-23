@@ -25,6 +25,8 @@ export default {
     ...mapGetters('editor', ['blocks'])
   },
   components: {
+    'carouselmenu': () => import('../components/carouselMenu'),
+    'menudisplay': () => import('./Menu/menu'),
     'my-card': () => import('../components/editor/mycard'),
     'place-holder': () => import('../components/editor/placeHolder'),
     'qheader': () => import('../components/editor/qheader'),

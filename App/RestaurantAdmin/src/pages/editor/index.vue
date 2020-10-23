@@ -1,5 +1,5 @@
 <template>
-   <div>
+   <div @contextmenu.prevent>
       <q-drawer v-if="admin" show-if-above v-model="left" side="left" bordered>
          <q-bar class="bg-primary text-white rounded-borders">
             <div class="cursor-pointer non-selectable">
@@ -377,19 +377,16 @@
       </q-drawer>
       <div :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
          <draggable :is="admin ? 'draggable' : 'div'" v-if="!app_options" :list="blocks" @start="admin ? drag=true : drag=false" @end="drag=false" handle=".handle">
-            <transition-group
-               appear
-               enter-active-class="animated fadeIn"
-               leave-active-class="animated fadeOut">
-               <div v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
+               <q-card square flat v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
                   <div v-if="block.child.length" @mouseover=" admin ? (hover = true) : false" @mouseleave="admin ? hover = false : false">
                      <q-btn v-if="hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
-                     <draggable :is="admin ? 'draggable' : 'div'" class="row justify-around reverse-wrap flex-center" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
-                        <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e)}" />
+                     <q-card flat square>
+                     <draggable class="row justify-around reverse-wrap flex-center" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
+                        <q-card v-ripple :is="''" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
                      </draggable>
+                     </q-card>
                   </div>
-               </div>
-            </transition-group>
+               </q-card>
          </draggable>
          <iframe id="iframe1" :src="ifrHtml" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
       </div>
@@ -570,7 +567,8 @@ export default {
   mixins: [ QUploaderBase ],
   components: {
     'orderwheel': () => import('./components/orderwheel'),
-    'menudisplay': () => import('./components/menu'),
+    'menudisplay': () => import('./components/client/pages/Menu/menu'),
+    'carouselmenu': () => import('./components/client/components/carouselMenu'),
     'my-card': () => import('../../components/editor/mycard'),
     'place-holder': () => import('../../components/editor/placeHolder'),
     'qheader': () => import('../../components/editor/qheader'),
@@ -611,7 +609,7 @@ export default {
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus', 'menudisplay'],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus', 'menudisplay', 'carouselmenu'],
       blocks: [],
       insertCss: '',
       selectedBLock: { block_index: null, child_index: null },
@@ -861,7 +859,7 @@ export default {
     },
     addBlock () {
       Vue.set(this.blocks, this.blocks.length, {
-        class: 'full-width',
+        class: 'full-width q-pb-xs',
         id: Math.random().toString(36).substr(2, 9),
         style: 'min-height: 0px;',
         hover: false,
@@ -944,6 +942,15 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+   .handle2 :hover { border:1px dotted #CD1821 }             /* Solid Red */
+   .handle2 *:hover { border:2px solid #89A81E }                   /* Solid Green */
+   .handle2 * *:hover { border:2px solid #F34607 }                 /* Solid Orange */
+   .handle2 * * *:hover { border:2px solid #5984C3 }               /* Solid Blue */
+   .handle2 * * * *:hover { border:2px solid #CD1821 }             /* Solid Red */
+   .handle2 * * * * *:hover { border:2px dotted #89A81E }          /* Dotted Green */
+   .handle2 * * * * * *:hover { border:2px dotted #F34607 }        /* Dotted Orange */
+   .handle2 * * * * * * *:hover { border:2px dotted #5984C3 }      /* Dotted Blue */
+   .handle2 * * * * * * * *:hover { border:2px dotted #CD1821 }    /* Dotted Red */
   .default-bg-image {
     background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
     background-repeat: no-repeat;
