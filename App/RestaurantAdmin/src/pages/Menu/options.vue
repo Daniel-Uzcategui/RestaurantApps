@@ -68,6 +68,9 @@
                 map-options
               />
           </q-td>
+           <q-td key="priority" :props="props">
+              <q-input @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense autofocus />
+           </q-td>
            <q-td key="price" :props="props">
             <q-decimal style="width: 135px" :rules="[validate]"
             outlined
@@ -98,6 +101,7 @@ const columns = [
   { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus', style: 'min-width: 100px; width: 100px' },
   { name: 'group_id', style: 'min-width: 300px; width: 300px', align: 'center', label: 'Grupos', field: 'group_id' },
+  { name: 'priority', style: 'min-width: 10px; width: 10px', align: 'left', label: 'Prioridad ', field: 'priority' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price', style: 'min-width: 135px; width: 135px' }
 ]
 

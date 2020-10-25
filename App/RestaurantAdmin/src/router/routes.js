@@ -310,6 +310,15 @@ const routes = [
           requiresAuth: true,
           nombre: 'Chat'
         }
+      },
+      {
+        path: 'rate',
+        name: 'rate',
+        component: () => import('pages/settings/rate.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Tasa de Cambio'
+        }
       }
     ]
   },

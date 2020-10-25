@@ -1,6 +1,11 @@
 /// ////// Localization Action ////////
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
+/// ////// START Action ////////
+export const bindRates = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindRates')
+  return bindFirestoreRef('rates', firestore().collection('rates'), { reset: false })
+})
 export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configs', firestore().collection('config'), { reset: false })
@@ -57,7 +62,15 @@ export const saveDay = firestoreAction((state, payload) => {
       console.log('updated!')
     })
 })
-
+export const setValueRate = firestoreAction((state, payload) => {
+  return firestore()
+    .collection('rates')
+    .doc(payload.payload.id)
+    .set({ [payload.payload.key]: payload.payload.value }, { merge: true })
+    .then(() => {
+      console.log(`${payload.collection} updated!`)
+    })
+})
 export const deleteConfig = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload) {
@@ -72,6 +85,7 @@ export const deleteConfig = firestoreAction((context, payload) => {
 })
 
 export const addConfig = firestoreAction((state, payload) => {
+  console.log(payload)
   return firestore().collection('config')
     .add(payload)
     .then(function (docRef) {
@@ -83,11 +97,25 @@ export const addConfig = firestoreAction((state, payload) => {
     })
 })
 export const addConfig2 = firestoreAction((state, payload) => {
+  console.log(payload)
   return firestore().collection('config').doc(payload.doc)
     .set(payload.payload)
     .then(function (docRef) {
       console.log('Document written with ID: ', payload.doc)
       console.log(payload.payload)
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error)
+    })
+})
+export const addRate = firestoreAction((state, payload) => {
+  console.log(payload)
+  return firestore()
+    .collection('rates').add(
+      payload
+    )
+    .then(function (docRef) {
+      console.log('Document written with ID: ', docRef.id)
     })
     .catch(function (error) {
       console.error('Error adding document: ', error)

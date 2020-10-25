@@ -76,6 +76,7 @@ export default function () {
       }
     ],
     version: null,
-    manifest: {}
+    manifest: {},
+    rates: null
   }
 }
