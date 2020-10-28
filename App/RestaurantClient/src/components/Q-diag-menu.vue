@@ -12,13 +12,13 @@
          >
          <q-card
           style="width: 100%;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
-    overflow-x: hidden;">
+          height: 100%;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;">
             <q-bar class="bg-transparent">
                <q-space />
-               <q-btn style="z-index: 9999" dense flat icon="close" v-close-popup>
+               <q-btn style="z-index: 9999" dense flat icon="close" @click="$emit('dispchange', false)" v-close-popup>
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>

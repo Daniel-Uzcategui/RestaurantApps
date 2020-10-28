@@ -28,7 +28,9 @@
     "node-forge": "^0.10.0",
     "quasar": "^1.14.1",
     "quasar-app-extension-firebase-messaging": "^0.1.1",
+    "request": "^2.88.2",
     "vue-carousel": "^0.18.0",
+    "vue-uuid": "^2.0.2",
     "vuexfire": "^3.2.2"
   },
   "devDependencies": {

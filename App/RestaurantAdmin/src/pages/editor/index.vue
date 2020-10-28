@@ -41,7 +41,6 @@
             <q-btn color="primary" @click="SaveReq = true" label="Save Project" />
             <q-btn color="primary" @click="loadReq = true" label="Load" />
          </div>
-         {{app_options}}
          <orderwheel v-if="app_options" v-model="page" />
          <div v-if="!app_options">
          <div class="q-pa-md text-h7">
@@ -57,7 +56,7 @@
                labelKey="path"
             />
          </div>
-         <div class="q-pl-sm q-pr-sm">
+         <div v-if="containerSel === null" class="q-pl-sm q-pr-sm">
             <q-input v-model="newPageName" label="Add child page to selected">
                <template v-slot:append>
                   <q-btn @click="addPage()" round dense flat icon="add" />
@@ -65,6 +64,7 @@
             </q-input>
          </div>
          </div>
+         <div v-if="containerSel === null">
          <q-card v-if="page_options" class="my-card">
             <q-card-section>
                <div class="text-h5">
@@ -374,8 +374,15 @@
                </div>
             </q-card-section>
          </q-card>
+         </div>
+         <div v-else>
+           Cssmenu
+           <cssmenu
+           v-model="containerSel.cont"
+           />
+         </div>
       </q-drawer>
-      <div :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
+      <div @contextmenu="(e) => consoleame(e)" :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
          <draggable :is="admin ? 'draggable' : 'div'" v-if="!app_options" :list="blocks" @start="admin ? drag=true : drag=false" @end="drag=false" handle=".handle">
                <q-card square flat v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
                   <div v-if="block.child.length" @mouseover=" admin ? (hover = true) : false" @mouseleave="admin ? hover = false : false">
@@ -567,6 +574,7 @@ export default {
   mixins: [ QUploaderBase ],
   components: {
     'orderwheel': () => import('./components/orderwheel'),
+    'cssmenu': () => import('./components/cssMenu'),
     'menudisplay': () => import('./components/client/pages/Menu/menu'),
     'carouselmenu': () => import('./components/client/components/carouselMenu'),
     'my-card': () => import('../../components/editor/mycard'),
@@ -588,6 +596,7 @@ export default {
     return {
       scssSelect: '',
       newScss: '',
+      containerSel: null,
       scopedCss: [],
       app_name: '',
       app_short_name: '',
@@ -707,6 +716,26 @@ export default {
   methods: {
     ...mapActions('editor', ['saveBlocks', 'saveBlocks2', 'savePage', 'bindBlocks', 'saveCss', 'saveScCss', 'saveVer', 'saveRoutes']),
     ...mapActions('config', ['bindEnv', 'bindManifest', 'saveManifest']),
+    consoleame (e) {
+      if (this.containerSel === null) {
+        this.containerSel = {
+          prev: e.target.style.backgroundColor,
+          cont: `.${e.target.parentElement.className.split(' ').join('.')} > .${e.target.className.split(' ').join('.')}`
+        }
+      } else {
+        this.insCss(this.containerSel.cont + ` { background-color: ${this.containerSel.prev === '' ? 'unset' : this.containerSel.prev}; } `)
+        this.containerSel = { prev: e.target.style.backgroundColor, cont: `.${e.target.parentElement.className.split(' ').join('.')} > .${e.target.className.split(' ').join('.')}` }
+      }
+      this.insCss(`.${e.target.parentElement.className.split(' ').join('.')} > .${e.target.className.split(' ').join('.')}` + ' { background-color: rgba(0, 0, 255, 0.3); } ')
+      console.log({ e })
+    },
+    insCss (css) {
+      console.log(css)
+      var s1 = document.createElement('style'), s0 = document.getElementsByTagName('script')[0]
+      s1.innerHTML = css
+      s0.parentNode.insertBefore(s1, s0)
+      return s1.src
+    },
     addPage () {
       let parent = this.pagesNode[0]
       let route = this.selectedPage === null ? '/' : this.selectedPage
@@ -904,6 +933,10 @@ export default {
       Vue.set(this, 'selectedBLockProps', e.props_info)
       // console.log({ selectedBLockProps: this.selectedBLockProps, props: e.props_info })
       // console.log({ ...this.blocks })
+      if (this.containerSel !== null) {
+        this.insCss(this.containerSel.cont + ` { background-color: ${this.containerSel.prev === '' ? 'unset' : this.containerSel.prev}; } `)
+        this.containerSel = null
+      }
     },
     resetPhotoType () {
       this.photoType = ''

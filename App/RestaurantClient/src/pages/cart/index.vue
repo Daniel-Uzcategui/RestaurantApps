@@ -192,7 +192,7 @@
                       v-model="pagoSel"
                     />
                     <div class="q-pt-md">
-                        <p class="text-h6" v-if="true">Total: $ {{tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(config.price) : getTotalCarrito()[2]}}</p>
+                        <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(config.price) : getTotalCarrito()[2]).toFixed(2)}}</p>
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
                         <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
                     </div>
@@ -336,7 +336,7 @@ export default {
         orderDate: this.orderDate === null || typeof this.orderDate === 'undefined' ? 'NA' : new Date(this.orderDate)
       }
       console.log({ orderWhen })
-      let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price) : this.getTotalCarrito()[2] }
+      let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
       this.addOrder({ ...order }).then(e => {
         this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' })

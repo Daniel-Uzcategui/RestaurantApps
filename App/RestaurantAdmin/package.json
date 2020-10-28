@@ -38,6 +38,7 @@
     "vue-business-hours": "^1.4.1",
     "vue-carousel": "^0.18.0",
     "vue-prism-editor": "^1.2.2",
+    "vue-uuid": "^2.0.2",
     "vuedraggable": "^2.24.1",
     "vuexfire": "^3.2.2",
     "xhr2": "^0.2.0",

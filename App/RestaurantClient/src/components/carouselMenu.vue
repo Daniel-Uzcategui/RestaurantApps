@@ -1,6 +1,6 @@
 <template>
-<div @contextmenu="selector($event)" ref="div1" :class="global_class" :style="global_style" @click="click()" class="background-color">
-  <div @contextmenu="selector($event)" ref="div2" :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{title}}</div>
+<div  ref="div1" :class="global_class" :style="global_style" @click="click()" class="background-color">
+  <div  ref="div2" :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{title}}</div>
   <carousel
       ref="carousel"
       :loop="true"
@@ -8,19 +8,19 @@
       navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
       :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
       <slide ref="slide" class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
-        <div @contextmenu="selector($event)" ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
-            <q-card ref="qcardslide" v-ripple @click="consoleame($refs);checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#393939'},{'color': '#FFFFFF'}]">
-              <div @contextmenu="selector($event)" ref="div4" class="container-photo">
+        <div  ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
+            <q-card ref="qcardslide" v-ripple @click="checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#393939'},{'color': '#FFFFFF'}]">
+              <div  ref="div4" class="container-photo">
                   <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
               </div>
-              <div @contextmenu="selector($event)" ref="div5" class="text-caption">
-                  <div @contextmenu="selector($event)" ref="div6" class="text-bold relative-position q-pa-sm">
+              <div  ref="div5" class="text-caption">
+                  <div  ref="div6" class="text-bold relative-position q-pa-sm">
                     <q-item-label lines="5">{{item.name}} </q-item-label>
                   </div>
               </div>
-              <div @contextmenu="selector($event)" ref="div7" class="price-content" >
-                  <div @contextmenu="selector($event)" ref="div8">
-                    <q-badge color="red" rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
+              <div  ref="div7" class="price-content" >
+                  <div  ref="div8">
+                    <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                     <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                     </q-item-label>
                     <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
@@ -34,6 +34,7 @@
       </slide>
   </carousel>
   <q-dialog-menu
+      v-if="dialog"
       :display="display"
       :displayVal2="displayVal"
       :dgbg="dgbg"
@@ -67,6 +68,10 @@ export default {
     typeDisplay: {
       type: String,
       default: null
+    },
+    dialog: {
+      type: Boolean,
+      default: () => false
     },
     block_index: {
       type: Number
@@ -229,13 +234,6 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
-    selector (e) {
-      let targetId = e.currentTarget.id
-      console.log({ targetId, e })
-    },
-    consoleame (e) {
-      console.log({ e })
-    },
     click () {
       this.$emit('click-edit', {
         block_info: {
@@ -481,7 +479,8 @@ export default {
 .VueCarousel-navigation-next
   overflow visible !important
   right 3% !important
-
+.VueCarousel-wrapper
+  overflow visible
 @media (max-width: 991px)
   .background-color
     margin 40px auto

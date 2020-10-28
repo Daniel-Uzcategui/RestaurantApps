@@ -51,7 +51,7 @@
                                     </div>
                                     <div class="price-content" >
                                        <div>
-                                          <q-badge color="red" rounded v-if="item.discount > 0" >-{{item.discount}}%</q-badge>
+                                         <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                                           </q-item-label>
                                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
@@ -216,9 +216,9 @@
                            </div>
                            <div class="price-content" >
                               <div>
+                                <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                  <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
                                     $ {{parseFloat(item.price).toFixed(2)}}
-                                    <q-badge color="red" floating rounded v-if="item.discount > 0" >Descuento {{item.discount}}%</q-badge>
                                  </q-item-label>
                                  <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                                  </q-item-label>
@@ -355,10 +355,11 @@ export default {
             discount: x.discount,
             prodType: 0,
             disptype: x.disptype,
+            priority: parseInt(x.priority ? x.priority : 1000),
             groupComp: typeof x.groupComp === 'undefined' ? [] : x.groupComp
           })
         }
-        return y
+        return y.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
       }, [])
     },
     pointsCat () {
@@ -785,7 +786,8 @@ export default {
 
 .list-complete-leave-active
   position absolute
-
+.VueCarousel-wrapper
+  overflow visible
 @media (max-width: 991px)
   .background-color
     margin 40px auto

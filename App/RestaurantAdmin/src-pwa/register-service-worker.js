@@ -1,5 +1,6 @@
 import { register } from 'register-service-worker'
 // eslint-disable-next-line no-unused-vars
+var clientVer = '0.4'
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration
@@ -12,13 +13,11 @@ register('firebase-messaging-sw.js', {
   // registrationOptions: { scope: './' },
 
   ready (registration) {
-    var that = this
-    console.log('Service worker is active.', { registration }, { that })
+    console.log('Service worker is active.')
   },
 
   registered (registration) {
-    var that = this
-    console.log('Service worker has been registered.', { registration }, { that })
+    console.log('Service worker has been registered.')
   },
 
   cached (/* registration */) {
