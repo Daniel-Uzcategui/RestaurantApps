@@ -3,8 +3,9 @@
     <q-card flat square>
             <q-card-section class="bg-primary">
              <template>
-               <img alt="pfcevolution" src="~assets/logo.png" class="imglogo">
+               <img alt="chopZI" src="~assets/app-logo-128x128.png" class="imglogo">
             </template>
+            <div class="text-h5 text-white"  >CHOPZI</div>
             <div class="absolute-bottom-right q-pr-md" style="transform: translateY(50%);">
               <q-btn fab :label="inverseGetAuthType" color="secondary" :to="routeAuthentication" />
             </div>
