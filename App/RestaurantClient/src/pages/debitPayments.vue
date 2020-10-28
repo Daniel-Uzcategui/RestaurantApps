@@ -228,26 +228,35 @@ export default {
             'content-type': 'application/json',
             'x-ibm-client-id': '81188330-c768-46fe-a378-ff3ac9e88824' },
         body:
-          { merchant_identify:
-              { integratorId: 73348377,
-                merchantId: 47268743,
-                terminalId: '4520430926823424' },
-          client_identify:
-              { ipaddress: '184.90.37.228',
-                browser_agent: '42',
-                mobile:
-                { manufacturer: 'waim',
-                  model: 'widcan',
-                  os_version: 'cajiffotmeh',
-                  location: { lat: 95.80463463, lng: 79.3123785 } } },
-          transaction_authInfo:
-              { trx_type: 'wubmijomahrulwe',
-                payment_method: 'hiko',
-                card_number: '4390649774211072',
-                customer_id: '7137017833979904' } },
+          {
+            'merchant_identify': {
+              'integratorId': 31,
+              'merchantId': 150332,
+              'terminalId': 'abcde'
+            },
+            'client_identify': {
+              'ipaddress': '10.0.0.1',
+              'browser_agent': 'Chrome 18.1.3',
+              'mobile': {
+                'manufacturer': 'Samsung',
+                'model': 'S9',
+                'os_version': 'Oreo 9.1',
+                'location': {
+                  'lat': 37.4224764,
+                  'lng': -122.0842499
+                }
+              }
+            },
+            'transaction_authInfo': {
+              'trx_type': 'solaut',
+              'payment_method': 'tdd',
+              'card_number': '36133484450025',
+              'customer_id': 'V901582'
+            }
+          },
         json: true }
       request(options, function (error, response, body) {
-        if (error) return console.error('Failed: %s', error.message)
+        if (error) { return console.error('Failed: %s', error.message) }
         console.log('Success: ', body)
       })
       //
