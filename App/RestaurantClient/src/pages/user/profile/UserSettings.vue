@@ -12,10 +12,10 @@
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="email">Email</label>
                 <q-input class="col" id="email" v-model="email" borderless="borderless" dense="dense" type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="cedula">Cedula</label>
+            <div class="row justify-between items-center q-mb-lg "><label class="col-3" for="cedula">Cedula</label>
                 <q-input class="col" id="cedula" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="phone">Teléfono</label>
+            <div class="row justify-between items-center q-mb-lg "><label class="col-3" for="phone">Teléfono</label>
                 <q-input class="col" id="phone" v-model="phone" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fecnac">Fecha  de Nac.</label>
@@ -24,11 +24,11 @@
           <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="sexo">Sexo</label>
              <q-select map-options emit-value standout="bg-teal text-white"  v-model="sexo"  :options="sexo_options"  class="col"  />
         </div>
-        </section>
-        <div class="row justify-between absolute-bottom q-my-lg q-px-md ">
+        <div class="row justify-between q-mb-lg">
             <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
             <q-btn color="primary" type="submit" label="GUARDAR" style="min-width:6em;"></q-btn>
         </div>
+        </section>
     </q-form>
 </div>
 </template>

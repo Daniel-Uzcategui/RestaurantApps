@@ -22,6 +22,11 @@ const routes = [
         path: 'findus',
         name: 'findUs',
         component: () => import('pages/findus.vue')
+      },
+      {
+        path: 'debit',
+        name: 'debit',
+        component: () => import('pages/debitPayments.vue')
       }
     ]
   },

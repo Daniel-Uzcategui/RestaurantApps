@@ -11,6 +11,7 @@ import address from './address'
 import localization from './localization'
 import config from './config'
 import editor from './editor'
+import transactions from './transactions'
 Vue.use(Vuex)
 
 /*
@@ -29,7 +30,8 @@ export default function (/* { ssrContext } */) {
       order,
       localization,
       config,
-      editor
+      editor,
+      transactions
     },
     mutations: {
       ...vuexfireMutations
