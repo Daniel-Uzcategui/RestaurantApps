@@ -1,5 +1,8 @@
 export default function () {
   return {
-    editor: []
+    editor: [],
+    blocks: {},
+    page: {},
+    routes: {}
   }
 }

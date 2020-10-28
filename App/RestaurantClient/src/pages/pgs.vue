@@ -1,7 +1,7 @@
 <template>
 <div>
-  <div v-if="blocks.length">
-      <div v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
+  <div v-if="blocks2.length">
+      <div v-for="(block, index) in blocks2" :class="block.class" :style="block.style" :key="block.id">
         <div v-if="block.child.length">
           <div  class="row justify-around reverse-wrap flex-center">
                 <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
@@ -22,7 +22,7 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('editor', ['editor']),
+    ...mapGetters('editor', ['blocks']),
     fullPath () {
       return this.$route.fullPath
     }
@@ -45,7 +45,7 @@ export default {
       visible: true,
       admin: false,
       widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml'],
-      blocks: [
+      blocks2: [
       ],
       selectedBLock: { block_index: null, child_index: null },
       selectedBLockProps: []
@@ -54,12 +54,10 @@ export default {
   mounted () {
     // console.log({ pagerouter: this.$route })
     let full = this.fullPath
-    if (this.editor.length) {
-      this.visible = false
-      let obj = this.editor.find(e => e.id === 'blocks')
-      if (typeof obj !== 'undefined') {
-        this.blocks = JSON.parse(JSON.stringify(obj.addedPages[full.replace(/\//g, '')]))
-      }
+    this.visible = false
+    let obj = this.blocks
+    if (typeof obj !== 'undefined') {
+      this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages[full.replace(/\//g, '')]))
     }
   },
   watch: {
@@ -67,24 +65,22 @@ export default {
       // console.log({ pagerouter: this.$router })
       let full = this.fullPath
       // console.log(this.fullPath)
-      if (this.editor.length) {
-        this.visible = false
-        let obj = this.editor.find(e => e.id === 'blocks')
-        if (typeof obj !== 'undefined') {
-          this.blocks = JSON.parse(JSON.stringify(obj.addedPages[full.replace(/\//g, '')]))
-        }
+      this.visible = false
+      let obj = this.blocks
+      if (typeof obj !== 'undefined') {
+        this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages[full.replace(/\//g, '')]))
       }
     },
-    editor (e) {
+    blocks (e) {
       this.visible = false
-      let obj = e.find(e => e.id === 'blocks')
+      let obj = e
       if (typeof obj !== 'undefined') {
-        this.blocks = JSON.parse(JSON.stringify(obj.blocks))
+        this.blocks2 = JSON.parse(JSON.stringify(obj.blocks))
       }
     }
   },
   methods: {
-    ...mapActions('editor', ['saveBlocks', 'bindBlocks']),
+    ...mapActions('editor', ['bindBlocks']),
     log (e) {
       // console.log(e)
     },

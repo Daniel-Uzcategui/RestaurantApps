@@ -47,6 +47,16 @@
         </div>
         <div class="flex-break q-py-md "></div>
       </div>
+      <div class="row header-container">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Recompensas</div>
+       </div>
+       <div class="flex-break q-py-md "></div>
+        <div class="row header-container">
+         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
+          outlined :options="estatus_options" label="Activar Recompensas" />
+        </div>
+        </div>
         <div class="row header-container">
          <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Medios de Pagos</div>
        </div>
@@ -109,6 +119,7 @@ export default {
       statusPickup: 1,
       statusInlocal: 1,
       statusPto: 1,
+      statusRewards: 0,
       statusZelle: 1,
       statusCash: 1,
       statusPaypal: 1,
@@ -129,6 +140,7 @@ export default {
         statusPickup: this.statusPickup,
         statusInlocal: this.statusInlocal,
         statusPto: this.statusPto,
+        statusRewards: this.statusRewards,
         statusZelle: this.statusZelle,
         statusCash: this.statusCash,
         statusPaypal: this.statusPaypal,
@@ -178,6 +190,9 @@ export default {
       value = this.statusPto
       key = 'statusPto'
       this.saveConfig({ value, id, key })
+      value = this.statusRewards
+      key = 'statusRewards'
+      this.saveConfig({ value, id, key })
       value = this.statusZelle
       key = 'statusZelle'
       this.saveConfig({ value, id, key })
@@ -207,6 +222,7 @@ export default {
         this.statusPickup = this.config.statusPickup
         this.statusInlocal = this.config.statusInlocal
         this.statusPto = this.config.statusPto
+        this.statusRewards = this.config.statusRewards
         this.statusZelle = this.config.statusZelle
         this.statusCash = this.config.statusCash
         this.statusPaypal = this.config.statusPaypal

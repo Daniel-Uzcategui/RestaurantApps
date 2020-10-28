@@ -67,6 +67,10 @@ export const promos = ({ promos }) => {
 
 export const filters = ({ filters }) => filters
 
+export const selectedProduct = ({ selectedProduct }) => selectedProduct
+
+export const selectedProdType = ({ selectedProdType }) => selectedProdType
+
 export const selectedFilter = ({ selectedFilter }) => selectedFilter
 
 export const item = ({ item }) => item

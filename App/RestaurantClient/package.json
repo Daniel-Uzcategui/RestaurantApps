@@ -24,7 +24,6 @@
     "cross-env": "^7.0.2",
     "crypto-js": "^4.0.0",
     "cryptr": "^6.0.2",
-    "firebase": "^7.23.0",
     "gmap-vue": "^1.2.1",
     "hasha": "^5.2.2",
     "js-sha256": "^0.9.0",

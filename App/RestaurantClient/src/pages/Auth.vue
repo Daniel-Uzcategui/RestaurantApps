@@ -285,7 +285,6 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&display=swap')
 .bgimage
   font-family 'Montserrat', sans-serif
-  background-image url(https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FINGRESA-min284486?alt=media&token=d624ff04-02ed-4482-9844-87a3c84f7d21)
   -webkit-background-size cover
   -moz-background-size cover
   -o-background-size cover

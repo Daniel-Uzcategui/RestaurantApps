@@ -1,5 +1,6 @@
 export default function () {
   return {
+    cart: [],
     categorias: [
     ],
     menu: [
@@ -13,6 +14,10 @@ export default function () {
         price: 0,
         FechaAct: ''
       }],
+    selectedFilter: '',
+    selectedProduct: '',
+    selectedProdType: '',
+    sede: null,
     promos: [],
     item: [],
     itemGroup: [],

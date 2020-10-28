@@ -32,3 +32,13 @@ export const filters = ({ filters }) => filters
 export const itemGroup = ({ itemGroup }) => itemGroup
 
 export const groupComp = ({ groupComp }) => groupComp
+
+export const selectedProduct = ({ selectedProduct }) => selectedProduct
+
+export const selectedProdType = ({ selectedProdType }) => selectedProdType
+
+export const selectedFilter = ({ selectedFilter }) => selectedFilter
+
+export const sede = ({ sede }) => sede
+
+export const cart = ({ cart }) => cart

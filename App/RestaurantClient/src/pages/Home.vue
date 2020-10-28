@@ -1,10 +1,10 @@
 <template>
 <div>
-  <div v-if="blocks.length">
-      <div v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
+  <div v-if="blocks2.length">
+      <div v-for="(block, index) in blocks2" :class="block.class" :style="block.style" :key="block.id">
         <div v-if="block.child.length">
           <div  class="row justify-around reverse-wrap flex-center">
-                <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
+                <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
           </div>
         </div>
       </div>
@@ -22,9 +22,11 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('editor', ['editor'])
+    ...mapGetters('editor', ['blocks'])
   },
   components: {
+    'carouselmenu': () => import('../components/carouselMenu'),
+    'menudisplay': () => import('./Menu/menu'),
     'my-card': () => import('../components/editor/mycard'),
     'place-holder': () => import('../components/editor/placeHolder'),
     'qheader': () => import('../components/editor/qheader'),
@@ -35,7 +37,8 @@ export default {
     'customHtml': () => import('../components/editor/customHtml'),
     'customJS': () => import('../components/editor/customJS'),
     'findus': () => import('../components/editor/findus'),
-    'qimg': () => import('../components/editor/qimg')
+    'qimg': () => import('../components/editor/qimg'),
+    'menucomp': () => import('../pages/Menu/menu')
 
   },
   data () {
@@ -43,43 +46,32 @@ export default {
       visible: true,
       admin: false,
       widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
-      blocks: [
+      blocks2: [
       ],
       selectedBLock: { block_index: null, child_index: null },
       selectedBLockProps: []
     }
   },
   mounted () {
-    if (this.editor.length) {
-      this.visible = false
-      let obj = this.editor.find(e => e.id === 'blocks')
-      if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
-        this.blocks = JSON.parse(JSON.stringify(obj.addedPages['Home']))
-      }
+    this.visible = false
+    let obj = this.blocks
+    if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
+      this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages['Home']))
     }
+    console.log({ gg: this.blocks })
   },
   watch: {
-    editor (e) {
+    blocks (e) {
       this.visible = false
-      let obj = e.find(e => e.id === 'blocks')
+      let obj = e
       if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
-        this.blocks = JSON.parse(JSON.stringify(obj.addedPages['Home']))
+        this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages['Home']))
       }
+      console.log({ gg2: e })
     }
   },
   methods: {
-    ...mapActions('editor', ['bindBlocks']),
-    log (e) {
-      // console.log(e)
-    },
-    childMounted (e) {
-      // console.log({ e }, 'Child Mounted')
-    },
-    placeHoldClick (e) {
-      this.selectedBLock = e.block_info
-      this.selectedBLockProps = e.props_info
-      // console.log({ ...this.blocks })
-    }
+    ...mapActions('editor', ['bindBlocks'])
   }
 }
 </script>

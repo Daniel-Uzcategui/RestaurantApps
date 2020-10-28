@@ -13,6 +13,8 @@
       no-data-label="No se encontraron registros"
     >
     <template v-slot:top-right>
+      <q-toggle @input="(e) => saved3(e, menucfg.displayType, 'menu', 'displayType')" color="warning"
+                :value="menucfg.displayType ? true : false" label="Tipo de Display" left-label />
       <q-input color="white" dark filled class="q-pr-md" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'dispName')"
                 :value="menucfg.dispName ? menucfg.dispName : 'Catálogo'" label="Nombre de display" />
       <q-toggle @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"

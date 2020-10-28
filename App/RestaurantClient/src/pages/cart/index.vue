@@ -28,7 +28,7 @@
                 <q-item-label class="text-h6 row">
                   <div class="text-weight-thin">{{item.quantity}}</div>
                   <div class="relative-position">
-                  <q-btn-group  style="transform: rotateZ(90deg); height: 20px ; border-radius: 0.5em">
+                  <q-btn-group v-if="!item.reward"  style="transform: rotateZ(90deg); height: 20px ; border-radius: 0.5em">
                     <q-btn size="0.3em" class="q-pl-xs" color="white" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-chevron-left" text-color="dark" dense >
                     </q-btn>
                      <q-btn size="0.3em" color="white" text-color="black" label="│" dense/>
@@ -227,11 +227,9 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
-    ...mapGetters('config', ['configurations']),
+    ...mapGetters('config', ['paymentServ']),
     config () {
-      return this.configurations.find(obj => {
-        return obj.source === 'paymentServ'
-      })
+      return this.paymentServ
     },
     tipoPago () {
       var tip = []
@@ -281,18 +279,17 @@ export default {
   },
   created () {
     this.bindLocalizations()
-    this.bindConfigs()
+    this.bindPaymentServ().then(() => {
+    }).catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.cart)
     console.log(this.$refs)
-    console.log('configurations')
-    console.log(this.configurations)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindConfigs']),
+    ...mapActions('config', ['bindPaymentServ']),
     ...mapActions('editor', ['bindBlocks']),
     showme () {
       this.$nextTick(() => console.log(this.$refs))

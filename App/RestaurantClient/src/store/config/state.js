@@ -1,6 +1,8 @@
 export default function () {
   return {
-    configurations:
-      []
+    configurations: [],
+    paymentServ: {},
+    chat: {},
+    menucfg: { menuactive: true, iconsactive: true, dispName: '', displayType: 0 }
   }
 }

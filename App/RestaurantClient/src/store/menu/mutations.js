@@ -50,7 +50,14 @@ export function setFilter (state, payload) {
   console.log(payload)
   state.selectedFilter = payload
 }
-
+export function setProduct (state, payload) {
+  console.log(payload)
+  state.selectedProduct = payload
+}
+export function setProdType (state, payload) {
+  console.log(payload)
+  state.selectedProdType = payload
+}
 export const addMenuMut = firestoreAction((state, payload) => {
   return firestore()
     .collection('menu').add({

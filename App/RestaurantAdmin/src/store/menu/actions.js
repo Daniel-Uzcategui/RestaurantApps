@@ -1,6 +1,14 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore, firebase } from '../../services/firebase/db.js'
 /// ////// START Action ////////
+export const setSede = async function ({ commit }, payload) {
+  try {
+    console.log({ setsede: payload })
+    return commit('setSede', payload)
+  } catch (e) {
+    console.error(e)
+  }
+}
 export const setValue = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)

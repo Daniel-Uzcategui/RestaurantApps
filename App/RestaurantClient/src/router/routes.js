@@ -36,7 +36,7 @@ const routes = [
   },
   {
     path: '/auth',
-    component: () => import('layouts/Basic.vue'),
+    component: () => import('layouts/User.vue'),
     children: [
       {
         path: 'forgotPassword',
@@ -90,7 +90,7 @@ const routes = [
         path: 'index',
         name: 'index',
         component: () => import('pages/menu/index.vue'),
-        props: route => ({ query: route.query.q })
+        props: route => ({ query: route.query.q, queryprod: route.query.t, qprodtype: route.query.j })
       }
     ]
   },

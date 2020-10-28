@@ -13,14 +13,14 @@ exports.CheckCart = functions.firestore
     var newcart = cart
     var sumPaid = 0
     if (newValue.tipEnvio === '1') {
-      const configRef = db.collection('config')
+      const configRef = db.collection('config').doc('paymentServ')
       const cfg = await configRef.get()
-      cfg.forEach(doccfg => {
-        var cfgData = doccfg.data()
-        if (cfgData.source === 'paymentServ') {
-          sumPaid = sumPaid + parseInt(cfgData.price)
-        }
-      })
+      var cfgData = cfg.data()
+      if (!cfg.exists) {
+        console.log('No such document!')
+      } else {
+        sumPaid = sumPaid + parseInt(cfgData.price)
+      }
     }
     var userRef = db.collection('users').doc(newValue.customer_id)
     const doc = await userRef.get()
@@ -298,6 +298,17 @@ exports.RewardsPoints = functions.firestore
   .onUpdate(async (change) => {
     const newValue = change.after.data()
     const previousValue = change.before.data()
+    const configRef = db.collection('config').doc('paymentServ')
+    const cfg = await configRef.get()
+    var cfgData = cfg.data()
+    if (!cfg.exists) {
+      console.log('No such document!')
+      return
+    } else {
+      if (typeof cfgData.statusRewards === 'undefined' || !cfgData.statusRewards) {
+        return
+      }
+    }
     let user = previousValue.customer_id
     let userRef = db.collection('users').doc(user)
     const doc = await userRef.get()

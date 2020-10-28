@@ -17,7 +17,7 @@
         </q-list>
       </div>
     <div class="row justify-center" v-if="!readOnly">
-    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-xl text-white col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
+    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-lg text-white col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
@@ -67,7 +67,7 @@
         <p class="text-caption" v-html="component.descripcion"></p>
         <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
           <q-item>
-            <q-item-section>
+            <q-item-section style="min-width: 100px">
               <q-slider
                 :color="mode == 1 ? 'positive' : 'primary'"
                 :dark="mode == 1"
@@ -83,8 +83,8 @@
               <q-item-label>{{items.name}}</q-item-label>
               <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
-            <q-item-section>
-              <q-item-label v-if="!component.free" caption>$ {{(items.price).toFixed(2)}}</q-item-label>
+            <q-item-section v-if="!component.free" >
+              <q-item-label caption>$ {{(items.price).toFixed(2)}}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>

@@ -77,7 +77,6 @@
                 :options="categorias"
                 :option-label="(item) => item === null ? null : item.name"
                 :option-value="(item) => item === null ? null : item.id"
-                @filter="filterFn"
                 style="width: 250px"
                 stack-label
                 emit-value
@@ -133,6 +132,7 @@ export default {
     }
   },
   created () {
+    console.log({ sha256: this.sha256 })
     this.bindItem()
     this.bindItemGroup()
     this.bindFilters()
@@ -152,7 +152,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindItem', 'bindItemGroup', 'bindFilters']),
+    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindItem', 'bindItemGroup', 'bindFilters', 'bindCategorias']),
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true
