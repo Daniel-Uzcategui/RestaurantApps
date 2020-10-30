@@ -52,7 +52,8 @@
           </q-card>
       </div>
      <div class="flex-break"></div>
-     <div class="header-cell col-xs-12 col-10" tabindex="0">
+     <ordertable />
+     <!-- <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
        <q-card-section  class="bg-secondary text-white" >
         <div class="text-h5">Ordenes</div>
@@ -71,7 +72,7 @@
       </template>
     </q-table>
     </q-card>
-    </div>
+    </div> -->
     </div>
   </q-page>
 </template>
@@ -100,6 +101,9 @@ function wrapCsvValue (val, formatFn) {
   return `"${formatted}"`
 }
 export default {
+  components: {
+    'ordertable': () => import('./orders/index')
+  },
   computed: {
     ...mapGetters('order', ['orders']),
     ...mapGetters('client', ['clients']),

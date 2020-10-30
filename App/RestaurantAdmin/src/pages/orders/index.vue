@@ -1,5 +1,5 @@
  <template>
-  <q-page class=" q-pa-lg" >
+  <div class=" q-pa-lg" >
     <div>
       <q-table class="table"
       title="Ordenes"
@@ -33,7 +33,7 @@
       </template>
     </q-table>
  </div>
-</q-page>
+</div>
 </template>
 
 <script>
@@ -67,7 +67,7 @@ export default {
     OrderClient () {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago
-      let fullname, statusOrder, tableOrder, typeService
+      let fullname, statusOrder, typeService
       for (i = 0; i < this.orders.length; i++) {
         obj = null
         if (typeof this.$route.query.status !== 'undefined') {
@@ -83,7 +83,8 @@ export default {
           typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
           tipoPago = this.tipo_pago[obj.typePayment]['label']
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
-          tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
+          statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
+          // tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
           OrderClient.push({
             'id': obj.id,
             'nombre': fullname,
@@ -91,8 +92,9 @@ export default {
             'status': statusOrder,
             'paid': obj.paid,
             'dateIn': obj.dateIn,
+            'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
             'factura': obj.factura,
-            'table': tableOrder,
+            // 'table': tableOrder,
             'typeService': typeService
           })
         }
@@ -150,13 +152,13 @@ export default {
       selected: [],
       columns: [
         { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
-        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre' },
-        { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
-        { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService' },
-        { name: 'status', required: true, label: 'Estatus', field: 'status' },
-        { name: 'paid', label: 'Monto', field: 'paid' },
-        { name: 'table', label: 'Mesa', field: 'table' },
-        { name: 'dateIn', label: 'Fecha', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'DD-MM-YYYY HH:mm:ss') }
+        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre', sortable: true },
+        { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
+        { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
+        { name: 'status', required: true, label: 'Estatus', field: 'status', sortable: true },
+        { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
+        { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
+        { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
       ],
       estatus_options: [
         { label: 'Por Confirmar', value: 0 },
@@ -169,6 +171,7 @@ export default {
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 },
+        { label: 'Venmo', value: 4 },
         { label: 'Tarjeta o Paypal', value: 3 }
       ],
       tipo_servicio: [

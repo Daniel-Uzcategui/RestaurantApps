@@ -221,7 +221,7 @@
 <script>
 const columns = [
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'desc', align: 'center', label: 'Nombre', field: 'name' },
+  { name: 'desc', align: 'center', label: 'Nombre', field: 'name', sortable: true },
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
   { name: 'descripcion', align: 'left', field: 'descripcion' },

@@ -165,7 +165,7 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', align: 'center', label: 'Nombre', field: 'name' },
+  { name: 'desc', align: 'center', label: 'Nombre', field: 'name', sortable: true },
   { name: 'descripcion', align: 'center', label: 'Descripción', field: 'descripcion' },
   { name: 'required', align: 'center', label: 'Requerido', field: 'required' },
   { name: 'estatus', align: 'left', label: 'Activar', field: 'estatus' },

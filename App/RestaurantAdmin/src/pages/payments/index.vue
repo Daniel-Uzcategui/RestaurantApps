@@ -126,10 +126,10 @@ export default {
       selected: [],
       columns: [
         { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
-        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre' },
-        { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment' },
-        { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService' },
-        { name: 'paid', label: 'Monto', field: 'paid' }
+        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre', sortable: true },
+        { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
+        { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
+        { name: 'paid', label: 'Monto', field: 'paid', sortable: true }
       ],
       estatus_options: [
         { label: 'Por Confirmar', value: 0 },
@@ -142,7 +142,8 @@ export default {
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 },
-        { label: 'Tarjeta o Paypal', value: 3 }
+        { label: 'Tarjeta o Paypal', value: 3 },
+        { label: 'Venmo', value: 4 }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },

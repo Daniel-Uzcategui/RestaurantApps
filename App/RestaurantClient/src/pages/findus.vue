@@ -130,19 +130,29 @@ export default {
       })
     },
     timeFormat (closes) {
-      if (closes.toString().length === 4) {
-        let first, second, hr
-        first = closes.toString().slice(0, 2)
-        first = (parseInt(first) % 12) || 12
-        if (first === 0) { first = 12 }
-        second = (closes.toString().slice(2, 4) === '00' ? '' : ':' + closes.toString().slice(2, 4))
-        hr = (closes >= 1200 ? 'PM' : 'AM')
-        closes = first + second + hr
+      if (closes === 0) { return closes }
+      closes = closes.toString()
+      if (closes.length === 4) {
+        closes = closes.slice(0, 2) + ':' + closes.slice(2, 4)
       }
-      if (closes.toString().length === 3) {
-        closes = closes.toString().slice(0, 1) + (closes.toString().slice(1, 3) === '00' ? '' : ':' + closes.toString().slice(1, 3)) + 'AM'
+      if (closes.length === 3) {
+        closes = '0' + closes.slice(0, 1) + ':' + closes.slice(1, 3)
       }
-      return closes
+      console.log(closes)
+      return new Date(`1 ${closes}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      // if (closes.toString().length === 4) {
+      //   let first, second, hr
+      //   first = closes.toString().slice(0, 2)
+      //   first = (parseInt(first) % 12) || 12
+      //   if (first === 0) { first = 12 }
+      //   second = (closes.toString().slice(2, 4) === '00' ? '' : ':' + closes.toString().slice(2, 4))
+      //   hr = (closes >= 1200 ? 'PM' : 'AM')
+      //   closes = first + second + hr
+      // }
+      // if (closes.toString().length === 3) {
+      //   closes = closes.toString().slice(0, 1) + (closes.toString().slice(1, 3) === '00' ? '' : ':' + closes.toString().slice(1, 3)) + ''
+      // }
+      // return closes
     },
     getConfig (e) {
       console.log({ e: e, config: this.configurations })

@@ -404,6 +404,16 @@ export default {
       console.log({ orderWhen })
       let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
+      switch (this.pagoSel) {
+        case 2:
+          order = { ...order, payto: this.config.zelleEmail }
+          break
+        case 4:
+          order = { ...order, payto: this.config.venmoAcc }
+          break
+        default:
+          break
+      }
       this.addOrder({ ...order }).then(e => {
         this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' })
         this.$q.loading.hide()

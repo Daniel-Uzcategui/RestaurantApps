@@ -147,9 +147,9 @@ export default {
       noSelect: false,
       columns: [
         { name: 'nombre', label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
-        { name: 'email', align: 'left', label: 'Correo Electrónico', field: 'email' },
-        { name: 'status', label: 'Estatus', field: 'status', align: 'left' },
-        { name: 'phone', label: 'Telefono', field: 'phone', align: 'center', style: 'min-width: 180px; width: 220px' }
+        { name: 'email', align: 'left', label: 'Correo Electrónico', field: 'email', sortable: true },
+        { name: 'status', label: 'Estatus', field: 'status', align: 'left', sortable: true },
+        { name: 'phone', label: 'Telefono', field: 'phone', align: 'center', style: 'min-width: 180px; width: 220px', sortable: true }
       ]
     }
   }

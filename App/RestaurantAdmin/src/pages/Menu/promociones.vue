@@ -159,13 +159,13 @@
 </template>
 <script>
 const columns = [
-  { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'desc', align: 'left', label: 'Nombre', field: 'name', sortable: true },
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price' }
 ]
 const columns2 = [
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'desc', align: 'left', label: 'Nombre', field: 'name' },
+  { name: 'desc', align: 'left', label: 'Nombre', field: 'name', sortable: true },
   { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'price', align: 'center', label: 'Precio', field: 'price' },
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
