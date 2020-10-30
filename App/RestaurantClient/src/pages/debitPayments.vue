@@ -1,11 +1,18 @@
 <template>
-<q-page class="q-pa-lg" >
+<div class="column items-center">
+    <VuePaycard
+    class="q-pa-none q-ma-none"
+    :value-fields="valueFields"
+    :labels="labels"
+    :hasRandomBackgrounds=false
+    :backgroundImage=10
+    />
      <div class="q-gutter-md">
  <div class="row header-container">
  <q-item-section>
  <q-item>
     <div class="row filled">
-    <div class="card-form col-12">
+    <div class="col-12">
     <div class="card-input"><label for="cardNumber" >Numero de tarjeta</label>
       <q-input type="tel"  v-model="valueFields.cardNumber" title="Number" data-card-field="" autocomplete="off" maxlength="19" class=""/>
     </div>
@@ -44,17 +51,6 @@
           <q-btn v-if="$q.screen.gt.sm" color="primary" class="q-ma-md q-mr-lg" @click="payment"  >Pagar</q-btn>
         </div>
     </div>
-    <div class="row">
-       <div class="col-12">
-        <VuePaycard
-        :value-fields="valueFields"
-        :labels="labels"
-        :hasRandomBackgrounds=false
-        :backgroundImage=10
-        >
-        </VuePaycard>
-       </div>
-     </div>
     </div>
 </div>
 <div class="row">
@@ -72,7 +68,7 @@
 </q-item-section>
  </div>
  </div>
- </q-page>
+ </div>
 </template>
 <script>
 // import AES from 'crypto-js/aes'

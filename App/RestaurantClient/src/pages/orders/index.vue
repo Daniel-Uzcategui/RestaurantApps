@@ -183,6 +183,8 @@
                <q-card-section>
                  <p class="text-h5 text-center">Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
                   <p v-if="ordenDet.tipEnvio == 1">{{getAddById(ordenDet.address)}}</p>
+
+                 <q-input label="Fecha de Entrega" v-if="(ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1')" :value=" ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1' ? new Date(ordenDet.orderWhen.orderDate.seconds * 1000).toLocaleString() : 'De inmediato'"  type="text" disabled />
                </q-card-section>
             </q-card-section>
             <q-card-section :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
@@ -264,6 +266,7 @@ export default {
           tipEnvio: x.tipEnvio,
           typePayment: x.typePayment,
           photo: x.photo,
+          orderWhen: x.orderWhen,
           delivery: x.delivery
         }
       })

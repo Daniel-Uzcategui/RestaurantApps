@@ -32,7 +32,7 @@
           placeholder="Precio"
           outlined
           v-model="price"
-          :rules="[ val => val && val.length > 0 || '*Requerido el campo Precio']"/>
+          :rules="[ val => val && val >= 0 || '*Requerido el campo Precio y mayor o igual a 0']"/>
         </div>
         <div class="flex-break q-py-md "></div>
       </div>
@@ -70,6 +70,10 @@
           <q-select v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Zelle" />
         </div>
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
+          outlined :options="estatus_options" label="Venmo" />
+        </div>
         </div>
          <div class="flex-break q-py-md "></div>
         <div class="row header-container">
@@ -89,6 +93,24 @@
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input v-model="PaypalApi" standout="bg-teal text-white"
           outlined label="Paypal API" />
+        </div>
+        </div>
+        <div v-if="statusZelle" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuración Zelle</div>
+       </div>
+       <div v-if="statusZelle" class="row header-container">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input v-model="zelleEmail" standout="bg-teal text-white"
+          outlined label="Email Zelle" />
+        </div>
+        </div>
+        <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuración Venmo</div>
+       </div>
+       <div v-if="statusVenmo" class="row header-container">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input v-model="venmoAcc" standout="bg-teal text-white"
+          outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
          <div class='filled'></div>
@@ -120,10 +142,13 @@ export default {
       statusInlocal: 1,
       statusPto: 1,
       statusRewards: 0,
-      statusZelle: 1,
-      statusCash: 1,
-      statusPaypal: 1,
+      statusZelle: 0,
+      statusVenmo: 0,
+      statusCash: 0,
+      statusPaypal: 0,
       PaypalApi: '',
+      zelleEmail: '',
+      venmoAcc: '',
       price: 0,
       estatus_options: [
         { label: 'Activo', value: 1 },
@@ -142,10 +167,13 @@ export default {
         statusPto: this.statusPto,
         statusRewards: this.statusRewards,
         statusZelle: this.statusZelle,
+        statusVenmo: this.statusVenmo,
         statusCash: this.statusCash,
         statusPaypal: this.statusPaypal,
         PaypalApi: this.PaypalApi,
-        price: this.price,
+        zelleEmail: this.zelleEmail,
+        venmoAcc: this.venmoAcc,
+        price: parseFloat(this.price),
         source: 'paymentServ'
       }
       this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
@@ -160,7 +188,7 @@ export default {
         }).onOk(() => {
         })
       } else {
-        if (this.statusPto === 0 && this.statusZelle === 0 && this.statusPaypal === 0 && this.statusCash === 0) {
+        if (this.statusPto === 0 && this.statusZelle === 0 && this.statusVenmo === 0 && this.statusPaypal === 0 && this.statusCash === 0) {
           this.$q.dialog({
             title: 'Error al guardar sección de medios de pago',
             message: 'Debe seleccionar al menos un medio de pago Activo ',
@@ -196,6 +224,9 @@ export default {
       value = this.statusZelle
       key = 'statusZelle'
       this.saveConfig({ value, id, key })
+      value = this.statusVenmo
+      key = 'statusVenmo'
+      this.saveConfig({ value, id, key })
       value = this.statusCash
       key = 'statusCash'
       this.saveConfig({ value, id, key })
@@ -204,6 +235,12 @@ export default {
       this.saveConfig({ value, id, key })
       key = 'PaypalApi'
       value = this.PaypalApi
+      this.saveConfig({ value, id, key })
+      key = 'venmoAcc'
+      value = this.venmoAcc
+      this.saveConfig({ value, id, key })
+      key = 'zelleEmail'
+      value = this.zelleEmail
       this.saveConfig({ value, id, key })
       value = parseFloat(this.price)
       key = 'price'
@@ -224,10 +261,13 @@ export default {
         this.statusPto = this.config.statusPto
         this.statusRewards = this.config.statusRewards
         this.statusZelle = this.config.statusZelle
+        this.statusVenmo = this.config.statusVenmo
         this.statusCash = this.config.statusCash
         this.statusPaypal = this.config.statusPaypal
         this.PaypalApi = this.config.PaypalApi
-        this.price = this.config.price
+        this.zelleEmail = this.config.zelleEmail
+        this.venmoAcc = this.config.venmoAcc
+        this.price = parseFloat(this.config.price)
       }
     }
   }

@@ -49,7 +49,7 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
+          <q-input label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" disabled />
         </div>
         <div class="header-cell col-4">
           <q-input label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
@@ -310,7 +310,8 @@ export default {
         { label: 'Punto de venta', value: 0 },
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 },
-        { label: 'Tarjeta o Paypal', value: 3 }
+        { label: 'Tarjeta o Paypal', value: 3 },
+        { label: 'Venmo', value: 4 }
       ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },

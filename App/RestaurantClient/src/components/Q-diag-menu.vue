@@ -82,7 +82,7 @@
                   </div>
                   <itemcomp
                      v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0"
-                     :mode="typeof displayVal.disptype === 'undefined' ? 0 : displayVal.disptype"
+                     :mode="typeof displayVal.disptype === 'undefined' ? 0 : parseInt(displayVal.disptype)"
                      class="q-pt-xl row justify-start"
                      :comp="displayVal.groupComp"
                      :value="itComp"

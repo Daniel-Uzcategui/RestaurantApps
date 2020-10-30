@@ -85,7 +85,9 @@
           <q-card-section class="q-pa-lg">
             <div class="text-caption text-center">Ingresar Código del cupón</div>
             <div class="column items-center">
-            <q-input style="width: 60%" />
+            <q-input
+              :rules="[val => val.length === 0 || 'Cupón no válido']"
+              style="width: 60%" v-model="cupon" :loading="loadingState" @input="setLoadingState()" />
             </div>
           </q-card-section>
           <q-card-actions class="q-pa-md column items-center">
@@ -136,7 +138,7 @@
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                       </div>
                      </div>
-                     <div class="col-6 q-pt-xl" style="min-width: 300px">
+                     <div class="col-6 q-pt-xl" style="min-width: 350px">
                        <q-card class="q-pa-xl" style="border-radius: 28px">
                          <q-card-section>
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
@@ -145,11 +147,11 @@
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
                             </div>
                             <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
-                              <q-input v-model="orderDate" hint="Seleccione Fecha y hora">
+                              <q-input readonly v-model="orderDate" hint="Seleccione Fecha y hora">
                                 <template v-slot:prepend>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy transition-show="scale" transition-hide="scale">
-                                      <q-date v-model="orderDate" mask="YYYY-MM-DD HH:mm">
+                                      <q-date :options="dateOptions" v-model="orderDate" mask="YYYY-MM-DD HH:mm">
                                         <div class="row items-center justify-end">
                                           <q-btn v-close-popup label="Close" color="primary" flat />
                                         </div>
@@ -161,7 +163,7 @@
                                 <template v-slot:append>
                                   <q-icon name="access_time" class="cursor-pointer">
                                     <q-popup-proxy transition-show="scale" transition-hide="scale">
-                                      <q-time v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
+                                      <q-time :disable="orderDate === null" :options="optionsFnTime" v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
                                         <div class="row items-center justify-end">
                                           <q-btn v-close-popup label="Close" color="primary" flat />
                                         </div>
@@ -172,7 +174,7 @@
                               </q-input>
                             </div>
                          </q-card-section>
-                         <q-card-section>
+                         <q-card-section v-show="tipEnvio != 0 && tipEnvio != 2">
                           <div class="text-h5"> Mis direcciones</div>
                           <addresses class="q-pt-md" v-model="addId"/>
                          </q-card-section>
@@ -227,7 +229,11 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
-    ...mapGetters('config', ['paymentServ']),
+    ...mapGetters('config', ['paymentServ', 'configurations']),
+    configDates () {
+      let cfg = this.configurations.find(e => e.id === 'sede' + this.sede)
+      return cfg
+    },
     config () {
       return this.paymentServ
     },
@@ -237,6 +243,7 @@ export default {
       if (this.config && this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green' }) }
       if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue' }) }
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
+      if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       return tip
     },
     promoData () {
@@ -261,6 +268,8 @@ export default {
   },
   data () {
     return {
+      cupon: '',
+      loadingState: false,
       orderDate: null,
       orderWhen: null,
       paypal: window.paypal,
@@ -283,14 +292,71 @@ export default {
     }).catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.cart)
     console.log(this.$refs)
+    this.bindConfigs()
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['addOrder']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindPaymentServ']),
+    ...mapActions('config', ['bindPaymentServ', 'bindConfigs']),
     ...mapActions('editor', ['bindBlocks']),
+    dateOptions (date) {
+      if (typeof this.configDates === 'undefined') { return new Date(date + ' 23:59:59') >= new Date() }
+      let sedecfg = this.configDates
+      let today = new Date(date).toLocaleString('en-us', { weekday: 'long' }).toLowerCase()
+      if (!sedecfg.days[today][0].isOpen) {
+        return false
+      }
+      return new Date(date + ' 23:59:59') >= new Date()
+    },
+    hourOptions (hr) {
+      return hr >= parseInt(new Date(new Date().getTime() + 80 * 60000).toLocaleTimeString('en-GB', { hour: '2-digit' }))
+    },
+    minuteOptions (min) {
+      if (min === null) { return true }
+      return min >= parseInt(new Date(new Date().getTime() + 80 * 60000).toLocaleTimeString('en-GB', { minute: '2-digit' }))
+    },
+    optionsFnTime (hr, min) {
+      console.log({ hr, min })
+      if (typeof this.configDates === 'undefined') {
+        if (!this.hourOptions(hr)) {
+          return false
+        }
+        if (!this.minuteOptions(min)) {
+          return false
+        }
+        return true
+      }
+      let sedecfg = this.configDates
+      let today = new Date(this.orderDate).toLocaleString('en-us', { weekday: 'long' }).toLowerCase()
+      if (min === null) {
+        for (let i of sedecfg.days[today]) {
+          let open = parseInt(i.open.slice(0, 2))
+          let close = parseInt(i.close.slice(0, 2))
+          if (hr >= open && hr <= close) {
+            return true
+          }
+        }
+      } else {
+        for (let i of sedecfg.days[today]) {
+          let openhr = parseInt(i.open.slice(0, 2))
+          let openmin = parseInt(i.open.slice(2, 4))
+          let closehr = parseInt(i.close.slice(0, 2))
+          let closemin = parseInt(i.close.slice(2, 4))
+          if (hr >= openhr && hr <= closehr && (hr === openhr ? min >= openmin : true) && (hr === closehr ? min <= closemin : true)) {
+            return true
+          }
+        }
+      }
+      return false
+    },
+    setLoadingState () {
+      this.loadingState = true
+      setTimeout(() => {
+        this.loadingState = false
+      }, 1500)
+    },
     showme () {
       this.$nextTick(() => console.log(this.$refs))
     },
