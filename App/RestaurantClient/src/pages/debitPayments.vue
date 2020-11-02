@@ -147,6 +147,8 @@ export default {
     decrypt (data) {
       let keypadding = this.keybankhash
       let key = keypadding.substr(0, 16)
+      console.log('data en deencriptar:', data)
+      console.log('key en deencriptar:', key)
       let decodedEncryptedData = data
       return this.CryptoJs.decrypt(key, decodedEncryptedData)
     },
@@ -167,20 +169,82 @@ export default {
       let typePasswordBank = ''
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
-      let respuesta = await this.authbank()
+      let respuestaAuth = await this.authbank()
       console.log('createKeyhash:', this.createKeyhash(this.encode_utf8(defaultcode)))
       // autenticando la transaccion
-      if (respuesta.status !== 200) {
+      if (respuestaAuth.status !== 200) {
         return console.error('error in requiest')
       }
-      console.log('respuestaBank:', respuesta.data.authentication_info.twofactor_type)
-      typePasswordBank = this.decrypt(respuesta.data.authentication_info.twofactor_type)
+      console.log('respuestaBank:', respuestaAuth.data.authentication_info.twofactor_type)
+      // typePasswordBank = this.decrypt(respuesta.data.authentication_info.twofactor_type)
+      typePasswordBank = this.decrypt('MlxsA1tW7ID4DzkMBWLEnQ==')
       console.log('decodedEncryptedData:', typePasswordBank)
       // this.add (0, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate)
       // proceso de pago
       encodedEncryptedData = this.encryptar(this.encode_utf8(this.valueFields.cardCvv))
       console.log('encodedEncryptedData:', encodedEncryptedData)
+      let respuestaPay = this.paymentbank(respuestaAuth.data.authentication_info.twofactor_type)
+      console.log(respuestaPay)
       // log de transaccion
+    },
+    async paymentbank (twofactorAuth) {
+      let integratorId = 1
+      let merchantId = 200273
+      let terminalId = 1
+      let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
+      let browserAgent = this.getBrowserInfo()
+      let trxType = 'compra'
+      let paymentMethod = 'TDD'
+      let cardNumber = 501878200066287386 // this.valueFields.cardNumber
+      let customerId = 'V18366876' // temp
+      let invoiceNumber = 1003
+      let accountType = 'CC'
+      let cvv = '1YQZGHJvZbK5RdMPVjrgIA=='
+      let currency = 'ves'
+      let amount = 123
+      let options = { method: 'post',
+        url: 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/pay',
+        headers:
+          { accept: 'application/json',
+            'content-type': 'application/json',
+            'x-ibm-client-id': '81188330-c768-46fe-a378-ff3ac9e88824' },
+        data:
+          {
+            'merchant_identify': {
+              'integratorId': integratorId,
+              'merchantId': merchantId,
+              'terminalId': terminalId
+            },
+            'client_identify': {
+              'ipaddress': ipaddress,
+              'browser_agent': browserAgent,
+              'mobile': {
+                'manufacturer': 'Samsung',
+                'model': 'S9',
+                'os_version': 'Oreo 9.1',
+                'location': {
+                  'lat': 37.4224764,
+                  'lng': -122.0842499
+                }
+              }
+            },
+            'transaction': {
+              'trx_type': trxType,
+              'payment_method': paymentMethod,
+              'card_number': cardNumber,
+              'customer_id': customerId,
+              'invoice_number': invoiceNumber,
+              'account_type': accountType,
+              'twofactor_auth': twofactorAuth,
+              'cvv': cvv,
+              'currency': currency,
+              'amount': amount
+            }
+          },
+        json: true }
+      console.log(options)
+      let respuesta = await this.$axios(options)
+      return respuesta
     },
     async authbank () {
       let integratorId = 1
