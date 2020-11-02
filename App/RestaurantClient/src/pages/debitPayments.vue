@@ -166,6 +166,7 @@ export default {
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
       let respuesta = await this.authbank()
+      console.log({ respuesta })
       console.log('createKeyhash:', this.createKeyhash(this.encode_utf8(defaultcode)))
       // autenticando la transaccion
       console.log('respuestaBank:', respuesta)
@@ -221,13 +222,14 @@ export default {
             }
           },
         json: true }
+      let that = this
       let respuesta = await request(options, async function (error, response, body) {
         if (error) {
           return console.error('Failed: %s', error.message)
         }
         console.log('Success: ', body)
         console.log('response: ', response.body.authentication_info)
-        this.responseBank = response.body.authentication_info
+        that.responseBank = response.body.authentication_info
       })
       console.log({ respuesta })
       return respuesta
