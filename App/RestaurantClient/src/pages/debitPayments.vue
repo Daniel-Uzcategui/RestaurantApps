@@ -177,7 +177,7 @@ export default {
       console.log('encodedEncryptedData:', encodedEncryptedData)
       // log de transaccion
     },
-    authbank () {
+    async authbank () {
       let integratorId = 1
       let merchantId = 200273
       let terminalId = 1
@@ -221,7 +221,7 @@ export default {
             }
           },
         json: true }
-      request(options, function (error, response, body) {
+      let respuesta = await request(options, async function (error, response, body) {
         if (error) {
           return console.error('Failed: %s', error.message)
         }
@@ -229,7 +229,8 @@ export default {
         console.log('response: ', response.body.authentication_info)
         this.responseBank = response.body.authentication_info
       })
-      return this.responseBank
+      console.log({ respuesta })
+      return respuesta
     },
     getBrowserInfo () {
       var ua = navigator.userAgent, tem,

@@ -206,45 +206,45 @@ export default {
       value = this.statusDelivery
       id = this.config.id
       key = 'statusDelivery'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusPickup
       id = this.config.id
       key = 'statusPickup'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusInlocal
       id = this.config.id
       key = 'statusInlocal'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusPto
       key = 'statusPto'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusRewards
       key = 'statusRewards'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusZelle
       key = 'statusZelle'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusVenmo
       key = 'statusVenmo'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusCash
       key = 'statusCash'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusPaypal
       key = 'statusPaypal'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'PaypalApi'
       value = this.PaypalApi
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'venmoAcc'
       value = this.venmoAcc
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'zelleEmail'
       value = this.zelleEmail
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = parseFloat(this.price)
       key = 'price'
-      this.saveConfig({ value, id, key })
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       this.$q.dialog({
         title: '',
         message: 'Se han guardo exitosamente los ajustes',

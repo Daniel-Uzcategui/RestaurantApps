@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
    <q-table
-      :data="item"
+      :data="itemPlain"
       :columns="columns"
       title="Opciones"
       :rows-per-page-options="[]"
@@ -69,7 +69,7 @@
               />
           </q-td>
            <q-td key="priority" :props="props">
-              <q-input @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense autofocus />
+              <q-input @input="(e) => saved(e || 0, props.row.priority, props.row.id, 'priority')" type="number" :value="props.row.priority" dense autofocus />
            </q-td>
            <q-td key="price" :props="props">
             <q-decimal style="width: 135px" :rules="[validate]"
@@ -108,7 +108,7 @@ const columns = [
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('menu', ['item', 'itemGroup'])
+    ...mapGetters('menu', ['itemPlain', 'itemGroup'])
   },
   data () {
     return {
@@ -175,7 +175,7 @@ export default {
     },
     getSelectedString () {
       let literal = this.selected.length > 1 ? 's' : ''
-      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.item.length}`
+      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.itemPlain.length}`
       return objSelectedString
     },
     addrow () {

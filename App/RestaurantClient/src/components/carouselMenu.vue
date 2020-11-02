@@ -11,7 +11,7 @@
         <div  ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
             <q-card ref="qcardslide" v-ripple @click="checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#393939'},{'color': '#FFFFFF'}]">
               <div  ref="div4" class="container-photo">
-                  <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
+                  <q-img img-class="clasedeimagen" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
               </div>
               <div  ref="div5" class="text-caption">
                   <div  ref="div6" class="text-bold relative-position q-pa-sm">

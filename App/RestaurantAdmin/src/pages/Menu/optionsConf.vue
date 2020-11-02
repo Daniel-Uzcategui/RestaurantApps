@@ -59,7 +59,7 @@
                 @input="(e) => saved2(e, props.row.required, props.row.id, 'required')"
                 use-input
                 input-debounce="0"
-                :options="typeFree"
+                :options="typeFree === '' ? [] : typeFree"
                 :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
                 :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
                 style="width: 250px"
@@ -83,7 +83,7 @@
                 use-input
                 use-chips
                 input-debounce="0"
-                :options="filterOptions"
+                :options="filterOptions === '' ? [] : filterOptions"
                 :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
                 :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
                 @filter="filterFn"
@@ -100,7 +100,7 @@
                 @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
                 use-input
                 input-debounce="0"
-                :options="typeOpts"
+                :options="typeOpts === '' ? [] : typeOpts"
                 :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
                 :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
                 style="width: 250px"
@@ -116,7 +116,7 @@
                 @input="(e) => saved2(e, props.row.free, props.row.id, 'free')"
                 use-input
                 input-debounce="0"
-                :options="typeFree"
+                :options="typeFree === '' ? [] : typeFree"
                 :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
                 :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
                 style="width: 250px"

@@ -182,7 +182,7 @@ export default {
     }
   },
   mounted () {
-    this.required = this.checkReqAll
+    // this.required = this.checkReqAll
   }
 }
 </script>

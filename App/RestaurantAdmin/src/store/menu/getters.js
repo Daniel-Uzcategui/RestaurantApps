@@ -25,8 +25,12 @@ export const listcategorias = ({ categorias }) => {
   return arr2
 }
 
-export const item = ({ item }) => item.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
-
+export const item = ({ item }) => {
+  let it = item.map(x => x)
+  let a = it.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+  return a
+}
+export const itemPlain = ({ item }) => item
 export const filters = ({ filters }) => filters
 
 export const itemGroup = ({ itemGroup }) => itemGroup
