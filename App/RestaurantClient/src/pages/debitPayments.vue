@@ -164,7 +164,7 @@ export default {
       return unescape(encodeURIComponent(s))
     },
     async payment () {
-      // let typePasswordBank = ''
+      let typePasswordBank = ''
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
       let respuesta = await this.authbank()
@@ -174,8 +174,8 @@ export default {
         return console.error('error in request')
       }
       console.log('respuestaBank:', respuesta.data.authentication_info.twofactor_type)
-      // typePasswordBank = this.decrypt(this.responseBank.twofactorAuth)
-      // console.log('decodedEncryptedData:', typePasswordBank)
+      typePasswordBank = this.decrypt(respuesta.data.authentication_info.twofactor_type)
+      console.log('decodedEncryptedData:', typePasswordBank)
       // this.add (0, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate)
       // proceso de pago
       encodedEncryptedData = this.encryptar(this.encode_utf8(this.valueFields.cardCvv))
