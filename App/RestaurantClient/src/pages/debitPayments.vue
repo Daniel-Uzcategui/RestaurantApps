@@ -161,11 +161,11 @@ export default {
     encode_utf8 (s) {
       return unescape(encodeURIComponent(s))
     },
-    payment () {
+    async payment () {
       // let typePasswordBank = ''
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
-      let respuesta = this.authbank()
+      let respuesta = await this.authbank()
       console.log('createKeyhash:', this.createKeyhash(this.encode_utf8(defaultcode)))
       // autenticando la transaccion
       console.log('respuestaBank:', respuesta)
