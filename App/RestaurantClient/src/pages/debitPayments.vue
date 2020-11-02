@@ -171,7 +171,7 @@ export default {
       console.log('createKeyhash:', this.createKeyhash(this.encode_utf8(defaultcode)))
       // autenticando la transaccion
       if (respuesta.status !== 200) {
-        return console.error('error in requiest')
+        return console.error('error in request')
       }
       console.log('respuestaBank:', respuesta.data.authentication_info.twofactor_type)
       // typePasswordBank = this.decrypt(this.responseBank.twofactorAuth)
