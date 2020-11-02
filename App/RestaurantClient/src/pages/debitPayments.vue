@@ -7,7 +7,7 @@
     :hasRandomBackgrounds=false
     :backgroundImage=10
     />
-     <div class="q-gutter-md">
+     <div class="q-gutter-md q-gutter-lg">
  <div class="row header-container">
  <q-item-section>
  <q-item>
@@ -162,22 +162,19 @@ export default {
       return unescape(encodeURIComponent(s))
     },
     payment () {
-      let TypePasswordBank = ''
+      // let typePasswordBank = ''
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
-      /* let txnId = '1'
-      let responseMessages = ''
-      let ordersId = '3'
-      let payAmount = 12 */
-      console.log(this.createKeyhash(this.encode_utf8(defaultcode)))
+      let respuesta = this.authbank()
+      console.log('createKeyhash:', this.createKeyhash(this.encode_utf8(defaultcode)))
       // autenticando la transaccion
-      TypePasswordBank = this.authbank()
-      console.log('decodedEncryptedData')
-      console.log(TypePasswordBank)
+      console.log('respuestaBank:', respuesta)
+      // typePasswordBank = this.decrypt(this.responseBank.twofactorAuth)
+      // console.log('decodedEncryptedData:', typePasswordBank)
+      // this.add (0, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate)
       // proceso de pago
       encodedEncryptedData = this.encryptar(this.encode_utf8(this.valueFields.cardCvv))
-      console.log('encodedEncryptedData')
-      console.log(encodedEncryptedData)
+      console.log('encodedEncryptedData:', encodedEncryptedData)
       // log de transaccion
     },
     authbank () {
@@ -190,34 +187,7 @@ export default {
       let paymentMethod = 'TDD'
       let cardNumber = this.valueFields.cardNumber
       let customerId = 'V18366876'// temp
-      let invoiceNumber = 1 // temp
-      let accountType = 'CC'
-      let twofactorAuth = ''
-      let cvv = this.valueFields.cardCvv
-      let currency = 'ves'
-      let amount = 12 // temp
-      let TypePasswordBank = ''
-      let PasswordBank = ''
-      /* let responseMessages = ''
-      let txnId = 0
-      let ordersId = 0
-      let payAmount = 0 */
-      let merchantIdentify = []
-      let clientIdentify = []
-      let transSendBank = []
-      // let transactionAuthInfo = []
-      // transactionAuthInfo = JSON.stringify([])
-      clientIdentify = JSON.stringify([{
-        'client_identify': { 'ipaddress': ipaddress, 'browser_agent': browserAgent }
-      }])
-      merchantIdentify = JSON.stringify([{
-        'integratorId': integratorId, 'merchantId': merchantId, 'terminalId': terminalId
-      }])
-      transSendBank = JSON.stringify([{
-        'merchant_identify': merchantIdentify, clientIdentify, 'transaction_authInfo': { 'trx_type': ipaddress, 'payment_method': browserAgent, 'card_number': cardNumber, 'customer_id': customerId }
-      }])
-      //
-      var options = { method: 'POST',
+      let options = { method: 'POST',
         url: 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth',
         headers:
           { accept: 'application/json',
@@ -226,13 +196,13 @@ export default {
         body:
           {
             'merchant_identify': {
-              'integratorId': 31,
-              'merchantId': 150332,
-              'terminalId': 'abcde'
+              'integratorId': integratorId,
+              'merchantId': merchantId,
+              'terminalId': terminalId
             },
             'client_identify': {
-              'ipaddress': '10.0.0.1',
-              'browser_agent': 'Chrome 18.1.3',
+              'ipaddress': ipaddress,
+              'browser_agent': browserAgent,
               'mobile': {
                 'manufacturer': 'Samsung',
                 'model': 'S9',
@@ -244,38 +214,22 @@ export default {
               }
             },
             'transaction_authInfo': {
-              'trx_type': 'solaut',
-              'payment_method': 'tdd',
-              'card_number': '36133484450025',
-              'customer_id': 'V901582'
+              'trx_type': trxType,
+              'payment_method': paymentMethod,
+              'card_number': cardNumber,
+              'customer_id': customerId
             }
           },
         json: true }
       request(options, function (error, response, body) {
-        if (error) { return console.error('Failed: %s', error.message) }
+        if (error) {
+          return console.error('Failed: %s', error.message)
+        }
         console.log('Success: ', body)
+        console.log('response: ', response.body.authentication_info)
+        this.responseBank = response.body.authentication_info
       })
-      //
-      TypePasswordBank = this.decrypt(PasswordBank)
-      // console.log(merchantIdentify)
-      // console.log(clientIdentify)
-      console.log(transSendBank)
-      console.log(integratorId)
-      console.log(merchantId)
-      console.log(terminalId)
-      console.log(ipaddress)
-      console.log(browserAgent)
-      console.log(trxType)
-      console.log(paymentMethod)
-      console.log(cardNumber)
-      console.log(customerId)
-      console.log(invoiceNumber)
-      console.log(accountType)
-      console.log(twofactorAuth)
-      console.log(cvv)
-      console.log(currency)
-      console.log(amount)
-      return TypePasswordBank
+      return this.responseBank
     },
     getBrowserInfo () {
       var ua = navigator.userAgent, tem,
@@ -292,7 +246,8 @@ export default {
       if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1])
       return M.join(' ')
     },
-    add (txnId, responseMessages, ordersId, payAmount) {
+    add (txnId, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate) {
+      console.log(txnId, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate)
       let card = this.valueFields.cardNumber
       const payload = {
         cardNumberFirst: card.substr(0, 6),
@@ -304,7 +259,9 @@ export default {
         paidAmountCurrency: 'ves',
         rateId: 0,
         txnBankId: txnId,
-        paymentStatus: 'ACT',
+        trxType: trxType,
+        trxProcesingDate: procesingDate,
+        paymentStatus: paymentStatus,
         responseMessage: responseMessages,
         DateIn: date.formatDate(Date.now(), 'YYYY-MM-DDTHH:mm:ss.SSSZ')
       }
