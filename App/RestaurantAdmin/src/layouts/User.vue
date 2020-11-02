@@ -268,7 +268,7 @@ export default {
           separator: true,
           tree: [{ children: [] }]
         },
-        {
+        /* {
           title: 'Widgets',
           caption: '',
           icon: 'fa fa-cube',
@@ -281,7 +281,7 @@ export default {
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
-        },
+        }, */
         {
           title: 'Ajustes',
           caption: '',
@@ -301,8 +301,8 @@ export default {
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
-        },
-        {
+        } /*,
+        /* {
           title: 'Reportes',
           caption: '',
           icon: 'fa fa-print',
@@ -312,19 +312,19 @@ export default {
               children: [
               /*  { label: 'Ventas Generales',
                   link: 'generalSales',
-                  handler: (node) => this.onClickReports(node) }, */
+                  handler: (node) => this.onClickReports(node) },
                 { label: 'Ventas  x Sedes',
                   link: 'locationSales',
                   handler: (node) => this.onClickReports(node) }
-              /* { label: 'Categorias',
+               { label: 'Categorias',
                   link: 'rcategories',
                   handler: (node) => this.onClickReports(node) }
                 { label: 'Productos',
                   link: 'rproducts',
-                  handler: (node) => this.onClickReports(node) } */
+                  handler: (node) => this.onClickReports(node) }
               ]
             }]
-        }
+        } */
       ]
     }
   },

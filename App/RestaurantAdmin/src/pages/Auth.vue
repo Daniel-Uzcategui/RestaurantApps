@@ -3,9 +3,8 @@
     <q-card flat square>
             <q-card-section class="bg-primary">
              <template>
-               <img alt="chopZI" src="~assets/app-logo-128x128.png" class="imglogo">
+               <img alt="chopZI" src="~assets/chopzi-01.png" class="imglogo">
             </template>
-            <div class="text-h5 text-white"  >CHOPZI</div>
             <div class="absolute-bottom-right q-pr-md" style="transform: translateY(50%);">
               <q-btn fab :label="inverseGetAuthType" color="secondary" :to="routeAuthentication" />
             </div>
@@ -279,8 +278,6 @@ export default {
   max-width 30em
   width 100%
 .imglogo {
-  width:80px;
-  height:80px;
   border-radius:150px;
   }
 .filled
