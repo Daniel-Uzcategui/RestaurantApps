@@ -10,6 +10,7 @@
      <div class="q-gutter-md q-gutter-lg">
  <div class="row header-container">
  <q-item-section>
+   {{responseBank}}
  <q-item>
     <div class="row filled">
     <div class="col-12">
@@ -78,6 +79,7 @@ import { TextDecoder } from 'text-decoding'
 import { VuePaycard } from 'vue-paycard'
 import { mapActions } from 'vuex'
 import { date } from 'quasar'
+// eslint-disable-next-line no-unused-vars
 import request from 'request'
 export default {
   components: {
@@ -166,10 +168,12 @@ export default {
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
       let respuesta = await this.authbank()
-      console.log({ respuesta })
       console.log('createKeyhash:', this.createKeyhash(this.encode_utf8(defaultcode)))
       // autenticando la transaccion
-      console.log('respuestaBank:', respuesta)
+      if (respuesta.status !== 200) {
+        return console.error('error in requiest')
+      }
+      console.log('respuestaBank:', respuesta.data.authentication_info.twofactor_type)
       // typePasswordBank = this.decrypt(this.responseBank.twofactorAuth)
       // console.log('decodedEncryptedData:', typePasswordBank)
       // this.add (0, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate)
@@ -188,13 +192,13 @@ export default {
       let paymentMethod = 'TDD'
       let cardNumber = this.valueFields.cardNumber
       let customerId = 'V18366876'// temp
-      let options = { method: 'POST',
+      let options = { method: 'post',
         url: 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth',
         headers:
           { accept: 'application/json',
             'content-type': 'application/json',
             'x-ibm-client-id': '81188330-c768-46fe-a378-ff3ac9e88824' },
-        body:
+        data:
           {
             'merchant_identify': {
               'integratorId': integratorId,
@@ -222,16 +226,7 @@ export default {
             }
           },
         json: true }
-      let that = this
-      let respuesta = await request(options, async function (error, response, body) {
-        if (error) {
-          return console.error('Failed: %s', error.message)
-        }
-        console.log('Success: ', body)
-        console.log('response: ', response.body.authentication_info)
-        that.responseBank = response.body.authentication_info
-      })
-      console.log({ respuesta })
+      let respuesta = await this.$axios(options)
       return respuesta
     },
     getBrowserInfo () {
