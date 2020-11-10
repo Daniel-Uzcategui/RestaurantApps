@@ -48,7 +48,7 @@ export default class CreditCorp {
     this.shipping = shippingInformation
   }
 
-  doSale (amount, ccNum, ccExp, cvv) {
+  async doSale (amount, ccNum, ccExp, cvv) {
     let postData = {
       'type': 'sale',
       'amount': amount,
@@ -61,7 +61,7 @@ export default class CreditCorp {
     Object.assign(postData, this.billing, this.shipping, this.securityKey)
 
     // Make request
-    let respuesta
+    let Message
     postData = querystring.stringify(postData)
 
     const options = {
@@ -70,11 +70,7 @@ export default class CreditCorp {
       data: postData
     }
     console.log('option :', options)
-    respuesta = axios(options)
-    respuesta.then((successMessage) => {
-      console.log('response Mensaje bank ', successMessage.data)
-      this.responseBank = successMessage.data
-      return successMessage.data
-    })
+    Message = await axios(options)
+    return Message.data
   }
 }

@@ -204,13 +204,43 @@ export default {
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
-    payment () {
+    async payment () {
       let defaultcode = '6457Thfj624V5r7WUwc5v6a68Zsd6YEm'
-      let responseMensaje = this.transaction(defaultcode)
-      console.log('responseMensaje:', responseMensaje)
-      // add(txnId, trxType, responseMessages, ordersId,  payAmount,  paymentStatus, procesingDate)
+      let responsedp = await this.transaction(defaultcode)
+      let responsebank = responsedp.split('&')
+      let txnId = 0
+      let responseMessages = 0
+      let responsecode = 0
+      let paymentStatus = 0
+      let trxType = 'creditCorp'
+      let payAmount = 0
+      let ordersId = 0
+      let pos = 0
+      let campo = ''
+      let value = 0
+      console.log('response:', responsedp)
+      for (var i = 0; i < responsebank.length; i++) {
+        pos = responsebank[i].search('=')
+        campo = responsebank[i].substr(0, pos)
+        value = responsebank[i].substr(pos + 1, responsebank[i].length)
+        switch (campo) {
+          case 'response':
+            paymentStatus = value
+            break
+          case 'responsetext':
+            responseMessages = value
+            break
+          case 'response_code':
+            responsecode = value
+            break
+          case 'transactionid':
+            txnId = value
+            break
+        }
+      }
+      this.add(txnId, trxType, responseMessages, ordersId, payAmount, paymentStatus, responsecode)
     },
-    transaction (defaultcode) {
+    async transaction (defaultcode) {
       const dp = new CreditCorp(defaultcode)
       const security = { security_key: defaultcode }
       const billingInfo = {
@@ -232,12 +262,8 @@ export default {
       dp.setBilling(billingInfo)
       dp.setShipping(shippingInfo)
       dp.setSecurity(security)
-      dp.doSale(this.payamount, this.valueFields.cardNumber, this.valueFields.cardMonth + this.valueFields.cardYear, this.valueFields.cardCvv)
-      console.log(dp.billing)
-      console.log('token', dp.responseBank)
-      console.log(dp.securityKey)
-      console.log(dp.shipping)
-      return dp
+      let responseMensagge = await dp.doSale(this.payamount, this.valueFields.cardNumber, this.valueFields.cardMonth + this.valueFields.cardYear, this.valueFields.cardCvv)
+      return responseMensagge
     },
     getBrowserInfo () {
       var ua = navigator.userAgent,
@@ -265,7 +291,7 @@ export default {
       ordersId,
       payAmount,
       paymentStatus,
-      procesingDate
+      responsecode
     ) {
       console.log(
         txnId,
@@ -274,7 +300,7 @@ export default {
         ordersId,
         payAmount,
         paymentStatus,
-        procesingDate
+        responsecode
       )
       let card = 0
       card = this.valueFields.cardNumber
@@ -290,7 +316,7 @@ export default {
         rateId: 0,
         txnBankId: txnId,
         trxType: trxType,
-        trxProcesingDate: procesingDate,
+        trxProcesingDate: date.formatDate(Date.now(), 'YYYY-MM-DDTHH:mm:ss.SSSZ'),
         paymentStatus: paymentStatus,
         responseMessage: responseMessages,
         DateIn: date.formatDate(Date.now(), 'YYYY-MM-DDTHH:mm:ss.SSSZ')
