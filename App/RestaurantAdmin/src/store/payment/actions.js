@@ -6,6 +6,11 @@ export const bindpayments = firestoreAction(({ bindFirestoreRef }) => {
   return bindFirestoreRef('payments', firestore().collection('payments'))
 })
 
+export const bindtransactions = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindTransactions')
+  return bindFirestoreRef('transactions', firestore().collection('transactions'))
+})
+
 export const savePayment = firestoreAction((state, payload) => {
   return firestore()
     .collection('payments')

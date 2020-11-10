@@ -253,6 +253,15 @@ const routes = [
           requiresAuth: true,
           nombre: 'Visualizar Pagos'
         }
+      },
+      {
+        path: 'transactions',
+        name: 'transaction',
+        component: () => import('pages/payments/transactions.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Visualizar Pagos con medios de pago'
+        }
       }
     ]
   },

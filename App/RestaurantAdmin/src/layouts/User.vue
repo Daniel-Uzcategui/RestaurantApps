@@ -236,13 +236,30 @@ export default {
           separator: true,
           tree: [{ children: [] }]
         },
-        {
+        /* {
           title: 'Pagos',
           caption: '',
           icon: 'fa fa-briefcase',
           link: '#/payments/index',
           separator: true,
           tree: [{ children: [] }]
+        }, */
+        {
+          title: 'Pagos',
+          caption: '',
+          icon: 'fa fa-briefcase',
+          separator: true,
+          tree: [
+            {
+              children: [
+                { label: 'Consulta general',
+                  link: 'index',
+                  handler: (node) => this.onClickPayments(node) },
+                { label: 'Transacciones',
+                  link: 'transactions',
+                  handler: (node) => this.onClickPayments(node) }
+              ]
+            }]
         },
         {
           title: 'Clientes',
@@ -385,6 +402,9 @@ export default {
     },
     onClickOption (node) {
       this.$router.push({ path: '/settings/' + node.link })
+    },
+    onClickPayments (node) {
+      this.$router.push({ path: '/payments/' + node.link })
     },
     onClickReports (node) {
       this.$router.push({ path: '/reports/' + node.link })
