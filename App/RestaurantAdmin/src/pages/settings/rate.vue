@@ -59,7 +59,7 @@ export default {
       dateIn: ''
     }
   },
-  mounted () {
+  created () {
     this.bindRates().then(() => this.afterBindigRate())
   },
   methods: {
@@ -77,14 +77,14 @@ export default {
       this.addRate({ rateValue, dateIn, currency, userId })// .then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
     afterBindigRate () {
-      console.log('afterBindigRate')
-      console.log(this.rates)
+      // console.log('afterBindigRate')
+      // console.log(this.rates)
       if (typeof this.rates !== 'undefined') {
         console.log(this.rates)
       }
     },
     formatDate (dt) {
-      console.log(dt)
+      // console.log(dt)
       return date.formatDate(dt.toDate(), 'DD-MM-YYYY HH:mm:ss')
     }
   }

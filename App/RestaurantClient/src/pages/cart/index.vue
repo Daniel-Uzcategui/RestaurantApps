@@ -200,6 +200,14 @@
                     </div>
                   </div>
                   <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 3"> <div id="paypal-button-container" ref="payp"></div> </div>
+                  <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 5">
+                    <div>
+                     <payCreditCorp
+                      :ordersId=currentUser.cedula
+                      :key=config.CreditCorp
+                      :payAmount=999 />
+                     </div>
+                    </div>
                   </div>
          </q-card>
       </q-dialog>
@@ -215,21 +223,36 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+     <!--q-dialog v-model="validationError">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Pago</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+         {{message}}
+        </q-card-section>
+      </q-card>
+    </q-dialog-->
   </q-page>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+import payCreditCorp from '../../components/payCreditCorp.vue'
 export default {
   components: {
     'addresses': () => import('../../components/addresses.vue'),
-    'itemcomp': () => import('../../components/itemComp.vue')
+    'itemcomp': () => import('../../components/itemComp.vue'),
+    payCreditCorp: payCreditCorp
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['paymentServ', 'configurations']),
+    ...mapGetters('user', ['currentUser']),
     configDates () {
       let cfg = this.configurations.find(e => e.id === 'sede' + this.sede)
       return cfg
@@ -244,6 +267,7 @@ export default {
       if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue' }) }
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
+      if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
       return tip
     },
     promoData () {

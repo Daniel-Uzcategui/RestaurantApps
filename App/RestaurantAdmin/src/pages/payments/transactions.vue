@@ -61,29 +61,31 @@ export default {
     ...mapGetters('payment', ['transactions']),
     OrderClient () {
       let OrderClient = []
-      let i, obj, clientforOrder, tipoPago, transactionforOrders
+      let i, order, clientforOrder, tipoPago, transactionforOrders
       let fullname, typeService
       let cardNumber, cardExpDate, responseMessage, trxType
       for (i = 0; i < this.orders.length; i++) {
-        obj = this.orders[i]
-        if (obj.id) {
-          clientforOrder = this.clientOrders(obj.customer_id)
-          transactionforOrders = this.transactionOrders(obj.id)
+        order = this.orders[i]
+        if (order.id) {
+          clientforOrder = this.clientOrders(order.customer_id)
+          transactionforOrders = this.transactionOrders(order.id)
+          console.log('Orders_id', order.id)
+          console.log('transactionforOrders', transactionforOrders)
           if (transactionforOrders) {
             cardNumber = transactionforOrders.cardNumberFirst + '****' + transactionforOrders.cardNumberLast
             cardExpDate = transactionforOrders.cardExpDate
             responseMessage = transactionforOrders.responseMessage
             trxType = transactionforOrders.trxType
             fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
-            typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-            tipoPago = this.tipo_pago[obj.typePayment]['label']
+            typeService = typeof order.tipEnvio !== 'undefined' ? this.tipo_servicio[order.tipEnvio]['label'] : 'No disponible'
+            tipoPago = this.tipo_pago[order.typePayment]['label']
             OrderClient.push({
-              'id': obj.id,
+              'id': order.id,
               'nombre': fullname,
               'typePayment': tipoPago,
-              'status': this.estatus_options[obj.status]['label'],
-              'paid': obj.paid,
-              'factura': obj.factura,
+              'status': this.estatus_options[order.status]['label'],
+              'paid': order.paid,
+              'factura': order.factura,
               'cardNumber': cardNumber,
               'cardExpDate': cardExpDate,
               'responseMessage': responseMessage,
@@ -101,7 +103,7 @@ export default {
       return OrderClient
     }
   },
-  mounted () {
+  created () {
     this.bindOrders()
     this.bindClients()
     this.bindtransactions()
@@ -113,7 +115,7 @@ export default {
       })
     },
     transactionOrders (value) {
-      console.log(value)
+      console.log('En transactionOrders', value)
       return this.transactions.find(obj => {
         return obj.orderId === value
       })
