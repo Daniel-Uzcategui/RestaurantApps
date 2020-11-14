@@ -3,12 +3,12 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindpayments = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindpayments')
-  return bindFirestoreRef('payments', firestore().collection('payments'))
+  return bindFirestoreRef('payments', firestore().collection('payments'), { reset: false })
 })
 
 export const bindtransactions = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindTransactions')
-  return bindFirestoreRef('transactions', firestore().collection('transactions'))
+  return bindFirestoreRef('transactions', firestore().collection('transactions'), { reset: false })
 })
 
 export const savePayment = firestoreAction((state, payload) => {

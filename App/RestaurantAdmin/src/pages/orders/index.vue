@@ -109,7 +109,6 @@ export default {
   methods: {
     clientOrders (value) {
       return this.clients.find(obj => {
-        console.log(obj.id, value)
         return obj.id === value
       })
     },
