@@ -12,14 +12,35 @@ exports.CheckCart = functions.firestore
     const cart = newValue.cart
     var newcart = cart
     var sumPaid = 0
+    var cfgRew
+    var cfgData
     if (newValue.tipEnvio === '1') {
       const configRef = db.collection('config').doc('paymentServ')
       const cfg = await configRef.get()
-      var cfgData = cfg.data()
+      cfgData = cfg.data()
       if (!cfg.exists) {
         console.log('No such document!')
       } else {
         sumPaid = sumPaid + parseInt(cfgData.price)
+        if (typeof cfgData.rewards === 'undefined') {
+          cfgRew = 10
+        } else {
+          cfgRew = cfgData.rewards
+        }
+      }
+    }
+    if (typeof cfgData === 'undefined') {
+      const configRef = db.collection('config').doc('paymentServ')
+      const cfg = await configRef.get()
+      cfgData = cfg.data()
+      if (!cfg.exists) {
+        console.log('No such document!')
+      } else {
+        if (typeof cfgData.rewards === 'undefined') {
+          cfgRew = 10
+        } else {
+          cfgRew = cfgData.rewards
+        }
       }
     }
     var userRef = db.collection('users').doc(newValue.customer_id)
@@ -49,13 +70,13 @@ exports.CheckCart = functions.firestore
           if (intsect.length) {
             for (let cat of intsect) {
               let points = pointsCat[cat]
-              if ((points - (cart[prod].quantity * 10)) >= 0) {
+              if ((points - (cart[prod].quantity * cfgRew)) >= 0) {
                 enoughPoints++
                 catEnough = cat
               }
             }
             if (enoughPoints) {
-              let amount = cart[prod].quantity * 10
+              let amount = cart[prod].quantity * cfgRew
               let decrement = admin.firestore.FieldValue.increment(-amount)
               userRef.update({
                 [`pointsCat.${catEnough}`]: decrement
@@ -298,20 +319,31 @@ exports.RewardsPoints = functions.firestore
   .onUpdate(async (change) => {
     const newValue = change.after.data()
     const previousValue = change.before.data()
-    const configRef = db.collection('config').doc('paymentServ')
-    const cfg = await configRef.get()
-    var cfgData = cfg.data()
-    if (!cfg.exists) {
-      console.log('No such document!')
-      return
-    } else {
-      if (typeof cfgData.statusRewards === 'undefined' || !cfgData.statusRewards) {
-        return
-      }
-    }
     let user = previousValue.customer_id
     let userRef = db.collection('users').doc(user)
     const doc = await userRef.get()
+    if (!doc.exists) {
+      console.log('No such document!')
+    } else {
+      if (previousValue.status !== newValue.status) {
+        var options = [
+          { label: 'Por Confirmar', value: 0 },
+          { label: 'Preparando su pedido', value: 1 },
+          { label: 'Orden en vía', value: 2 },
+          { label: 'Orden Entregada', value: 3 },
+          { label: 'Anulada', value: 4 }]
+        var status = options.find(e => e.value === newValue.status)
+        const userData = doc.data()
+        if (typeof userData.fcm !== 'undefined') {
+          return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
+            'title': 'ChopZi',
+            'body': `${status.label}`,
+            'click_action': 'http://localhost:8080/#/orders/index',
+            'icon': 'app-logo-128x128.png'
+          } })
+        }
+      }
+    }
     if (newValue.status === 3) {
       let paid = previousValue.paid
       if (!doc.exists) {
@@ -363,7 +395,6 @@ exports.RewardsPoints = functions.firestore
     if (newValue.status === 4) {
       if (!doc.exists) {
         console.log('No such document!')
-        return
       } else {
         const cart = previousValue.cart
         const sede = previousValue.sede
@@ -395,26 +426,6 @@ exports.RewardsPoints = functions.firestore
             }
           }
         }
-      }
-    }
-    if (!doc.exists) {
-      console.log('No such document!')
-    } else {
-      var options = [
-        { label: 'Por Confirmar', value: 0 },
-        { label: 'Preparando su pedido', value: 1 },
-        { label: 'Orden en vía', value: 2 },
-        { label: 'Orden Entregada', value: 3 },
-        { label: 'Anulada', value: 4 }]
-      var status = options.find(e => e.value === newValue.status)
-      const userData = doc.data()
-      if (typeof userData.fcm !== 'undefined') {
-        return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
-          'title': 'ChopZi',
-          'body': `${status.label}`,
-          'click_action': 'http://localhost:8080/#/orders/index',
-          'icon': 'app-logo-128x128.png'
-        } })
       }
     }
   })

@@ -10,7 +10,7 @@
             <h4 class="text-h3 q-my-md">{{ getAuthType }}</h4>
       </q-card-section>
   <q-card-section>
-    <q-form class="column authentication q-px-sm q-pl-xl" ref="emailAuthenticationForm" @submit="onSubmit">
+    <q-form class="column authentication q-px-sm" :class="$q.screen.gt.xs ? 'q-pl-xl' : ''" ref="emailAuthenticationForm" @submit="onSubmit">
       <q-input
         square
         clearable

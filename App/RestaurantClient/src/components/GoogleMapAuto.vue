@@ -10,7 +10,7 @@
                                       v-on:attrs="slotProps.attrs">
                         </q-input>
                     </template>
-        </gmap-autocomplete>  <q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" label="Localizarme" />
+        </gmap-autocomplete>  <div class="column items-center q-pa-md"><q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" no-caps rounded label="Localizarme" /></div>
     <gmap-map
       :center="centerClone"
       :zoom="12"
@@ -18,12 +18,11 @@
       @click="addMark"
       :options="{
    zoomControl: true,
-   mapTypeControl: true,
    scaleControl: false,
    streetViewControl: false,
    rotateControl: false,
    fullscreenControl: true,
-   disableDefaultUI: false
+   disableDefaultUI: true
  }"
     >
       <gmap-marker
@@ -42,7 +41,7 @@ import * as GmapVue from 'gmap-vue'
 
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyAiUb3VghW0YlWkGkx-nNbG_tLm3tKDnDM',
+    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
     libraries: 'places'
   }
 })
@@ -113,7 +112,7 @@ export default {
     },
     geolocate: function () {
       if (this.markers) {
-        console.log({ Marker: this.markers })
+        // console.log({ Marker: this.markers })
         this.centerClone = {
           lat: this.markers[0].position.lat,
           lng: this.markers[0].position.lng
@@ -129,7 +128,7 @@ export default {
     },
     geolocalize () {
       navigator.geolocation.getCurrentPosition(position => {
-        console.log({ position })
+        // console.log({ position })
         let latLng = {
           lat: position.coords.latitude,
           lng: position.coords.longitude

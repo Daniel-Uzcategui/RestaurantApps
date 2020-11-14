@@ -1,8 +1,6 @@
 <template>
   <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
-        <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style">
-          {{ text }}
-        </q-card-section>
+        <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style" v-html="text" />
   </q-card>
 </template>
 <script>

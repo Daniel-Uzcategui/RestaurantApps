@@ -51,12 +51,12 @@ export default {
           }
         }
       })
-      console.log(mark)
+      // console.log(mark)
       return mark
     }
   },
   created () {
-    this.bindLocalizations().then((e) => { this.loading = false; console.log({ localizations: e }) })
+    this.bindLocalizations().then((e) => { this.loading = false })
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations']),

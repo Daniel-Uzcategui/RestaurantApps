@@ -17,7 +17,7 @@
             </q-item-section>
         </q-item>
         <q-separator />
-        <q-card-section v-for="(cat, index) in Object.keys(getUserData('pointsCat'))" :key="index" horizontal class="fontsize-12 row justify-between">
+        <q-card-section v-show="getCategoryName(cat) !== null" v-for="(cat, index) in Object.keys(getUserData('pointsCat'))" :key="index" horizontal class="fontsize-12 row justify-between">
           <q-card-section >
             <q-item-label lines="5" >
               {{getCategoryName(cat)}}
@@ -25,12 +25,12 @@
           </q-card-section>
           <q-card-section>
             <q-btn color="secondary" squared icon="fas fa-gift" dense class="q-mr-lg">
-              <q-badge color="red" floating class="">{{ parseInt(getUserData('pointsCat')[cat] / 10)}}</q-badge>
+              <q-badge color="red" floating class="">{{ parseInt(getUserData('pointsCat')[cat] / paymentServ.rewards)}}</q-badge>
             </q-btn>
             <q-rating
               readonly
-              :value="getUserData('pointsCat')[cat] % 10"
-              max="10"
+              :value="getUserData('pointsCat')[cat] % paymentServ.rewards"
+              :max="paymentServ.rewards"
               size="1em"
               color="primary"
               icon="far fa-circle"
@@ -72,10 +72,12 @@ export default {
       console.log(this.currentUser)
       this.$q.loading.hide()
     }
+    this.bindPaymentServ().catch(e => console.error(e))
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['categorias']),
+    ...mapGetters('config', ['paymentServ']),
     editUserDialog: {
       get () {
         return this.$store.state.user.editUserDialog
@@ -89,6 +91,7 @@ export default {
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('auth', ['logoutUser']),
     ...mapActions('menu', ['bindCategorias']),
+    ...mapActions('config', ['bindPaymentServ']),
     getUserData (attr) {
       return (this.currentUser[attr]) ? this.currentUser[attr] : 0
     },

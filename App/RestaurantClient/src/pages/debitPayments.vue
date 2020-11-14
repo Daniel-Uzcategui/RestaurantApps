@@ -72,8 +72,8 @@
  </div>
 </template>
 <script>
-// import AES from 'crypto-js/aes'
-import CryptoJs from 'aes-ecb'
+import CryptoJs from 'crypto-js'
+// import CryptoJs from 'aes-ecb'
 import hasha from 'hasha'
 import { TextDecoder } from 'text-decoding'
 import { VuePaycard } from 'vue-paycard'
@@ -89,9 +89,9 @@ export default {
   data () {
     return {
       keybankhash: '',
-      CryptoJs: CryptoJs,
       hasha: hasha,
       TextDecoder: TextDecoder,
+      CryptoJs: CryptoJs,
       phonePassword: '',
       responseBank: '',
       valueFields: {
@@ -133,9 +133,10 @@ export default {
     ...mapActions('transactions', ['addTransaction']),
     createKeyhash (keybank) {
       let hash, hexbankhash
-      hash = this.hasha(keybank, { algorithm: 'sha256', Type: 'string' })
+      hash = this.hasha(keybank, { algorithm: 'sha256', Type: 'string', options: 'buffer' })
       hexbankhash = this.hexStringToByte(hash.toString())
       this.keybankhash = new TextDecoder('utf-8').decode(hexbankhash)
+      // this.keybankhash = hash
       return this.keybankhash
     },
     encryptar (data) {
@@ -146,11 +147,17 @@ export default {
     },
     decrypt (data) {
       let keypadding = this.keybankhash
+      console.log({ keypadding })
+      if (keypadding.length < 16) {
+        keypadding = keypadding.padStart(16, '0')
+      }
       let key = keypadding.substr(0, 16)
-      console.log('data en deencriptar:', data)
-      console.log('key en deencriptar:', key)
-      let decodedEncryptedData = data
-      return this.CryptoJs.decrypt(key, decodedEncryptedData)
+      console.log('data en deencriptar:', { data })
+      console.log('key en deencriptar:', { key })
+      let decodedEncryptedData = data.toString()
+      let dec = this.CryptoJs.AES.decrypt(decodedEncryptedData, key)
+      console.log({ dec })
+      return dec
     },
     hexStringToByte (str) {
       if (!str) {
@@ -166,7 +173,9 @@ export default {
       return unescape(encodeURIComponent(s))
     },
     async payment () {
+      // eslint-disable-next-line no-unused-vars
       let typePasswordBank = ''
+      // eslint-disable-next-line no-unused-vars
       let encodedEncryptedData = ''
       let defaultcode = 'C10326667541120190822FA06'
       let respuestaAuth = await this.authbank()
@@ -175,31 +184,32 @@ export default {
       if (respuestaAuth.status !== 200) {
         return console.error('error in requiest')
       }
+      console.log('respuestaBank:', respuestaAuth)
       console.log('respuestaBank:', respuestaAuth.data.authentication_info.twofactor_type)
-      // typePasswordBank = this.decrypt(respuesta.data.authentication_info.twofactor_type)
-      typePasswordBank = this.decrypt('MlxsA1tW7ID4DzkMBWLEnQ==')
-      console.log('decodedEncryptedData:', typePasswordBank)
+      typePasswordBank = this.decrypt(respuestaAuth.data.authentication_info.twofactor_type)
+      // typePasswordBank = this.decrypt('MlxsA1tW7ID4DzkMBWLEnQ==')
+      // console.log('decodedEncryptedData:', { typePasswordBank })
       // this.add (0, trxType, responseMessages, ordersId, payAmount, paymentStatus, procesingDate)
       // proceso de pago
-      encodedEncryptedData = this.encryptar(this.encode_utf8(this.valueFields.cardCvv))
-      console.log('encodedEncryptedData:', encodedEncryptedData)
-      let respuestaPay = this.paymentbank(respuestaAuth.data.authentication_info.twofactor_type)
-      console.log(respuestaPay)
+      // encodedEncryptedData = this.encryptar(this.encode_utf8(this.valueFields.cardCvv))
+      // console.log('encodedEncryptedData:', encodedEncryptedData)
+      // let respuestaPay = this.paymentbank(respuestaAuth.data.authentication_info.twofactor_type)
+      // console.log(respuestaPay)
       // log de transaccion
     },
     async paymentbank (twofactorAuth) {
       let integratorId = 1
       let merchantId = 200273
-      let terminalId = 1
+      let terminalId = '1'
       let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
       let browserAgent = this.getBrowserInfo()
       let trxType = 'compra'
       let paymentMethod = 'TDD'
-      let cardNumber = 501878200066287386 // this.valueFields.cardNumber
-      let customerId = 'V18366876' // temp
-      let invoiceNumber = 1003
+      let cardNumber = '501878200028558700' // this.valueFields.cardNumber
+      let customerId = 'V20328261' // temp
+      let invoiceNumber = '10082'
       let accountType = 'CC'
-      let cvv = '1YQZGHJvZbK5RdMPVjrgIA=='
+      let cvv = 'PFyDJwOukJXFEtC0s0t6Mg=='
       let currency = 'ves'
       let amount = 123
       let options = { method: 'post',
@@ -235,7 +245,7 @@ export default {
               'customer_id': customerId,
               'invoice_number': invoiceNumber,
               'account_type': accountType,
-              'twofactor_auth': twofactorAuth,
+              'twofactor_auth': 'j3e9XtKKf1irg+xP/+aBKw==',
               'cvv': cvv,
               'currency': currency,
               'amount': amount
