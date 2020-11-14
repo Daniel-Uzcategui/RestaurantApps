@@ -16,3 +16,5 @@ App/RestaurantAdmin/.firebase/hosting.ZGlzdFxzcGE.cache
 App/RestaurantClient/.firebase/hosting.ZGlzdFxzcGE.cache
 App/RestaurantAdmin/.firebase/hosting.ZGlzdFxzcGE.cache
 *.cache
+App/RestaurantAdmin/yarn.lock
+*.lock
