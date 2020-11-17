@@ -164,7 +164,6 @@
                               <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4"></q-avatar>
                            </q-btn>
                            <div class="q-pt-md">
-                             <p class="text-center">Tipo de Pago {{typePay}}</p>
                              <span class="text-caption" v-if="ordenDet.typePayment == 2">Haga click cargar captura del pago realizado a {{ordenDet.payto}}</span>
                            <span class="text-caption" v-if="ordenDet.typePayment == 1">Porfavor Subir Foto del Efectivo</span>
                            </div>
@@ -183,6 +182,7 @@
                </q-card>
                <q-card-section>
                  <p class="text-h5 text-center">Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
+                  <p class="text-center">Forma de Pago {{typePay}}</p>
                   <p v-if="ordenDet.tipEnvio == 1">{{getAddById(ordenDet.address)}}</p>
 
                  <q-input label="Fecha de Entrega" readonly v-if="(ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1')" :value=" ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1' ? new Date(ordenDet.orderWhen.orderDate.seconds * 1000).toLocaleString() : 'De inmediato'"  type="text" disabled />
@@ -290,6 +290,7 @@ export default {
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 },
         { label: 'Venmo', value: 4 },
+        { label: 'Tarjeta de Crédito', value: 5 },
         { label: 'Tarjeta o Paypal', value: 3 }
       ].find(e => e.value === this.ordenDet.typePayment)
       return f.label

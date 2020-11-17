@@ -561,10 +561,15 @@ export default {
       }
     },
     payment (status) {
+      let that = this
       console.log('info payment: ' + status)
       if (status === '1') {
         this.CheckTDD = true
         console.log('CheckTDD : ', this.CheckTDD)
+        that.$q.loading.show({
+          delay: 400
+        })
+        this.makeOrder()
       }
     }
   },
