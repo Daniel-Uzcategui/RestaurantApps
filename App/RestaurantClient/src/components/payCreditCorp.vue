@@ -216,6 +216,7 @@ export default {
       validationMenssage: false,
       message: '',
       paymentStatus: 0
+
     }
   },
   computed: {
@@ -251,7 +252,7 @@ export default {
             if (value === '1') {
               this.message = 'Su pago fue realizado con exito'
             } else {
-              this.message = 'Error en el pago por favor comuniquese con el banco codigo: 000' + value
+              this.message = 'Error en el pago por favor verifique sus datos codigo: 000' + value
             }
             this.validationMenssage = true
             break
@@ -263,6 +264,10 @@ export default {
             break
           case 'transactionid':
             txnId = value
+            if (value !== '') {
+              this.message += ', bajo el numero de autorización : ' + txnId
+            }
+            console.log(this.message)
             break
         }
       }
