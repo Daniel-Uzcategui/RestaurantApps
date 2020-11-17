@@ -31,7 +31,7 @@
                <div class="wrapel background-color" content-class="wrapel"  v-for="tabs in filtercat"
                   :key="tabs.id">
                   <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
-                  <q-card-section v-if="!promo && !rewards">
+                  <q-card-section class="q-pa-none q-ma-none" v-if="!promo && !rewards">
                      <carousel
                         :loop="true"
                         navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 10000;" aria-hidden="true"></i>'
@@ -116,13 +116,13 @@
             </div>
             </div>
          </q-card-section>
-         <q-card-section v-if="!promo && rewards">
-            <div class="background-color" v-if="displayType">
+         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && rewards">
+            <div class="background-color q-pa-none q-ma-none" v-if="displayType">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
                <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -194,14 +194,14 @@
             </div>
          </q-card-section>
          <!-- Seccion de promociones -->
-         <q-card-section v-if="promo && !rewards">
+         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="promo && !rewards">
               <div class="background-color" v-if="displayType">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
                <carousel
                   :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 100;" aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" style="padding-right: -15px; z-index: 100;" aria-hidden="true"></i>'
+                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
+                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in promoData" :key="item.id" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -266,6 +266,7 @@
          </q-card-section>
       </q-card>
       <q-dialog-menu
+      style="z-index: 9999999"
       :display="display"
       :displayVal2="displayVal"
       :dgbg="dgbg"
@@ -460,6 +461,11 @@ export default {
         this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
         this.selectedCat = this.filtercat[0]
       }
+    },
+    display (e) {
+      if (!e) {
+        this.displayVal = {}
+      }
     }
   },
   mounted () {
@@ -633,9 +639,9 @@ export default {
     getMenuItem (id, type, reward) {
       reward = typeof reward === 'undefined' ? 0 : reward
       if (type === 0) {
-        this.displayVal = this.filteredMenu.find((e) => {
+        this.displayVal = JSON.parse(JSON.stringify(this.filteredMenu.find((e) => {
           return e.id === id
-        })
+        })))
         console.log({ dv: this.displayVal, id })
         this.displayVal.id = id
         if (reward) {
@@ -643,9 +649,9 @@ export default {
           this.displayVal.reward = 1
         }
       } else {
-        this.displayVal = this.promoData.find((e) => {
+        this.displayVal = JSON.parse(JSON.stringify(this.promoData.find((e) => {
           return e.id === id
-        })
+        })))
         this.displayVal = { ...this.displayVal, prodType: 1, id: id }
       }
     }
@@ -786,6 +792,17 @@ export default {
 
 .list-complete-leave-active
   position absolute
+.VueCarousel-navigation-prev
+  left 30px !important
+  padding unset !important
+  margin-right unset !important
+.VueCarousel
+  padding-top 20px
+  overflow hidden
+.VueCarousel-navigation-next
+  right 30px !important
+  padding unset !important
+  margin-left unset !important
 .VueCarousel-wrapper
   overflow visible
 @media (max-width: 991px)

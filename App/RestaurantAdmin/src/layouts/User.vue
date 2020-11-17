@@ -61,7 +61,7 @@
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio } from 'quasar'
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import '@firebase/messaging'
 export default {
   name: 'UserLayout',

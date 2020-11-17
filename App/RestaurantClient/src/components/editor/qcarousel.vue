@@ -1,6 +1,7 @@
 <template>
+  <div @click="click">
    <q-carousel
-      @click="click"
+      v-if="!type"
       :style="valStyle"
       :class="classes"
       animated
@@ -29,10 +30,35 @@
          </div>
       </q-carousel-slide>
    </q-carousel>
+   <carousel
+      v-if="type"
+      :style="valStyle"
+      :class="classes"
+      ref="carousel"
+      :loop="true"
+      navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" aria-hidden="true"></i>'
+      navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" aria-hidden="true"></i>'
+      :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
+      <slide ref="slide" class="row justify-center" :name="index +'diag'" v-for="(opt,index) in valOptions" :key="index" >
+        <p> Hello {{opt}}  </p>
+        <div>
+          <my-card v-ripple  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...opt, block_index: index, child_index: 50 }" @click-edit="(e) => {placeHoldClick(e);}"  />
+        </div>
+      </slide>
+   </carousel>
+  </div>
 </template>
 <script>
+import { Carousel, Slide } from 'vue-carousel'
 /* eslint-disable camelcase */
+/* eslint-disable vue/no-unused-components */
 export default {
+  components: {
+    Carousel,
+    Slide,
+    'my-card': () => import('./mycard'),
+    'qimg': () => import('./qimg')
+  },
   name: 'my-card',
   props: {
     options: {
@@ -45,6 +71,10 @@ export default {
     classes: {
       type: String,
       default: ''
+    },
+    type: {
+      type: Boolean,
+      default: () => false
     },
     block_index: {
       type: Number,
@@ -63,19 +93,24 @@ export default {
     },
     valOptions () {
       const { options } = this
-      if (options.length === 0) {
+      if (typeof options === 'undefined' || options.length === 0) {
+        if (this.type) {
+          return [{
+            is: 'my-card'
+          }]
+        }
         return [{
           text_1: 'WELCOME TO',
           text_1_style: '',
           text_2: 'ChopZi',
           text_2_style: '',
-          text_3: 'The Web as I envisaged it, we have not seen it yet. The future',
+          text_3: 'This is just a placeHolder, please add a slide to customize it',
           text_3_style: '',
-          text_4: 'is still so much bigger than the past.',
+          text_4: '',
           text_4_style: '',
           button_label: 'READ MORE',
           button_style: '',
-          button_link: 'https://google.com',
+          button_link: 'https://chopzi.com',
           slide_style: 'background-color: rgba(0, 0, 0, 0.68);',
           img: 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg'
         }]
@@ -83,21 +118,39 @@ export default {
       var a = []
       for (let i of options) {
         var obj = {}
-        if (typeof i.text_1 === 'undefined') { obj.text_1 = 'WELCOME TO' } else { obj.text_1 = i.text_1 }
-        if (typeof i.text_2 === 'undefined') { obj.text_2 = 'ChopZi' } else { obj.text_2 = i.text_2 }
-        if (typeof i.text_3 === 'undefined') { obj.text_3 = 'The Web as I envisaged it, we have not seen it yet. The future' } else { obj.text_3 = i.text_3 }
-        if (typeof i.text_4 === 'undefined') { obj.text_4 = 'is still so much bigger than the past.' } else { obj.text_4 = i.text_4 }
-        if (typeof i.text_1_style === 'undefined') { obj.text_1_style = '' } else { obj.text_1_style = i.text_1_style }
-        if (typeof i.text_2_style === 'undefined') { obj.text_2_style = '' } else { obj.text_2_style = i.text_2_style }
-        if (typeof i.text_3_style === 'undefined') { obj.text_3_style = '' } else { obj.text_3_style = i.text_3_style }
-        if (typeof i.text_4_style === 'undefined') { obj.text_4_style = '' } else { obj.text_4_style = i.text_4_style }
-        if (typeof i.button_label === 'undefined') { obj.button_label = 'READ MORE' } else { obj.button_label = i.button_label }
-        if (typeof i.button_style === 'undefined') { obj.button_style = '' } else { obj.button_style = i.button_style }
-        if (typeof i.button_link === 'undefined') { obj.button_link = 'https://google.com' } else { obj.button_link = i.button_link }
-        if (typeof i.slide_style === 'undefined') { obj.slide_style = 'background-color: rgba(0, 0, 0, 0.68);' } else { obj.slide_style = i.slide_style }
-        if (typeof i.img === 'undefined') { obj.img = 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg' } else { obj.img = i.img }
+        if (this.type) {
+          obj = { ...i }
+        } else {
+        // obj.text_1 = i.text_1
+        // obj.text_2 = i.text_2
+        // obj.text_3 = i.text_3
+        // obj.text_4 = i.text_4
+        // obj.text_1_style = i.text_1_style
+        // obj.text_2_style = i.text_2_style
+        // obj.text_3_style = i.text_3_style
+        // obj.text_4_style = i.text_4_style
+        // obj.button_label = i.button_label
+        // obj.button_link = i.button_link
+        // obj.slide_style = i.slide_style
+        // obj.img = i.img
+          // if (typeof i.is === 'undefined') { obj.is = 'div' } else { obj.is = i.is }
+          if (typeof i.text_1 === 'undefined') { obj.text_1 = 'WELCOME TO' } else { obj.text_1 = i.text_1 }
+          if (typeof i.text_2 === 'undefined') { obj.text_2 = 'ChopZi' } else { obj.text_2 = i.text_2 }
+          if (typeof i.text_3 === 'undefined') { obj.text_3 = 'The Web as I envisaged it, we have not seen it yet. The future' } else { obj.text_3 = i.text_3 }
+          if (typeof i.text_4 === 'undefined') { obj.text_4 = 'is still so much bigger than the past.' } else { obj.text_4 = i.text_4 }
+          if (typeof i.text_1_style === 'undefined') { obj.text_1_style = '' } else { obj.text_1_style = i.text_1_style }
+          if (typeof i.text_2_style === 'undefined') { obj.text_2_style = '' } else { obj.text_2_style = i.text_2_style }
+          if (typeof i.text_3_style === 'undefined') { obj.text_3_style = '' } else { obj.text_3_style = i.text_3_style }
+          if (typeof i.text_4_style === 'undefined') { obj.text_4_style = '' } else { obj.text_4_style = i.text_4_style }
+          if (typeof i.button_label === 'undefined') { obj.button_label = 'READ MORE' } else { obj.button_label = i.button_label }
+          if (typeof i.button_style === 'undefined') { obj.button_style = '' } else { obj.button_style = i.button_style }
+          if (typeof i.button_link === 'undefined') { obj.button_link = 'https://google.com' } else { obj.button_link = i.button_link }
+          if (typeof i.slide_style === 'undefined') { obj.slide_style = 'background-color: rgba(0, 0, 0, 0.68);' } else { obj.slide_style = i.slide_style }
+          if (typeof i.img === 'undefined') { obj.img = 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg' } else { obj.img = i.img }
+        }
         a.push(obj)
       }
+      console.log({ a })
       return a
     },
     valImgStyle () {
@@ -126,6 +179,12 @@ export default {
     }
   },
   methods: {
+    childMounted (e) {
+      console.log({ e }, 'childmounted')
+    },
+    placeHoldClick (e) {
+      console.log({ e }, 'Eto es')
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {
@@ -134,6 +193,16 @@ export default {
         props_info: { ...this._props, options: this.valOptions }
       })
       console.log({ options: this.valOptions })
+    }
+  },
+  watch: {
+    valOptions () {
+      this.$emit('click-edit', {
+        block_info: {
+          block_index: this.block_index, child_index: this.child_index
+        },
+        props_info: { ...this._props, options: this.valOptions }
+      })
     }
   }
 }

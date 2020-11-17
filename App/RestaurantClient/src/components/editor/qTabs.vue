@@ -1,11 +1,24 @@
 <template>
   <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
-        <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style" v-html="text" />
+        <q-tabs
+        mobile-arrows
+        :class="tabs_class" :style="tabs_style"
+        v-model="tab"
+        inline-label
+        class="bg-transparent text-white shadow-2"
+      >
+        <q-tab  v-for="(tb, index) in tabs2" :key="index" :name="tb.label" @click="scrollToElement(tb.link)" :label="tb.label" />
+      </q-tabs>
   </q-card>
 </template>
 <script>
 /* eslint-disable camelcase */
 export default {
+  data () {
+    return {
+      tab: ''
+    }
+  },
   name: 'my-card',
   props: {
     styles: {
@@ -16,17 +29,17 @@ export default {
       type: String,
       default: ''
     },
-    text: {
-      type: String,
-      default: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`
-    },
-    text_style: {
+    tabs_style: {
       type: String,
       default: ''
     },
-    text_class: {
+    tabs_class: {
       type: String,
       default: ''
+    },
+    tabs: {
+      type: String,
+      default: `[{ label: 'test', link: '/#test' }]`
     },
     dark: {
       type: Boolean,
@@ -59,6 +72,15 @@ export default {
       const { styles } = this
       if (styles === '') return 'max-width: 350px;'
       return styles
+    },
+    tabs2 () {
+      let a
+      try {
+        a = JSON.parse(this.tabs)
+        return a
+      } catch (e) {
+        return [{ label: 'test', link: '/#test' }]
+      }
     }
   },
   mounted () {
@@ -72,6 +94,13 @@ export default {
     })
   },
   methods: {
+    scrollToElement (id) {
+      const el = document.getElementById(id)
+
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      }
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {

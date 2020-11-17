@@ -323,12 +323,14 @@
                <div class="row justify-center">
                   <q-btn class="col" color="primary" label="Add Child" @click="addChild({block: selectedBLock.block_index})"/>
                   <q-btn class="col" color="primary" label="Delete Block" @click="removeBlock({block: selectedBLock.block_index})"/>
+                  <q-btn class="col" color="primary" label="Copy Block" @click="copyBlock()"/>
                </div>
             </q-card-section>
             <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'">
                Child Options
                <q-select filled :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props.is" label="Widget" />
                <q-btn color="primary" label="Remove Child" @click="removeChild({block: selectedBLock.block_index, child: selectedBLock.child_index})"/>
+               <q-btn color="primary" label="Copy Child" @click="copyChild()"/>
             </q-card-section>
             <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'">
                <div v-for="(prop, index) in selectedBLockProps" :key="index">
@@ -349,27 +351,20 @@
                      </template>
                      </q-input>
                   <q-toggle v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop === 'boolean'" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
-                  <div v-if="index !== 'block_index' && index !== 'child_index' && Array.isArray(prop)">
+                  <div v-if="index !== 'block_index' && index !== 'child_index' && Array.isArray(prop) && blocks[selectedBLock.block_index].child[selectedBLock.child_index].props.is == 'qcarousel' ">
                      <div class="text-center" v-for="(prp, idx) in prop" :key="idx">
-                        Slide # {{idx}}
+                        Slide # {{idx}} {{blocks[selectedBLock.block_index].child[selectedBLock.child_index].props}}
+                         <q-btn v-if="prop.length > 1" class="q-ml-md" color="primary" label="Delete Slide" @click="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].splice(idx, 1)" />
+                        <q-select v-if="selectedBLockProps.type" filled :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx]['is']" label="Widget" />
                         <div v-for="(prp1, idx1) in prp" :key="idx1">
-                           <q-input
+                           <q-input v-if="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] && idx1 !== 'is'"
                               v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1]"
                               :placeholder="prp1" filled :label="idx1" />
                         </div>
                      </div>
                      <q-btn color="primary" label="Add Slide"
                         @click="Vue.set(blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index], blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].length ,{});
-                        prop.push({
-                        text_1: 'WELCOME TO',
-                        text_2: 'ChopZi',
-                        text_3: 'The Web as I envisaged it, we have not seen it yet. The future',
-                        text_4: 'is still so much bigger than the past.',
-                        button_label: 'READ MORE',
-                        button_link: '#',
-                        slide_style: '',
-                        img: 'https://www.freepik.com/blog/app/uploads/2020/07/Pruebla-Blog-1.jpg'
-                        })" />
+                        prop.push({})" />
                   </div>
                </div>
             </q-card-section>
@@ -382,14 +377,15 @@
            />
          </div>
       </q-drawer>
+
       <div @contextmenu="(e) => consoleame(e)" :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
          <draggable :is="admin ? 'draggable' : 'div'" v-if="!app_options" :list="blocks" @start="admin ? drag=true : drag=false" @end="drag=false" handle=".handle">
-               <q-card square flat v-for="(block, index) in blocks" :class="block.class" :style="block.style" :key="block.id">
+               <q-card square flat :id="'block' + index" v-for="(block, index) in blocks" :key="block.id + index">
                   <div v-if="block.child.length" @mouseover=" admin ? (hover = true) : false" @mouseleave="admin ? hover = false : false">
                      <q-btn v-if="hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
                      <q-card flat square>
-                     <draggable class="row justify-around reverse-wrap flex-center" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
-                        <q-card v-ripple :is="''" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
+                     <draggable :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
+                        <q-card v-ripple :is="''" class="handle2" :class="chld.classes" :style="chld.styles" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
                      </draggable>
                      </q-card>
                   </div>
@@ -577,17 +573,19 @@ export default {
     'cssmenu': () => import('./components/cssMenu'),
     'menudisplay': () => import('./components/client/pages/Menu/menu'),
     'carouselmenu': () => import('./components/client/components/carouselMenu'),
-    'my-card': () => import('../../components/editor/mycard'),
-    'place-holder': () => import('../../components/editor/placeHolder'),
-    'qheader': () => import('../../components/editor/qheader'),
-    'qfooter': () => import('../../components/editor/qfooter'),
-    'qparallax': () => import('../../components/editor/qparallax'),
-    'qcarousel': () => import('../../components/editor/qcarousel'),
-    'qTextBlock': () => import('../../components/editor/qTextBlock'),
-    'customHtml': () => import('../../components/editor/customHtml'),
-    'customJS': () => import('../../components/editor/customJS'),
-    'findus': () => import('../../components/editor/findus'),
-    'qimg': () => import('../../components/editor/qimg'),
+    'qtabs': () => import('./components/client/components/editor/qTabs'),
+    'qbtn': () => import('./components/client/components/editor/qbtn'),
+    'my-card': () => import('./components/client/components/editor/mycard'),
+    'place-holder': () => import('./components/client/components/editor/placeHolder'),
+    'qheader': () => import('./components/client/components/editor/qheader'),
+    'qfooter': () => import('./components/client/components/editor/qfooter'),
+    'qparallax': () => import('./components/client/components/editor/qparallax'),
+    'qcarousel': () => import('./components/client/components/editor/qcarousel'),
+    'qTextBlock': () => import('./components/client/components/editor/qTextBlock'),
+    'customHtml': () => import('./components/client/components/editor/customHtml'),
+    'customJS': () => import('./components/client/components/editor/customJS'),
+    'findus': () => import('./components/client/components/editor/findus'),
+    'qimg': () => import('./components/client/components/editor/qimg'),
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
     PrismEditor,
     draggable
@@ -618,7 +616,7 @@ export default {
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus', 'menudisplay', 'carouselmenu'],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus', 'menudisplay', 'carouselmenu', 'qtabs', 'qbtn'],
       blocks: [],
       insertCss: '',
       selectedBLock: { block_index: null, child_index: null },
@@ -888,7 +886,7 @@ export default {
     },
     addBlock () {
       Vue.set(this.blocks, this.blocks.length, {
-        class: 'full-width q-pb-xs',
+        class: 'full-width relative-position q-pb-xs',
         id: Math.random().toString(36).substr(2, 9),
         style: 'min-height: 0px;',
         hover: false,
@@ -927,6 +925,18 @@ export default {
     },
     removeChild (e) {
       this.blocks[e.block].child.splice(e.child, 1)
+    },
+    copyChild () {
+      let blk, chld
+      blk = this.selectedBLock.block_index
+      chld = this.selectedBLock.child_index
+      let childcopy = JSON.parse(JSON.stringify(this.blocks[blk].child[chld]))
+      this.blocks[blk].child.push(childcopy)
+    },
+    copyBlock () {
+      let blk
+      blk = this.selectedBLock.block_index
+      this.blocks.splice(blk, 0, JSON.parse(JSON.stringify(this.blocks[blk])))
     },
     placeHoldClick (e) {
       this.selectedBLock = e.block_info

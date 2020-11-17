@@ -8,7 +8,7 @@
          transition-show="slide-up"
          transition-hide="slide-down"
          @hide="quantity = 0; totSum = 0; required = false; itComp = []"
-         @show="quantity = 1;"
+         @show="quantity = 1; itComp = []"
          >
          <q-card
           style="width: 100%;
@@ -16,9 +16,9 @@
           margin: 0px;
           padding: 0px;
           overflow-x: hidden;">
-            <q-bar class="bg-transparent">
-               <q-space />
-               <q-btn style="z-index: 9999" dense flat icon="close" @click="$emit('dispchange', false)" v-close-popup>
+            <q-bar class="bg-transparent q-mt-sm">
+              <q-btn flat ></q-btn>
+               <q-btn style="z-index: 2001" dense flat icon="fas fa-chevron-left" @click="$emit('dispchange', false)" v-close-popup>
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
@@ -117,11 +117,11 @@
                      </div>
                      <div class="column items-center">
                         <div  class="q-pt-md">
-                           <div class="text-h6" v-if="displayVal.discount > 0 && displayVal.groupComp.length">
+                           <div class="text-h6" v-if="displayVal.discount > 0">
                               Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
                               <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
                            </div>
-                           <q-item-label class="text-h6" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
+                           <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
                         <div class="q-pt-lg" vertical>
                            <q-btn class="q-pl-md q-pr-md" v-if="required" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
@@ -482,7 +482,9 @@ export default {
   }
 }
 </script>
-<style lang="stylus" >
+<style lang="stylus">
+.fullscreen
+  z-index 2000
 .q-img__content
   overflow visible !important
 .diagphcont

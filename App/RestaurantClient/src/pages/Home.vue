@@ -1,10 +1,10 @@
 <template>
 <div>
   <div v-if="blocks2.length">
-      <div v-for="(block, index) in blocks2" :class="block.class" :style="block.style" :key="block.id">
+      <div :id="'block' + index" v-for="(block, index) in blocks2" :key="block.id+index">
         <div v-if="block.child.length">
-          <div  class="row justify-around reverse-wrap flex-center">
-                <component :is="''" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="chld.id"  v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
+          <div  :class="block.class" :style="block.style">
+                <component :is="''" :class="chld.classes" :style="chld.styles" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="indx"  v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
           </div>
         </div>
       </div>
@@ -14,7 +14,6 @@
   </q-inner-loading>
 </div>
 </template>
-
 <script>
 /* eslint-disable vue/no-unused-components vue/valid-v-on */
 /* eslint-disable vue/require-component-is */
@@ -25,6 +24,8 @@ export default {
     ...mapGetters('editor', ['blocks'])
   },
   components: {
+    'qtabs': () => import('../components/editor/qTabs'),
+    'qbtn': () => import('../components/editor/qbtn'),
     'carouselmenu': () => import('../components/carouselMenu'),
     'menudisplay': () => import('./Menu/menu'),
     'my-card': () => import('../components/editor/mycard'),

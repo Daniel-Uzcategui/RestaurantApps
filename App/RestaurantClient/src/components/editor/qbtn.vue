@@ -1,6 +1,6 @@
 <template>
   <q-card @click="click" v-if="true" :style="valStyle" :class="classes" :dark="dark" :square="square" :flat="flat" :bordered="bordered">
-        <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style" v-html="text" />
+         <q-btn type="a" no-caps :color="btn_color" :href="btn_href" :flat="btn_flat" :rounded="btn_rounded" :text-color="btn_text_color" :style="btn_style" :class="btn_class" :label="btn_label" />
   </q-card>
 </template>
 <script>
@@ -16,15 +16,35 @@ export default {
       type: String,
       default: ''
     },
-    text: {
-      type: String,
-      default: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`
-    },
-    text_style: {
+    btn_color: {
       type: String,
       default: ''
     },
-    text_class: {
+    btn_text_color: {
+      type: String,
+      default: ''
+    },
+    btn_label: {
+      type: String,
+      default: ''
+    },
+    btn_href: {
+      type: String,
+      default: ''
+    },
+    btn_rounded: {
+      type: Boolean,
+      default: () => false
+    },
+    btn_flat: {
+      type: Boolean,
+      default: () => false
+    },
+    btn_style: {
+      type: String,
+      default: ''
+    },
+    btn_class: {
       type: String,
       default: ''
     },

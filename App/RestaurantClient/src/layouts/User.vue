@@ -1,6 +1,6 @@
 <template>
    <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #ffffff;' + page.style : 'background-color: #1d1d1d;' + page.style" view="hhh LpR fFf">
-         <q-toolbar class="absolute-top logocont" style="z-index: 100">
+         <q-toolbar class="absolute-top logocont" >
            <div class="relative-position full-width">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
@@ -10,9 +10,10 @@
                class="burgericon"
                name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
+               style="z-index: 99999"
                exact />
                <div class="absolute-right">
-                 <q-btn to="/cart/index" class="carticon" flat icon="fas fa-shopping-cart" >
+                 <q-btn to="/cart/index" style="z-index: 99999" class="carticon" flat icon="fas fa-shopping-cart" >
                    <q-badge color="red" floating>{{getCartQ}}</q-badge>
                  </q-btn>
                <q-toggle v-show="false" class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
@@ -23,6 +24,7 @@
                </q-dialog>
          </q-toolbar>
       <q-drawer
+         style="z-index: 99999"
          overlay
          on-layout="hide"
          :content-class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'"
@@ -72,7 +74,7 @@ import Vue from 'vue'
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import '@firebase/messaging'
 export default {
   name: 'UserLayout',
@@ -201,10 +203,12 @@ export default {
   (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
     }
     // eslint-disable-next-line no-undef
-    if (firebase.messaging.isSupported() && !iOS()) {
-      if (!firebase.apps.length) {
+    let messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging : firebase.messaging
+    let fb = typeof firebase.default === 'undefined' ? firebase : firebase.default
+    if (messaging.isSupported() && !iOS()) {
+      if (!fb.apps.length) {
         fetch('/__/firebase/init.json').then(async response => {
-          firebase.initializeApp(await response.json())
+          fb.initializeApp(await response.json())
           this.setupNotif()
         }).catch(e => console.error('error fetching cfg firebase', { e }))
       } else {
@@ -268,7 +272,7 @@ export default {
       }
       var that = this
       navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        const messaging = firebase.messaging()
+        const messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging() : firebase.messaging()
         messaging
           .requestPermission()
           .then(() => {

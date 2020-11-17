@@ -56,6 +56,15 @@
           <q-select v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Activar Recompensas" />
         </div>
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input
+          label="Cantidad Necesitada"
+          type="number"
+          float-label="Float Label"
+          outlined
+          v-model="rewards"
+          :rules="[ val => val && val > 0 || '*Requerido el campo Precio y mayor a 0']"/>
+        </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
@@ -161,6 +170,7 @@ export default {
       statusInlocal: 1,
       statusPto: 1,
       statusRewards: 0,
+      rewards: 10,
       statusZelle: 0,
       statusVenmo: 0,
       statusCreditCorp: 0,
@@ -187,6 +197,7 @@ export default {
         statusInlocal: this.statusInlocal,
         statusPto: this.statusPto,
         statusRewards: this.statusRewards,
+        rewards: this.rewards,
         statusZelle: this.statusZelle,
         statusVenmo: this.statusVenmo,
         statusCreditCorp: this.statusCreditCorp,
@@ -243,6 +254,9 @@ export default {
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusRewards
       key = 'statusRewards'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.rewards
+      key = 'rewards'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusZelle
       key = 'statusZelle'

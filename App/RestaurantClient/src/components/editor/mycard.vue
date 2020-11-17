@@ -23,7 +23,10 @@
       <q-card-section v-if="text !== ''" class="q-pt-none" :class="text_class" :style="text_style" v-html="text">
       </q-card-section>
       <q-card-section v-if="button" class="row justify-center" :style="btn_container_style" :class="btn_container_class">
-        <q-btn type="a" no-caps :color="btn_color" :href="btn_href" :rounded="btn_rounded" :text-color="btn_text_color" :style="btn_style" :class="btn_class" :label="btn_label" />
+        <q-btn v-html="btn_label" type="a" no-caps :color="btn_color" :flat="btn_flat" :href="btn_href" :rounded="btn_rounded" :text-color="btn_text_color" :style="btn_style" :class="btn_class" >
+        </q-btn>
+      </q-card-section>
+      <q-card-section v-if="textbtn !== ''" class="q-pt-none" :class="textbtn_class" :style="textbtn_style" v-html="textbtn">
       </q-card-section>
    </q-card>
 </template>
@@ -132,6 +135,10 @@ export default {
       type: Boolean,
       default: () => false
     },
+    btn_flat: {
+      type: Boolean,
+      default: () => false
+    },
     btn_style: {
       type: String,
       default: ''
@@ -145,6 +152,18 @@ export default {
       default: ''
     },
     btn_container_class: {
+      type: String,
+      default: ''
+    },
+    textbtn: {
+      type: String,
+      default: ``
+    },
+    textbtn_style: {
+      type: String,
+      default: ''
+    },
+    textbtn_class: {
       type: String,
       default: ''
     },

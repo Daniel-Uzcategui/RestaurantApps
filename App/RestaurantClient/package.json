@@ -23,20 +23,17 @@
     "axios": "^0.19.2",
     "core-js": "3.0.0",
     "cross-env": "^7.0.2",
-    "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",
-    "cryptr": "^6.0.2",
-    "firebase": "^8.0.0",
+    "firebase": "8.0.1",
     "gmap-vue": "^1.2.1",
     "hasha": "^5.2.2",
-    "js-sha256": "^0.9.0",
     "quasar": "^1.14.1",
     "quasar-app-extension-firebase-messaging": "^0.1.1",
     "text-decoding": "^1.0.0",
     "vue-carousel": "^0.18.0",
     "vue-interactive-paycard": "^1.0.0",
     "vue-paycard": "^0.3.0",
-    "vuexfire": "^3.2.2"
+    "vuexfire": "^3.2.4"
   },
   "devDependencies": {
     "@quasar/app": "2.1.1",
