@@ -209,7 +209,12 @@
                     />
                     <div class="q-pt-md">
                         <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(config.price) : getTotalCarrito()[2]).toFixed(2)}}</p>
+                        <div v-if="pagoSel !== 5 && CheckTDD ===false">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
+                        </div>
+                        <div v-if="CheckTDD ===true">
+                        <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
+                        </div>
                         <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
                     </div>
                   </div>
@@ -218,8 +223,9 @@
                     <div>
                      <payCreditCorp
                       :ordersId=currentUser.cedula
-                      :key=config.CreditCorp
-                      :payAmount=999 />
+                      :keyCreditCorp=config.CreditCorp
+                      :payAmount=totalPrice
+                      @click='payment' />
                      </div>
                     </div>
                   </div>
@@ -228,28 +234,16 @@
       <q-dialog v-model="confirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
-          <span class="q-ml-sm">Porfavor confirme la orden</span>
+          <span class="q-ml-sm">Por favor confirmar la orden</span>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn no-caps flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn no-caps flat label="Cancelar" color="primary" v-close-popup  v-if="pagoSel !== 5 && CheckTDD ===false" />
           <q-btn no-caps flat label="Confirmar" @click="makeOrder()" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
-     <!--q-dialog v-model="validationError">
-      <q-card>
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Pago</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-card-section>
-         {{message}}
-        </q-card-section>
-      </q-card>
-    </q-dialog-->
-  </q-page>
+   </q-page>
 </template>
 
 <script>
@@ -314,6 +308,7 @@ export default {
       orderWhen: null,
       paypal: window.paypal,
       CheckAv: 1,
+      CheckTDD: false,
       confirm: false,
       tipEnvio: null,
       lbDelivery: 'Deli',
@@ -323,7 +318,8 @@ export default {
       ordenar: false,
       notifications: 0,
       leftDrawerOpen: false,
-      pagoSel: null
+      pagoSel: null,
+      totalPrice: 0
     }
   },
   created () {
@@ -467,6 +463,7 @@ export default {
         sumProd = (e.prodPrice * e.quantity) + sumProd
         sumExtra = (this.totalItComp(e.items) * e.quantity) + sumExtra
       })
+      this.totalPrice = sumProd + sumExtra
       return [sumProd, sumExtra, sumProd + sumExtra]
     },
     getProdValById (id, val, type) {
@@ -561,6 +558,13 @@ export default {
           }
         }
         return [1, exists]
+      }
+    },
+    payment (status) {
+      console.log('info payment: ' + status)
+      if (status === '1') {
+        this.CheckTDD = true
+        console.log('CheckTDD : ', this.CheckTDD)
       }
     }
   },

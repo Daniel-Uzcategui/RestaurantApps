@@ -135,7 +135,19 @@
       </div>
     </div>
   </div>
-</div>
+  <q-dialog v-model="validationMenssage">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Pago tarjeta de Credito</div>
+          <q-space />
+        </q-card-section>
+          <div align="center" class="offset-message" >{{message}}</div>
+        <q-card-actions align="right">
+          <q-btn no-caps flat label="Aceptar" @click="finishPayment()" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+ </div>
 </template>
 <script>
 // import AES from 'crypto-js/aes'
@@ -148,7 +160,11 @@ export default {
   components: {
     VuePaycard
   },
-  props: [ 'ordersId', 'payAmount', 'keyCreditCorp' ],
+  props: {
+    keyCreditCorp: String,
+    ordersId: String,
+    payAmount: Number
+  },
   data () {
     return {
       phonePassword: '',
@@ -196,7 +212,10 @@ export default {
         { label: '2029', value: '2029' },
         { label: '2030', value: '2030' }
 
-      ]
+      ],
+      validationMenssage: false,
+      message: '',
+      paymentStatus: 0
     }
   },
   computed: {
@@ -209,13 +228,14 @@ export default {
     ...mapActions('transactions', ['addTransaction']),
     async payment () {
       console.log('keyCreditCorp:', this.keyCreditCorp)
-      let defaultcode = '6457Thfj624V5r7WUwc5v6a68Zsd6YEm'
+      console.log('ordersId:', this.ordersId)
+      console.log('payAmount:', this.payAmount)
+      let defaultcode = this.keyCreditCorp
       let responsedp = await this.transaction(defaultcode)
       let responsebank = responsedp.split('&')
       let txnId = 0
       let responseMessages = 0
       let responsecode = 0
-      let paymentStatus = 0
       let trxType = 'creditCorp'
       let pos = 0
       let campo = ''
@@ -227,7 +247,13 @@ export default {
         value = responsebank[i].substr(pos + 1, responsebank[i].length)
         switch (campo) {
           case 'response':
-            paymentStatus = value
+            this.paymentStatus = value
+            if (value === '1') {
+              this.message = 'Su pago fue realizado con exito'
+            } else {
+              this.message = 'Error en el pago por favor comuniquese con el banco codigo: 000' + value
+            }
+            this.validationMenssage = true
             break
           case 'responsetext':
             responseMessages = value
@@ -240,7 +266,7 @@ export default {
             break
         }
       }
-      this.add(txnId, trxType, responseMessages, this.ordersId, this.payAmount, paymentStatus, responsecode)
+      this.add(txnId, trxType, responseMessages, this.ordersId, this.payAmount, this.paymentStatus, responsecode)
     },
     async transaction (defaultcode) {
       const dp = new CreditCorp(defaultcode)
@@ -276,15 +302,6 @@ export default {
       paymentStatus,
       responsecode
     ) {
-      console.log(
-        txnId,
-        trxType,
-        responseMessages,
-        ordersId,
-        payAmount,
-        paymentStatus,
-        responsecode
-      )
       let card = 0
       card = this.valueFields.cardNumber
       const payload = {
@@ -293,7 +310,7 @@ export default {
         cardCVC: this.valueFields.cardCvv,
         cardExpDate:
           this.valueFields.cardMonth + '/' + this.valueFields.cardYear,
-        orderId: 0,
+        orderId: ordersId,
         paidAmount: payAmount,
         paidAmountCurrency: 'ves',
         rateId: 0,
@@ -304,7 +321,20 @@ export default {
         responseMessage: responseMessages,
         DateIn: date.formatDate(Date.now(), 'YYYY-MM-DDTHH:mm:ss.SSSZ')
       }
+      console.log(
+        txnId,
+        trxType,
+        responseMessages,
+        ordersId,
+        payAmount,
+        paymentStatus,
+        responsecode
+      )
+      // console.log('payload', payload)
       this.addTransaction(payload)
+    },
+    async finishPayment () {
+      this.$emit('click', this.paymentStatus)
     }
   }
 }
@@ -322,4 +352,7 @@ export default {
   padding-top: 50px
 .offset-col
   padding-left: 20px
+.offset-message
+  padding-left: 20px
+  padding-right: 20px
 </style>
