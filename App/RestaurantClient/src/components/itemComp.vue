@@ -38,6 +38,8 @@
       </div>
       <div v-if="component.type === 0">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
+        <div class="text-caption" v-if="component.min > 0">Mínimo {{component.min}}</div>
+        <div class="text-caption" v-if="component.max">Máximo en Total {{component.max}}</div>
         <p class="text-caption" v-html="component.descripcion"></p>
         <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
@@ -64,6 +66,9 @@
       </div>
       <div v-if="component.type === 2">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
+        <div class="text-caption" v-if="component.min > 0">Mínimo {{component.min}}</div>
+        <div class="text-caption" v-if="component.max">Máximo en Total {{component.max}}</div>
+        <div class="text-caption" v-if="component.max > component.maxUnit">Máximo por Elemento {{component.maxUnit}}</div>
         <p class="text-caption" v-html="component.descripcion"></p>
         <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
           <q-item>
@@ -77,6 +82,40 @@
                 :min="0"
                 :max="qSliderMax(component, items)"
                 :step="1"
+              />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{items.name}}</q-item-label>
+              <q-item-label caption v-html="items.descripcion"></q-item-label>
+            </q-item-section>
+            <q-item-section v-if="!component.free" >
+              <q-item-label caption>$ {{(items.price).toFixed(2)}}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+      <div v-if="component.type === 3">
+        <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div>
+        <div class="text-caption" v-if="component.min > 0">Mínimo {{component.min}}</div>
+        <div class="text-caption" v-if="component.max > component.maxUnit">Máximo Total {{component.max}}</div>
+        <div class="text-caption" v-if="component.max > component.maxUnit">Máximo por Elemento {{component.maxUnit}}</div>
+         </div>
+        <p class="text-caption" v-html="component.descripcion"></p>
+        <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
+          <q-item>
+            <q-item-section style="min-width: 100px">
+
+              <q-input
+                :color="mode == 1 ? 'positive' : 'primary'"
+                :dark="mode == 1"
+                rounded
+                outlined
+                @input="(x)=> qSliderInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, parseInt(x) < 0 || isNaN(parseInt(x)) ? 0 : Math.min(parseInt(x), qSliderMax(component, items)))"
+                :value="value.length ? typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined' ? value.find(x => (x['component'] === component.id && x['item'] === items.id))['quantity'] : 0 : 0"
+                type="number"
+                reactive-rules
+                :rules="[val => sliderValidate(component) || '']"
+                style="max-width: 200px"
               />
             </q-item-section>
             <q-item-section>
@@ -135,22 +174,31 @@ export default {
       if (typeof this.value !== 'undefined' && this.comp.length) {
         for (let e of this.Group) {
           var items = this.value.filter(x => e.id === x.component)
-          if (items.length) {
-            if (!(e.type === 1)) {
-              if (items.length < e.min) {
+          switch (true) {
+            case (e.type === 0):
+              if ((e.required && items.length < e.min) || (!e.required && items.length > 0 && items.length < e.min)) {
                 return false
               }
-            }
-          } else {
-            if (e.required) {
-              return false
-            }
+              break
+            case (e.type === 1):
+              if (e.required && !items.length) {
+                return false
+              }
+              break
+            case (e.type === 2 || e.type === 3):
+              if ((e.required && this.qSliderMinCheck(e) < 0) || (!e.required && this.qSliderMinCheck(e) !== e.min && this.qSliderMinCheck(e) < 0)) {
+                return false
+              }
+              break
+            default:
+              return true
           }
+          return true
         }
-        return true
       } else {
         return true
       }
+      return true
     },
     totalItComp () {
       var sum = 0
@@ -171,7 +219,7 @@ export default {
   },
   mounted () {
     if (this.Group.length === 0) {
-      this.$emit('update-comp', true)
+      this.$emit('update-comp', this.checkReqAll)
     }
   },
   watch: {
@@ -257,6 +305,27 @@ export default {
       } else {
         return component.maxUnit
       }
+    },
+    sliderValidate (component) {
+      if (component.required && this.qSliderMinCheck(component) < 0) {
+        console.log('sliderVal1')
+        return 'Seleccionar el mínimo'
+      }
+      if (!component.required && this.qSliderMinCheck(component) !== component.min && this.qSliderMinCheck(component) < 0) {
+        console.log('sliderVal2')
+        return 'Seleccionar el mínimo o 0'
+      }
+      console.log('sliderVal3')
+      return true
+    },
+    qSliderMinCheck (component) {
+      var sum = 0
+      for (let x of this.value) {
+        if (component.id === x.component) {
+          sum = sum + x.quantity
+        }
+      }
+      return sum - component.min
     }
   },
   created () {

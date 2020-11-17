@@ -51,6 +51,14 @@
                </q-item-section>
             </q-item>
             <q-item>
+              <q-item-section>
+                <addresses
+                :readOnly="true"
+                :addressPickup="item.addressPickup"
+                :addressShipping="item.addressShipping" />
+              </q-item-section>
+            </q-item>
+            <q-item>
               <q-item-section v-if="cart.length > 1" class="text-h6 text-right">
                   <q-item-label v-if="totalItComp(item.items)">
                     Subtotal: $ {{(parseFloat(parseFloat(item.prodPrice)) * item.quantity).toFixed(2)}}
@@ -108,11 +116,17 @@
          transition-hide="slide-down"
          @show="showme()"
          >
-         <q-card class="bg-white full-width">
-            <q-bar class="bg-transparent">
-               <q-space />
-               <q-btn dense flat icon="close" v-close-popup>
-                  <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
+         <q-card
+         style="width: 100%;
+          height: 100%;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;"
+          class="bg-white full-width">
+            <q-bar class="bg-transparent q-mt-sm">
+              <q-btn flat ></q-btn>
+               <q-btn style="z-index: 2001" dense flat icon="fas fa-chevron-left" v-close-popup>
+                  <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
                   <div
@@ -240,12 +254,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+import Addresses from '../../components/addresses.vue'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 export default {
   components: {
     'addresses': () => import('../../components/addresses.vue'),
     'itemcomp': () => import('../../components/itemComp.vue'),
-    payCreditCorp: payCreditCorp
+    payCreditCorp: payCreditCorp,
+    Addresses
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),

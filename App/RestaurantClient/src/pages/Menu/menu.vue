@@ -1,6 +1,6 @@
 <template>
    <div @click="click()" :class="global_class" :style="global_style">
-      <q-input v-if="!displayType" class="q-pa-lg q-pt-xl" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar en el Menu" >
+      <q-input v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-pa-lg q-pt-xl" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
          <template v-slot:prepend>
             <q-icon name="fas fa-search" />
          </template>
@@ -71,6 +71,7 @@
             </div>
            <div v-else>
             <q-tabs
+               v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
                class="wrapel"
                content-class="wrapel"
                :value="selectedCat ? selectedCat.id : ''"
@@ -312,7 +313,7 @@ export default {
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['menucfg', 'paymentServ']),
+    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations']),
     cats () {
       let objs = this.categorias
       return objs.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))

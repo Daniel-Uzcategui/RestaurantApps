@@ -8,7 +8,16 @@
          transition-show="slide-up"
          transition-hide="slide-down"
          @hide="quantity = 0; totSum = 0; required = false; itComp = []"
-         @show="quantity = 1; itComp = []"
+         @show="
+              quantity = 1
+              itComp = []
+              valTime = false
+              valTime2 = false
+              orderDate = null
+              orderDate2 = null
+              addload = null
+              addId = null
+              addId2 = null"
          >
          <q-card
           style="width: 100%;
@@ -22,6 +31,7 @@
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
+
             <q-card-section class="q-pa-none q-pt-xl row justify-center" style="overflow: visible !important">
                <div class="column items-center col-4 q-pt-xl"
                   style="min-width: 320px; overflow: visible !important"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
@@ -38,7 +48,7 @@
                   </div>
                   <div>
                      <div class="column items-center">
-                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" class="q-pt-lg">
+                        <div v-if="typeof displayVal.disptype === 'undefined'  ? true : displayVal.disptype == 0" class="q-pt-lg">
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
@@ -49,9 +59,9 @@
                            </q-btn>
                         </div>
                         <q-btn round color="dark" style="z-index: 999999" :size="$q.screen.gt.xs ? 'md': 'xs'" @click="copyToClip(loc + '/#/menu/index?j=' +displayVal.prodType + '&t=' + displayVal.id + (selectedFilter !== '' ? '&q=' + selectedFilter : ''))" text-color="white" icon="fas fa-share-alt" class="q-ma-md"  />
-                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
-                           <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="required && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                           <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!required && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1">
+                           <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
                   </div>
@@ -63,7 +73,7 @@
                   <div :class="displayVal.disptype == 1 ? 'text-h6' : ' text-h5 text-grey'" class="q-pt-lg text-left" :style="displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;'" v-html=displayVal.descripcion>
                   </div>
                   <div class="row justify-between q-pa-none">
-                     <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" class="q-pt-md text-h6">
+                     <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1" class="q-pt-md text-h6">
                         <div v-if="displayVal.discount > 0 && displayVal.groupComp.length">
                            Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
                            <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
@@ -75,13 +85,13 @@
                         </q-item-label>
                         <q-item-label v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
                      </div>
-                     <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
-                        <q-btn class="q-pl-md q-pr-md" v-if="required && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                        <q-btn class="q-pl-md q-pr-md" v-if="!required && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                     <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1" vertical>
+                        <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                      </q-card-actions>
                   </div>
                   <itemcomp
-                     v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0"
+                     v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1"
                      :mode="typeof displayVal.disptype === 'undefined' ? 0 : parseInt(displayVal.disptype)"
                      class="q-pt-xl row justify-start"
                      :comp="displayVal.groupComp"
@@ -130,6 +140,36 @@
                      </div>
                   </div>
                </div>
+            </q-card-section>
+            <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 2">
+              <div class="q-pt-md">
+                       <div class="row justify-center">
+                       <q-card class="q-pa-xl q-ma-md col-6" style="border-radius: 28px; min-width: 320px">
+                        <div class="text-h5">¿Para cuando quiere el servicio de pickup?</div>
+                         <orderdate v-model="orderDate" @validated="(e) => valTime = e" />
+                           <p class="text-center text-red text-bold text-caption" v-if="!valTime">* Campo obligatorio</p>
+                       </q-card>
+                       <q-card class="q-pa-xl col-6 q-ma-md" style="border-radius: 28px; min-width: 320px">
+                         <div class="text-h5">¿Para cuando quiere el servicio de entrega?</div>
+                         <orderdate v-model="orderDate2" @validated="(e) => valTime2 = e" />
+                           <p class="text-center text-red text-bold text-caption" v-if="!valTime2">* Campo obligatorio</p>
+                       </q-card>
+                       </div>
+                       <div class="row justify-center">
+                    <q-card class="q-pa-md q-ma-md" style="border-radius: 28px;">
+                      <p class="text-bold text-center">Dirección pickup</p>
+                      <addresses @stoploading="addload = true" :noload="addload" class="col-6" style="min-width: 320px" v-model="addId"/>
+                      <p class="text-center text-red text-bold text-caption" v-if="!addId">* Campo obligatorio</p>
+                      <p class="text-center text-red text-bold text-caption" v-if="(this.addId !== null && this.addId === this.addId2)">* Dirección de pickup no puede ser igual que la de Entrega </p>
+                    </q-card>
+                    <q-card class="q-pa-md q-ma-md" style="border-radius: 28px;">
+                      <p class="text-bold text-center">Dirección de Entrega</p>
+                      <addresses @stoploading="addload = true" :noload="addload" class="col-6" style="min-width: 320px" v-model="addId2"/>
+                      <p class="text-center text-red text-bold text-caption" v-if="!addId2">* Campo obligatorio</p>
+                      <p class="text-center text-red text-bold text-caption" v-if="(this.addId !== null && this.addId === this.addId2)">* Dirección de pickup no puede ser igual que la de Entrega </p>
+                    </q-card>
+                       </div>
+                  </div>
             </q-card-section>
             <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
                <carouselmenu
@@ -183,12 +223,21 @@ export default {
   },
   components: {
     'carouselmenu': () => import('./carouselMenu.vue'),
-    'itemcomp': () => import('./itemComp')
+    'itemcomp': () => import('./itemComp'),
+    'addresses': () => import('./addresses.vue'),
+    'orderdate': () => import('./orderDate')
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['menucfg', 'paymentServ']),
+    requiredA () {
+      if (typeof this.displayVal.disptype === 'undefined' || parseInt(this.displayVal.disptype) !== 2) {
+        return this.required
+      } else {
+        return this.required && this.valTime && this.valTime2 && this.addId && this.addId2 && (this.addId !== this.addId2)
+      }
+    },
     filtercat () {
       if (this.selectedFilter === '') { return this.cats } else if (this.filters && this.selectedFilter && this.cats) {
         let thfilter = this.filters.find(e => e.id === this.selectedFilter)
@@ -282,6 +331,13 @@ export default {
   },
   data () {
     return {
+      valTime: false,
+      valTime2: false,
+      orderDate: null,
+      orderDate2: null,
+      addload: null,
+      addId: null,
+      addId2: null,
       loc: window.location.origin,
       rewards: false,
       itComp: [],
@@ -370,6 +426,15 @@ export default {
           category: this.displayVal.categoria
         }
         if (rew) { toCart = { ...toCart, reward: rew } }
+        if (parseInt(this.displayVal.disptype) === 2) {
+          toCart = {
+            ...toCart,
+            datePickup: this.orderDate,
+            dateShipping: this.orderDate2,
+            addressPickup: this.addId,
+            addressShipping: this.addId2
+          }
+        }
         this.addCart(toCart).then(() => this.$q.notify({
           message: 'Producto Añadido',
           color: 'secondary',

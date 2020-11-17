@@ -140,10 +140,14 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
-            <div class="text-left"><itemcomp
+            <q-card style="max-width: 400px" class="text-left">
+              <q-card-section>
+                <itemcomp
                 :comp="[props.row]"
                 :value="value"
-              /></div>
+              />
+              </q-card-section>
+              </q-card>
           </q-td>
         </q-tr>
       </template>
@@ -189,7 +193,7 @@ export default {
   data () {
     return {
       value: [],
-      typeOpts: [{ name: 'Seleccion Múltiple A', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple B', value: 2 }],
+      typeOpts: [{ name: 'Seleccion Múltiple CheckBox', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple Slider', value: 2 }, { name: 'Seleccion Múltiple Inputs', value: 3 }],
       typeFree: [{ name: 'Si', value: 1 }, { name: 'No', value: 0 }],
       columns,
       selected: [],

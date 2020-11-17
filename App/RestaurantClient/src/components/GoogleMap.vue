@@ -1,6 +1,6 @@
 <template>
   <div>
-    <gmap-autocomplete v-if="!readOnly" class="introInput" @place_changed="(e) => addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})" >
+    <gmap-autocomplete ref="gmapAutocomplete" :position.sync="markersClone[0].position" v-if="!readOnly" class="introInput" @place_changed="(e) => {consoleme(e); addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})}" >
                     <template v-slot:input="slotProps">
                         <q-input outlined
                                       prepend-inner-icon="place"
@@ -38,7 +38,7 @@
 <script>
 import Vue from 'vue'
 import * as GmapVue from 'gmap-vue'
-
+/* eslint-disable no-undef */
 Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
@@ -52,14 +52,16 @@ export default {
     return {
       // default to Montreal to keep it simple
       // change this to whatever makes sense
+      google: window.google,
       places: [],
       currentPlace: null,
-      markersClone: Array.from(this.markers),
+      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: '' }],
       centerClone: this.center
     }
   },
 
   mounted () {
+    console.log('mounted')
     this.geolocate()
     this.$nextTick(() => {
       // console.log({ ref: this.$refs })
@@ -83,6 +85,13 @@ export default {
           position: clickedLocation
         })
       }
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode({ 'latLng': e.latLng }, (result, status) => {
+        if (status === google.maps.GeocoderStatus.OK) {
+          this.$refs.gmapAutocomplete.$refs.input.value = result[0].formatted_address
+          this.$emit('address-update', result[0].address_components)
+        }
+      })
     },
     setPlace (place) {
       this.currentPlace = place
@@ -98,6 +107,9 @@ export default {
         this.place = null
       }
     },
+    consoleme (e) {
+      console.log({ e })
+    },
     addMarker () {
       if (this.currentPlace) {
         const marker = {
@@ -108,10 +120,17 @@ export default {
         this.places.push(this.currentPlace)
         this.centerClone = marker
         this.currentPlace = null
+        const geocoder = new google.maps.Geocoder()
+        geocoder.geocode({ 'latLng': marker }, (result, status) => {
+          if (status === google.maps.GeocoderStatus.OK) {
+            this.$refs.gmapAutocomplete.$refs.input.value = result[0].formatted_address
+            this.$emit('address-update', result[0].address_components)
+          }
+        })
       }
     },
-    geolocate: function () {
-      if (this.markers) {
+    geolocate () {
+      if (this.markers && this.markers.length) {
         // console.log({ Marker: this.markers })
         this.centerClone = {
           lat: this.markers[0].position.lat,
@@ -128,7 +147,7 @@ export default {
     },
     geolocalize () {
       navigator.geolocation.getCurrentPosition(position => {
-        // console.log({ position })
+        console.log({ position })
         let latLng = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
