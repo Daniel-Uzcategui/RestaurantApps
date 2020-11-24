@@ -279,6 +279,15 @@ const routes = [
         }
       },
       {
+        path: 'create',
+        name: 'createUsers',
+        component: () => import('pages/users/create.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'create Usuarios'
+        }
+      },
+      {
         path: 'show',
         name: 'showUsers',
         component: () => import('pages/users/show.vue'),

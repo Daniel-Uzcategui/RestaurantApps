@@ -15,11 +15,13 @@
       :selected.sync="selected"
       >
       <template v-slot:top-right>
+        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/users/create')"/>
         <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
+          <q-th auto-width />
           <q-th>
              Seleccione
           </q-th>
@@ -42,6 +44,9 @@
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer">
+           <q-td auto-width>
+            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
+          </q-td>
            <q-td auto-width>
             <q-checkbox v-model="props.selected" />
           </q-td>
@@ -83,6 +88,63 @@
             :value="props.row.typeAccess"
             @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'typeAccess')"
             :options="typeAccess_options" />
+          </q-td>
+        </q-tr>
+       <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Correo Electronico: </label></q-td>
+          <q-td colspan="100%">
+            <div class="text-left"><q-input :value="props.row.email" disable/></div>
+          </q-td>
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Proveedor'">
+          <q-td colspan=2>
+            <label class="label-expand">Codigo delivery </label>
+            <div class="text-left"><q-input :value="props.row.codigoDelivery" disable/></div>
+          </q-td>
+          <q-td colspan=2>
+            <label class="label-expand">Razón Social </label>
+            <div class="text-left"><q-input :value="props.row.razonSocial" disable/></div>
+          </q-td>
+          <q-td colspan=2>
+            <label class="label-expand">RIF </label>
+            <div class="text-left"><q-input :value="props.row.RIF" disable/></div>
+          </q-td>
+          <q-td colspan=2>
+            <label class="label-expand">Razón Comercial</label>
+            <div class="text-left"><q-input :value="props.row.razonComercial" disable/></div>
+          </q-td>
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Delivery'">
+          <q-td colspan=2>
+            <label class="label-expand">Codigo </label>
+            <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
+          </q-td>
+          <q-td colspan=2 key="statusUbicacion">
+            <label class="label-expand">Estatus de Ubicación</label>
+            <div class="text-left">
+              <q-select map-options emit-value standout="bg-teal text-white"
+              :value="props.row.statusUbicacion"
+              @input="(e) => saved(e, props.row.statusUbicacion, props.row.id, 'statusUbicacion')"
+              :options="estatus_ubicacion" />
+           </div>
+          </q-td>
+         <q-td colspan=2 key="movilidad">
+            <label class="label-expand">Tipo movilidad </label>
+            <div class="text-left">
+              <q-select map-options emit-value standout="bg-teal text-white"
+              :value="props.row.movilidad"
+              @input="(e) => saved(e, props.row.movilidad, props.row.id, 'movilidad')"
+              :options="tipo_options" />
+           </div>
+          </q-td>
+          <q-td colspan=2 key="statusdelivery">
+            <label class="label-expand">Estatus delivery </label>
+            <div class="text-left">
+              <q-select map-options emit-value standout="bg-teal text-white"
+              :value="props.row.statusdelivery"
+              @input="(e) => saved(e, props.row.statusdelivery, props.row.id, 'statusdelivery')"
+              :options="estatus_delivery" />
+           </div>
           </q-td>
         </q-tr>
       </template>
@@ -206,8 +268,27 @@ export default {
       ],
       rolOpt: [],
       typeAccess_options: [
+        { label: 'Proveedor', value: 'Proveedor' },
+        { label: 'Delivery', value: 'Delivery' },
         { label: 'Cliente', value: 'Client' },
         { label: 'Administrativo', value: 'Admin' }
+      ],
+      estatus_ubicacion: [
+        { label: 'En Sede', value: 1 },
+        { label: 'Asignado', value: 2 },
+        { label: 'En vía al destino', value: 3 },
+        { label: 'En Retorno', value: 4 }
+      ],
+      tipo_options: [
+        { label: 'Vehículo', value: 0 },
+        { label: 'Motocicleta', value: 1 },
+        { label: 'Bicicleta', value: 2 },
+        { label: 'Caminando', value: 3 }
+      ],
+      estatus_delivery: [
+        { label: 'Activo', value: 0 },
+        { label: 'Inactivo', value: 1 },
+        { label: 'Suspendido', value: 2 }
       ]
     }
   }
