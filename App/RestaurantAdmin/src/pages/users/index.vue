@@ -92,8 +92,29 @@
         </q-tr>
        <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Correo Electronico: </label></q-td>
-          <q-td colspan="100%">
+          <q-td colspan="2">
             <div class="text-left"><q-input :value="props.row.email" disable/></div>
+          </q-td>
+         </q-tr>
+          <q-tr v-show="props.expand" :props="props">
+           <q-td><label class="label-expand">Telefono: </label></q-td>
+          <q-td colspan="2">
+            <div class="text-left"><q-input :value="props.row.phone" disable/></div>
+          </q-td>
+         </q-tr>
+         <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Fecha Nacimiento: </label></q-td>
+          <q-td colspan="2">
+            <div class="text-left"><q-input :value="props.row.fecnac" disable/></div>
+          </q-td>
+         </q-tr>
+         <q-tr v-show="props.expand" :props="props">
+          <q-td><label class="label-expand">Sexo: </label></q-td>
+          <q-td colspan="2">
+            <div class="text-left"><q-select map-options emit-value standout="bg-teal text-white"
+            :value="props.row.sexo"
+            @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'sexo')"
+            :options="sexo_options" /></div>
           </q-td>
         </q-tr>
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Proveedor'">
@@ -105,8 +126,10 @@
             <label class="label-expand">Razón Social </label>
             <div class="text-left"><q-input :value="props.row.razonSocial" disable/></div>
           </q-td>
+         </q-tr>
+         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Proveedor'">
           <q-td colspan=2>
-            <label class="label-expand">RIF </label>
+            <label class="label-expand">Id Fiscal </label>
             <div class="text-left"><q-input :value="props.row.RIF" disable/></div>
           </q-td>
           <q-td colspan=2>
@@ -116,7 +139,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Delivery'">
           <q-td colspan=2>
-            <label class="label-expand">Codigo </label>
+            <label class="label-expand">Codigo Delivery </label>
             <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
           </q-td>
           <q-td colspan=2 key="statusUbicacion">
@@ -128,6 +151,8 @@
               :options="estatus_ubicacion" />
            </div>
           </q-td>
+         </q-tr>
+          <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Delivery'">
          <q-td colspan=2 key="movilidad">
             <label class="label-expand">Tipo movilidad </label>
             <div class="text-left">
@@ -145,6 +170,12 @@
               @input="(e) => saved(e, props.row.statusdelivery, props.row.id, 'statusdelivery')"
               :options="estatus_delivery" />
            </div>
+          </q-td>
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Seller'">
+          <q-td colspan=2>
+            <label class="label-expand">Codigo </label>
+            <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
           </q-td>
         </q-tr>
       </template>
@@ -286,9 +317,13 @@ export default {
         { label: 'Caminando', value: 3 }
       ],
       estatus_delivery: [
-        { label: 'Activo', value: 0 },
-        { label: 'Inactivo', value: 1 },
+        { label: 'Disponible', value: 0 },
+        { label: 'No disponible', value: 1 },
         { label: 'Suspendido', value: 2 }
+      ],
+      sexo_options: [
+        { label: 'Masculino', value: 'M' },
+        { label: 'Femenino', value: 'F' }
       ]
     }
   }

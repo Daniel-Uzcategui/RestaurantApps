@@ -20,7 +20,7 @@
           ref="nombre"
           label="Nombre"
           outlined
-          :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre del usuario']"/>
+          />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input
@@ -31,7 +31,7 @@
           ref="apellido"
           label="Apellido"
           outlined
-          :rules="[ val => val && val.length > 0 || '*Requerido el campo apellido del usuario']"/>
+          />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
@@ -42,7 +42,8 @@
           <q-radio  dense label="Administrador" color="teal" val="Admin"  v-model="typeAccess"  class="typeAccess"/>
           <q-radio  dense label="Cliente" color="orange" val="Client" v-model="typeAccess"  class="typeAccess" />
           <q-radio  dense label="Proveedor" color="red" val="Proveedor" v-model="typeAccess"  class="typeAccess" />
-          <q-radio  dense label="Delivery" color="yellow" val="Delivery"  v-model="typeAccess" class="typeAccess" />
+          <q-radio  dense label="Delivery" color="blue" val="Delivery"  v-model="typeAccess" class="typeAccess" />
+          <q-radio  dense label="Vendedor" color="yellow" val="Seller"  v-model="typeAccess" class="typeAccess" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
             <q-input label="Identificación" v-model="cedula" outlined
@@ -70,6 +71,16 @@
         </template>
       </q-input>
       </div>
+      <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3">
+          <q-input
+          v-model="phone"
+          type="text"
+          float-label="Float Label"
+          placeholder="Telefono"
+          label="Telefono"
+          outlined
+           />
+        </div>
       <div class="flex-break q-py-md "></div>
       <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
       <q-input
@@ -134,9 +145,9 @@
           v-model="RIF"
           type="text"
           float-label="Float Label"
-          placeholder="RIF"
+          placeholder="Id Fiscal"
           ref="RIF"
-          label="RIF"
+          label="Id Fiscal"
           outlined/>
          </div>
          <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'">
@@ -148,18 +159,19 @@
           label="Razón Comercial"
           outlined/>
          </div>
-      <!-- delivery -->
+        <!-- delivery  o seller-->
        <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'" >
+         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery' ||  typeAccess==='Seller'" >
           <q-input
           v-model="codigo"
           type="text"
           float-label="Float Label"
-          placeholder="Codigo Delivery"
+          placeholder="Codigo"
           ref="codigoDelivery"
-          label="Codigo Delivery"
+          label="Codigo"
           outlined/>
         </div>
+        <!-- delivery -->
         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'" >
          <q-select v-model="statusUbicacion" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_ubicacion" label="Estatus de Ubicación" />
@@ -207,9 +219,9 @@ export default {
       cedula: '',
       email: '',
       status: 1,
-      statusUbicacion: 0,
-      movilidad: 0,
-      statusdelivery: 0,
+      statusUbicacion: '',
+      movilidad: '',
+      statusdelivery: '',
       isPwd: true,
       typeAccess: '',
       fecnac: '',
@@ -246,8 +258,8 @@ export default {
         { label: 'Caminando', value: 3 }
       ],
       estatus_delivery: [
-        { label: 'Activo', value: 0 },
-        { label: 'Inactivo', value: 1 },
+        { label: 'Disponible', value: 0 },
+        { label: 'No disponible', value: 1 },
         { label: 'Suspendido', value: 2 }
       ],
       Local_ES: {
@@ -263,10 +275,16 @@ export default {
   methods: {
     ...mapActions('auth', ['createUser']),
     agregar () {
-      const { email, password, nombre, apellido, cedula, sexo, fecnac, codigo, razonSocial, RIF, razonComercial, rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery } = this
+      const { email, password, nombre, apellido, cedula, sexo,
+        fecnac, codigo, razonSocial, RIF, razonComercial,
+        rol, typeAccess, codigoDelivery, statusUbicacion,
+        movilidad, statusdelivery, phone } = this
       // this.$refs.emailAuthenticationForm.validate()
-      console.log(email, password, nombre, apellido, cedula, sexo, fecnac, codigo, razonSocial, RIF, razonComercial, rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery)
-      this.createUser({ email, password, nombre, apellido, cedula, sexo, fecnac, codigo, razonSocial, RIF, razonComercial, rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery }).then(() => this.$q.dialog({
+      console.log(email, password, nombre, apellido, cedula,
+        sexo, fecnac, codigo, razonSocial, RIF, razonComercial,
+        rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery, phone)
+      this.createUser({ email, password, nombre, apellido, cedula, sexo, fecnac, codigo, razonSocial, RIF, razonComercial, rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery, phone }
+      ).then(() => this.$q.dialog({
         title: '',
         message: 'Se han guardo exitosamente el Usuario',
         cancel: false,
@@ -277,6 +295,7 @@ export default {
         cancel: false,
         persistent: true
       }))
+      this.$router.replace('/users/index')
     }
   },
   mounted () {
