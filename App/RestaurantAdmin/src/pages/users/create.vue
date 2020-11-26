@@ -125,9 +125,9 @@
           v-model="codigoDelivery"
           type="text"
           float-label="Float Label"
-          placeholder="Codigo Delivery"
+          placeholder="Codigo"
           ref="codigoDelivery"
-          label="Codigo Delivery"
+          label="Codigo"
           outlined/>
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >

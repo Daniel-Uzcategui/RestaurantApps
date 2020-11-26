@@ -119,7 +119,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Proveedor'">
           <q-td colspan=2>
-            <label class="label-expand">Codigo delivery </label>
+            <label class="label-expand">Codigo</label>
             <div class="text-left"><q-input :value="props.row.codigoDelivery" disable/></div>
           </q-td>
           <q-td colspan=2>
@@ -139,7 +139,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Delivery'">
           <q-td colspan=2>
-            <label class="label-expand">Codigo Delivery </label>
+            <label class="label-expand">Codigo </label>
             <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
           </q-td>
           <q-td colspan=2 key="statusUbicacion">
@@ -174,7 +174,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Seller'">
           <q-td colspan=2>
-            <label class="label-expand">Codigo </label>
+            <label class="label-expand">Codigo del vendedor </label>
             <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
           </q-td>
         </q-tr>

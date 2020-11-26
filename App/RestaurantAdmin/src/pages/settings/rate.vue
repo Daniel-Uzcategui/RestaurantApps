@@ -18,13 +18,18 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="rateValue" :props="props">
-              <q-input  @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
+              <q-input
+                @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
                 :value="props.row.rateValue"
+                type="number"
                 dense  input-style="text-align: right"
                 />
           </q-td>
           <q-td key="currency" :props="props">
-              <q-input  :value="props.row.currency"  dense disable input-style="text-align: right"
+              <q-input
+              :value="props.row.currency"  dense
+              @input="(e) => saved(e, props.row.name, props.row.id, 'currency')"
+              input-style="text-align: right"
                 />
           </q-td>
           <q-td key="dateIn" :props="props">
@@ -42,7 +47,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { date } from 'quasar'
 const columns = [
   { name: 'rateValue', align: 'center', label: 'Tasa', field: 'rateValue', style: 'min-width: 260px; width: 260px' },
-  { name: 'currency', align: 'center', label: 'Moneda', field: 'currency', style: 'min-width: 160px; width: 160px' },
+  { name: 'currency', align: 'center', label: 'Moneda (Abreviado)', field: 'currency', style: 'min-width: 160px; width: 160px' },
   { name: 'dateIn', align: 'center', label: 'Fecha', field: 'dateIn', style: 'min-width: 260px; width: 260px' }
 ]
 export default {
