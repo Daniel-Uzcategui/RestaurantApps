@@ -114,7 +114,7 @@
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones especiales</div>
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones especiales API</div>
        </div>
         <div v-if="statusPaypal" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Paypal</div>
@@ -125,6 +125,19 @@
           outlined label="Paypal API" />
         </div>
         </div>
+        <div  v-if="statusCreditCorp" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito CreditCorp</div>
+       </div>
+       <div v-if="statusCreditCorp"  class="row header-container">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input v-model="CreditCorp" standout="bg-teal text-white"
+          outlined label="CreditCorp API" />
+        </div>
+        </div>
+         <div class="flex-break q-py-md "></div>
+        <div class="row header-container">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones textos Medios de pago</div>
+       </div>
         <div v-if="statusZelle" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Zelle</div>
        </div>
@@ -141,15 +154,6 @@
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input v-model="venmoAcc" standout="bg-teal text-white"
           outlined label="Cuenta/Teléfono Venmo" />
-        </div>
-        </div>
-        <div  v-if="statusCreditCorp" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito CreditCorp</div>
-       </div>
-       <div v-if="statusCreditCorp"  class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="CreditCorp" standout="bg-teal text-white"
-          outlined label="CreditCorp API" />
         </div>
         </div>
           <div  v-if="statuspagomovil" class="row header-container q-pt-md q-pb-md">
