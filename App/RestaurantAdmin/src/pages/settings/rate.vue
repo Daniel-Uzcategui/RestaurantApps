@@ -1,6 +1,6 @@
 <template>
-<q-page class="q-pa-md" >
-   <div class="q-pa-md">
+<q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+   <div >
    <q-table
       :data="rates"
       :columns="columns"

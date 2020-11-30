@@ -1,7 +1,7 @@
 <template>
-  <q-page class="q-pa-md q-pa-sm " >
-    <div class="row header-container">
-        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3"  >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+    <div class="row justify-center">
+        <div class="q-ma-md col-xs-12 col-sm-6 col-md-4 col-lg-3"  >
          <q-card class="text-white" horizontal>
           <q-card-section class="bg-secondary">
             <div class="text-h5">
@@ -18,7 +18,7 @@
           </q-card-actions>
            </q-card>
           </div>
-         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" >
+         <div class="q-ma-md header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" >
           <q-card class=" text-white" horizontal>
           <q-card-section  class="bg-secondary">
             <div class="text-h5">
@@ -36,7 +36,7 @@
           </q-card-actions>
            </q-card>
           </div>
-          <div class="q-pa-xs header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="q-ma-md header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <q-card class="text-white" horizontal>
               <q-card-section  class="bg-secondary">
               <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
@@ -51,28 +51,7 @@
             </q-card-actions>
           </q-card>
       </div>
-     <div class="flex-break"></div>
-     <ordertable />
-     <!-- <div class="header-cell col-xs-12 col-10" tabindex="0">
-      <q-card >
-       <q-card-section  class="bg-secondary text-white" >
-        <div class="text-h5">Ordenes</div>
-      </q-card-section>
-     <q-table
-      :dense="$q.screen.lt.md"
-      :data="OrderClient"
-      :columns="columns"
-      color="primary"
-      row-key="id"
-      no-data-label="No se encontraron registros"
-      rows-per-page-label="Registros por página"
-    >
-      <template v-slot:top>
-          <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
-      </template>
-    </q-table>
-    </q-card>
-    </div> -->
+     <ordertable class="col-12" />
     </div>
   </q-page>
 </template>

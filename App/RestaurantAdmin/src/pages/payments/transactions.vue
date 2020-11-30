@@ -1,5 +1,5 @@
  <template>
-  <q-page class=" q-pa-lg" >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
       <q-table class="table"
       title="Transactiones por medios de pago"

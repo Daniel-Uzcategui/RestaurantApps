@@ -7,7 +7,7 @@
             <div class="text-caption">Dirección de Pickup</div>
             </q-item-section>
             <q-item-section class="text-center">
-              <q-item-label lines="3">{{addPickup}}</q-item-label>
+              <q-item-label lines="3">{{addressRadio.find(x => x.value === addressPickup)['label']}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item v-ripple>
@@ -15,7 +15,7 @@
             <div class="text-caption">Dirección de Entrega</div>
             </q-item-section>
             <q-item-section class="text-center">
-              <q-item-label lines="3">{{addShipping}}</q-item-label>
+              <q-item-label lines="3">{{addressRadio.find(x => x.value === addressShipping)['label']}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -40,10 +40,8 @@
       color="primary"
     />
   </div>
-  <p v-if="!isValidMarker() && this.sede !== null" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
   <q-dialog
   style="z-index: 9999999"
-  seamless
       v-model="dialog"
       persistent
       :maximized="maximizedToggle"
@@ -51,7 +49,6 @@
       transition-hide="slide-down"
     >
     <q-card
-    v-show="diagHack"
     style="width: 100%;
           height: 100%;
           margin: 0px;
@@ -66,7 +63,6 @@
             </q-bar>
     <q-card-section @click.prevent class="q-pt-none q-pa-md">
       <google-map
-        :poly="getZones()"
         @address-update="(e) => updateAddIn(e)"
         :readOnly="readAddr"
         :center="center"
@@ -98,7 +94,7 @@
     <q-card-actions align="around">
         <q-btn color="secondary" v-close-popup no-caps rounded >Cancelar</q-btn>
         <q-btn color="primary" no-caps rounded @click="$refs.addrs.validate().then(e => { if (e) {
-          if (markers.length && isValidMarker()) {
+          if (markers.length) {
             confirm()
             } else {
             showNotif()
@@ -119,26 +115,8 @@ export default {
   },
   props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping'],
   computed: {
-    ...mapGetters('localization', ['localZones', 'localizations']),
     ...mapGetters('address', ['address']),
-    ...mapGetters('menu', ['sede']),
     ...mapGetters('user', ['currentUser']),
-    addPickup () {
-      let p = this.addressRadio.find(x => x.value === this.addressPickup)
-      if (p) {
-        return p.label
-      } else {
-        return ''
-      }
-    },
-    addShipping () {
-      let p = this.addressRadio.find(x => x.value === this.addressShipping)
-      if (p) {
-        return p.label
-      } else {
-        return ''
-      }
-    },
     addressRadio () {
       return this.address.map(x => {
         return {
@@ -150,48 +128,9 @@ export default {
   },
   methods: {
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
-    ...mapActions('localization', ['bindLocalZones']),
-    isValidMarker () {
-      console.log('hi')
-      if (!this.getZones() || this.markers.length === 0) { return false }
-      // eslint-disable-next-line no-undef
-      if (typeof google === 'undefined') { return false }
-      for (let i in this.getZones()) {
-        let latLng = this.markers[0].position
-        if (!isNaN(latLng.lat)) {
-          // eslint-disable-next-line no-undef
-          latLng = new google.maps.LatLng(this.markers[0].position)
-        }
-        // eslint-disable-next-line no-undef
-        let poly = new google.maps.Polygon({ paths: this.getZones()[i] })
-        console.log({ latLng, mark: this.markers, poly })
-        // eslint-disable-next-line no-undef
-        if (google.maps.geometry.poly.containsLocation(latLng, poly)) {
-          this.$emit('update-price', this.getZonePrices()[i]['price'])
-          return true
-        }
-      }
-      return false
-    },
-    getZones () {
-      if (typeof this.sede === 'undefined' || this.sede === null) { return false }
-      let sede = this.localizations.find(x => x.id === this.sede)
-      console.log(sede)
-      let zone = this.localZones.find(x => x.id === sede.deliveryZone)
-      if (typeof zone === 'undefined' || typeof zone.paths === 'undefined') { return false }
-      return JSON.parse(zone.paths)
-    },
-    getZonePrices () {
-      if (typeof this.sede === 'undefined' || this.sede === null) { return false }
-      let sede = this.localizations.find(x => x.id === this.sede)
-      console.log(sede)
-      let zone = this.localZones.find(x => x.id === sede.deliveryZone)
-      if (typeof zone === 'undefined' || typeof zone.paths === 'undefined') { return false }
-      return zone.zones
-    },
     showNotif () {
       this.$q.notify({
-        message: `Debe seleccionar la ubicación en el mapa, Dentro de las limitaciones marcadas`,
+        message: `Debe seleccionar la ubicación en el mapa`,
         color: 'red',
         actions: [
           { label: 'X', color: 'white' }
@@ -253,7 +192,6 @@ export default {
         alias: this.alias,
         puntoRef: this.puntoRef,
         location: JSON.stringify(this.markers) })
-      this.$emit('input', null)
     },
     setDialog () {
       this.readAddr = true
@@ -293,27 +231,16 @@ export default {
     }
   },
   async mounted () {
-    this.bindLocalZones()
     if (this.currentUser !== null) {
       var binded = await this.bindAddress(this.currentUser.id).catch(e => console.log(e))
       if (binded) {
         this.loading = false
       }
     }
-    this.dialog = false
-    this.diagHack = true
   },
   watch: {
     loading () {
       this.$emit('stoploading', true)
-    },
-    value () {
-      this.setDialog()
-      if (this.isValidMarker()) {
-        this.$emit('invalid-address', true)
-      } else {
-        this.$emit('invalid-address', false)
-      }
     }
   },
   data () {
@@ -329,8 +256,7 @@ export default {
       alias: null,
       puntoRef: null,
       maximizedToggle: true,
-      dialog: true,
-      diagHack: false,
+      dialog: false,
       center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },
       markers: [],
       places: [],
@@ -351,9 +277,7 @@ export default {
           route: 'Calle/Avenida',
           premise: 'Domicilio',
           political: 'Urbanización',
-          street_number: '# de Calle',
-          establishment: 'Domicilio',
-          bus_station: 'Terminal de Autobuses'
+          street_number: '# de Calle'
         },
         Panamá: {
           country: 'País',
@@ -364,9 +288,7 @@ export default {
           route: 'Calle/Avenida',
           premise: 'Domicilio',
           political: 'Urbanización',
-          street_number: '# de Calle',
-          establishment: 'Domicilio',
-          bus_station: 'Terminal de Autobuses'
+          street_number: '# de Calle'
         }
       }
     }

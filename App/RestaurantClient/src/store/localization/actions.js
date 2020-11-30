@@ -5,7 +5,10 @@ export const bindLocalizations = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindLocalizations')
   return bindFirestoreRef('localizations', firestore().collection('localizations').where('status', '==', 0), { reset: false })
 })
-
+export const bindLocalZones = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindLocalZones')
+  return bindFirestoreRef('localZones', firestore().collection('localZones').where('status', '<', 2))
+})
 export const saveLocation = firestoreAction((state, payload) => {
   return firestore()
     .collection('localizations')

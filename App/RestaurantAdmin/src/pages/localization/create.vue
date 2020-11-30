@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg" >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
        <q-card-section  class="bg-secondary text-white header" >
@@ -10,9 +10,9 @@
           </div>
        </q-card-section>
        <div class='filled'></div>
-        <div class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input
+        <div class="row justify-between">
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          <q-input rounded
           v-model="name"
           type="text"
           float-label="Float Label"
@@ -21,27 +21,25 @@
           outlined
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre de la Sede']"/>
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          <q-select rounded v-model="status" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-xs-12 col-sm-6 col-md-5 col-lg-4">
-          <q-btn v-if="localizacion_sede.length === 0" color="primary" class="q-py-md" label="Agregar Localizacion" icon="fas fa-map-marker-alt"/>
-          <q-btn v-if="localizacion_sede.length > 0" color="primary" class="q-py-md" label="Localizacion Agregada" icon="fas fa-check"/>
-          <q-popup-edit persistent :value="localizacion_sede" buttons>
-              <google-map
-                :center="center"
-                :markers="localizacion_sede" />
-            </q-popup-edit>
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-5 col-lg-4">
+          <google-map
+                :center="localizacion_sede"
+                :markers="localizacion_sede"
+                :readOnly="false"
+                @update-mark="(e) => { localizacion_sede = e.position; address = e.address }" />
         </div>
-         <div class="header-cell col-xs-12 col-sm-6 col-md-5 col-lg-5">
-            <q-input v-model="address" filled type="textarea"
+         <div class="q-pa-md col-xs-12 col-sm-6 col-md-5 col-lg-5">
+            <q-input rounded v-model="address" filled type="textarea"
             placeholder="Dirección"
             :rules="[ val => val && val.length > 0 || '*Requerido el campo de dirección']"  />
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
+         <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="col-3">
             <label>Tipo de Servicios</label>
             </div>
@@ -51,14 +49,22 @@
               <q-checkbox v-model="Inlocal" dense label="En local" color="red" class="typeServices" />
             </div>
         </div>
-        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
-          <q-input v-model="tables" outlined  type="text" float-label="Float Label" placeholder="Mesas" />
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
+          <q-input rounded v-model="tables" outlined  type="text" float-label="Float Label" placeholder="Mesas" />
         </div>
-         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
-          <q-input v-model="capacity" outlined type="text" float-label="Float Label" placeholder="Capacidad" />
+         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
+          <q-input rounded v-model="capacity" outlined type="text" float-label="Float Label" placeholder="Capacidad" />
         </div>
      </div>
        <diV class='filled'></diV>
+     </q-card>
+     <q-card v-if="Delivery">
+       <q-card-section  class="bg-secondary text-white header" >
+          <div class="text-h5">Zonas de delivery (Opcional)</div>
+       </q-card-section>
+       <q-card-section class="column items-center">
+        <gzones v-model="deliveryZone" />
+      </q-card-section>
      </q-card>
   </div>
   <q-dialog v-model="validationError">
@@ -79,8 +85,18 @@
 <script>
 import { GeoPoint } from '../../services/firebase/db.js'
 import { mapActions } from 'vuex'
+import * as GmapVue from 'gmap-vue'
+import Vue from 'vue'
+/* eslint-disable no-undef */
+Vue.use(GmapVue, {
+  load: {
+    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
+    libraries: 'places'
+  }
+})
 export default {
   components: {
+    gzones: require('../../components/GmapZones').default,
     GoogleMap: require('../../components/GoogleMap.vue').default
   },
   data () {
@@ -90,6 +106,7 @@ export default {
       tables: '',
       capacity: '',
       status: 1,
+      deliveryZone: null,
       PickUP: true,
       Delivery: true,
       Inlocal: false,
@@ -129,6 +146,7 @@ export default {
       const loc = JSON.parse(JSON.stringify(this.localizacion_sede[0]))
       const payload = {
         name: this.name,
+        deliveryZone: this.deliveryZone,
         tables: this.tables,
         status: this.status,
         capacity: this.capacity,

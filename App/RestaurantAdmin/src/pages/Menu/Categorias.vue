@@ -1,13 +1,15 @@
 <template>
-<q-page class="q-pa-md" >
-   <div class="q-pa-md">
+<q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+   <div>
    <q-table
+      :grid="$q.screen.lt.md"
       :data="categorias"
       :columns="columns"
       title="Categorias"
       row-key="id"
       :selected-rows-label="getSelectedString"
       selection="single"
+      dense
       :selected.sync="selected"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
@@ -24,7 +26,7 @@
             <q-checkbox v-model="props.selected" />
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              <q-input rounded outlined  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                 :value="props.row.name"
                 dense
                 />
@@ -64,7 +66,7 @@
               </div>
              </q-td>
              <q-td key="priority" :props="props">
-              <q-input @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense autofocus />
+              <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense autofocus />
            </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
@@ -76,7 +78,7 @@
           <q-td key="categorias" :props="props">
             <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
             <q-popup-edit v-model.number="props.row.FechaAct">
-              <q-input
+              <q-input rounded outlined
                 readonly
                 @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
                 :value="props.row.FechaAct"
@@ -86,6 +88,101 @@
             </q-popup-edit>
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        :style="props.selected ? 'transform: scale(0.95);' : ''">
+          <q-card>
+            <q-card-section>
+             <q-list dense>
+              <q-item>
+                <q-item-section>
+                  <q-checkbox dense v-model="props.selected" :label="props.row.name" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-icon v-ripple name="edit" @click="props.expand = !props.expand" />
+                </q-item-section>
+              </q-item>
+            </q-list>
+            </q-card-section>
+            <q-separator />
+            <q-list v-if="!props.expand" dense>
+              <q-item v-for="col in props.cols" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption>{{ col.value }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <q-list v-if="props.expand">
+                <q-item class="column items-center" key="desc" :props="props">
+                  <p class="text-bold">Nombre</p>
+                    <q-input rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                      :value="props.row.name"
+                      />
+                </q-item>
+
+                <q-item class="column items-center" key="descripcion" :props="props">
+                  <p class="text-bold">Descripción</p>
+                    <q-editor
+                      rounded outlined
+                      @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
+                      :value="props.row.descripcion"
+                      min-height="5rem"
+                      autofocus
+                    />
+                </q-item>
+                    <q-item class="column items-center">
+                        <p class="text-bold">Color de Fondo</p>
+                    <q-color
+                      default-value="#285de0"
+                      :value="props.row.color"
+                      default-view="palette"
+                      :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
+                      @change="val => saved(val, props.row.color, props.row.id, 'color')"
+                      style="max-width: 250px"
+                      />
+                  </q-item>
+                  <q-item class="column items-center">
+                        <p class="text-bold">Color de Texto</p>
+                    <q-color
+                      default-value="#285de0"
+                      :value="props.row.textcolor"
+                      default-view="palette"
+                      :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
+                      @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
+                      style="max-width: 250px"
+                      />
+                  </q-item>
+                  <q-item class="column items-center" key="priority" :props="props">
+                     <p class="text-bold">Prioridad</p>
+                    <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" autofocus />
+                </q-item>
+                <q-item class="column items-center" key="estatus" :props="props">
+                    <q-toggle
+                      label="Estatus"
+                      @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
+                      :value="props.row.estatus ? true : false"
+                      color="#3c8dbc"
+                    />
+                </q-item>
+                <q-item class="column items-center" key="categorias" :props="props">
+                  <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
+                  <q-popup-edit v-model.number="props.row.FechaAct">
+                    <q-input rounded outlined
+                      readonly
+                      @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
+                      :value="props.row.FechaAct"
+                      label="Fecha"
+                      autofocus
+                    />
+                  </q-popup-edit>
+                </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
   </div>

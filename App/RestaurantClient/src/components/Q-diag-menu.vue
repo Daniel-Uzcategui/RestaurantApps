@@ -158,13 +158,13 @@
                        <div class="row justify-center">
                     <q-card class="q-pa-md q-ma-md" style="border-radius: 28px;">
                       <p class="text-bold text-center">Dirección pickup</p>
-                      <addresses @stoploading="addload = true" :noload="addload" class="col-6" style="min-width: 320px" v-model="addId"/>
+                      <addresses @stoploading="addload = true" @invalid-address="(e) => validAddress = e" :noload="addload" class="col-6" style="min-width: 320px" v-model="addId"/>
                       <p class="text-center text-red text-bold text-caption" v-if="!addId">* Campo obligatorio</p>
                       <p class="text-center text-red text-bold text-caption" v-if="(this.addId !== null && this.addId === this.addId2)">* Dirección de pickup no puede ser igual que la de Entrega </p>
                     </q-card>
                     <q-card class="q-pa-md q-ma-md" style="border-radius: 28px;">
                       <p class="text-bold text-center">Dirección de Entrega</p>
-                      <addresses @stoploading="addload = true" :noload="addload" class="col-6" style="min-width: 320px" v-model="addId2"/>
+                      <addresses @stoploading="addload = true" @invalid-address="(e) => validAddress2 = e" :noload="addload" class="col-6" style="min-width: 320px" v-model="addId2"/>
                       <p class="text-center text-red text-bold text-caption" v-if="!addId2">* Campo obligatorio</p>
                       <p class="text-center text-red text-bold text-caption" v-if="(this.addId !== null && this.addId === this.addId2)">* Dirección de pickup no puede ser igual que la de Entrega </p>
                     </q-card>
@@ -235,7 +235,7 @@ export default {
       if (typeof this.displayVal.disptype === 'undefined' || parseInt(this.displayVal.disptype) !== 2) {
         return this.required
       } else {
-        return this.required && this.valTime && this.valTime2 && this.addId && this.addId2 && (this.addId !== this.addId2)
+        return this.required && this.valTime && this.valTime2 && this.addId && this.addId2 && (this.addId !== this.addId2) && this.validAddress && this.validAddress2
       }
     },
     filtercat () {
@@ -331,6 +331,8 @@ export default {
   },
   data () {
     return {
+      validAddress: true,
+      validAddress2: true,
       valTime: false,
       valTime2: false,
       orderDate: null,
@@ -432,7 +434,8 @@ export default {
             datePickup: this.orderDate,
             dateShipping: this.orderDate2,
             addressPickup: this.addId,
-            addressShipping: this.addId2
+            addressShipping: this.addId2,
+            dispType: 2
           }
         }
         this.addCart(toCart).then(() => this.$q.notify({

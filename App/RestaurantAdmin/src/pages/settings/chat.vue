@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg" >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >

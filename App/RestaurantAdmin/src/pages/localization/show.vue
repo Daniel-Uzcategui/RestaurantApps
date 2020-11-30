@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg" >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
@@ -9,41 +9,34 @@
             <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" v-if="false" @click="saveLocation"/>
           </div>
        </q-card-section>
-         <div class='filled'></div>
-       <div v-if="typeof localization !== 'undefined'">
-       <div class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-6 col-lg-6">
-          <label>Sede</label>
-          <q-input :value="localization.name"
+       <q-card-section class="row justify-between" v-if="typeof localization !== 'undefined'">
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          <q-input rounded outlined label="Sede" :value="localization.name"
           @input="(e) => saved(e, this.$route.query.Localization_Id, 'name')"
           type="text" float-label="Float Label"
           placeholder="Nombre de la Sede"
-          outlined
-          class="label-width"/>
+          />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <label>Estatus</label>
-          <q-select map-options emit-value standout="bg-teal text-white"
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-4">
+          <q-select rounded outlined map-options emit-value standout="bg-teal text-white"
           :value="localization.status"
           @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')"
           :options="estatus_options" />
         </div>
         <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-xs-8 col-sm-6 col-md-6 col-lg-6">
-          <q-btn v-if="!markers" color="primary" class="q-py-md" label="Agregar Localización" icon="fas fa-map-marker-alt"/>
-          <q-btn v-if="markers" color="primary" class="q-py-md" label="Localización" icon="fas fa-check"/>
-          <q-popup-edit persistent buttons :value="markers" @save="(e) => saveGeoPoint(e, this.$route.query.Localization_Id, 'localizacion_sede')">
-              <google-map
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
+           <google-map
                 :center="center"
-                :markers="markers" />
-            </q-popup-edit>
+                :markers="markers"
+                :readOnly="false"
+                @update-mark="(e) => { saveGeoPoint(e.position, this.$route.query.Localization_Id, 'localizacion_sede'); saved(e.address, this.$route.query.Localization_Id, 'address') }" />
         </div>
-         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-5">
+         <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-5">
           <label>Dirección</label>
-         <q-input :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
+         <q-input rounded outlined :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
       </div>
       <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
+         <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="col-3">
             <label>Tipo de Servicios</label>
             <div class="label-error" v-if="config && config.statusPickup === 0 && config.statusDelivery === 0 && config.statusInlocal === 0">Tipo de Servicios no disponibles </div>
@@ -55,29 +48,35 @@
             </div>
         </div>
         <div v-if="config && config.statusInlocal">
-        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="localization.Inlocal">
-          <label>Mesas</label>
-          <q-input :value="localization.tables"
-          type="text"
+        <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="localization.Inlocal">
+          <q-input rounded outlined :value="localization.tables"
+          type="number"
+          label="Mesas"
           float-label="Float Label"
-          @input="(e) => saved(e, this.$route.query.Localization_Id, 'tables')"
-          outlined
+          @input="(e) => saved(parseInt(e), this.$route.query.Localization_Id, 'tables')"
           class="label-width"/>
         </div>
         </div>
         <div v-if="config && config.statusInlocal">
-         <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3"  v-show="localization.Inlocal">
-          <label>Capacidad</label>
-          <q-input :value="localization.capacity"
-          type="text"
+         <div class="q-pa-md col-xs-12 col-sm-6 col-md-3 col-lg-3"  v-show="localization.Inlocal">
+          <q-input rounded outlined :value="localization.capacity"
+          type="numbery"
+          label="Capacidad"
           float-label="Float Label"
-          @input="(e) => saved(e, this.$route.query.Localization_Id, 'capacity')"
-          outlined/>
+          @input="(e) => saved(parseInt(e), this.$route.query.Localization_Id, 'capacity')"
+          />
         </div>
        </div>
-      </div>
-     </div>
-      <div class='filled'></div>
+
+     </q-card-section>
+     </q-card>
+     <q-card v-if="config && config.statusDelivery && localization.Delivery">
+       <q-card-section  class="bg-secondary text-white header" >
+          <div class="text-h5">Zonas de delivery (Opcional)</div>
+       </q-card-section>
+       <q-card-section class="column items-center">
+        <gzones :value="localization.deliveryZone" @input="(e) => saved(e, this.$route.query.Localization_Id, 'deliveryZone')" />
+      </q-card-section>
      </q-card>
   </div>
   <q-dialog v-model="validationError">
@@ -97,12 +96,23 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { GeoPoint } from '../../services/firebase/db.js'
+import * as GmapVue from 'gmap-vue'
+import Vue from 'vue'
+/* eslint-disable no-undef */
+Vue.use(GmapVue, {
+  load: {
+    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
+    libraries: 'places'
+  }
+})
 export default {
   components: {
+    gzones: require('../../components/GmapZones').default,
     GoogleMap: require('../../components/GoogleMap.vue').default
   },
   data () {
     return {
+      deliveryZone: null,
       tables: '',
       capacity: '',
       estatus_options: [
@@ -113,7 +123,7 @@ export default {
       Delivery: false,
       Inlocal: false,
       center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },
-      markers: [],
+      marker: [{ position: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 } }],
       places: [],
       currentPlace: null,
       validationError: false,
@@ -123,6 +133,18 @@ export default {
   computed: {
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['configs']),
+    markers: {
+      get () {
+        if (this.localization && this.localization.localizacion_sede) {
+          return [{ position: { 'lat': this.localization.localizacion_sede.latitude, 'lng': this.localization.localizacion_sede.longitude } }]
+        } else {
+          return [{ position: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 } }]
+        }
+      },
+      set (e) {
+        this.marker = e
+      }
+    },
     config () {
       return this.configs.find(obj => {
         return obj.source === 'paymentServ'
@@ -138,7 +160,9 @@ export default {
     this.bindConfigs()
   },
   mounted () {
-    this.markers = [{ position: { lat: this.localization.localizacion_sede.Rc, lng: this.localization.localizacion_sede.Ac } }]
+    this.markers = [{ position: { 'lat': this.localization.localizacion_sede.latitude, 'lng': this.localization.localizacion_sede.longitude } }]
+    this.center = { 'lat': this.localization.localizacion_sede.latitude, 'lng': this.localization.localizacion_sede.longitude }
+    console.log({ mark: this.markers })
   },
   methods: {
     ...mapActions('localization', ['saveLocation']),

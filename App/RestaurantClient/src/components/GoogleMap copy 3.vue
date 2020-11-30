@@ -1,38 +1,22 @@
 <template>
   <div>
-    <gmap-autocomplete ref="gmapAutocomplete" :position.sync="markersClone[0].position" v-if="!readOnly" class="introInput" @place_changed="(e) => {consoleme(e); addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})}" >
-                    <template v-slot:input="slotProps">
-                        <q-input outlined
-                                      prepend-inner-icon="place"
-                                      placeholder="Buscar"
-                                      ref="input"
-                                      v-on:listeners="slotProps.listeners"
-                                      v-on:attrs="slotProps.attrs">
-                        </q-input>
-                    </template>
-        </gmap-autocomplete>  <div class="column items-center q-pa-md"><q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" no-caps rounded label="Localizarme" /></div>
-    <gmap-map
-      :center="centerClone"
-      :zoom="12"
-      style="width:100%;  height: 300px;"
-      @click="addMark"
-      :options="{
-   zoomControl: true,
-   scaleControl: false,
-   streetViewControl: false,
-   rotateControl: false,
-   fullscreenControl: true,
-   disableDefaultUI: true
- }"
-    >
-    <gmap-polygon v-if="poly" :paths="poly" :options="{ clickable: false }" :draggable="false" :clickable="false" :editable="false" />
-      <gmap-marker
-        :key="index"
-        v-for="(m, index) in markersClone"
-        :position="m.position"
-        @click="centerClone=m.position"
-      ></gmap-marker>
+    <gmap-map :center="centerClone" :zoom="12" style="width: 100%; height: 500px">
+      <gmap-polygon :draggable="true" :paths="paths" :editable="true" @paths_changed="updateEdited($event)">
+      </gmap-polygon>
+      <gmap-polygon :paths="paths" >
+      </gmap-polygon>
     </gmap-map>
+    {{isit}} {{centerClone}} {{paths}}
+    <ul v-if="edited" @click="edited = null">
+      <li v-for="(path, index) in edited" :key="index">
+        <ol>
+          <li v-for="(point, indx) in path" :key="indx">
+            {{point.lat}}, {{point.lng}}
+          </li>
+        </ol>
+      </li>
+    </ul>
+     <q-btn color="white" text-color="black" @click="getpoint" label="Standard" />
   </div>
 </template>
 
@@ -47,16 +31,19 @@ Vue.use(GmapVue, {
   }
 })
 export default {
-  props: ['markers', 'center', 'readOnly', 'poly'],
+  props: ['markers', 'center', 'readOnly'],
   name: 'GoogleMap',
   data () {
     return {
+      isit: '',
       // default to Montreal to keep it simple
       // change this to whatever makes sense
+      edited: null,
+      paths: [],
       google: window.google,
       places: [],
       currentPlace: null,
-      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: {} }],
+      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: '' }],
       centerClone: this.center
     }
   },
@@ -69,8 +56,28 @@ export default {
       this.opensearch = true
     })
   },
-
   methods: {
+    updateEdited (mvcArray) {
+      let paths = []
+      for (let i = 0; i < mvcArray.getLength(); i++) {
+        let path = []
+        for (let j = 0; j < mvcArray.getAt(i).getLength(); j++) {
+          let point = mvcArray.getAt(i).getAt(j)
+          path.push({ lat: point.lat(), lng: point.lng() })
+        }
+        paths.push(path)
+      }
+      this.edited = paths
+    },
+    getpoint () {
+      var triangle = new google.maps.Polygon({ paths: this.edited })
+      var point = new google.maps.LatLng(this.markersClone)
+      if (isNaN(point.lat)) {
+        return
+      }
+      this.isit = google.maps.geometry.poly.containsLocation(point,
+        triangle)
+    },
     addMark (e) {
       // console.log({ e })
       this.centerClone = e.latLng
@@ -143,6 +150,8 @@ export default {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           }
+          let a = 0.1
+          this.paths = [ { lat: this.centerClone.lat + a, lng: this.centerClone.lng + a }, { lat: this.centerClone.lat - a, lng: this.centerClone.lng + a }, { lat: this.centerClone.lat - a, lng: this.centerClone.lng - a }, { lat: this.centerClone.lat + a, lng: this.centerClone.lng - a } ]
         })
       }
     },

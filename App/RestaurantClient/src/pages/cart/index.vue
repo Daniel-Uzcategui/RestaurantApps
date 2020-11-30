@@ -136,9 +136,10 @@
                      <div class="col-6" style="min-width: 300px">
                       <div class="q-pt-xl text-h4 text-bold">Tu carrito</div>
                       <div class="q-pt-md">Seleccionar Tipo de Servicio</div>
+                      <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el Servicio</p>
                       <q-list class="q-pa-sm" v-if="config">
                           <q-item>
-                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${config.price}`"/>
+                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${deliveryPrice} $`"/>
                           </q-item>
                           <q-item>
                             <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
@@ -148,7 +149,7 @@
                         </q-item>
                       </q-list>
                       <div>
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                       </div>
                      </div>
@@ -156,6 +157,7 @@
                        <q-card class="q-pa-xl" style="border-radius: 28px">
                          <q-card-section>
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
+                           <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el la fecha</p>
                             <div class="q-gutter-sm">
                               <q-radio v-model="orderWhen" val=0 label="Lo más pronto posible" />
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
@@ -190,7 +192,7 @@
                          </q-card-section>
                          <q-card-section v-show="tipEnvio != 0 && tipEnvio != 2">
                           <div class="text-h5"> Mis direcciones</div>
-                          <addresses class="q-pt-md" v-model="addId"/>
+                          <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
                        </q-card>
                      </div>
@@ -208,7 +210,7 @@
                       v-model="pagoSel"
                     />
                     <div class="q-pt-md">
-                        <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(config.price) : getTotalCarrito()[2]).toFixed(2)}}</p>
+                        <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</p>
                         <div v-if="pagoSel !== 5 && CheckTDD ===false">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
                         </div>
@@ -263,6 +265,18 @@ export default {
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['paymentServ', 'configurations']),
     ...mapGetters('user', ['currentUser']),
+    checkCartType () {
+      let a = 0
+      let b = 0
+      for (let i of this.cart) {
+        if (i.dispType === 2) {
+          a = a + 1
+        } else {
+          b = b + 1
+        }
+      }
+      return [a, b]
+    },
     configDates () {
       let cfg = this.configurations.find(e => e.id === 'sede' + this.sede)
       return cfg
@@ -307,12 +321,14 @@ export default {
       orderDate: null,
       orderWhen: null,
       paypal: window.paypal,
+      deliveryPrice: 0,
       CheckAv: 1,
       CheckTDD: false,
       confirm: false,
       tipEnvio: null,
       lbDelivery: 'Deli',
       addId: null,
+      validAddress: true,
       step: 1,
       maximizedToggle: true,
       ordenar: false,
@@ -395,6 +411,9 @@ export default {
     },
     showme () {
       this.$nextTick(() => console.log(this.$refs))
+      if (this.checkCartType[0] > 0 && this.checkCartType[1] === 0) {
+        this.step = 2
+      }
     },
     totalItComp (its) {
       var sum = 0
@@ -438,7 +457,7 @@ export default {
         orderDate: this.orderDate === null || typeof this.orderDate === 'undefined' ? 'NA' : new Date(this.orderDate)
       }
       console.log({ orderWhen })
-      let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.config.price, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.config.price)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
       switch (this.pagoSel) {
         case 2:
@@ -587,7 +606,7 @@ export default {
               return actions.order.create({
                 purchase_units: [{
                   amount: {
-                    value: that.tipEnvio === '1' ? parseFloat(that.getTotalCarrito()[2]) + parseFloat(that.config.price) : that.getTotalCarrito()[2]
+                    value: that.tipEnvio === '1' ? parseFloat(that.getTotalCarrito()[2]) + parseFloat(that.deliveryPrice) : that.getTotalCarrito()[2]
                   }
                 }]
               })

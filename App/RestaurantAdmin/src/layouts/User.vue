@@ -36,7 +36,6 @@
       <q-drawer
          v-if="$router.history.current.path !== '/editor/index'"
          v-model="leftDrawerOpen"
-         show-if-above
          bordered
          content-class="bg-blue-grey-9">
             <Nav
@@ -285,7 +284,7 @@ export default {
           separator: true,
           tree: [{ children: [] }]
         },
-        /* {
+        {
           title: 'Widgets',
           caption: '',
           icon: 'fa fa-cube',
@@ -298,7 +297,7 @@ export default {
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
-        }, */
+        },
         {
           title: 'Ajustes',
           caption: '',

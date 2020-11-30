@@ -1,6 +1,7 @@
 <template>
-  <div class="q-pa-md">
+  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''">
    <q-table
+      :grid="$q.screen.lt.md"
       :dense="$q.screen.lt.md"
       :data="elmenu"
       :columns="columns"
@@ -15,16 +16,15 @@
     <template v-slot:top-right>
       <q-toggle @input="(e) => saved3(e, menucfg.displayType, 'menu', 'displayType')" color="warning"
                 :value="menucfg.displayType ? true : false" label="Tipo de Display" left-label />
-      <q-input color="white" dark filled class="q-pr-md" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'dispName')"
+      <q-input rounded outlines color="white" dark filled class="q-pr-md" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'dispName')"
                 :value="menucfg.dispName ? menucfg.dispName : 'Catálogo'" label="Nombre de display" />
       <q-toggle @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
                 :value="menucfg.iconsactive ? true : false" label="Activar iconos" left-label />
       <q-toggle @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
                 :value="menucfg.menuactive ? true : false" label="Mostrar en Menú" left-label />
-      <div class="q-pa-md">SEDE</div>
-      <q-select
+      <div class="q-pa-md">
+      <q-select rounded outlined
         bg-color="white"
-        outlined
         v-model="sede"
         :options="locList"
         style="width: 250px"
@@ -32,8 +32,9 @@
         emit-value
         map-options
         stack-label
-        label="Seleccione"
+        label="Seleccionar Sede"
       />
+      </div>
         <q-btn-group flat push v-if="sede !== null">
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
@@ -58,13 +59,12 @@
               <q-input style="width: 200px"
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
-              dense
               autofocus
+              rounded
               outlined />
           </q-td>
           <q-td key="categoria" :props="props">
-              <q-select
-                filled
+              <q-select rounded outlined
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -79,8 +79,7 @@
               />
           </q-td>
            <q-td key="groupComp" :props="props">
-              <q-select
-                filled
+              <q-select rounded outlined
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -115,9 +114,8 @@
         <q-tr v-show="props.expand" :props="props">
            <q-td><label class="label-expand">Stock</label></q-td>
            <q-td colspan="100%" key="stock" :props="props">
-               <q-input
+               <q-input rounded outlined
                 style="width: 100px"
-                filled
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
                 autofocus
@@ -129,12 +127,10 @@
         <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Descuento</label></q-td>
           <q-td colspan="100%" key="discount" :props="props">
-              <q-input
-              filled
+              <q-input rounded outlined
                 style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
                 :value="props.row.discount"
-                dense
                 autofocus
                 label="%"
                 min="0" max="100"
@@ -147,6 +143,7 @@
           <q-td colspan="100%" key="price" :props="props">
              <q-decimal style="width: 150px"
              :rules="[validate]"
+             rounded
              outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
              :value="props.row.price"
              input-style="text-align: right">
@@ -156,7 +153,7 @@
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Prioridad</label></q-td>
           <q-td colspan="100%" key="priority" :props="props">
-             <q-input style="width: 100px" filled
+             <q-input style="width: 100px" rounded
              outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
              :value="props.row.priority"
              autofocus
@@ -170,7 +167,8 @@
           <q-td colspan="100%" key="disptype" :props="props">
              <q-input
                 style="width: 100px"
-                filled
+                rounded
+                outlined
                 @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)"
                 :value="props.row.disptype ? props.row.disptype : 0"
                 autofocus
@@ -191,6 +189,200 @@
           <q-td colspan="100%" >
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+        <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        :style="props.selected ? 'transform: scale(0.95);' : ''">
+          <q-card>
+            <q-card-section>
+             <q-list dense>
+              <q-item>
+                <q-item-section>
+                  <q-checkbox dense v-model="props.selected" :label="props.row.name" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-icon v-ripple name="edit" @click="props.expand = !props.expand" />
+                </q-item-section>
+              </q-item>
+            </q-list>
+            </q-card-section>
+            <q-separator />
+            <q-list v-if="!props.expand" dense>
+              <q-item>
+                <q-item-section>
+                  <div @click="showPhotoUpload(props.row.id)">
+            <div v-if="showDefaultPhoto(props.row.photo)">
+                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="100px" text-color="white"></q-avatar></div>
+            <div v-else>
+                <q-avatar round class="q-mb-sm shadow-5" size="100px" @click="showPhotoUpload(props.row.id)">
+                    <q-img :src="props.row.photo"></q-img>
+                </q-avatar></div>
+                </div>
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section>
+                  <q-item-label>Precio</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+                            <q-item>
+                <q-item-section>
+                  <q-item-label>Categorias</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption>
+                    <q-select rounded outlined
+                :value="CatExists(props.row.categoria)"
+                @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                :options="listcategorias"
+                map-options
+                emit-value
+                stack-label
+                readonly
+              />
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <q-list v-if="props.expand">
+          <q-item class="column items-center" key="photo" :props="props">
+            <div class="text-center" @click="showPhotoUpload(props.row.id)">
+            <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
+                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
+            <div class="column items-center" v-else>
+                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
+                    <q-img :src="props.row.photo"></q-img>
+                </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </div>
+          </q-item>
+          <q-item class="column items-center" key="desc" :props="props">
+              <q-input
+              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              :value="props.row.name"
+              rounded
+              outlined />
+          </q-item>
+          <q-item class="column items-center" key="categoria" :props="props">
+              <q-select rounded outlined
+                :value="CatExists(props.row.categoria)"
+                @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                :options="listcategorias"
+                map-options
+                emit-value
+                stack-label
+              />
+          </q-item>
+           <q-item class="column items-center" key="groupComp" :props="props">
+              <q-select rounded outlined
+                :value="props.row.groupComp"
+                @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                :options="groupComp"
+                :option-label="(item) => item === null ? null : item.name"
+                :option-value="(item) => item === null ? null : item.id"
+                map-options
+                emit-value
+                stack-label
+              />
+          </q-item>
+              <q-item class="column items-center" v-show="props.expand" :props="props">
+                <q-td><label class="label-expand">Descripción</label></q-td>
+                <q-td colspan="100%" key="descripcion" :props="props">
+                    <q-editor
+                      @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
+                      :value="props.row.descripcion"
+                      min-height="5rem"
+                      autofocus
+                    />
+                </q-td>
+              </q-item>
+              <q-item class="row justify-center" v-show="props.expand" :props="props">
+                  <div class="col-6 q-pa-xs">
+                    <p class="text-bold">Stock</p>
+                    <q-input
+                      rounded
+                      outlined
+                      @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
+                      :value="props.row.stock ? props.row.stock[sede] : 0"
+                      min="1" max="99999"
+                      type="number"
+                    />
+                  </div>
+                  <div class="col-6 q-pa-xs">
+                    <p class="text-bold">Descuento</p>
+                    <q-input
+                      rounded
+                      outlined
+                      @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
+                      :value="props.row.discount"
+                      label="%"
+                      min="0" max="100"
+                      type="number"
+                    />
+                  </div>
+              </q-item>
+              <q-item class="row justify-center" v-show="props.expand" :props="props">
+                <div class="col-6 q-pa-xs">
+                <p class="text-bold">Precio</p>
+                  <q-decimal
+                  :rules="[validate]"
+                  rounded
+                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  :value="props.row.price"
+                  input-style="text-align: right">
+                  </q-decimal>
+                </div>
+                <div class="col-6 q-pa-xs">
+                  <p class="text-bold">Prioridad</p>
+                  <q-input
+                  rounded
+                  outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
+                  :value="props.row.priority"
+                  min="1" max="999"
+                  type="number">
+                  </q-input>
+                </div>
+              </q-item>
+              <q-item class="row justify-center" v-show="props.expand" :props="props">
+                <div class="col-6 q-pa-xs">
+                <p class="text-bold">Tipo de Display</p>
+                  <q-input
+                      rounded
+                      outlined
+                      @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)"
+                      :value="props.row.disptype ? props.row.disptype : 0"
+                      min="1" max="99999"
+                      type="number"
+                    />
+                </div>
+                <div class="col-6 q-pa-xs">
+                  <p class="text-bold">Activar</p>
+                  <q-toggle
+                      @input="(e) => saved(e, props.row.status, props.row.id, `estatus.${sede}`)"
+                      :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
+                      color="#3c8dbc"
+                    />
+                </div>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
     <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">

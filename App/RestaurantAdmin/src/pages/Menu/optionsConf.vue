@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''">
    <q-table
       dense
       :data="groupComp"

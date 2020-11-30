@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md q-pa-sm " >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div class="row header-container">
      <div class="flex-break"></div>
      <div class="col-12" tabindex="0">

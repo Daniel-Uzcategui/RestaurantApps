@@ -1,30 +1,29 @@
 <template>
   <div>
-    <gmap-autocomplete class="introInput" @place_changed="(e) => addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})" >
+    <gmap-autocomplete ref="gmapAutocomplete" :position.sync="markersClone[0].position" v-if="!readOnly" class="introInput" @place_changed="(e) => {consoleme(e); addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})}" >
                     <template v-slot:input="slotProps">
-                        <q-input outlined
+                        <q-input rounded outlined
                                       prepend-inner-icon="place"
                                       placeholder="Buscar"
                                       ref="input"
+                                      :value="addFull"
                                       v-on:listeners="slotProps.listeners"
-                                      v-on:attrs="slotProps.attrs"
-                                      @keyup.enter.stop>
+                                      v-on:attrs="slotProps.attrs">
                         </q-input>
                     </template>
-        </gmap-autocomplete>
+        </gmap-autocomplete>  <div class="column items-center q-pa-md"><q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" no-caps rounded label="Localizarme" /></div>
     <gmap-map
       :center="centerClone"
       :zoom="12"
-      style="width:100%;  height: 400px;"
+      style="width:100%;  height: 300px;"
       @click="addMark"
       :options="{
    zoomControl: true,
-   mapTypeControl: false,
    scaleControl: false,
    streetViewControl: false,
    rotateControl: false,
    fullscreenControl: true,
-   disableDefaultUI: false
+   disableDefaultUI: true
  }"
     >
       <gmap-marker
@@ -40,36 +39,44 @@
 <script>
 import Vue from 'vue'
 import * as GmapVue from 'gmap-vue'
-
+/* eslint-disable no-undef */
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyAiUb3VghW0YlWkGkx-nNbG_tLm3tKDnDM',
+    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
     libraries: 'places'
   }
 })
 export default {
-  props: ['markers', 'center'],
+  props: ['markers', 'center', 'readOnly'],
   name: 'GoogleMap',
   data () {
     return {
+      addFull: '',
       // default to Montreal to keep it simple
       // change this to whatever makes sense
+      google: window.google,
       places: [],
       currentPlace: null,
-      markersClone: this.markers,
+      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: {} }],
       centerClone: this.center
     }
   },
 
   mounted () {
+    console.log('mounted')
     this.geolocate()
+    this.$nextTick(() => {
+      // console.log({ ref: this.$refs })
+      this.opensearch = true
+    })
   },
 
   methods: {
     addMark (e) {
-      console.log(e)
-      var clickedLocation = e.latLng
+      // console.log({ e })
       this.centerClone = e.latLng
+      var clickedLocation = e.latLng
+      if (typeof this.readOnly !== 'undefined' && this.readOnly === true) { return }
       if (this.markersClone.length <= 0) {
         this.markersClone.push({
           position: clickedLocation
@@ -80,9 +87,31 @@ export default {
           position: clickedLocation
         })
       }
+      console.log({ mm: this.markersClone })
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode({ 'latLng': e.latLng }, (result, status) => {
+        if (status === google.maps.GeocoderStatus.OK) {
+          this.addFull = result[0].formatted_address
+          this.$emit('address-update', result[0].address_components)
+        }
+      })
     },
     setPlace (place) {
       this.currentPlace = place
+    },
+    usePlace (place) {
+      if (this.place) {
+        this.markers.push({
+          position: {
+            lat: this.place.geometry.location.lat(),
+            lng: this.place.geometry.location.lng()
+          }
+        })
+        this.place = null
+      }
+    },
+    consoleme (e) {
+      console.log({ e })
     },
     addMarker () {
       if (this.currentPlace) {
@@ -94,16 +123,54 @@ export default {
         this.places.push(this.currentPlace)
         this.centerClone = marker
         this.currentPlace = null
+        const geocoder = new google.maps.Geocoder()
+        geocoder.geocode({ 'latLng': marker }, (result, status) => {
+          if (status === google.maps.GeocoderStatus.OK) {
+            this.addFull = result[0].formatted_address
+            this.$emit('address-update', result[0].address_components)
+          }
+        })
       }
     },
-    geolocate: function () {
-      navigator.geolocation.getCurrentPosition(position => {
+    geolocate () {
+      if (this.markers && this.markers.length) {
+        // console.log({ Marker: this.markers })
         this.centerClone = {
+          lat: this.markers[0].position.lat,
+          lng: this.markers[0].position.lng
+        }
+      } else {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.centerClone = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        })
+      }
+    },
+    geolocalize () {
+      navigator.geolocation.getCurrentPosition(position => {
+        console.log({ position })
+        let latLng = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         }
+        this.addMark({ latLng })
       })
+    }
+  },
+  watch: {
+    markers (e) {
+      this.markersClone = this.markers.length ? Array.from(e) : [{ position: {} }]
+    },
+    addFull (e) {
+      this.$emit('update-mark', { position: this.markersClone, address: this.addFull })
     }
   }
 }
 </script>
+
+<style lang="sass" >
+.pac-container
+ z-index: 99999999 !important
+</style>

@@ -1,26 +1,24 @@
  <template>
-  <div class=" q-pa-lg" >
+  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
       <q-table class="table"
       title="Ordenes"
       color="primary"
       :data="OrderClient"
       :columns="columns"
-      :dense="$q.screen.lt.md"
+      :grid="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
-      :selected-rows-label="getSelectedString"
-      selection="multiple"
-      :selected.sync="selected"
       >
       <template v-slot:top-right>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })">
-           <q-td  auto-width>
-            <q-checkbox v-model="props.selected" />
+        <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })">
+           <q-td v-if="$q.screen.lt.md"  auto-width>
+             <q-checkbox />
+            <q-icon name="person" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
           </q-td>
            <q-td
             v-for="col in props.cols"
@@ -30,6 +28,26 @@
             {{ col.value }}
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
+          <q-card>
+            <q-card-section>
+              <q-icon name="search" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
+            </q-card-section>
+            <q-separator />
+            <q-list dense>
+              <q-item v-for="col in props.cols" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" caption>{{ col.value }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
  </div>
@@ -171,7 +189,8 @@ export default {
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 },
         { label: 'Venmo', value: 4 },
-        { label: 'Tarjeta o Paypal', value: 3 }
+        { label: 'Tarjeta o Paypal', value: 3 },
+        { label: 'Débito o Crédito', value: 5 }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },

@@ -25,7 +25,6 @@
    disableDefaultUI: true
  }"
     >
-    <gmap-polygon v-if="poly" :paths="poly" :options="{ clickable: false }" :draggable="false" :clickable="false" :editable="false" />
       <gmap-marker
         :key="index"
         v-for="(m, index) in markersClone"
@@ -47,7 +46,7 @@ Vue.use(GmapVue, {
   }
 })
 export default {
-  props: ['markers', 'center', 'readOnly', 'poly'],
+  props: ['markers', 'center', 'readOnly'],
   name: 'GoogleMap',
   data () {
     return {
@@ -56,7 +55,7 @@ export default {
       google: window.google,
       places: [],
       currentPlace: null,
-      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: {} }],
+      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: '' }],
       centerClone: this.center
     }
   },

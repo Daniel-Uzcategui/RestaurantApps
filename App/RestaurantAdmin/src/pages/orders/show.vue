@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md" >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card>
        <q-card-section  class="bg-secondary text-white header" >
@@ -472,20 +472,18 @@ export default {
     },
     getAddress (value) {
       let objaddress
-      let tmpAddressDelivery = ''
       objaddress = this.address.find(obj => {
         return obj.id === value
       })
       console.log({ objaddress, add: this.address })
       this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
       if (typeof objaddress !== 'undefined') {
-        this.addressDelivery = tmpAddressDelivery.concat(
-          typeof objaddress.estado !== 'undefined' ? objaddress.estado : '', ' ',
-          typeof objaddress.ciudad !== 'undefined' ? objaddress.ciudad : '', ' ',
-          typeof objaddress.municipio !== 'undefined' ? objaddress.municipio : '', ' ',
-          typeof objaddress.calle !== 'undefined' ? objaddress.calle : '', ' ',
-          typeof objaddress.domicilio !== 'undefined' ? objaddress.domicilio : '', ' '
-        )
+        let tempString = ''
+        console.log(objaddress)
+        for (let i of Object.keys(objaddress.address)) {
+          tempString = tempString + objaddress.address[i] + ' '
+        }
+        this.addressDelivery = tempString
       } else {
         this.addressDelivery = 'No disponible'
       }

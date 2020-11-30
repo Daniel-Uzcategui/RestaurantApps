@@ -1,7 +1,9 @@
  <template>
-  <q-page class=" q-pa-lg" >
+  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
-      <q-table class="localization"
+      <q-table
+      :grid="$q.screen.lt.md"
+      class="localization"
       title="Sedes"
       color="primary"
       :data="localizations"
@@ -80,6 +82,26 @@
               />
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
+          <q-card>
+            <q-card-section>
+              <q-icon name="search" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
+            </q-card-section>
+            <q-separator />
+            <q-list dense>
+              <q-item v-for="col in props.cols" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption>{{ col.value }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
  </div>
