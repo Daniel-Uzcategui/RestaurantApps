@@ -3,7 +3,7 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindTransactions = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindTransactions')
-  return bindFirestoreRef('transactions', firestore().collection('transactions').where('status', '==', 0), { reset: false })
+  return bindFirestoreRef('transactions', firestore().collection('transactions'), { reset: false })
 })
 
 export const addTransaction = firestoreAction((state, payload) => {
