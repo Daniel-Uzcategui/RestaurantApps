@@ -244,7 +244,7 @@
                             <span class="label">{{config.venmoAcc}}</span>
                           </div>
                         </div>
-                       <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 6">
+                       <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 8">
                         <div class="text-center">
                           <div class="text-h5 ">Pago Móvil</div>
                           <div class="text-caption text-center filler-bottom"></div>
