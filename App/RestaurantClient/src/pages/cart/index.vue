@@ -228,6 +228,55 @@
                       :payAmount=totalPrice
                       @click='payment' />
                      </div>
+                  </div>
+                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if="pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===6 || pagoSel ===7">
+                        <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 2">
+                        <div class="text-center">
+                          <div class="text-h5 ">Zelle</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.zelleEmail}}</span>
+                          </div>
+                        </div>
+                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 4">
+                        <div class="text-center">
+                          <div class="text-h5 ">Venmo</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.venmoAcc}}</span>
+                          </div>
+                        </div>
+                       <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 6">
+                        <div class="text-center">
+                          <div class="text-h5 ">Pago Móvil</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.pagomovil}}</span>
+                          </div>
+                        </div>
+                      <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel ===7">
+                        <div class="text-center">
+                          <div class="text-h5 ">Transferencia Bancaria</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.transfer}}</span>
+                        </div>
+                      </div>
+                      <br>
+                       <q-card class="q-pa-xl" style="border-radius: 28px;"  @click="showPhotoUpload()">
+                        <q-card-section>
+                            <div class="column items-center ">
+                                <div class=" column items-center" v-show='photoMessage'>
+                                  <div>
+                                  <q-btn style="border-radius: 28px;" push>
+                                      <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4" >
+                                      </q-avatar>
+                                      <span class="text-caption">Haga click para cargar la captura del pago realizado </span>
+                                  </q-btn>
+                                  </div>
+                                </div>
+                                <div class=" column items-center">
+                                <img :src="photoSRC" class="q-mb-sm" style="width:100%">
+                                </div>
+                           </div>
+                        </q-card-section>
+                        </q-card>
                     </div>
                     <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
                     <div>
@@ -252,6 +301,16 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
+         <fbq-uploader
+            class="q-my-lg"
+            label="por favor anexe la imagen del pago"
+            :meta="meta"
+            :prefixPath="prefixPath"
+            @uploaded="uploadComplete"
+            document='orders_cache'
+            ></fbq-uploader>
+      </q-dialog>
    </q-page>
 </template>
 
@@ -260,15 +319,20 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import Addresses from '../../components/addresses.vue'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debitPayments'
+import { QUploaderBase } from 'quasar'
 export default {
+  mixins: [ QUploaderBase ],
   components: {
     'addresses': () => import('../../components/addresses.vue'),
     'itemcomp': () => import('../../components/itemComp.vue'),
+    'fbq-uploader': () => import('../../components/FBQUploader20.vue'),
     payCreditCorp: payCreditCorp,
     Addresses,
     debitPayment
   },
   computed: {
+    ...mapGetters('order', ['orders']),
+    ...mapGetters('transactions', ['transactions']),
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
@@ -302,6 +366,8 @@ export default {
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Venezolana', value: 6, color: 'blue' }) }
+      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
+      if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
       return tip
     },
     promoData () {
@@ -322,6 +388,17 @@ export default {
         prom.push(y)
       })
       return prom
+    },
+    meta () {
+      return {
+        id: this.currentUser.id,
+        photoType: this.photoType
+      }
+    },
+    prefixPath () {
+      const id = this.currentUser.id,
+        path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
+      return path
     }
   },
   data () {
@@ -345,7 +422,11 @@ export default {
       notifications: 0,
       leftDrawerOpen: false,
       pagoSel: null,
-      totalPrice: 0
+      totalPrice: 0,
+      photoType: '',
+      photoUpload: false,
+      photoMessage: true,
+      photoSRC: ''
     }
   },
   created () {
@@ -355,10 +436,13 @@ export default {
     console.log(this.cart)
     console.log(this.$refs)
     this.bindConfigs()
+    this.bindOrders(this.currentUser.id)
+    this.bindTransactions()
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
-    ...mapActions('order', ['addOrder']),
+    ...mapActions('order', ['bindOrders', 'addOrder']),
+    ...mapActions('transactions', ['bindTransactions']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs']),
@@ -447,6 +531,11 @@ export default {
         ]
       })
     },
+    showDefaultPhoto (e) {
+      return e === '' ||
+        e === null ||
+        e === undefined
+    },
     getLocBySede (tip) {
       var locs = this.localizations.find(x => x.id === this.sede)
       if (typeof locs === 'undefined') { return false }
@@ -458,6 +547,16 @@ export default {
         var item = this.menu.find(x => x.id === id)
         return item.stock[this.sede]
       }
+    },
+    getOrders () {
+      return this.orders.find(obj => {
+        return obj.customer_id === this.currentUser.id
+      })
+    },
+    getTransactions () {
+      return this.transactions.find(obj => {
+        return obj.orderId === '' // && obj.customer_id === this.currentUser.id
+      })
     },
     makeOrder (details) {
       this.$q.loading.show()
@@ -481,7 +580,15 @@ export default {
           break
       }
       this.addOrder({ ...order }).then(e => {
-        this.ordenar = false; this.delCart(); this.$router.push({ path: '/orders/index' })
+        console.log(order)
+        this.ordenar = false; this.delCart()
+        let ordersFortransactions = this.getOrders()
+        console.log('ordersFortransactions', ordersFortransactions.id)
+        let orderbytransaction = this.getTransactions()
+        console.log('orders', this.orders)
+        console.log('transactions', this.transactions)
+        console.log('ordertransactions', orderbytransaction)
+        this.$router.push({ path: '/orders/index' })
         this.$q.loading.hide()
       }).catch(() => this.$q.loading.hide())
     },
@@ -601,6 +708,26 @@ export default {
         })
         this.makeOrder(status)
       }
+    },
+    showPhotoUpload () {
+      this.photoUpload = true
+      this.photoType = Math.random().toString(16).substr(2, 8)
+    },
+    resetPhotoType () {
+      this.photoType = ''
+    },
+    uploadComplete (info) {
+      console.log(info)
+      let fileNames = []
+      info.files.forEach(file => fileNames.push(file))
+      console.log('info payment: ' + info.files[0])
+      this.photoSRC = info.files[0]
+      this.photoUpload = false
+      this.photoMessage = false
+      this.$q.notify({
+        message: `Foto subida correctamente`,
+        color: 'primary'
+      })
     }
   },
   watch: {
@@ -651,4 +778,6 @@ export default {
     border-top-right-radius 50px
     border-bottom-left-radius 50px
     border-bottom-right-radius 50px
+  .filler-bottom
+    padding-bottom 50px
 </style>

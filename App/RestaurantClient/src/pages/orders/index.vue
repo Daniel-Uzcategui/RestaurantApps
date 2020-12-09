@@ -158,8 +158,11 @@
                   </q-card-section>
                   <q-separator inset />
                   <q-card-section style="max-width: 70vmin">
-                     <div v-if="ordenDet.typePayment == 2 || ordenDet.typePayment == 1" class="text-center" @click="showPhotoUpload(ordenDet.id)">
-                        <div class=" column items-center" v-if="showDefaultPhoto(getOrdedVal(ordenDet.id, 'photo'))">
+                     <div v-if="ordenDet.typePayment == 2 || ordenDet.typePayment == 1" class="text-center">
+                        <div class=" column items-center" >
+                         <img :src="ordenDet.photo" class="q-mb-sm" style="width:100%">
+                        </div>
+                        <!--div class=" column items-center" v-if="showDefaultPhoto(getOrdedVal(ordenDet.id, 'photo'))">
                            <q-btn style="border-radius: 28px;" push>
                               <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4"></q-avatar>
                            </q-btn>
@@ -176,13 +179,14 @@
                               <q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>
                               Click para editar
                            </span>
-                        </div>
+                        </div!-->
                      </div>
                   </q-card-section>
                </q-card>
                <q-card-section>
                  <p class="text-h5 text-center">Servicio: {{tipoServ[ordenDet.tipEnvio]}}</p>
                   <p class="text-center">Forma de Pago {{typePay}}</p>
+                  <strong>NOTA: Estos precios incluyen el IVA</strong>
                   <p v-if="ordenDet.tipEnvio == 1">{{getAddById(ordenDet.address)}}</p>
 
                  <q-input label="Fecha de Entrega" readonly v-if="(ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1')" :value=" ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1' ? new Date(ordenDet.orderWhen.orderDate.seconds * 1000).toLocaleString() : 'De inmediato'"  type="text" disabled />
