@@ -21,28 +21,18 @@
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusDelivery" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusDelivery" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Delivery" />
-        </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input
-          label="Precio"
-          type="number"
-          float-label="Float Label"
-          placeholder="Precio"
-          outlined
-          v-model="price"
-          :rules="[ val => val && val >= 0 || '*Requerido el campo Precio y mayor o igual a 0']"/>
         </div>
         <div class="flex-break q-py-md "></div>
       </div>
        <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusPickup" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusPickup" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Pick Up" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusInlocal" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusInlocal" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="In Local" />
         </div>
         <div class="flex-break q-py-md "></div>
@@ -53,11 +43,11 @@
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Activar Recompensas" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input
+          <q-input rounded
           label="Cantidad Necesitada"
           type="number"
           float-label="Float Label"
@@ -73,46 +63,52 @@
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusPto" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusPto" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Punto de Venta" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Zelle" />
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Venmo" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusCash" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusCash" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Efectivo" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Paypal" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statusCreditCorp" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Tarjeta crédito CreditCorp" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statuspagomovil" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Pago Móvil" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="statustransfer" map-options emit-value standout="bg-teal text-white"
+          <q-select rounded v-model="statustransfer" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Transferencia Bancaria" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
+        <div class="row header-container">
+        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select rounded v-model="statusMercantil" map-options emit-value standout="bg-teal text-white"
+          outlined :options="estatus_options" label="Mercantil" />
+        </div>
+        </div>
         <div class="row header-container">
          <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones especiales API</div>
        </div>
@@ -121,7 +117,7 @@
        </div>
        <div v-if="statusPaypal" class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="PaypalApi" standout="bg-teal text-white"
+          <q-input rounded v-model="PaypalApi" standout="bg-teal text-white"
           outlined label="Paypal API" />
         </div>
         </div>
@@ -130,8 +126,37 @@
        </div>
        <div v-if="statusCreditCorp"  class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="CreditCorp" standout="bg-teal text-white"
+          <q-input rounded v-model="CreditCorp" standout="bg-teal text-white"
           outlined label="CreditCorp API" />
+        </div>
+        </div>
+        <div  v-if="statusCreditCorp" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito Mercantil</div>
+       </div>
+       <div v-if="statusMercantil"  class="row header-container">
+        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-select rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal text-white"
+          outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Desarrollo'}]" label="Ambiente" />
+        </div>
+        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input rounded v-model="Mercantil.xibm" standout="bg-teal text-white"
+          outlined label="x-ibm-client-id" />
+        </div>
+        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input rounded v-model="Mercantil.integratorId" standout="bg-teal text-white"
+          outlined label="integratorId" />
+        </div>
+        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input rounded v-model="Mercantil.merchantId" standout="bg-teal text-white"
+          outlined label="merchantId" />
+        </div>
+        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input rounded v-model="Mercantil.terminalId" standout="bg-teal text-white"
+          outlined label="terminalId" />
+        </div>
+        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input rounded v-model="Mercantil.claveSecreta" standout="bg-teal text-white"
+          outlined label="Clave secreta" />
         </div>
         </div>
          <div class="flex-break q-py-md "></div>
@@ -143,7 +168,7 @@
        </div>
        <div v-if="statusZelle" class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="zelleEmail" standout="bg-teal text-white"
+          <q-input rounded v-model="zelleEmail" standout="bg-teal text-white"
           outlined label="Email Zelle" />
         </div>
         </div>
@@ -152,7 +177,7 @@
        </div>
        <div v-if="statusVenmo" class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="venmoAcc" standout="bg-teal text-white"
+          <q-input rounded v-model="venmoAcc" standout="bg-teal text-white"
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
@@ -161,7 +186,7 @@
        </div>
        <div v-if="statuspagomovil"  class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="pagomovil" standout="bg-teal text-white"
+          <q-input rounded v-model="pagomovil" standout="bg-teal text-white"
           outlined label="Pago Movil" />
         </div>
         </div>
@@ -170,7 +195,7 @@
        </div>
        <div v-if="statustransfer"  class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input v-model="transfer" standout="bg-teal text-white"
+          <q-input rounded v-model="transfer" standout="bg-teal text-white"
           outlined label="Transferencia Bancaria" />
         </div>
         </div>
@@ -207,6 +232,15 @@ export default {
       statusZelle: 0,
       statusVenmo: 0,
       statusCreditCorp: 0,
+      statusMercantil: 0,
+      Mercantil: {
+        xibm: '',
+        integratorId: '',
+        merchantId: '',
+        terminalId: '',
+        ambiente: 0,
+        claveSecreta: ''
+      },
       statusCash: 0,
       statusPaypal: 0,
       statuspagomovil: 0,
@@ -241,6 +275,7 @@ export default {
         statuspagomovil: this.statuspagomovil,
         statustransfer: this.statustransfer,
         statusCash: this.statusCash,
+        Mercantil: this.Mercantil,
         statusPaypal: this.statusPaypal,
         PaypalApi: this.PaypalApi,
         zelleEmail: this.zelleEmail,
@@ -248,7 +283,6 @@ export default {
         CreditCorp: this.CreditCorp,
         transfer: this.transfer,
         pagomovil: this.pagomovil,
-        price: parseFloat(this.price),
         source: 'paymentServ'
       }
       this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
@@ -338,8 +372,11 @@ export default {
       key = 'pagomovil'
       value = this.pagomovil
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = parseFloat(this.price)
-      key = 'price'
+      value = this.statusMercantil
+      key = 'statusMercantil'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.Mercantil
+      key = 'Mercantil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       this.$q.dialog({
         title: '',
@@ -351,25 +388,32 @@ export default {
     },
     afterBindigs () {
       if (this.config.source !== '') {
-        this.statusDelivery = this.config.statusDelivery
-        this.statusPickup = this.config.statusPickup
-        this.statusInlocal = this.config.statusInlocal
-        this.statusPto = this.config.statusPto
-        this.statusRewards = this.config.statusRewards
-        this.statusZelle = this.config.statusZelle
-        this.statusCreditCorp = this.config.statusCreditCorp
-        this.statuspagomovil = this.config.statuspagomovil
-        this.statustransfer = this.config.statustransfer
-        this.statusVenmo = this.config.statusVenmo
-        this.statusCash = this.config.statusCash
-        this.statusPaypal = this.config.statusPaypal
-        this.PaypalApi = this.config.PaypalApi
-        this.zelleEmail = this.config.zelleEmail
-        this.venmoAcc = this.config.venmoAcc
-        this.CreditCorp = this.config.CreditCorp
-        this.transfer = this.config.transfer
-        this.pagomovil = this.config.pagomovil
-        this.price = parseFloat(this.config.price)
+        for (let i of Object.keys(this.config)) {
+          try {
+            Object.assign(this, { [i]: this.config[i] })
+          } catch (e) {
+            console.log(e)
+          }
+        }
+        // this.statusDelivery = this.config.statusDelivery
+        // this.statusPickup = this.config.statusPickup
+        // this.statusInlocal = this.config.statusInlocal
+        // this.statusPto = this.config.statusPto
+        // this.statusRewards = this.config.statusRewards
+        // this.statusZelle = this.config.statusZelle
+        // this.statusCreditCorp = this.config.statusCreditCorp
+        // this.statuspagomovil = this.config.statuspagomovil
+        // this.statustransfer = this.config.statustransfer
+        // this.statusMercantil = this.config.statusMercantil
+        // this.statusVenmo = this.config.statusVenmo
+        // this.statusCash = this.config.statusCash
+        // this.statusPaypal = this.config.statusPaypal
+        // this.PaypalApi = this.config.PaypalApi
+        // this.zelleEmail = this.config.zelleEmail
+        // this.venmoAcc = this.config.venmoAcc
+        // this.CreditCorp = this.config.CreditCorp
+        // this.transfer = this.config.transfer
+        // this.pagomovil = this.config.pagomovil
       }
     }
   }

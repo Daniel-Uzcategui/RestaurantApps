@@ -1,7 +1,5 @@
 
 const axios = require('axios')
-const querystring = require('querystring')
-
 export default class CreditCorp {
   setSecurity (securityKey) {
     // Validate that passed in information contains valid keys
@@ -54,23 +52,23 @@ export default class CreditCorp {
       'amount': amount,
       'ccnumber': ccNum,
       'ccexp': ccExp,
-      'cvv': cvv
+      'cvv': cvv,
+      'bank': 'CrediCorp'
     }
 
     // Merge together all request options into one object
-    Object.assign(postData, this.billing, this.shipping, this.securityKey)
-
+    Object.assign(postData, this.billing, this.shipping)
     // Make request
     let Message
-    postData = querystring.stringify(postData)
-
     const options = {
-      url: 'https://secure.nmi.com/api/transact.php',
+      // url: window.location.origin + '/transact',
+      url: 'http://localhost:5001/restaurant-testnet/us-central1/MakePay',
       method: 'POST',
       data: postData
     }
     console.log('option :', options)
     Message = await axios(options)
+    console.log(Message)
     return Message.data
   }
 }

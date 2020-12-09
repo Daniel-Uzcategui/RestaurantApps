@@ -4,33 +4,37 @@
       class='q-pa-none q-ma-none'
       :value-fields='valueFields'
       :labels='labels'
-      :hasRandomBackgrounds='false'
-      :backgroundImage='10'
+      :hasRandomBackgrounds='true'
     />
     <div class='q-gutter-md q-gutter-lg'>
       <div class='row header-container'>
         <div class='col-12'>
            <div class='row filled'>
-              <div class='col-6 '>
+              <div class='col-12 '>
                 <div class='card-input'>
                   <label for='cardNumber'>Numero de tarjeta</label>
                   <q-input
                     type='tel'
+                    mask="#### #### #### ####"
                     v-model='valueFields.cardNumber'
                     title='Number'
                     data-card-field=''
                     autocomplete='off'
-                    maxlength='16'
+                    maxlength='20'
                     class=''
                     outlined
                   />
                 </div>
               </div>
-              <div class='col-6 offset-col'>
+              <div class='col-12'>
                 <div class='card-input'>
-                  <label for='cardName'>Nombre Completo</label>
+                  <label for='cardName'>Nombre</label>
                   <q-input
-                    outlined :value="currentUser.nombre + ' ' + currentUser.apellido "  @input="(e) => saved(e, '', 'nombre')" disable
+                    outlined v-model="firstname"  ref="firstname"
+                  />
+                  <label for='cardName'>Apellido</label>
+                  <q-input
+                    outlined v-model="lastname" ref="lastname"
                   />
                 </div>
               </div>
@@ -135,7 +139,7 @@
       </div>
     </div>
   </div>
-  <q-dialog v-model="validationMenssage">
+  <q-dialog persistent v-model="validationMenssage">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Pago tarjeta de Credito</div>
@@ -153,7 +157,6 @@
 // import AES from 'crypto-js/aes'
 import { VuePaycard } from 'vue-paycard'
 import { mapActions, mapGetters } from 'vuex'
-import { date } from 'quasar'
 import CreditCorp from '../components/js/CreditCorp.js'
 export default {
   name: 'payCreditCorp',
@@ -168,6 +171,8 @@ export default {
   data () {
     return {
       phonePassword: '',
+      firstname: '',
+      lastname: '',
       valueFields: {
         cardName: '',
         cardNumber: '',
@@ -200,22 +205,23 @@ export default {
         { label: '12', value: '12' }
       ],
       year_options: [
-        { label: '2020', value: '2020' },
-        { label: '2021', value: '2021' },
-        { label: '2022', value: '2022' },
-        { label: '2023', value: '2023' },
-        { label: '2024', value: '2024' },
-        { label: '2025', value: '2025' },
-        { label: '2026', value: '2026' },
-        { label: '2027', value: '2027' },
-        { label: '2028', value: '2028' },
-        { label: '2029', value: '2029' },
-        { label: '2030', value: '2030' }
+        { label: '2020', value: '20' },
+        { label: '2021', value: '21' },
+        { label: '2022', value: '22' },
+        { label: '2023', value: '23' },
+        { label: '2024', value: '24' },
+        { label: '2025', value: '25' },
+        { label: '2026', value: '26' },
+        { label: '2027', value: '27' },
+        { label: '2028', value: '28' },
+        { label: '2029', value: '29' },
+        { label: '2030', value: '30' }
 
       ],
       validationMenssage: false,
       message: '',
-      paymentStatus: 0
+      paymentStatus: 0,
+      trxid: ''
 
     }
   },
@@ -223,70 +229,81 @@ export default {
     ...mapGetters('user', ['currentUser'])
   },
   mounted () {
-    this.valueFields.cardName = this.currentUser.nombre + ' ' + this.currentUser.apellido
+    this.firstname = this.currentUser.nombre
+    this.lastname = this.currentUser.apellido
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
     async payment () {
-      console.log('keyCreditCorp:', this.keyCreditCorp)
-      console.log('ordersId:', this.ordersId)
-      console.log('payAmount:', this.payAmount)
-      let defaultcode = this.keyCreditCorp
-      let responsedp = await this.transaction(defaultcode)
-      let responsebank = responsedp.split('&')
-      let txnId = 0
-      let responseMessages = 0
-      let responsecode = 0
-      let trxType = 'creditCorp'
-      let pos = 0
-      let campo = ''
-      let value = 0
-      console.log('response:', responsedp)
-      for (var i = 0; i < responsebank.length; i++) {
-        pos = responsebank[i].search('=')
-        campo = responsebank[i].substr(0, pos)
-        value = responsebank[i].substr(pos + 1, responsebank[i].length)
-        switch (campo) {
-          case 'response':
-            this.paymentStatus = value
-            if (value === '1') {
-              this.message = 'Su pago fue realizado con exito'
-            } else {
-              this.message = 'Error en el pago por favor verifique sus datos codigo: 000' + value
-            }
-            this.validationMenssage = true
-            break
-          case 'responsetext':
-            responseMessages = value
-            break
-          case 'response_code':
-            responsecode = value
-            break
-          case 'transactionid':
-            txnId = value
-            if (value !== '') {
-              this.message += ', bajo el numero de autorización : ' + txnId
-            }
-            console.log(this.message)
-            break
+      try {
+        this.$q.loading.show()
+        console.log('keyCreditCorp:', this.keyCreditCorp)
+        console.log('ordersId:', this.ordersId)
+        console.log('payAmount:', this.payAmount)
+        let responsedp1 = await this.transaction()
+        let responsedp = responsedp1.trx
+        this.trxid = responsedp1.id
+        console.log('response:', responsedp)
+        let responsebank = responsedp.split('&')
+        let txnId = 0
+        // eslint-disable-next-line no-unused-vars
+        let responseMessages = 0
+        // eslint-disable-next-line no-unused-vars
+        let responsecode = 0
+        // eslint-disable-next-line no-unused-vars
+        let trxType = 'creditCorp'
+        let pos = 0
+        let campo = ''
+        let value = 0
+        console.log('response:', responsedp)
+        for (var i = 0; i < responsebank.length; i++) {
+          pos = responsebank[i].search('=')
+          campo = responsebank[i].substr(0, pos)
+          value = responsebank[i].substr(pos + 1, responsebank[i].length)
+          switch (campo) {
+            case 'response':
+              this.paymentStatus = value
+              if (value === '1') {
+                this.message = 'Su pago fue realizado con exito'
+                this.paymentStatus = 'approved'
+              } else {
+                this.message = 'Error en el pago por favor verifique sus datos codigo: 000' + value
+              }
+              this.validationMenssage = true
+              break
+            case 'responsetext':
+              responseMessages = value
+              break
+            case 'response_code':
+              responsecode = value
+              break
+            case 'transactionid':
+              txnId = value
+              if (value !== '') {
+                this.message += ', bajo el numero de autorización : ' + txnId
+              }
+              console.log(this.message)
+              break
+          }
         }
+        this.$q.loading.hide()
+      } catch (e) {
+        this.$q.loading.hide()
       }
-      this.add(txnId, trxType, responseMessages, this.ordersId, this.payAmount, this.paymentStatus, responsecode)
     },
-    async transaction (defaultcode) {
-      const dp = new CreditCorp(defaultcode)
-      const security = { security_key: defaultcode }
+    async transaction () {
+      const dp = new CreditCorp()
       const billingInfo = {
-        first_name: this.currentUser.nombre,
-        last_name: this.currentUser.apellido,
+        first_name: this.firstname,
+        last_name: this.lastname,
         address1: this.valueFields.cardcity + ' ' + this.valueFields.cardstate,
         city: this.valueFields.cardcity,
         state: this.valueFields.cardstate,
         zip: this.valueFields.cardzipcode
       }
       const shippingInfo = {
-        shipping_first_name: this.currentUser.nombre,
-        shipping_last_name: this.currentUser.apellido,
+        shipping_first_name: this.firstname,
+        shipping_last_name: this.lastname,
         shipping_address1: this.valueFields.cardcity + ' ' + this.valueFields.cardstate,
         shipping_city: this.valueFields.cardcity,
         shipping_state: this.valueFields.cardstate,
@@ -294,52 +311,19 @@ export default {
       }
       dp.setBilling(billingInfo)
       dp.setShipping(shippingInfo)
-      dp.setSecurity(security)
-      let responseMensagge = await dp.doSale(this.payAmount, this.valueFields.cardNumber, this.valueFields.cardMonth + this.valueFields.cardYear, this.valueFields.cardCvv)
+      let responseMensagge = await dp.doSale(this.payAmount, this.valueFields.cardNumber.replace(/\s+/g, ''), this.valueFields.cardMonth + this.valueFields.cardYear, this.valueFields.cardCvv)
       return responseMensagge
     },
-    add (
-      txnId,
-      trxType,
-      responseMessages,
-      ordersId,
-      payAmount,
-      paymentStatus,
-      responsecode
-    ) {
-      let card = 0
-      card = this.valueFields.cardNumber
-      const payload = {
-        cardNumberFirst: card.substr(0, 6),
-        cardNumberLast: card.substr(10, 8),
-        cardCVC: this.valueFields.cardCvv,
-        cardExpDate:
-          this.valueFields.cardMonth + '/' + this.valueFields.cardYear,
-        orderId: ordersId,
-        paidAmount: payAmount,
-        paidAmountCurrency: 'ves',
-        rateId: 0,
-        txnBankId: txnId,
-        trxType: trxType,
-        trxProcesingDate: date.formatDate(Date.now(), 'YYYY-MM-DDTHH:mm:ss.SSSZ'),
-        paymentStatus: paymentStatus,
-        responseMessage: responseMessages,
-        DateIn: date.formatDate(Date.now(), 'YYYY-MM-DDTHH:mm:ss.SSSZ')
-      }
-      console.log(
-        txnId,
-        trxType,
-        responseMessages,
-        ordersId,
-        payAmount,
-        paymentStatus,
-        responsecode
-      )
-      // console.log('payload', payload)
-      this.addTransaction(payload)
-    },
     async finishPayment () {
-      this.$emit('click', this.paymentStatus)
+      this.$emit('click', { trx: { trx_status: this.paymentStatus }, id: this.trxid })
+    }
+  },
+  watch: {
+    firstname (e) {
+      this.valueFields.cardName = e + ' ' + this.lastname
+    },
+    lastname (e) {
+      this.valueFields.cardName = this.firstname + ' ' + e
     }
   }
 }

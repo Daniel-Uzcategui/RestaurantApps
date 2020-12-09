@@ -59,7 +59,7 @@
                            </q-btn>
                         </div>
                         <q-btn round color="dark" style="z-index: 999999" :size="$q.screen.gt.xs ? 'md': 'xs'" @click="copyToClip(loc + '/#/menu/index?j=' +displayVal.prodType + '&t=' + displayVal.id + (selectedFilter !== '' ? '&q=' + selectedFilter : ''))" text-color="white" icon="fas fa-share-alt" class="q-ma-md"  />
-                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1">
+                        <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
                            <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                            <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                         </div>
@@ -85,7 +85,7 @@
                         </q-item-label>
                         <q-item-label v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
                      </div>
-                     <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1" vertical>
+                     <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
                         <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                         <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                      </q-card-actions>
@@ -134,8 +134,8 @@
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
                         <div class="q-pt-lg" vertical>
-                           <q-btn class="q-pl-md q-pr-md" v-if="required" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                           <q-btn class="q-pl-md q-pr-md" v-if="!required" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
                   </div>
@@ -170,6 +170,25 @@
                     </q-card>
                        </div>
                   </div>
+            </q-card-section>
+            <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 2">
+               <div class="column items-center">
+                  <div style="max-width: 300px; min-width: 40vmin; border-radius: 28px; background-color: #FFD63D" class="q-pa-xl">
+                     <div class="column items-center">
+                        <div  class="q-pt-md">
+                           <div class="text-h6" v-if="displayVal.discount > 0">
+                              Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
+                              <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
+                           </div>
+                           <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
+                        </div>
+                        <div class="q-pt-lg" vertical>
+                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                        </div>
+                     </div>
+                  </div>
+               </div>
             </q-card-section>
             <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
                <carouselmenu

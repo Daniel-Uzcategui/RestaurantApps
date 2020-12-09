@@ -24,14 +24,18 @@
 
   <div v-if="!readOnly">
     <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-    <q-btn-group rounded spread class="full-width">
+    <q-btn-group v-if="!isAnonymous" rounded spread class="full-width">
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" icon="add" />
       <q-btn no-caps color="secondary" icon="remove" @click="deleteAddress({id: value})" />
     </q-btn-group>
     <div class="row justify-center q-pa-md">
       <q-spinner-cube class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />
-      <p v-if="addressRadio.length === 0 && !loading" class="text-h4 text-center col">No existen direcciones asociadas a esta cuenta</p>
+      <p v-if="addressRadio.length === 0 && !loading" class="text-h4 text-center col-12">No existen direcciones asociadas a esta cuenta</p>
+      <div class="text-h4 text-center col-12" v-if="isAnonymous">
+        <p> Para agregar debe iniciar sesión</p>
+         <q-btn color="primary" rounded label="Iniciar Sesión" to="/auth/login" />
+      </div>
     </div>
     <q-option-group
       :value="value"
@@ -121,6 +125,7 @@ export default {
   computed: {
     ...mapGetters('localization', ['localZones', 'localizations']),
     ...mapGetters('address', ['address']),
+    ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['sede']),
     ...mapGetters('user', ['currentUser']),
     addPickup () {
@@ -294,6 +299,9 @@ export default {
   },
   async mounted () {
     this.bindLocalZones()
+    if (this.isAnonymous) {
+      this.loading = false
+    }
     if (this.currentUser !== null) {
       var binded = await this.bindAddress(this.currentUser.id).catch(e => console.log(e))
       if (binded) {

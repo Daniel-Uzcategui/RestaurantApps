@@ -114,6 +114,7 @@
           <q-table
           title="Detalle de Orden"
           color="primary"
+          grid
           :data="detailOrder"
           :columns="columns"
           :dense="$q.screen.lt.md"
@@ -390,6 +391,9 @@ export default {
     getTypeService (e) {
       e = parseInt(e)
       let tip = this.tipo_servicio.find(x => x.value === e)
+      if (typeof tip === 'undefined') {
+        return null
+      }
       return tip.label
     },
     downloadWithCSS () {

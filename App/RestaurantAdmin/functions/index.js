@@ -2,6 +2,11 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp()
 const db = admin.firestore()
+const querystring = require('querystring')
+const axios = require('axios')
+const aesjs = require('aes-js')
+const hasha = require('hasha')
+const atob = require('atob')
 exports.CheckCart = functions.firestore
   .document('orders/{ordersId}')
   .onCreate(async (change) => {
@@ -429,3 +434,245 @@ exports.RewardsPoints = functions.firestore
       }
     }
   })
+
+exports.MakePay = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+  res.set('Access-Control-Allow-Headers', '*')
+
+  if (req.method === 'OPTIONS') {
+    return res.end()
+  }
+  const reqBank = req.body.bank
+  if (typeof reqBank === 'undefined') {
+    return res.send({
+      error: 'No Bank parameter set'
+    })
+  }
+  const reqRef = db.collection('config').doc('paymentServ')
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    return res.send({
+      error: 'No payment configuration set'
+    })
+  } else {
+    let pre = doc.data()
+    switch (true) {
+      case reqBank === 'CrediCorp':
+        try {
+          if (typeof pre.CreditCorp === 'undefined') {
+            res.send(400, { error: '001', title: 'Error', message: 'Credicorp key not set' })
+            break
+          }
+          let Message
+          let obj = req.body
+          obj.securityKey = pre.CreditCorp
+          delete obj.bank
+          let postData = { ...obj, security_key: pre.CreditCorp }
+          console.log(postData)
+          let postData2 = querystring.stringify(postData)
+          let options = {
+            url: 'https://secure.nmi.com/api/transact.php',
+            method: 'post',
+            data: postData2
+          }
+          console.log('option :', options)
+          Message = await axios(options)
+          console.log(Message.data)
+          let response = querystring.parse(Message.data)
+          const payload = {
+            cardNumberFirst: postData.ccnumber.substr(0, 4),
+            cardNumberLast: postData.ccnumber.substr(postData.ccnumber.length - 4),
+            cardCVC: postData.cvv,
+            transactionid: response.transactionid,
+            paidAmount: postData.amount,
+            paidAmountCurrency: 'US$',
+            rateId: 0,
+            txnBankId: 1,
+            trxType: 'Creditcorp',
+            paymentStatus: parseInt(response.response) === 1 ? 'approved' : response.responsetext,
+            DateIn: new Date()
+          }
+          const res2 = await db.collection('transactions').add(payload)
+          res.send({ trx: Message.data, id: res2.id, trx2: response })
+        } catch (err) {
+          res.status(400)
+          console.log({ err })
+          res.send({
+            title: 'Error',
+            message: 'Error inesperado, intente más tarde' })
+        }
+        break
+      case reqBank === 'Mercantil':
+        try {
+          var cfg = pre.Mercantil
+          let integratorId = cfg.integratorId
+          let merchantId = cfg.merchantId
+          let terminalId = cfg.terminalId
+          let request = req.body
+          delete request.bank
+          let defaultcode = cfg.claveSecreta
+          request.transaction.cvv = encryptar(defaultcode, '772').toString()
+          request.transaction.twofactor_auth = encryptar(defaultcode, request.transaction.twofactor_auth).toString()
+          let invoicenumber = Math.random().toString(16).substr(2, 10)
+          request.merchant_identify = {
+            'integratorId': parseInt(integratorId),
+            'merchantId': parseInt(merchantId),
+            'terminalId': terminalId
+          }
+          if (cfg.ambiente) {
+            var url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/pay'
+          } else {
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/pay'
+          }
+          request.transaction.invoice_number = invoicenumber
+          let options2 = { method: 'post',
+            url: url,
+            headers:
+          { accept: 'application/json',
+            'content-type': 'application/json',
+            'x-ibm-client-id': cfg.xibm },
+            data: request,
+            json: true }
+          console.log(options2)
+          let respuesta = await axios(options2)
+          const payload = {
+            cardNumberFirst: request.transaction.card_number.substr(0, 4),
+            cardNumberLast: request.transaction.card_number.substr(request.transaction.card_number.length - 4),
+            cardCVC: request.transaction.cvv,
+            orderId: 0,
+            paidAmount: request.transaction.amount,
+            paidAmountCurrency: respuesta.data.transaction_response.currency,
+            rateId: 0,
+            txnBankId: 1,
+            trxType: 'Mercantil',
+            trxProcesingDate: respuesta.data.transaction_response.processing_date,
+            paymentStatus: respuesta.data.transaction_response.trx_status,
+            payment_method: respuesta.data.transaction_response.payment_method,
+            DateIn: new Date()
+          }
+          const res2 = await db.collection('transactions').add(payload)
+          res.send({ trx: respuesta.data.transaction_response, id: res2.id })
+        } catch (err) {
+          res.status(400)
+          console.log({ err })
+          if (err.response && err.response.data && err.response.data.error_list) {
+          // console.log(error.response.data);
+            console.log(err.response.data.error_list[0].description)
+            // console.log(error.response.headers);
+            res.send({
+              title: 'Error',
+              message: err.response.data.error_list[0].description })
+          } else {
+            res.send({
+              title: 'Error',
+              message: 'Error inesperado, intente más tarde' })
+          }
+        }
+        break
+      default:
+        res.send({
+          title: 'Error',
+          message: 'Error inesperado, intente más tarde' })
+    }
+  }
+})
+exports.GetAuth = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+  res.set('Access-Control-Allow-Headers', '*')
+
+  if (req.method === 'OPTIONS') {
+    return res.end()
+  }
+  const reqRef = db.collection('config').doc('paymentServ')
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    return res.send({
+      error: 'No payment configuration set'
+    })
+  }
+  let pre = doc.data()
+  if (typeof pre.Mercantil === 'undefined') {
+    return res.send({
+      error: 'No payment configuration set'
+    })
+  }
+  let cfg = pre.Mercantil
+  let integratorId = cfg.integratorId
+  let merchantId = cfg.merchantId
+  let terminalId = cfg.terminalId
+  let body = req.body
+  body.merchant_identify = {
+    'integratorId': parseInt(integratorId),
+    'merchantId': parseInt(merchantId),
+    'terminalId': terminalId
+  }
+  if (cfg.ambiente) {
+    var url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth'
+  } else {
+    url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth'
+  }
+  let options = { method: 'post',
+    url: url,
+    headers:
+          { accept: 'application/json',
+            'content-type': 'application/json',
+            'x-ibm-client-id': cfg.xibm },
+    data: body,
+    json: true }
+  try {
+    let respuesta = await axios(options)
+    console.log(respuesta.data)
+    let defaultcode = cfg.claveSecreta
+    let typePasswordBank = decrypt(respuesta.data.authentication_info.twofactor_type, defaultcode)
+    res.status(200)
+    return res.send({ auth: typePasswordBank.slice(0, 15) })
+  } catch (err) {
+    res.status(400)
+    console.log({ err })
+    if (err.response && err.response.data && err.response.data.error_list) {
+    // console.log(error.response.data);
+      console.log(err.response.data.error_list[0].description)
+      // console.log(error.response.headers);
+      return res.send({
+        title: 'Error',
+        message: err.response.data.error_list[0].description })
+    } else {
+      return res.send({
+        title: 'Error',
+        message: 'Error inesperado, intente más tarde' })
+    }
+  }
+})
+function decrypt (encryptedBytes, keybanking) {
+  const clave = hasha(keybanking, { algorithm: 'sha256', Type: 'string' })
+  var key = clave.substr(0, 32)
+  key = aesjs.utils.hex.toBytes(key)
+  // eslint-disable-next-line new-cap
+  var aesCbc = new aesjs.ModeOfOperation.cbc(key)
+  // se le incorporo para convertir de base64 a byte
+  encryptedBytes = Uint8Array.from(atob(encryptedBytes), c => c.charCodeAt(0))
+  var decryptedBytes = aesCbc.decrypt(encryptedBytes)
+  // Convert our bytes back into text
+  var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes)
+  console.log(decryptedText)
+  return decryptedText
+}
+// eslint-disable-next-line no-unused-vars
+function encryptar (keybanking, value) {
+  const clave = hasha(keybanking, { algorithm: 'sha256', Type: 'string' })
+  var key = clave.substr(0, 32)
+  key = aesjs.utils.hex.toBytes(key)
+  // eslint-disable-next-line new-cap
+  var aesCbc = new aesjs.ModeOfOperation.cbc(key)
+  const dataBytes = aesjs.utils.utf8.toBytes(value)
+  const paddedData = aesjs.padding.pkcs7.pad(dataBytes)
+  const encryptedBytes = aesCbc.encrypt(paddedData)
+  // console.log('valor',encryptedBytes)
+  let buff = Buffer.from(encryptedBytes)
+  let base64data = buff.toString('base64')
+  return base64data
+}

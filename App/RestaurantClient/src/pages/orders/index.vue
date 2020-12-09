@@ -56,12 +56,12 @@
          transition-hide="slide-down"
          >
          <q-card class="full-width">
-           <q-bar class="bg-transparent">
-            <q-space />
-            <q-btn dense flat icon="close" v-close-popup>
-               <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
-            </q-btn>
-         </q-bar>
+           <q-bar class="bg-transparent q-mt-sm">
+              <q-btn flat ></q-btn>
+               <q-btn style="z-index: 9999" dense flat icon="fas fa-chevron-left" v-close-popup>
+                  <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
+               </q-btn>
+            </q-bar>
             <q-card-section>
                <div :class="$q.screen.gt.xs ? 'text-h4 q-pa-xl' : 'text-h5 q-pa-md' " class="text-bold">
                   <p>Orden # {{ordenDet.factura}}</p>

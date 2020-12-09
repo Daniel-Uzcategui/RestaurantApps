@@ -98,7 +98,7 @@ export default {
         if (obj !== null) {
           clientforOrder = this.clientOrders(obj.customer_id)
           fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
-          typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
+          typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
           tipoPago = this.tipo_pago[obj.typePayment]['label']
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''

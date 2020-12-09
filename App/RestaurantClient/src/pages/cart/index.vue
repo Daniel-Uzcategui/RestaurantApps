@@ -50,7 +50,7 @@
                   />
                </q-item-section>
             </q-item>
-            <q-item>
+            <q-item v-if="item.addressPickup && item.addressShipping">
               <q-item-section>
                 <addresses
                 :readOnly="true"
@@ -211,7 +211,7 @@
                     />
                     <div class="q-pt-md">
                         <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</p>
-                        <div v-if="pagoSel !== 5 && CheckTDD ===false">
+                        <div v-if="pagoSel !== 5 && pagoSel !== 6 && CheckTDD ===false">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
                         </div>
                         <div v-if="CheckTDD ===true">
@@ -225,9 +225,16 @@
                     <div>
                      <payCreditCorp
                       :ordersId=currentUser.cedula
-                      :keyCreditCorp=config.CreditCorp
                       :payAmount=totalPrice
                       @click='payment' />
+                     </div>
+                    </div>
+                    <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
+                    <div>
+                     <debitPayment
+                      :ordersId=currentUser.cedula
+                      :amount=totalPrice
+                      @payment-done='payment' />
                      </div>
                     </div>
                   </div>
@@ -252,12 +259,14 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import Addresses from '../../components/addresses.vue'
 import payCreditCorp from '../../components/payCreditCorp.vue'
+import debitPayment from '../../components/payment/debitPayments'
 export default {
   components: {
     'addresses': () => import('../../components/addresses.vue'),
     'itemcomp': () => import('../../components/itemComp.vue'),
     payCreditCorp: payCreditCorp,
-    Addresses
+    Addresses,
+    debitPayment
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
@@ -292,6 +301,7 @@ export default {
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Venezolana', value: 6, color: 'blue' }) }
       return tip
     },
     promoData () {
@@ -449,7 +459,7 @@ export default {
         return item.stock[this.sede]
       }
     },
-    makeOrder (paypal) {
+    makeOrder (details) {
       this.$q.loading.show()
       if (this.tipEnvio !== '1') { this.addId = '' }
       let orderWhen = {
@@ -458,7 +468,8 @@ export default {
       }
       console.log({ orderWhen })
       let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
-      if (typeof paypal !== 'undefined') { order = { ...order, paypal: paypal } }
+      if (typeof details !== 'undefined' && typeof details.id === 'undefined') { order = { ...order, paypal: details } }
+      if (typeof details !== 'undefined' && typeof details.id !== 'undefined') { order = { ...order, onlinePay: details } }
       switch (this.pagoSel) {
         case 2:
           order = { ...order, payto: this.config.zelleEmail }
@@ -581,14 +592,14 @@ export default {
     },
     payment (status) {
       let that = this
-      console.log('info payment: ' + status)
-      if (status === '1') {
+      console.log(status)
+      if (status && status.trx && status.trx.trx_status === 'approved') {
         this.CheckTDD = true
         console.log('CheckTDD : ', this.CheckTDD)
         that.$q.loading.show({
           delay: 400
         })
-        this.makeOrder()
+        this.makeOrder(status)
       }
     }
   },
