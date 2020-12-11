@@ -126,7 +126,7 @@
       <p v-if="!isRegistration" class="q-ma-sm text-center">
           <router-link class="text-primary" to="forgotPassword">¿Olvidaste tu contraseña?</router-link>
       </p>
-      <q-dialog v-model="viewTermsDialog" persistent="persistent" @before-hide="setBlur">
+      <q-dialog v-model="viewTermsDialog" persistent="persistent">
              <terms></terms>
      </q-dialog>
      <q-card-section v-if="false">

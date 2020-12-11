@@ -139,7 +139,7 @@
                       <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el Servicio</p>
                       <q-list class="q-pa-sm" v-if="config">
                           <q-item>
-                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${deliveryPrice} $`"/>
+                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery`"/>
                           </q-item>
                           <q-item>
                             <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
@@ -148,10 +148,6 @@
                             <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                         </q-item>
                       </q-list>
-                      <div>
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                      </div>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 350px">
                        <q-card class="q-pa-xl" style="border-radius: 28px">
@@ -194,6 +190,12 @@
                           <div class="text-h5"> Mis direcciones</div>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
+                         <q-card-section>
+                           <div>
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          </div>
+                         </q-card-section>
                        </q-card>
                      </div>
                   </div>
@@ -210,7 +212,11 @@
                       v-model="pagoSel"
                     />
                     <div class="q-pt-md">
-                        <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</p>
+                      <div v-if="tipEnvio === '1'">
+                      <p class="text-h6">SubTotal: $ {{(getTotalCarrito()[2]).toFixed(2)}}</p>
+                      <p class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</p>
+                        </div>
+                        <p class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</p>
                         <div v-if="pagoSel !== 5 && pagoSel !== 6 && CheckTDD ===false">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
                         </div>
