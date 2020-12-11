@@ -211,9 +211,9 @@
                     />
                     <div class="q-pt-md">
                         <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</p>
-                        <div v-if="pagoSel !== 5 && pagoSel !== 6 && CheckTDD ===false">
+                        <!--div v-if="pagoSel !== 5 && pagoSel !== 6 && CheckTDD ===false">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
-                        </div>
+                        </div-->
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
@@ -567,7 +567,7 @@ export default {
         orderDate: this.orderDate === null || typeof this.orderDate === 'undefined' ? 'NA' : new Date(this.orderDate)
       }
       console.log({ orderWhen })
-      let order = { orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      let order = { photo: this.photoSRC, orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof details !== 'undefined' && typeof details.id === 'undefined') { order = { ...order, paypal: details } }
       if (typeof details !== 'undefined' && typeof details.id !== 'undefined') { order = { ...order, onlinePay: details } }
       switch (this.pagoSel) {
@@ -725,6 +725,7 @@ export default {
       this.photoSRC = info.files[0]
       this.photoUpload = false
       this.photoMessage = false
+      this.CheckTDD = true
       this.$q.notify({
         message: `Foto subida correctamente`,
         color: 'primary'
