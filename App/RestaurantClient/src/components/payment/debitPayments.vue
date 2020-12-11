@@ -18,12 +18,12 @@
     <div class="card-input"><label for="cardNumber" >Numero de tarjeta</label>
       <q-input mask="###### #### ########" type="tel" rounded outlined v-model="valueFields.cardNumber" title="Number" data-card-field="" autocomplete="off" maxlength="21" class=""/>
     </div>
-    <div class="row justify-center"><label class="col-12" for="cardName" >Cédula</label>
-      <q-select rounded outlined v-model="valueFields.customerIdV" :options="['V','E']" />
-      <q-input type="number" rounded outlined v-model="valueFields.customerId" title="v-card-name" data-card-field="" autocomplete="off" class=""/>
+    <div class="row justify-start"><label class="col-12" for="cardName" >Cédula</label>
+      <q-select class="col-3" rounded outlined v-model="valueFields.customerIdV" :options="['V','E']" />
+      <q-input type="number" class="col-9" rounded outlined v-model="valueFields.customerId" title="v-card-name" data-card-field="" autocomplete="off"/>
     </div>
-    <div class="row justify-center"><label class="col-12" for="cardName" >Tipo de Cuenta</label>
-      <q-select rounded outlined v-model="valueFields.account_type" emit-value :options="[ { label: 'Corriente', value: 'CC' }, { label: 'Ahorros', value: 'CA' } ]" />
+    <div class="row justify-start"><label class="col-12" for="cardName" >Tipo de Cuenta</label>
+      <q-select class="col-12" rounded outlined v-model="valueFields.account_type" emit-value map-options :options="[ { label: 'Cuenta Corriente', value: 'CC' }, { label: 'Cuenta de Ahorros', value: 'CA' } ]" />
     </div>
     <div class="row">
         <div class="col-12">

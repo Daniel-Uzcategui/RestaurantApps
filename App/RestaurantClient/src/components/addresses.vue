@@ -44,7 +44,6 @@
       color="primary"
     />
   </div>
-  <p v-if="!isValidMarker() && this.sede !== null" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
   <q-dialog
   style="z-index: 9999999"
   seamless
@@ -157,7 +156,7 @@ export default {
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
     ...mapActions('localization', ['bindLocalZones']),
     isValidMarker () {
-      console.log('hi')
+      // console.log('hi')
       if (!this.getZones() || this.markers.length === 0) { return false }
       // eslint-disable-next-line no-undef
       if (typeof google === 'undefined') { return false }
@@ -169,7 +168,7 @@ export default {
         }
         // eslint-disable-next-line no-undef
         let poly = new google.maps.Polygon({ paths: this.getZones()[i] })
-        console.log({ latLng, mark: this.markers, poly })
+        // console.log({ latLng, mark: this.markers, poly })
         // eslint-disable-next-line no-undef
         if (google.maps.geometry.poly.containsLocation(latLng, poly)) {
           this.$emit('update-price', this.getZonePrices()[i]['price'])
@@ -181,7 +180,7 @@ export default {
     getZones () {
       if (typeof this.sede === 'undefined' || this.sede === null) { return false }
       let sede = this.localizations.find(x => x.id === this.sede)
-      console.log(sede)
+      // console.log(sede)
       let zone = this.localZones.find(x => x.id === sede.deliveryZone)
       if (typeof zone === 'undefined' || typeof zone.paths === 'undefined') { return false }
       return JSON.parse(zone.paths)
@@ -189,7 +188,7 @@ export default {
     getZonePrices () {
       if (typeof this.sede === 'undefined' || this.sede === null) { return false }
       let sede = this.localizations.find(x => x.id === this.sede)
-      console.log(sede)
+      // console.log(sede)
       let zone = this.localZones.find(x => x.id === sede.deliveryZone)
       if (typeof zone === 'undefined' || typeof zone.paths === 'undefined') { return false }
       return zone.zones
@@ -225,7 +224,7 @@ export default {
       for (let i of e) {
         this.addressIn[i.types[0]] = i.long_name
       }
-      console.log({ add: e })
+      // console.log({ add: e })
     },
     translateLabel (e) {
       return this.addressIn && this.addressIn.country && this.translationJson[this.addressIn.country] && this.translationJson[this.addressIn.country][e] ? this.translationJson[this.addressIn.country][e] : e
@@ -298,7 +297,7 @@ export default {
     }
   },
   async mounted () {
-    this.bindLocalZones()
+    await this.bindLocalZones().catch(e => console.log(e))
     if (this.isAnonymous) {
       this.loading = false
     }
@@ -318,6 +317,7 @@ export default {
     value () {
       this.setDialog()
       if (this.isValidMarker()) {
+        console.log('hi')
         this.$emit('invalid-address', true)
       } else {
         this.$emit('invalid-address', false)

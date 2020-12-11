@@ -8,8 +8,9 @@
       <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
          <q-card-section class="q-pt-xl">
             <div class="row header-title">
-               <div class="fontsize-18">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg.dispName : (filters.find( e => e.id === selectedFilter).name)}}</div>
-               <q-btn v-if="filters.length && (rewards ? false : promo ? false : true)" dense round flat @click="nextFilter()" icon="fas fa-chevron-circle-right fa-2x" />
+               <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg.dispName : (filters.find( e => e.id === selectedFilter).name)}}</div>
+               <q-icon class="fontsize-18 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click="nextFilter()" name="fas fa-chevron-circle-right" />
+               <div v-if="filters.length && (rewards ? false : promo ? false : true)" class="fontsize-10 self-center">(Siguiente Catálogo)</div>
             </div>
             <p v-if="typeof this.sede === 'undefined' || this.sede === null"> Ninguna sede seleccionada</p>
             <div>
