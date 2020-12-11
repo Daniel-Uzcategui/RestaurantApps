@@ -158,7 +158,7 @@
                   </q-card-section>
                   <q-separator inset />
                   <q-card-section style="max-width: 70vmin">
-                     <div v-if="ordenDet.typePayment == 2 || ordenDet.typePayment == 1" class="text-center">
+                     <div v-if="ordenDet.typePayment == 0 || ordenDet.typePayment == 1 || ordenDet.typePayment ===2  || ordenDet.typePayment ===4 || ordenDet.typePayment ===8 || ordenDet.typePayment ===7"  class="text-center">
                         <div class=" column items-center" >
                          <img :src="ordenDet.photo" class="q-mb-sm" style="width:100%">
                         </div>
