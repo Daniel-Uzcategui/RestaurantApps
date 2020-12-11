@@ -1,7 +1,7 @@
 <template>
 <div class="column items-center">
     <VuePaycard
-    class="q-pa-none q-ma-none"
+    class="q-pa-none q-ma-none full-width"
     :value-fields="valueFields"
     :labels="labels"
     :hasRandomBackgrounds=false

@@ -25,9 +25,9 @@
   <div v-if="!readOnly">
     <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
     <q-btn-group v-if="!isAnonymous" rounded spread class="full-width">
-      <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
+      <q-btn no-caps color="secondary" v-if="addressRadio.length !== 0" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" icon="add" />
-      <q-btn no-caps color="secondary" icon="remove" @click="deleteAddress({id: value})" />
+      <q-btn no-caps color="secondary" v-if="addressRadio.length !== 0" icon="remove" @click="deleteAddress({id: value})" />
     </q-btn-group>
     <div class="row justify-center q-pa-md">
       <q-spinner-cube class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />
