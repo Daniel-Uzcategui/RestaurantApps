@@ -186,11 +186,14 @@ export default {
       ],
       tipo_pago: [
         { label: 'Punto de venta', value: 0 },
-        { label: 'Efectivo', value: 1 },
+        { label: 'Efectivo ($)', value: 1 },
         { label: 'Zelle', value: 2 },
-        { label: 'Venmo', value: 4 },
         { label: 'Tarjeta o Paypal', value: 3 },
-        { label: 'Débito o Crédito', value: 5 }
+        { label: 'Venmo', value: 4 },
+        { label: 'Débito o Crédito', value: 5 },
+        { label: 'Tarjeta Venezolana', value: 6 },
+        { label: 'Transferencia Bancaria', value: 7 },
+        { label: 'Pago móvil', value: 8 }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },

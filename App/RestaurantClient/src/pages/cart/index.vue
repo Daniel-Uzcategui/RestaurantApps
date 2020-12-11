@@ -232,10 +232,11 @@
                      <payCreditCorp
                       :ordersId=currentUser.cedula
                       :payAmount=totalPrice
+                      :keyCreditCorp=config.CreditCorp
                       @click='payment' />
                      </div>
                   </div>
-                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if="pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===6 || pagoSel ===7">
+                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if="pagoSel ===0 || pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7">
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 2">
                         <div class="text-center">
                           <div class="text-h5 ">Zelle</div>
@@ -372,8 +373,8 @@ export default {
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Venezolana', value: 6, color: 'blue' }) }
-      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
       if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
+      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
       return tip
     },
     promoData () {
