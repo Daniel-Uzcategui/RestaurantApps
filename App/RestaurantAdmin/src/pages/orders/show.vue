@@ -88,7 +88,7 @@
           <q-input label="punto de Referencia" :value="order.userComment"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
         </div>
       </div>
-      <div v-if="(order.typePayment == 1 || order.typePayment == 2) && order.photo" class="column items-center filled-soport">
+      <div v-if="(order.typePayment !== 3 ) && order.photo" class="column items-center filled-soport">
         <div class="col">
           <label><strong>Soporte de pago</strong></label>
           <viewer :img="order.photo"></viewer>
@@ -312,7 +312,11 @@ export default {
         { label: 'Efectivo', value: 1 },
         { label: 'Zelle', value: 2 },
         { label: 'Tarjeta o Paypal', value: 3 },
-        { label: 'Venmo', value: 4 }
+        { label: 'Venmo', value: 4 },
+        { label: 'Débito o Crédito', value: 5 },
+        { label: 'Tarjeta Venezolana', value: 6 },
+        { label: 'Transferencia Bancaria', value: 7 },
+        { label: 'Pago móvil', value: 8 }
       ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },

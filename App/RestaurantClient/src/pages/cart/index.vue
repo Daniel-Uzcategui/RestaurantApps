@@ -337,7 +337,7 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
-    ...mapGetters('config', ['paymentServ', 'configurations']),
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
     ...mapGetters('user', ['currentUser']),
     checkCartType () {
       let a = 0
@@ -439,6 +439,8 @@ export default {
     this.bindConfigs()
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
+    this.bindRates()
+    console.log(this.rates)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -446,7 +448,7 @@ export default {
     ...mapActions('transactions', ['bindTransactions']),
     ...mapMutations('menu', ['delCart']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindPaymentServ', 'bindConfigs']),
+    ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     ...mapActions('editor', ['bindBlocks']),
     dateOptions (date) {
       if (typeof this.configDates === 'undefined') { return new Date(date + ' 23:59:59') >= new Date() }

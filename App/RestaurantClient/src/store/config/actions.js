@@ -25,3 +25,7 @@ export const bindManif = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindEnv')
   return bindFirestoreRef('manifest', firestore().collection('environment').doc('manifest'), { reset: false })
 })
+export const bindRates = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindRates')
+  return bindFirestoreRef('rates', firestore().collection('rates').orderBy('dateIn', 'desc'), { reset: false })
+})
