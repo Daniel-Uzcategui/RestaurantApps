@@ -30,7 +30,21 @@
         </q-tr>
       </template>
       <template v-slot:item="props">
-        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
+        <q-list class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item>
+                <q-item-section>
+                  <q-item-label>{{props.row.factura}}</q-item-label>
+                </q-item-section>
+                <q-item-section class="text-caption text-grey">
+                  <q-item-label>{{props.row.status}}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
+              </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+            </q-list>
+        <!-- <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
           <q-card>
             <q-card-section>
               <q-icon name="search" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
@@ -47,7 +61,7 @@
               </q-item>
             </q-list>
           </q-card>
-        </div>
+        </div> -->
       </template>
     </q-table>
  </div>

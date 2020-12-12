@@ -90,10 +90,21 @@
         </q-tr>
       </template>
       <template v-slot:item="props">
-        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-        :style="props.selected ? 'transform: scale(0.95);' : ''">
+        <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+                <q-item-section>
+                  <q-item-label>{{props.row.name}}</q-item-label>
+                </q-item-section>
+                <q-item-section class="text-caption text-grey">
+                  <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+              </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
           <q-card>
-            <q-card-section>
+            <!-- <q-card-section>
              <q-list dense>
               <q-item>
                 <q-item-section>
@@ -104,8 +115,8 @@
                 </q-item-section>
               </q-item>
             </q-list>
-            </q-card-section>
-            <q-separator />
+            </q-card-section> -->
+            <!-- <q-separator />
             <q-list v-if="!props.expand" dense>
               <q-item v-for="col in props.cols" :key="col.name">
                 <q-item-section>
@@ -115,16 +126,16 @@
                   <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption>{{ col.value }}</q-item-label>
                 </q-item-section>
               </q-item>
-            </q-list>
+            </q-list> -->
             <q-list v-if="props.expand">
-                <q-item class="column items-center" key="desc" :props="props">
+                <q-item class="column items-start" key="desc" :props="props">
                   <p class="text-bold">Nombre</p>
                     <q-input rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                       :value="props.row.name"
                       />
                 </q-item>
 
-                <q-item class="column items-center" key="descripcion" :props="props">
+                <q-item class="column items-start" key="descripcion" :props="props">
                   <p class="text-bold">Descripción</p>
                     <q-editor
                       rounded outlined
@@ -134,7 +145,7 @@
                       autofocus
                     />
                 </q-item>
-                    <q-item class="column items-center">
+                    <q-item class="column items-start">
                         <p class="text-bold">Color de Fondo</p>
                     <q-color
                       default-value="#285de0"
@@ -145,7 +156,7 @@
                       style="max-width: 250px"
                       />
                   </q-item>
-                  <q-item class="column items-center">
+                  <q-item class="column items-start">
                         <p class="text-bold">Color de Texto</p>
                     <q-color
                       default-value="#285de0"
@@ -156,11 +167,11 @@
                       style="max-width: 250px"
                       />
                   </q-item>
-                  <q-item class="column items-center" key="priority" :props="props">
+                  <q-item class="column items-start" key="priority" :props="props">
                      <p class="text-bold">Prioridad</p>
                     <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" autofocus />
                 </q-item>
-                <q-item class="column items-center" key="estatus" :props="props">
+                <q-item class="column items-start" key="estatus" :props="props">
                     <q-toggle
                       label="Estatus"
                       @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
@@ -168,7 +179,7 @@
                       color="#3c8dbc"
                     />
                 </q-item>
-                <q-item class="column items-center" key="categorias" :props="props">
+                <q-item class="column items-start" key="categorias" :props="props">
                   <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
                   <q-popup-edit v-model.number="props.row.FechaAct">
                     <q-input rounded outlined
@@ -182,7 +193,7 @@
                 </q-item>
             </q-list>
           </q-card>
-        </div>
+          </q-list>
       </template>
     </q-table>
   </div>
