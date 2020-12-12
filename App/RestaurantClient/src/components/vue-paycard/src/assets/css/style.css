@@ -24,7 +24,7 @@
   z-index: 2;
   width: 100%;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item {
     max-width: 310px;
     height: 220px;
@@ -127,7 +127,7 @@
   margin-bottom: 40px;
   padding: 0 10px;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__top {
     margin-bottom: 25px;
   }
@@ -140,7 +140,7 @@
 .card-item__chip {
   width: 60px;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__chip {
     width: 50px;
   }
@@ -159,7 +159,7 @@
   margin-left: auto;
   width: 100%;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__type {
     height: 40px;
     max-width: 90px;
@@ -185,7 +185,7 @@
   display: block;
   cursor: pointer;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__info {
     padding: 10px;
   }
@@ -195,7 +195,7 @@
   font-size: 13px;
   margin-bottom: 6px;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__holder {
     font-size: 12px;
     margin-bottom: 5px;
@@ -210,7 +210,7 @@
   text-shadow: 7px 6px 10px rgba(14, 42, 90, 0.8);
   user-select: none;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__wrapper {
     padding: 20px 10px;
   }
@@ -224,7 +224,7 @@
   text-overflow: ellipsis;
   text-transform: uppercase;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__name {
     font-size: 16px;
   }
@@ -244,18 +244,18 @@
   margin-top: 25px;
   cursor: pointer;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__number {
-    font-size: 21px;
+    font-size: 18px;
     margin-bottom: 15px;
-    padding: 10px 10px;
+    padding: 5px 5px;
   }
 }
 @media screen and (max-width: 360px) {
   .card-item__number {
-    font-size: 19px;
+    font-size: 16px;
     margin-bottom: 10px;
-    padding: 10px 10px;
+    padding: 5px 5px;
   }
 }
 .card-item__numberItem {
@@ -265,9 +265,9 @@
 .card-item__numberItem.-active {
   width: 30px;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__numberItem {
-    width: 13px;
+    width: 12px;
   }
   .card-item__numberItem.-active {
     width: 16px;
@@ -294,7 +294,7 @@
   flex-shrink: 0;
   cursor: pointer;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__date {
     font-size: 16px;
   }
@@ -312,7 +312,7 @@
   padding-bottom: 6px;
   width: 100%;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__dateTitle {
     font-size: 12px;
     padding-bottom: 5px;
@@ -326,7 +326,7 @@
   position: relative;
   z-index: 2;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__band {
     margin-top: 20px;
   }
@@ -372,7 +372,7 @@
   border-radius: 4px;
   box-shadow: 0px 10px 20px -7px rgba(32, 56, 117, 0.35);
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-item__cvvBand {
     height: 40px;
     margin-bottom: 20px;
@@ -386,7 +386,7 @@
 .card-list {
   margin-bottom: -130px;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 920px) {
   .card-list {
     margin-bottom: -120px;
   }

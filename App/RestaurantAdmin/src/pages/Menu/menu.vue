@@ -193,8 +193,26 @@
       <template v-slot:item="props">
         <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
+        <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+                <q-item-section>
+                  <q-item-label>{{props.row.name ? props.row.name: 'Agregar Nombre'}}</q-item-label>
+                </q-item-section>
+                <q-item-section class="text-caption text-grey">
+                  <q-item-label>{{props.row.estatus ? props.row.estatus[sede] ? 'activo' : 'inactivo' : 'inactivo'}}</q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+              </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+        </q-list>
           <q-card>
-            <q-card-section>
+            <!-- <q-card-section>
              <q-list dense>
               <q-item>
                 <q-item-section>
@@ -206,8 +224,8 @@
               </q-item>
             </q-list>
             </q-card-section>
-            <q-separator />
-            <q-list v-if="!props.expand" dense>
+            <q-separator /> -->
+            <!-- <q-list v-if="!props.expand" dense>
               <q-item>
                 <q-item-section>
                   <div @click="showPhotoUpload(props.row.id)">
@@ -252,26 +270,28 @@
                   </q-item-label>
                 </q-item-section>
               </q-item>
-            </q-list>
+            </q-list> -->
             <q-list v-if="props.expand">
-          <q-item class="column items-center" key="photo" :props="props">
+          <q-item class="column items-start" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
-            <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
+            <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
                 <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
-            <div class="column items-center" v-else>
+            <div class="column items-start" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
                 </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
                 </div>
           </q-item>
-          <q-item class="column items-center" key="desc" :props="props">
+          <q-item class="column items-start" key="desc" :props="props">
+            <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
               rounded
               outlined />
           </q-item>
-          <q-item class="column items-center" key="categoria" :props="props">
+          <q-item class="column items-start" key="categoria" :props="props">
+            <q-td><label class="label-expand">Categorias</label></q-td>
               <q-select rounded outlined
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
@@ -285,7 +305,8 @@
                 stack-label
               />
           </q-item>
-           <q-item class="column items-center" key="groupComp" :props="props">
+           <q-item class="column items-start" key="groupComp" :props="props">
+             <q-td><label class="label-expand">Opciones</label></q-td>
               <q-select rounded outlined
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
@@ -301,9 +322,9 @@
                 stack-label
               />
           </q-item>
-              <q-item class="column items-center" v-show="props.expand" :props="props">
-                <q-td><label class="label-expand">Descripción</label></q-td>
-                <q-td colspan="100%" key="descripcion" :props="props">
+              <q-item class="column items-start" v-show="props.expand" :props="props">
+                <q-td><label class="col label-expand">Descripción</label></q-td>
+                <q-td class="col" key="descripcion" :props="props">
                     <q-editor
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       :value="props.row.descripcion"

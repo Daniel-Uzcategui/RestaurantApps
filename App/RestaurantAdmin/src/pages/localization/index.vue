@@ -84,8 +84,21 @@
         </q-tr>
       </template>
       <template v-slot:item="props">
-        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
-          <q-card>
+            <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+                <q-item-section>
+                  <q-item-label>{{props.row.name}}</q-item-label>
+                </q-item-section>
+                <q-item-section class="text-caption text-grey">
+                  <q-item-label>{{props.row.status ? 'activo' : 'inactivo'}}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
+              </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+            </q-list>
+          <!-- <q-card>
             <q-card-section>
               <q-icon name="search" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
             </q-card-section>
@@ -100,8 +113,7 @@
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-card>
-        </div>
+          </q-card> -->
       </template>
     </q-table>
  </div>

@@ -139,7 +139,7 @@
                       <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el Servicio</p>
                       <q-list class="q-pa-sm" v-if="config">
                           <q-item>
-                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery + ${deliveryPrice} $`"/>
+                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery`"/>
                           </q-item>
                           <q-item>
                             <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
@@ -148,10 +148,6 @@
                             <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                         </q-item>
                       </q-list>
-                      <div>
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                      </div>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 350px">
                        <q-card class="q-pa-xl" style="border-radius: 28px">
@@ -192,7 +188,14 @@
                          </q-card-section>
                          <q-card-section v-show="tipEnvio != 0 && tipEnvio != 2">
                           <div class="text-h5"> Mis direcciones</div>
+                          <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
+                         </q-card-section>
+                         <q-card-section>
+                           <div>
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          </div>
                          </q-card-section>
                        </q-card>
                      </div>
@@ -209,16 +212,6 @@
                       type="radio"
                       v-model="pagoSel"
                     />
-                    <div class="q-pt-md">
-                        <p class="text-h6" v-if="true">Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</p>
-                        <!--div v-if="pagoSel !== 5 && pagoSel !== 6 && CheckTDD ===false">
-                        <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Confirmar orden" />
-                        </div-->
-                        <div v-if="CheckTDD ===true">
-                        <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
-                        </div>
-                        <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
-                    </div>
                   </div>
                   <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 3"> <div id="paypal-button-container" ref="payp"></div> </div>
                   <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 5">
@@ -230,7 +223,7 @@
                       @click='payment' />
                      </div>
                   </div>
-                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if="pagoSel ===0 || pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7">
+                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7">
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 2">
                         <div class="text-center">
                           <div class="text-h5 ">Zelle</div>
@@ -268,7 +261,8 @@
                                   <q-btn style="border-radius: 28px;" push>
                                       <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4" >
                                       </q-avatar>
-                                      <span class="text-caption">Haga click para cargar la captura del pago realizado </span>
+                                      <p v-if="pagoSel != 1">Haga click para cargar la captura del pago realizado </p>
+                                      <p v-if="pagoSel == 1">Haga click para cargar foto del efectivo </p>
                                   </q-btn>
                                   </div>
                                 </div>
@@ -279,13 +273,26 @@
                         </q-card-section>
                         </q-card>
                     </div>
-                    <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
+                    <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
                     <div>
                      <debitPayment
                       :ordersId=currentUser.cedula
                       :amount=totalPrice
                       @payment-done='payment' />
                      </div>
+                    </div>
+                    <div class="q-pt-md col-12 column items-center">
+                      <div>
+                      <div v-if="tipEnvio === '1'">
+                      <div class="text-h6">SubTotal: $ {{(getTotalCarrito()[2]).toFixed(2)}}</div>
+                      <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
+                        </div>
+                        <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
+                        <div v-if="CheckTDD ===true">
+                        <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
+                        </div>
+                        <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
+                    </div>
                     </div>
                   </div>
          </q-card>
