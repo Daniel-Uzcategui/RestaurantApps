@@ -284,10 +284,11 @@
                     <div class="q-pt-md col-12 column items-center">
                       <div>
                       <div v-if="tipEnvio === '1'">
-                      <div class="text-h6">SubTotal: $ {{(getTotalCarrito()[2]).toFixed(2)}}</div>
-                      <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
-                        </div>
+                        <div class="text-h6">SubTotal: $ {{(getTotalCarrito()[2]).toFixed(2)}}</div>
+                        <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
+                      </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
+                        <div class="text-h6" v-if="pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8" >Total: Bs {{getRates(totalPrice)}}</div>
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
@@ -562,6 +563,17 @@ export default {
       return this.orders.find(obj => {
         return obj.customer_id === this.currentUser.id
       })
+    },
+    getRates (mto) {
+      let mtoTotal = 0
+      let rate = ''
+      rate = this.rates.find(obj => {
+        return obj.currency === 'Bs'
+      })
+      if (mto !== 'undefined') {
+        mtoTotal = rate.rateValue * mto
+      }
+      return mtoTotal
     },
     getTransactions () {
       return this.transactions.find(obj => {
