@@ -292,6 +292,9 @@
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
+                        <div v-if="pagoSel ==0">
+                        <q-btn @click="confirm = true" color="primary" no-caps rounded label="Finalizar orden" />
+                        </div>
                         <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
                     </div>
                     </div>
