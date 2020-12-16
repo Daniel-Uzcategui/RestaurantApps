@@ -17,12 +17,20 @@
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="rateValue" :props="props">
+          <q-td key="rateValue" :props="props" v-if="add">
               <q-input
                 @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
                 :value="props.row.rateValue"
                 type="number"
                 dense  input-style="text-align: right"
+                />
+          </q-td>
+           <q-td key="rateValue" :props="props" v-else-if="add==false">
+              <q-input
+                @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
+                :value="props.row.rateValue"
+                type="number"
+                dense  input-style="text-align: right" disable
                 />
           </q-td>
           <q-td key="currency" :props="props">
@@ -61,7 +69,8 @@ export default {
       columns,
       rateValue: '',
       currency: '',
-      dateIn: ''
+      dateIn: '',
+      add: false
     }
   },
   created () {
@@ -79,6 +88,7 @@ export default {
       let dateIn = new Date()
       let currency = 'Bs'
       let userId = this.currentUser.id
+      this.add = true
       this.addRate({ rateValue, dateIn, currency, userId })// .then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
     },
     afterBindigRate () {

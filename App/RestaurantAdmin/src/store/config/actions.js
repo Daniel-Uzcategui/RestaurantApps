@@ -4,7 +4,7 @@ import { firestore } from '../../services/firebase/db.js'
 /// ////// START Action ////////
 export const bindRates = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindRates')
-  return bindFirestoreRef('rates', firestore().collection('rates'), { reset: false })
+  return bindFirestoreRef('rates', firestore().collection('rates').orderBy('dateIn', 'desc'), { reset: false })
 })
 export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
