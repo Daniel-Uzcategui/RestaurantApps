@@ -155,7 +155,10 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
       // workboxPluginMode: 'InjectManifest',
-      // workboxOptions: {}, // only for NON InjectManifest
+      workboxOptions: {
+        skipWaiting: true,
+        clientsClaim: true
+      }, // only for NON InjectManifest
       manifest: {
         // name: 'QUploader implementation with Google Cloud Storage',
         // short_name: 'QUploader implementation with Google Cloud Storage',

@@ -3,6 +3,7 @@ export default function () {
     configurations: [],
     paymentServ: {},
     chat: {},
-    menucfg: { menuactive: true, iconsactive: true, dispName: '', displayType: 0 }
+    menucfg: { menuactive: true, iconsactive: true, dispName: '', displayType: 0 },
+    menuDispType: null
   }
 }

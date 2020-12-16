@@ -152,33 +152,34 @@ export default {
         title.innerText = e.name
       }
     }).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindEnv().then(e => {
-      // console.log({ environment: e })
-      let ver = localStorage.getItem('envVer')
-      if (ver === null) {
-        localStorage.setItem('envVer', e.version)
-      } else if (ver !== e.version) {
-        this.$q.dialog({
-          title: 'Nueva Version',
-          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
-          cancel: true,
-          persistent: true
-        }).onOk(() => {
-          localStorage.setItem('envVer', e.version)
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (registrations) {
-              for (let registration of registrations) {
-                registration.update()
-              }
-            })
-          }
-          this.getNewVer()
-        })
-      }
-      if (ver === e.version) {
-        // console.log('App is in the newer version')
-      }
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindEnv()
+    // .then(e => {
+    //   // console.log({ environment: e })
+    //   let ver = localStorage.getItem('envVer')
+    //   if (ver === null) {
+    //     localStorage.setItem('envVer', e.version)
+    //   } else if (ver !== e.version) {
+    //     this.$q.dialog({
+    //       title: 'Nueva Version',
+    //       message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
+    //       cancel: true,
+    //       persistent: true
+    //     }).onOk(() => {
+    //       localStorage.setItem('envVer', e.version)
+    //       if ('serviceWorker' in navigator) {
+    //         navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    //           for (let registration of registrations) {
+    //             registration.update()
+    //           }
+    //         })
+    //       }
+    //       this.getNewVer()
+    //     })
+    //   }
+    //   if (ver === e.version) {
+    //     // console.log('App is in the newer version')
+    //   }
+    // }).catch(e => console.error('error fetching data firebase', { e }))
     const { currentUser } = this
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
       if (Object.keys(this.$router.currentRoute.meta).length === 0) {
@@ -397,7 +398,7 @@ export default {
         caption: '',
         icon: 'fas fa-sign-out-alt',
         link: '#',
-        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser() })() }
+        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
       }]
       console.log({ men: this.menucfg })
       if (this.menucfg && !this.menucfg.iconsactive) {

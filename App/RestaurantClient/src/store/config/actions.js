@@ -29,3 +29,6 @@ export const bindRates = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindRates')
   return bindFirestoreRef('rates', firestore().collection('rates').orderBy('dateIn', 'desc'), { reset: false })
 })
+export const setMenuDispType = async function ({ commit }, payload) {
+  return commit('menuDispType', payload)
+}
