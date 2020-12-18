@@ -363,7 +363,7 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex'
-import { Carousel, Slide } from '../../components/vue-carousel'
+import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
 export default {
   props: {
     global_class: {
