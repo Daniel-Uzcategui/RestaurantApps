@@ -46,7 +46,7 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex'
-import { Carousel, Slide } from './vue-carousel'
+import { Carousel, Slide } from './vue-carousel/dist/vue-carousel.min.js'
 export default {
   props: {
     title: {
