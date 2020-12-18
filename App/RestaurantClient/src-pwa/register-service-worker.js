@@ -1,7 +1,7 @@
 import { register } from 'register-service-worker'
-import { Notify } from 'quasar'
+import { Notify, Dialog } from 'quasar'
 // eslint-disable-next-line no-unused-vars
-var clientVer = '0.8.4'
+var clientVer = '0.8.8'
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration
@@ -26,25 +26,36 @@ register('firebase-messaging-sw.js', {
   },
 
   updatefound (/* registration */) {
-    // console.log('New content is downloading.')
-  },
-
-  updated (/* registration */) {
-    Notify.create({
-      message: 'Update Available refresh',
-      icon: 'announcement',
-      onDismiss () {
+    console.log('New content is available.')
+    Dialog.create({
+      title: 'Nueva actualización disponible',
+      message: '¿Desea actualizar ahora?, solo tiene que refrescar la página',
+      cancel: true,
+      persistent: true,
+      onOk () {
         navigator.serviceWorker.getRegistrations().then(function (registrations) {
           for (let registration of registrations) {
             registration.unregister()
           }
-          window.location.reload(true)
+          window.location.reload()
         })
       }
     })
   },
+
+  updated (/* registration */) {
+    console.log('New content downloaded')
+    Notify.create({
+      message: 'Update Completed',
+      icon: 'announcement'
+    })
+  },
   offline () {
     // console.log('No internet connection found. App is running in offline mode.')
+    Notify.create({
+      message: 'Fuera de línea',
+      icon: 'announcement'
+    })
   },
 
   error (/* err */) {

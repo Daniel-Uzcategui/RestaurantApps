@@ -10,7 +10,7 @@
       </div>
   </div>
   <q-inner-loading :showing="visible">
-    <q-spinner-cube size="100px" color="primary" />
+    <q-spinner size="100px" color="primary" />
   </q-inner-loading>
 </div>
 </template>

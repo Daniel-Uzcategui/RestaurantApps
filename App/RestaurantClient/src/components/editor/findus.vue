@@ -2,7 +2,7 @@
      <q-card @click="click" flat class="full-height" :style="global_style" :class=" $q.dark.isActive ? 'bg-dark text-white ' + global_class : 'bg-white text-black ' + global_class">
       <q-card-section v-if="loading">
         <div class="row justify-center q-pa-md">
-          <q-spinner-cube class="col"  size="lg" color="primary" />
+          <q-spinner class="col"  size="lg" color="primary" />
         </div>
       </q-card-section>
       <q-card-section class="q-pa-none">

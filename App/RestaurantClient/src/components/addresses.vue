@@ -30,14 +30,13 @@
       <q-btn no-caps color="secondary" v-if="addressRadio.length !== 0" icon="remove" @click="deleteAddress({id: value})" />
     </q-btn-group>
     <div class="row justify-center q-pa-md">
-      <q-spinner-cube class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />
+      <q-spinner class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />
       <p v-if="addressRadio.length === 0 && !loading" class="text-h4 text-center col-12">No existen direcciones asociadas a esta cuenta</p>
       <div class="text-h4 text-center col-12" v-if="isAnonymous">
         <p> Para agregar debe iniciar sesión</p>
          <q-btn color="primary" rounded label="Iniciar Sesión" to="/auth/login" />
       </div>
     </div>
-    {{sede}}
     <q-option-group
       :value="value"
       @input="(e) => $emit('input', e)"

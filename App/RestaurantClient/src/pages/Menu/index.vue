@@ -5,7 +5,7 @@
       <div class="text-h5 menuTop sedetitle">Seleccionar Sede</div>
         <q-card flat class="my-card sedebuttons">
           <q-card-section class="row justify-center">
-          <q-spinner-cube class="col" v-if="loading" size="lg" color="primary" />
+          <q-spinner class="col" v-if="loading" size="lg" color="primary" />
       <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p>
       </q-card-section>
         <q-card-section v-for="i in localizations" :key="i.index">
@@ -115,4 +115,42 @@ export default {
     border-top-right-radius 50px
     border-bottom-left-radius 50px
     border-bottom-right-radius 50px
+  .sedecontainer
+    border-top-left-radius 0px !important
+    border-top-right-radius 0px !important
+    border-bottom-left-radius 0px !important
+    border-bottom-right-radius 0px !important
+    position absolute
+    top -50px
+    left 0
+    right 0
+    bottom 0
+    background-color transparent
+    background-repeat no-repeat !important
+    background-size cover !important
+
+  .sedebuttons
+    background-color transparent
+    width 27%
+    margin auto
+    min-width 51vmin
+
+  .sedetitle
+    font-size 7vmin
+    margin-left 0 !important
+    padding-top 0 !important
+    text-align center
+    line-height unset
+    height auto !important
+    color #393939
+
+  .sedechildcontainer
+    position absolute
+    right 0
+    bottom 0
+    top 65%
+    left 50%
+    transform translate(-50%, -50%)
+    width -webkit-fill-available
+
 </style>

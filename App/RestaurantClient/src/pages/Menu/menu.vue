@@ -25,6 +25,12 @@
                </q-list>
             </div>
          </q-card-section>
+         <q-card-section class="row justify-center" v-if="menuLoading">
+           <q-spinner
+              color="primary"
+              size="md"
+            />
+         </q-card-section>
          <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && !rewards">
            <div
                v-if="displayType == 1"
@@ -357,7 +363,7 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex'
-import { Carousel, Slide } from 'vue-carousel'
+import { Carousel, Slide } from '../../components/vue-carousel'
 export default {
   props: {
     global_class: {
@@ -490,6 +496,7 @@ export default {
   },
   data () {
     return {
+      menuLoading: true,
       loc: window.location.origin,
       dgbg: {},
       rewards: false,
@@ -519,12 +526,12 @@ export default {
       this.setSede(this.Sede)
     }
     this.bindMenu().then(() => {
-      console.log('Habemusbind2')
+      this.menuLoading = false
       this.filteredMenu = this.origMenu
       if (!parseInt(this.selectedProdType)) {
         this.productSelected()
       }
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    }).catch(e => { console.error('error fetching data firebase', { e }); this.menuLoading = false })
     this.bindCategorias().then(() => {
       if (!this.displayType) {
         this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
@@ -532,7 +539,6 @@ export default {
       }
     })
     this.bindPromos().then(() => {
-      console.log('Habemusbind3')
       if (parseInt(this.selectedProdType)) {
         this.productSelected()
       }
