@@ -9,6 +9,7 @@
       <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p>
       </q-card-section>
         <q-card-section v-for="i in localizations" :key="i.index">
+          {{i}}
           <q-btn class="full-width" rounded color="primary" :label="i.name" @click="i.id === sede ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
         </q-card>
@@ -94,13 +95,18 @@ export default {
     this.bindGroupComp()
   },
   created () {
-    this.bindLocalizations().then(() => {
+    try {
+      this.bindLocalizations().then(() => {
+        this.loading = false
+        // if (this.localizations.length === 1) {
+        //   this.setSede(this.localizations[0]['id'])
+        //   this.$router.push({ path: '/menu/menu' })
+        // }
+      }).catch((e) => { this.loading = false })
+    } catch (e) {
+      console.error(e)
       this.loading = false
-      // if (this.localizations.length === 1) {
-      //   this.setSede(this.localizations[0]['id'])
-      //   this.$router.push({ path: '/menu/menu' })
-      // }
-    })
+    }
   }
 }
 </script>
