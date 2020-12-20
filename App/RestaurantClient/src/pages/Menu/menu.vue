@@ -435,26 +435,28 @@ export default {
       return []
     },
     origMenu () {
-      return this.menu.reduce((y, x) => {
-        if (x.estatus && x.estatus[this.sede]) {
-          y.push({
-            categoria: x.categoria,
-            estatus: x.estatus,
-            descripcion: x.descripcion,
-            name: x.name,
-            photo: x.photo,
-            price: x.price,
-            id: x.id,
-            stock: x.stock,
-            discount: x.discount,
-            prodType: 0,
-            disptype: x.disptype,
-            priority: parseInt(x.priority ? x.priority : 1000),
-            groupComp: typeof x.groupComp === 'undefined' ? [] : x.groupComp
-          })
-        }
-        return y.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
-      }, [])
+      if (this.menu.length) {
+        return this.menu.reduce((y, x) => {
+          if (x.estatus && x.estatus[this.sede]) {
+            y.push({
+              categoria: x.categoria,
+              estatus: x.estatus,
+              descripcion: x.descripcion,
+              name: x.name,
+              photo: x.photo,
+              price: x.price,
+              id: x.id,
+              stock: x.stock,
+              discount: x.discount,
+              prodType: 0,
+              disptype: x.disptype,
+              priority: parseInt(x.priority ? x.priority : 1000),
+              groupComp: typeof x.groupComp === 'undefined' ? [] : x.groupComp
+            })
+          }
+          return y.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+        }, [])
+      } else return []
     },
     pointsCat () {
       var obj = this.currentUser === null || typeof this.currentUser.pointsCat === 'undefined' ? [] : this.currentUser.pointsCat
@@ -525,14 +527,31 @@ export default {
     if (this.Sede !== '') {
       this.setSede(this.Sede)
     }
-    this.bindMenu().then(() => {
-      this.menuLoading = false
-      this.filteredMenu = this.origMenu
-      if (!parseInt(this.selectedProdType)) {
-        this.productSelected()
-      }
-    }).catch(e => { console.error('error fetching data firebase', { e }); this.menuLoading = false })
+    try {
+      this.bindMenu().then(() => {
+        this.menuLoading = false
+        this.filteredMenu = this.origMenu
+        if (!parseInt(this.selectedProdType)) {
+          this.productSelected()
+        }
+      }).catch(e => {
+        console.error('error fetching data firebase', { e })
+        this.menuLoading = false
+        this.filteredMenu = this.origMenu
+        if (!parseInt(this.selectedProdType)) {
+          this.productSelected()
+        }
+      })
+    } catch (e) {
+      console.error(e)
+    }
     this.bindCategorias().then(() => {
+      if (!this.displayType) {
+        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+        this.selectedCat = this.filtercat[0]
+      }
+    }).catch(e => {
+      console.error(e)
       if (!this.displayType) {
         this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
         this.selectedCat = this.filtercat[0]
@@ -542,8 +561,14 @@ export default {
       if (parseInt(this.selectedProdType)) {
         this.productSelected()
       }
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    }).catch(e => {
+      console.error('error fetching data firebase', { e })
+      if (parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
+    })
     this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
   },
   watch: {
     origMenu () {
@@ -572,7 +597,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
     ...mapActions('config', ['setMenuDispType']),
     click () {
       this.$emit('click-edit', {
