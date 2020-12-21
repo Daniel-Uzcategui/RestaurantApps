@@ -30,7 +30,7 @@
       <q-btn no-caps color="secondary" v-if="addressRadio.length !== 0" icon="remove" @click="deleteAddress({id: value})" />
     </q-btn-group>
     <div class="row justify-center q-pa-md">
-      <q-spinner-cube class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />
+      <q-spinner class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />
       <p v-if="addressRadio.length === 0 && !loading" class="text-h4 text-center col-12">No existen direcciones asociadas a esta cuenta</p>
       <div class="text-h4 text-center col-12" v-if="isAnonymous">
         <p> Para agregar debe iniciar sesión</p>
@@ -69,6 +69,7 @@
             </q-bar>
     <q-card-section @click.prevent class="q-pt-none q-pa-md">
       <google-map
+        v-if="address.length || markers.length || gActive"
         :poly="getZones()"
         @address-update="(e) => updateAddIn(e)"
         :readOnly="readAddr"
@@ -154,7 +155,7 @@ export default {
   },
   methods: {
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
-    ...mapActions('localization', ['bindLocalZones']),
+    ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
     isValidMarker () {
       // console.log('hi')
       if (!this.getZones() || this.markers.length === 0) { return false }
@@ -279,6 +280,7 @@ export default {
       this.id = obj.id
     },
     newAddDialog () {
+      this.gActive = true
       this.readAddr = false
       this.id = null
       this.alias = null
@@ -297,16 +299,21 @@ export default {
     }
   },
   async mounted () {
-    await this.bindLocalZones().catch(e => console.log(e))
+    this.bindLocalizations().catch(e => console.log(e))
+    this.bindLocalZones().catch(e => console.log(e))
     if (this.isAnonymous) {
       this.loading = false
     }
     if (this.currentUser !== null) {
-      var binded = await this.bindAddress(this.currentUser.id).catch(e => console.log(e))
+      var binded = await this.bindAddress(this.currentUser.id).catch(e => { console.log(e); this.loading = false })
       if (binded) {
         this.loading = false
       }
     }
+    if (this.address.length) {
+      this.loading = false
+    }
+    console.log({ addd: this.address })
     this.dialog = false
     this.diagHack = true
   },
@@ -326,6 +333,7 @@ export default {
   },
   data () {
     return {
+      gActive: false,
       contact: '',
       phone: '',
       readAddr: false,

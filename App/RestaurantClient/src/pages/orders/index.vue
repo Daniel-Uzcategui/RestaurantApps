@@ -11,7 +11,7 @@
          </q-card-section>
          <q-card-section :style="$q.screen.gt.sm ? 'margin-left: 20vmin' : ''">
             <div class="row justify-center">
-               <q-spinner-cube v-if="loading" size="lg" color="primary" />
+               <q-spinner v-if="loading" size="lg" color="primary" />
                <p v-if="orderSort.length === 0 && !loading" class="text-h4 text-center">No existen pasadas ordenes</p>
                <q-list style="min-width: 320px" :class="'q-pa-' + $q.screen.name" class="col-6 q-pb-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
                   <q-item @click="carritoDialog(items)" clickable v-ripple>
@@ -36,7 +36,7 @@
                         <q-item-label lines="2"  v-if="typeof items.factura !== 'undefined'">Nro. Pedido: {{items.factura}}</q-item-label>
                         <q-item-label lines="2"  v-if="typeof items.factura === 'undefined'">
                            Nro. Pedido:
-                           <q-spinner-cube color="primary" />
+                           <q-spinner color="primary" />
                         </q-item-label>
                         <q-item-label lines="2" caption class="text-grey">Ver detalles</q-item-label>
                      </q-item-section>

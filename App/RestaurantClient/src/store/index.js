@@ -2,6 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { vuexfireMutations } from 'vuexfire'
 
+import createPersistedState from 'vuex-persistedstate'
+import SecureLS from 'secure-ls'
+var ls = new SecureLS({ isCompression: false })
+
 import auth from './auth'
 import user from './user'
 import menu from './menu'
@@ -21,6 +25,16 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
+    plugins: [
+      createPersistedState({
+        key: 'ott-token',
+        storage: {
+          getItem: (key) => ls.get(key),
+          setItem: (key, value) => ls.set(key, value),
+          removeItem: (key) => ls.remove(key)
+        }
+      })
+    ],
     modules: {
       address,
       auth,

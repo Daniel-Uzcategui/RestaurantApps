@@ -210,27 +210,27 @@ export default {
 
 <style lang="sass" scoped>
     .main_line
-      font-size: 75px;
-      letter-spacing: 5px;
-      line-height: 60px;
-      font-weight: 600;
+      font-size: 75px
+      letter-spacing: 5px
+      line-height: 60px
+      font-weight: 600
 
     .custom-caption
-      text-align: center;
-      padding: 12px;
-      color: white;
+      text-align: center
+      padding: 12px
+      color: white
 
     .animation_1
-      -webkit-animation: bounceIn 1s ease-in 800ms both;
-      animation: bounceIn 1s ease-in 800ms both;
+      -webkit-animation: bounceIn 1s ease-in 800ms both
+      animation: bounceIn 1s ease-in 800ms both
 
     .animation_2
-      -webkit-animation: flipInX 2s ease-in-out 800ms both;
-      animation: flipInX 1s ease-in-out 800ms both;
+      -webkit-animation: flipInX 2s ease-in-out 800ms both
+      animation: flipInX 1s ease-in-out 800ms both
 
     .animation_3
-      -webkit-animation: lightSpeedIn 1s ease-in 800ms both;
-      animation: lightSpeedIn 1s ease-in 800ms both;
+      -webkit-animation: lightSpeedIn 1s ease-in 800ms both
+      animation: lightSpeedIn 1s ease-in 800ms both
 
     .description
       padding: 10px
@@ -269,7 +269,7 @@ export default {
       box-shadow: 0 0 5px #000
 
     .box-shadow:hover
-      box-shadow: 0 10px 13px -6px rgba(0, 0, 0, 0.2), 0 20px 31px 3px rgba(0, 0, 0, 0.14), 0 8px 38px 7px rgba(0, 0, 0, 0.12) !important;
+      box-shadow: 0 10px 13px -6px rgba(0, 0, 0, 0.2), 0 20px 31px 3px rgba(0, 0, 0, 0.14), 0 8px 38px 7px rgba(0, 0, 0, 0.12) !important
 
     .my-card
       width: 350px

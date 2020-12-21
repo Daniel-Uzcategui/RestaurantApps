@@ -10,7 +10,7 @@
       </div>
   </div>
   <q-inner-loading :showing="visible">
-    <q-spinner-cube size="100px" color="primary" />
+    <q-spinner size="100px" color="primary" />
   </q-inner-loading>
 </div>
 </template>
@@ -21,7 +21,15 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('editor', ['blocks'])
+    ...mapGetters('editor', ['blocks']),
+    blocks2 () {
+      let obj = this.blocks
+      if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
+        return JSON.parse(JSON.stringify(obj.addedPages['Home']))
+      } else {
+        return []
+      }
+    }
   },
   components: {
     'qtabs': () => import('../components/editor/qTabs'),
@@ -47,27 +55,22 @@ export default {
       visible: true,
       admin: false,
       widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
-      blocks2: [
-      ],
+      // blocks2: [
+      // ],
       selectedBLock: { block_index: null, child_index: null },
       selectedBLockProps: []
     }
   },
   mounted () {
     this.visible = false
-    let obj = this.blocks
-    if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
-      this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages['Home']))
-    }
-    console.log({ gg: this.blocks })
   },
   watch: {
     blocks (e) {
       this.visible = false
-      let obj = e
-      if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
-        this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages['Home']))
-      }
+      // let obj = e
+      // if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
+      //   this.blocks2 = JSON.parse(JSON.stringify(obj.addedPages['Home']))
+      // }
       console.log({ gg2: e })
     }
   },

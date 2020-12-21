@@ -70,6 +70,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/no-side-effects-in-computed-properties */
 import Vue from 'vue'
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
@@ -89,7 +90,120 @@ export default {
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('editor', ['blocks', 'page', 'routes']),
     nav () {
-      return this.navigateFill()
+      // return this.navigateFill()
+      var mapping = []
+      var mapping2 = []
+      var filtro = this.filters.filter(x => x.show === true)
+      if (filtro.length) {
+        mapping = filtro.map(x => {
+          return {
+            title: x.name,
+            caption: x.descripcion,
+            icon: x.icon,
+            link: '#/menu/index',
+            click: () => {
+              this.setFilter(x.id)
+              this.leftDrawerOpen = false
+            }
+          }
+        })
+        console.log({ mapping })
+      }
+      if (this.menucfg && this.menucfg.menuactive) {
+        if (this.menucfg && this.menucfg.dispName) {
+          mapping2 = [{
+            title: this.menucfg.dispName,
+            caption: '',
+            icon: 'menu_book',
+            link: '#/menu/index',
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+            }
+          }]
+        } else {
+          mapping2 = [{
+            title: 'Catálogo',
+            caption: '',
+            icon: 'menu_book',
+            link: '#/menu/index',
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+            }
+          }]
+        }
+      }
+      mapping = [...mapping2, ...mapping]
+      if (this.paymentServ && this.paymentServ.statusRewards) {
+        mapping = [...mapping,
+          {
+            title: 'Mis Recompensas',
+            caption: '',
+            icon: 'fas fa-gift',
+            link: '#/user/rewards',
+            click: () => {
+              this.leftDrawerOpen = false
+            }
+          }
+        ]
+      }
+      let navig = [{
+        title: 'Inicio',
+        caption: '',
+        icon: 'fa fa-home',
+        link: '#/home',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
+      },
+      ...mapping,
+      {
+        title: 'Tus Ordenes',
+        caption: '',
+        icon: 'room_service',
+        link: '#/orders/index',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
+      },
+      {
+        title: 'Mis Direcciones',
+        caption: '',
+        icon: 'fas fa-map-marked-alt',
+        link: '#/user/address',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
+      },
+      {
+        title: 'Encuentranos',
+        caption: '',
+        icon: 'fa fa-globe',
+        link: '#/findus',
+        click: () => {
+          this.leftDrawerOpen = false
+        }
+      },
+      {
+        title: 'Perfil',
+        caption: '',
+        icon: 'fas fa-user',
+        link: '#',
+        click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
+      },
+      {
+        title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
+        caption: '',
+        icon: 'fas fa-sign-out-alt',
+        link: '#',
+        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
+      }]
+      console.log({ men: this.menucfg })
+      if (this.menucfg && !this.menucfg.iconsactive) {
+        navig = navig.map(x => { return { ...x, icon: '' } })
+      }
+      return navig
     },
     getCartQ () {
       var amt = 0
@@ -152,33 +266,34 @@ export default {
         title.innerText = e.name
       }
     }).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindEnv().then(e => {
-      // console.log({ environment: e })
-      let ver = localStorage.getItem('envVer')
-      if (ver === null) {
-        localStorage.setItem('envVer', e.version)
-      } else if (ver !== e.version) {
-        this.$q.dialog({
-          title: 'Nueva Version',
-          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
-          cancel: true,
-          persistent: true
-        }).onOk(() => {
-          localStorage.setItem('envVer', e.version)
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (registrations) {
-              for (let registration of registrations) {
-                registration.update()
-              }
-            })
-          }
-          this.getNewVer()
-        })
-      }
-      if (ver === e.version) {
-        // console.log('App is in the newer version')
-      }
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindEnv()
+    // .then(e => {
+    //   // console.log({ environment: e })
+    //   let ver = localStorage.getItem('envVer')
+    //   if (ver === null) {
+    //     localStorage.setItem('envVer', e.version)
+    //   } else if (ver !== e.version) {
+    //     this.$q.dialog({
+    //       title: 'Nueva Version',
+    //       message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
+    //       cancel: true,
+    //       persistent: true
+    //     }).onOk(() => {
+    //       localStorage.setItem('envVer', e.version)
+    //       if ('serviceWorker' in navigator) {
+    //         navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    //           for (let registration of registrations) {
+    //             registration.update()
+    //           }
+    //         })
+    //       }
+    //       this.getNewVer()
+    //     })
+    //   }
+    //   if (ver === e.version) {
+    //     // console.log('App is in the newer version')
+    //   }
+    // }).catch(e => console.error('error fetching data firebase', { e }))
     const { currentUser } = this
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
       if (Object.keys(this.$router.currentRoute.meta).length === 0) {
@@ -397,7 +512,7 @@ export default {
         caption: '',
         icon: 'fas fa-sign-out-alt',
         link: '#',
-        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser() })() }
+        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
       }]
       console.log({ men: this.menucfg })
       if (this.menucfg && !this.menucfg.iconsactive) {

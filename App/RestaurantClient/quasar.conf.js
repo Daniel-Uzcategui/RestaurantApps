@@ -1,6 +1,5 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
-
 module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
@@ -154,8 +153,17 @@ module.exports = function (ctx) {
 
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
-      // workboxPluginMode: 'InjectManifest',
-      // workboxOptions: {}, // only for NON InjectManifest
+      workboxPluginMode: 'GenerateSW',
+
+      workboxOptions: {
+        skipWaiting: true,
+        clientsClaim: true,
+        runtimeCaching: [{
+          urlPattern: new RegExp('^https://firebasestorage\\.googleapis\\.com/'),
+          handler: 'StaleWhileRevalidate',
+          options: { cacheName: 'app-images', expiration: { maxEntries: 50 } }
+        }]
+      }, // only for NON InjectManifest
       manifest: {
         // name: 'QUploader implementation with Google Cloud Storage',
         // short_name: 'QUploader implementation with Google Cloud Storage',

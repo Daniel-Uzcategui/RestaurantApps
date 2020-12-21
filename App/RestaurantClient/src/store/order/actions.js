@@ -28,7 +28,15 @@ export const saveOrder = firestoreAction((state, payload) => {
       console.log('orders updated!')
     })
 })
+const serialize = (snapshot) => {
+  // snapshot.data() DOES NOT contain the `id` of the document. By
+  // default, Vuefire adds it as a non enumerable property named id.
+  // This allows to easily create copies when updating documents, as using
+  // the spread operator won't copy it
+  // return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
+  return { ...snapshot.data(), id: snapshot.id }
+}
 export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindorders')
-  return bindFirestoreRef('orders', firestore().collection('orders').where('customer_id', '==', payload), { reset: false })
+  return bindFirestoreRef('orders', firestore().collection('orders').where('customer_id', '==', payload), { reset: false, serialize: serialize })
 })

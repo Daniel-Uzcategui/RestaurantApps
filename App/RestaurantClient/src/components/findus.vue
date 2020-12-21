@@ -5,7 +5,7 @@
       </q-card-section>
       <q-card-section>
         <div class="row justify-center q-pa-md">
-          <q-spinner-cube class="col" v-if="true" size="lg" color="primary" />
+          <q-spinner class="col" v-if="true" size="lg" color="primary" />
         </div>
       </q-card-section>
       <q-card-section class="q-pa-none">
