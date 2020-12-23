@@ -196,20 +196,25 @@ export default {
     }
   },
   created () {
-    this.bindMenu().then(() => {
-      console.log('Habemusbind')
-      this.filteredMenu = this.origMenu
-    }).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindCategorias().then(() => {
-      console.log({ menudi: this.displayType })
-      if (!this.displayType) {
-        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat()[0]['id']))
-        this.selectedCat = this.filtercat()[0]
-      }
-    })
-    this.bindPromos().then(() => {
-    }).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    // this.bindMenu().then(() => {
+    //   console.log('Habemusbind')
+    //   this.filteredMenu = this.origMenu
+    // }).catch(e => console.error('error fetching data firebase', { e }))
+    // this.bindCategorias().then(() => {
+    //   console.log({ menudi: this.displayType })
+    //   if (!this.displayType) {
+    //     this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat()[0]['id']))
+    //     this.selectedCat = this.filtercat()[0]
+    //   }
+    // })
+    // this.bindPromos().then(() => {
+    // }).catch(e => console.error('error fetching data firebase', { e }))
+    // this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    this.filteredMenu = this.origMenu
+    if (!this.displayType) {
+      this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat()[0]['id']))
+      this.selectedCat = this.filtercat()[0]
+    }
   },
   watch: {
     origMenu () {

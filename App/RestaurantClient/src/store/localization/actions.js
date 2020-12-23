@@ -11,7 +11,7 @@ const serialize = (snapshot) => {
 }
 export const bindLocalizations = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindLocalizations')
-  return bindFirestoreRef('localizations', firestore().collection('localizations').where('status', '==', 0), { reset: false, serialize: serialize })
+  return bindFirestoreRef('localizations', firestore().collection('localizations').where('status', '==', 0), { reset: false, serialize: serialize, wait: true })
 })
 export const bindLocalZones = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindLocalZones')

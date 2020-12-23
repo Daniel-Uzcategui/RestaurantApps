@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page v-on:scroll.passive="onScroll" padding>
     <div class=" q-pa-md menudiv sedecontainer" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
       <div class="sedechildcontainer">
       <div class="text-h5 menuTop sedetitle">Seleccionar Sede</div>
@@ -8,8 +8,8 @@
           <q-spinner class="col" v-if="loading" size="lg" color="primary" />
       <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p>
       </q-card-section>
-        <q-card-section v-for="i in localizations" :key="i.index">
-          <q-btn class="full-width" rounded color="primary" :label="i.name" @click="i.id === sede ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
+        <q-card-section v-show="!loading" v-for="i in localizations" :key="i.index">
+          <q-btn class="full-width" rounded color="primary" :label="i.name" @click.passive="i.id === sede || sede === null ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
         </q-card>
       </div>
@@ -29,6 +29,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-ajax-bar
+      ref="bar"
+      position="bottom"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
   </q-page>
 </template>
 
@@ -38,6 +45,7 @@ export default {
   data () {
     return {
       dialog: false,
+      barval: 0,
       sedeIn: null,
       loading: true
     }
@@ -64,6 +72,45 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('menu', ['bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede', 'setFilter', 'setProduct', 'setProdType']),
     ...mapMutations('menu', ['delCart']),
+    async init () {
+      try {
+        const bar = this.$refs.bar
+
+        bar.start()
+        var a = await this.bindLocalizations()
+        var b = await this.bindMenu()
+        var c = await this.bindCategorias()
+        var d = await this.bindPromos()
+        var e = await this.bindGroupComp()
+        var f = await this.bindItem()
+        if (a) {
+          bar.increment(1)
+        }
+        if (b) {
+          bar.increment(30)
+        }
+        if (c) {
+          bar.increment(5)
+        }
+        if (d) {
+          bar.increment(5)
+        }
+        if (e) {
+          bar.increment(15)
+        }
+        if (f) {
+          bar.stop()
+        }
+        if (a && b && c && d && e && f) {
+          this.loading = false
+          return 1
+        }
+      } catch (e) {
+        console.error(e)
+        this.loading = false
+        return 1
+      }
+    },
     getLocById (id) {
       try {
         if (id === null || this.cart.length === 0) {
@@ -88,25 +135,7 @@ export default {
     if (this.qprodtype !== null) {
       this.setProdType(this.qprodtype)
     }
-    this.bindMenu()
-    this.bindCategorias()
-    this.bindPromos()
-    this.bindGroupComp()
-    this.bindItem()
-  },
-  created () {
-    try {
-      this.bindLocalizations().then(() => {
-        this.loading = false
-        // if (this.localizations.length === 1) {
-        //   this.setSede(this.localizations[0]['id'])
-        //   this.$router.push({ path: '/menu/menu' })
-        // }
-      }).catch((e) => { this.loading = false })
-    } catch (e) {
-      console.error(e)
-      this.loading = false
-    }
+    this.init()
   }
 }
 </script>

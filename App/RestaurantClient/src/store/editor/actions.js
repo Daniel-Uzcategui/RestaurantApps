@@ -4,7 +4,7 @@ import { firestore } from '../../services/firebase/db.js'
 export const bindBlocks = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingBlocks', { firestore })
   return bindFirestoreRef('blocks', firestore()
-    .collection('editor').doc('blocks'), { reset: false, serialize: serialize })
+    .collection('editor').doc('blocks'), { reset: false, serialize: serialize, wait: true })
 })
 const serialize = (snapshot) => {
   // snapshot.data() DOES NOT contain the `id` of the document. By
@@ -17,10 +17,10 @@ const serialize = (snapshot) => {
 export const bindPage = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingBlocks', { firestore })
   return bindFirestoreRef('page', firestore()
-    .collection('editor').doc('page'), { reset: false, serialize: serialize })
+    .collection('editor').doc('page'), { reset: false, serialize: serialize, wait: true })
 })
 export const bindRoutes = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingBlocks', { firestore })
   return bindFirestoreRef('routes', firestore()
-    .collection('editor').doc('routes'), { reset: false, serialize: serialize })
+    .collection('editor').doc('routes'), { reset: false, serialize: serialize, wait: true })
 })

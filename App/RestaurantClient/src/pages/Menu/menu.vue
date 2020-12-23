@@ -1,5 +1,5 @@
 <template>
-   <div @click="click()" :class="global_class" :style="global_style">
+   <div @click.passive="click()" :class="global_class" :style="global_style">
       <q-input v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-pa-lg q-pt-xl" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
          <template v-slot:prepend>
             <q-icon name="fas fa-search" />
@@ -9,18 +9,18 @@
          <q-card-section class="q-pt-xl">
             <div class="row header-title relative-position">
                <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg.dispName : (filters.find( e => e.id === selectedFilter).name)}}</div>
-               <q-btn flat class="fontsize-13 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click="nextFilter()" icon="fas fa-chevron-circle-right" />
+               <q-btn flat class="fontsize-13 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click.passive="nextFilter()" icon="fas fa-chevron-circle-right" />
                <!-- <div v-if="filters.length && (rewards ? false : promo ? false : true)" class="fontsize-10 self-center">(Siguiente Catálogo)</div> -->
-               <q-btn flat class="fontsize-13 self-center absolute-bottom-right" @click="nextDisp()" icon="fas fa-grip-horizontal"/>
+               <q-btn flat class="fontsize-13 self-center absolute-bottom-right" @click.passive="nextDisp()" icon="fas fa-grip-horizontal"/>
             </div>
             <p v-if="typeof this.sede === 'undefined' || this.sede === null"> Ninguna sede seleccionada</p>
             <div>
                <q-list class="bg-dark" style="opacity: .7;overflow: hidden; z-index: 10; position: fixed; top: 50%; right: -16px; border-top-left-radius: 28px; padding-right: -15px; border-bottom-left-radius: 28px;">
                   <q-item v-ripple style="padding-left: 10px;" v-if="pointsCat && Object.keys(pointsCat).length  && !promo && paymentServ && paymentServ.statusRewards">
-                     <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click="rewards = !rewards" />
+                     <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click.passive="rewards = !rewards" />
                   </q-item>
                   <q-item v-ripple :ripple='false' style="padding-left: 10px;" v-if="(promoData.length || promo)  && !rewards">
-                     <q-btn dense round flat color="white" icon="fab fa-creative-commons-nc" @click="promo = !promo" />
+                     <q-btn dense round flat color="white" icon="fab fa-creative-commons-nc" @click.passive="promo = !promo" />
                   </q-item>
                </q-list>
             </div>
@@ -48,7 +48,7 @@
                         <slide class="row justify-center" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
                            <div v-if="typeof item.not === 'undefined'">
                               <div  style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col relative-position" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                                 <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
+                                 <q-card v-ripple @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                                     <div class="container-photo">
                                        <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                                     </div>
@@ -86,7 +86,7 @@
                >
                <q-tab class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
                   :key="index"
-                  @click="selectedCat=tabs; search()"
+                  @click.passive="selectedCat=tabs; search()"
                   :name="tabs.id"
                   >
                   {{tabs.name.toLowerCase()}}
@@ -95,7 +95,7 @@
             <div>
                <div class="row justify-around">
                   <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
-                     :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]" @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]" @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(selectedCat ? selectedCat.id : '')" :key="item.id" >
                      <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                         <div class="menuitem row">
@@ -144,7 +144,7 @@
             <div style="max-width: 600px">
                <q-list v-if="selectedCat !== null"  separator>
                   <q-item v-ripple
-                     @click.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     @click.passive.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(selectedCat !== null ? selectedCat.id : filtercat ? filtercat[0] ? filtercat[0].id : '' : '')" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -172,7 +172,7 @@
                  <p class="text-bold text-grey q-ma-md">{{tabs.name}}</p>
                <q-list separator>
                   <q-item v-ripple
-                     @click.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     @click.passive.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(tabs.id)" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -211,7 +211,7 @@
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
+                        <q-card v-ripple @click.passive="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                            <div class="container-photo">
                               <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                            </div>
@@ -241,7 +241,7 @@
                >
                <q-tab class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
                   :key="index"
-                  @click="selectedCat=tabs; search()"
+                  @click.passive="selectedCat=tabs; search()"
                   :name="tabs.id"
                   >
                   {{tabs.name.toLowerCase()}}
@@ -251,7 +251,7 @@
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
                <q-card v-ripple class="q-ma-md q-pa-md bg-secondary text-white" style="border-radius: 28px;"
                   :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'}]"
-                  @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
+                  @click.passive="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
                   v-for="(item, key) in filteredMenu" :key="key"
                   v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''"  class="menuitemcont">
@@ -290,7 +290,7 @@
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in promoData" :key="item.id" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
+                        <q-card v-ripple @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                            <div class="container-photo">
                               <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                            </div>
@@ -320,7 +320,7 @@
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
                <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
                   :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]"
-                  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false"
+                  @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false"
                   v-for="item in promoData" :key="item.id" >
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                      <div class="menuitem row">
@@ -395,7 +395,7 @@ export default {
     Slide
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType']),
     cats () {
@@ -527,50 +527,68 @@ export default {
     if (this.Sede !== '') {
       this.setSede(this.Sede)
     }
-    try {
-      this.bindMenu().then(() => {
-        this.menuLoading = false
-        this.filteredMenu = this.origMenu
-        if (!parseInt(this.selectedProdType)) {
-          this.productSelected()
-        }
-      }).catch(e => {
-        console.error('error fetching data firebase', { e })
-        this.menuLoading = false
-        this.filteredMenu = this.origMenu
-        if (!parseInt(this.selectedProdType)) {
-          this.productSelected()
-        }
-      })
-    } catch (e) {
-      console.error(e)
-    }
-    this.bindCategorias().then(() => {
-      if (!this.displayType) {
-        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
-        this.selectedCat = this.filtercat[0]
-      }
-    }).catch(e => {
-      console.error(e)
-      if (!this.displayType) {
-        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
-        this.selectedCat = this.filtercat[0]
-      }
-    })
-    this.bindPromos().then(() => {
-      if (parseInt(this.selectedProdType)) {
-        this.productSelected()
-      }
-    }).catch(e => {
-      console.error('error fetching data firebase', { e })
-      if (parseInt(this.selectedProdType)) {
-        this.productSelected()
-      }
-    })
-    this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
-    this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
+    // try {
+    //   this.bindMenu().then(() => {
+    //     // this.menuLoading = false
+    //     // this.filteredMenu = this.origMenu
+    //     // if (!parseInt(this.selectedProdType)) {
+    //     //   this.productSelected()
+    //     // }
+    //   }).catch(e => {
+    //     console.error('error fetching data firebase', { e })
+    //     // this.menuLoading = false
+    //     // this.filteredMenu = this.origMenu
+    //     // if (!parseInt(this.selectedProdType)) {
+    //     //   this.productSelected()
+    //     // }
+    //   })
+    // } catch (e) {
+    //   console.error(e)
+    // }
+    // this.bindCategorias().then(() => {
+    //   // if (!this.displayType) {
+    //   //   this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+    //   //   this.selectedCat = this.filtercat[0]
+    //   // }
+    // }).catch(e => {
+    //   console.error(e)
+    //   // if (!this.displayType) {
+    //   //   this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+    //   //   this.selectedCat = this.filtercat[0]
+    //   // }
+    // })
+    // this.bindPromos().then(() => {
+    //   // if (parseInt(this.selectedProdType)) {
+    //   //   this.productSelected()
+    //   // }
+    // }).catch(e => {
+    //   console.error('error fetching data firebase', { e })
+    //   // if (parseInt(this.selectedProdType)) {
+    //   //   this.productSelected()
+    //   // }
+    // })
+    // this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    // this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
   },
   watch: {
+    menu () {
+      this.menuLoading = false
+      this.filteredMenu = this.origMenu
+      if (!parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
+    },
+    promos () {
+      if (parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
+    },
+    categorias () {
+      if (!this.displayType) {
+        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+        this.selectedCat = this.filtercat[0]
+      }
+    },
     origMenu () {
       this.filteredMenu = this.origMenu
     },
@@ -587,6 +605,7 @@ export default {
     }
   },
   mounted () {
+    this.afterbinding()
     this.$emit('click-edit', {
       block_info: {
         block_index: this.block_index, child_index: this.child_index
@@ -599,6 +618,23 @@ export default {
   methods: {
     ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
     ...mapActions('config', ['setMenuDispType']),
+    afterbinding () {
+      // menu
+      this.menuLoading = false
+      this.filteredMenu = this.origMenu
+      if (!parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
+      // cat
+      if (!this.displayType) {
+        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+        this.selectedCat = this.filtercat[0]
+      }
+      // promo
+      if (parseInt(this.selectedProdType)) {
+        this.productSelected()
+      }
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {
@@ -614,6 +650,10 @@ export default {
         this.displayType = 0
       } else {
         this.displayType = this.displayType + 1
+      }
+      if (this.displayType === 1) {
+        this.selectedCat = null
+        this.search()
       }
     },
     productSelected () {

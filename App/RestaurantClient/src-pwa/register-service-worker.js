@@ -1,7 +1,7 @@
 import { register } from 'register-service-worker'
 import { Notify, Dialog } from 'quasar'
 // eslint-disable-next-line no-unused-vars
-var clientVer = '0.8.9'
+var clientVer = '0.8.10'
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration

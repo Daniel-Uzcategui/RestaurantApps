@@ -9,7 +9,7 @@
                icon='fas fa-bars'
                class="burgericon"
                name="cart"
-               @click="leftDrawerOpen = !leftDrawerOpen"
+               @click.passive="leftDrawerOpen = !leftDrawerOpen"
                style="z-index: 99999"
                exact />
                <div class="absolute-right">
@@ -225,6 +225,20 @@ export default {
     }
   },
   async mounted () {
+    // if (this.blocks && (this.blocks.css || this.blocks.scopedCss)) {
+    //   this.$q.loading.hide()
+    //   // console.log({ bindblock: e })
+    //   var obj = this.blocks
+    //   this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
+    //   var css
+    //   let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
+    //   if (scopedCss !== '') {
+    //     css = scopedCss.find(e => e.route === this.fullPath)
+    //     if (typeof css !== 'undefined' && css !== '') {
+    //       this.insCss(css.css)
+    //     }
+    //   }
+    // }
     this.bindBlocks().then((e) => {
       this.$q.loading.hide()
       // console.log({ bindblock: e })
@@ -238,9 +252,14 @@ export default {
           this.insCss(css.css)
         }
       }
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    }).catch(e => {
+      console.error('error fetching data firebase', { e })
+    })
     this.bindRoutes().then(() => this.addRoutes()).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindPage().then(() => this.toggleColors()).catch(e => console.error('error fetching data firebase', { e }))
+    this.bindPage().then(() => this.toggleColors()).catch(e => {
+      console.error('error fetching data firebase', { e })
+      this.toggleColors()
+    })
     this.bindFilters().catch(e => console.error('error fetching data firebase', { e }))
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -265,7 +284,19 @@ export default {
         const title = document.getElementById('apptitle')
         title.innerText = e.name
       }
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    }).catch(e => {
+      console.error('error fetching data firebase', { e })
+      if (e.icons && e.icons.favicon) {
+        const favicon = document.getElementById('favicon')
+        favicon.setAttribute('href', e.icons.favicon)
+      }
+      if (e.name) {
+        const title = document.getElementById('apptitle')
+        title.innerText = e.name
+      }
+    }
+
+    )
     this.bindEnv()
     // .then(e => {
     //   // console.log({ environment: e })

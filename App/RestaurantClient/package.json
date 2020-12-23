@@ -37,6 +37,7 @@
     "vue-carousel": "^0.18.0",
     "vue-interactive-paycard": "^1.0.0",
     "vue-paycard": "^0.3.0",
+    "vuex-cache": "^3.3.0",
     "vuex-persistedstate": "^4.0.0-beta.1",
     "vuexfire": "^3.2.4"
   },

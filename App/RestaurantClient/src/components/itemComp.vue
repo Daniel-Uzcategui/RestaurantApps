@@ -1,7 +1,7 @@
 <template>
   <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
     <div v-if="readOnly">
-        <q-list v-for="(items, indice) in value" :key="indice">
+        <q-list dense v-for="(items, indice) in value" :key="indice">
           <q-item v-ripple>
             <q-item-section class="text-left" >
             <div class="text-caption">{{getComponent(items.component, 'name')}} </div>
@@ -26,7 +26,7 @@
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
+        <q-list dense :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
               <q-radio :dark="mode == 1" :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id, component_name: component.name, name: items.name }) : JSON.stringify({ item: items.id, price: 0, component: component.id, component_name: component.name, name: items.name })" color="teal" />
@@ -46,10 +46,10 @@
         <div class="text-caption" v-if="component.min > 0">Mínimo {{component.min}}</div>
         <div class="text-caption" v-if="component.max">Máximo en Total {{component.max}}</div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
+        <q-list dense :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
-              <q-checkbox
+              <q-checkbox dense
                 :dark="mode == 1"
                 checked-icon="fas fa-dot-circle"
                 unchecked-icon="fas fa-circle"
@@ -75,7 +75,7 @@
         <div class="text-caption" v-if="component.max">Máximo en Total {{component.max}}</div>
         <div class="text-caption" v-if="component.max > component.maxUnit">Máximo por Elemento {{component.maxUnit}}</div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
+        <q-list dense :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section style="min-width: 100px">
               <q-slider
@@ -106,11 +106,12 @@
         <div class="text-caption" v-if="component.max > component.maxUnit">Máximo por Elemento {{component.maxUnit}}</div>
          </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
+        <q-list dense :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section style="min-width: 100px">
 
               <q-input
+                dense
                 :color="mode == 1 ? 'positive' : 'primary'"
                 :dark="mode == 1"
                 rounded

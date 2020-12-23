@@ -7,14 +7,16 @@ export const categorias = ({ categorias }) => {
   return arr
 }
 export const plaincategorias = ({ categorias }) => categorias
-export const menu = ({ menu }) => {
-  const keys = Object.keys(menu)
-  var arr = []
-  for (const i in keys) {
-    arr.unshift(menu[keys[i]])
-  }
-  return arr
-}
+// export const menu = ({ menu }) => {
+//   const keys = Object.keys(menu)
+//   var arr = []
+//   for (const i in keys) {
+//     arr.unshift(menu[keys[i]])
+//   }
+//   return arr
+// }
+export const menu = ({ menu }) => menu
+
 export const listcategorias = ({ categorias }) => {
   const keys = Object.keys(categorias)
   var arr = []

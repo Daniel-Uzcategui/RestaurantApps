@@ -38,5 +38,5 @@ const serialize = (snapshot) => {
 }
 export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindorders')
-  return bindFirestoreRef('orders', firestore().collection('orders').where('customer_id', '==', payload), { reset: false, serialize: serialize })
+  return bindFirestoreRef('orders', firestore().collection('orders').where('customer_id', '==', payload), { reset: false, serialize: serialize, wait: true })
 })

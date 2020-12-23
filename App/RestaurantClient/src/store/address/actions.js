@@ -2,7 +2,7 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log({ payload })
-  return bindFirestoreRef('address', firestore().collection('address').where('user', '==', payload), { reset: false, serialize: serialize })
+  return bindFirestoreRef('address', firestore().collection('address').where('user', '==', payload), { reset: false, serialize: serialize, wait: true })
 })
 const serialize = (snapshot) => {
   // snapshot.data() DOES NOT contain the `id` of the document. By

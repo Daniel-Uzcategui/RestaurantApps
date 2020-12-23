@@ -42,7 +42,7 @@ const serialize = (snapshot) => {
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
   try {
-    return bindFirestoreRef('menu', firestore().collection('menu').where('softDelete', '==', 0), { reset: false, serialize: serialize })
+    return bindFirestoreRef('menu', firestore().collection('menu').where('softDelete', '==', 0), { reset: false, serialize: serialize, wait: true })
   } catch (e) {
     console.error(e)
   }
@@ -51,25 +51,25 @@ export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingFilters')
   return bindFirestoreRef('filters', firestore()
     .collection('filters')
-    .where('softDelete', '==', 0).where('estatus', '==', true), { reset: false, serialize: serialize })
+    .where('softDelete', '==', 0).where('estatus', '==', true), { reset: false, serialize: serialize, wait: true })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
-  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '==', true), { reset: false, serialize: serialize })
+  return bindFirestoreRef('categorias', firestore().collection('categorias').where('estatus', '==', true), { reset: false, serialize: serialize, wait: true })
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindPromos')
-  return bindFirestoreRef('promos', firestore().collection('promos').where('estatus', '==', true), { reset: false, serialize: serialize })
+  return bindFirestoreRef('promos', firestore().collection('promos').where('estatus', '==', true), { reset: false, serialize: serialize, wait: true })
 })
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')
-  return bindFirestoreRef('item', firestore().collection('item').where('estatus', '==', true), { reset: false, serialize: serialize })
+  return bindFirestoreRef('item', firestore().collection('item').where('estatus', '==', true), { reset: false, serialize: serialize, wait: true })
 })
 export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItemsGroup')
-  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup').where('estatus', '==', true), { reset: false, serialize: serialize })
+  return bindFirestoreRef('itemGroup', firestore().collection('itemGroup').where('estatus', '==', true), { reset: false, serialize: serialize, wait: true })
 })
 export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindGroupComp')
-  return bindFirestoreRef('groupComp', firestore().collection('groupComp').where('estatus', '==', true), { reset: false, serialize: serialize })
+  return bindFirestoreRef('groupComp', firestore().collection('groupComp').where('estatus', '==', true), { reset: false, serialize: serialize, wait: true })
 })

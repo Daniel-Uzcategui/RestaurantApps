@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { vuexfireMutations } from 'vuexfire'
 
 import createPersistedState from 'vuex-persistedstate'
+import createCache from 'vuex-cache'
 import SecureLS from 'secure-ls'
 var ls = new SecureLS({ isCompression: false })
 
@@ -33,7 +34,8 @@ export default function (/* { ssrContext } */) {
           setItem: (key, value) => ls.set(key, value),
           removeItem: (key) => ls.remove(key)
         }
-      })
+      }),
+      createCache({ timeout: 10000 })
     ],
     modules: {
       address,

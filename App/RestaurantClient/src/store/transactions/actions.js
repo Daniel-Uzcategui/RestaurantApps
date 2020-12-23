@@ -3,7 +3,7 @@ import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 export const bindTransactions = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindTransactions')
-  return bindFirestoreRef('transactions', firestore().collection('transactions'), { reset: false, serialize: serialize })
+  return bindFirestoreRef('transactions', firestore().collection('transactions'), { reset: false, serialize: serialize, wait: true })
 })
 const serialize = (snapshot) => {
   // snapshot.data() DOES NOT contain the `id` of the document. By
