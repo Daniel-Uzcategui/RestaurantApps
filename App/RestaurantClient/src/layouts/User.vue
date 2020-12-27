@@ -66,6 +66,13 @@
             <router-view @setBlur="setBlur" />
          </transition>
       </q-page-container>
+      <q-ajax-bar
+      ref="bar"
+      position="bottom"
+      color="accent"
+      size="10px"
+      skip-hijack
+    />
    </q-layout>
 </template>
 
@@ -361,6 +368,12 @@ export default {
         this.setupNotif()
       }
     }
+    this.bindLocalizations().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindMenu().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindCategorias().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindPromos().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
   },
   updated () {
     this.fullPath = this.$router.history.current.fullPath
@@ -378,9 +391,10 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
+    ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
-    ...mapActions('menu', ['bindFilters', 'setFilter']),
+    ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
     addRoutes () {
       let { routes } = this.$router.options
       let routerAdd = this.routes

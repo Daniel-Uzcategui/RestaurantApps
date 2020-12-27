@@ -26,7 +26,7 @@ exports.CheckCart = functions.firestore
       if (!cfg.exists) {
         console.log('No such document!')
       } else {
-        sumPaid = sumPaid + parseInt(cfgData.price)
+        // sumPaid = sumPaid + parseInt(cfgData.price)
         if (typeof cfgData.rewards === 'undefined') {
           cfgRew = 10
         } else {

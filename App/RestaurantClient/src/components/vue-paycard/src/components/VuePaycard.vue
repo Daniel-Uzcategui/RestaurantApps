@@ -243,7 +243,7 @@ export default {
       const numberImage = parseInt(this.backgroundImage)
 
       if (this.isBackgroundImageFromAssets) {
-        return require(`../assets/images/${numberImage}.jpg`)
+        return require(`../assets/images/mercantil.jpg`)
       }
 
       if (this.backgroundImage && !Number.isFinite(numberImage)) {

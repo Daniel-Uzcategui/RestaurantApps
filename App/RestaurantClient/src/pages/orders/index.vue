@@ -385,6 +385,9 @@ export default {
         sumProd = (e.prodPrice * e.quantity) + sumProd
         sumExtra = (this.totalItComp(e.items) * e.quantity) + sumExtra
       })
+      if (this.ordenDet.delivery) {
+        sumProd = sumProd + this.ordenDet.delivery
+      }
       return [sumProd, sumExtra, sumProd + sumExtra]
     },
     showPhotoUpload (type) {
@@ -411,12 +414,12 @@ export default {
   },
   created () {
     this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
-    this.bindPage()
+    //  this.bindPage()
     this.bindAddress(this.currentUser.id)
-    this.bindMenu()
-    this.bindCategorias()
-    this.bindPromos()
-    this.bindGroupComp()
+    //  this.bindMenu()
+    //  this.bindCategorias()
+    //  this.bindPromos()
+    //  this.bindGroupComp()
   }
 }
 </script>

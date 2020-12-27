@@ -11,14 +11,20 @@
          <div class='filled'></div>
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
-         <div class="header-cell col-4">
+         <div class="header-cell col-3">
           <q-input label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disable/>
         </div>
-        <div class="header-cell col-4">
+        <div class="header-cell col-3">
           <q-input label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable />
         </div>
-        <div class="header-cell col-3">
-          <q-input label="Monto" :value="(order.paid)"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+        <div class="header-cell col-2">
+          <q-input label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+        </div>
+        <div v-if="order.delivery" class="header-cell col-2">
+          <q-input label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable />
+        </div>
+        <div class="header-cell col-2">
+          <q-input label="Total" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
@@ -237,20 +243,20 @@
       <q-card-section class="text-center text-h4 q-pa-none bg-black text-white">
         ** {{this.getLocalization (order.sede)}} **
       </q-card-section>
-      <q-card-section class="text-center text-h6">
+      <!-- <q-card-section class="text-center text-h6">
         ...info sede para factura...
       </q-card-section>
       <q-card-section class="text-center text-h6">
         ...info factura...
-      </q-card-section>
+      </q-card-section> -->
       <q-card-section class="text-left text-h7">
         {{'Direccion:' + addressDelivery}}
       </q-card-section>
-      <q-card-section class="text-left text-h7">
+      <q-card-section v-if="puntoRef" class="text-left text-h7">
         {{'Punto de referencia:' + puntoRef}}
       </q-card-section>
       <q-card-section class="text-h7">
-        <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid}}</q-item-section></q-item>
+        <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid && order.delivery ? order.paid + order.delivery : order.paid }}</q-item-section></q-item>
       </q-card-section>
       <q-card-section class="text-left text-h7">
         CANT ITEM

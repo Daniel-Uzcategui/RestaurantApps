@@ -442,7 +442,7 @@ export default {
     }
   },
   created () {
-    this.bindLocalizations()
+    // this.bindLocalizations()
     this.bindPaymentServ().then(() => {
     }).catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.cart)

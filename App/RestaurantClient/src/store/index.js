@@ -3,9 +3,9 @@ import Vuex from 'vuex'
 import { vuexfireMutations } from 'vuexfire'
 
 import createPersistedState from 'vuex-persistedstate'
-import createCache from 'vuex-cache'
-import SecureLS from 'secure-ls'
-var ls = new SecureLS({ isCompression: false })
+// import createCache from 'vuex-cache'
+// import SecureLS from 'secure-ls'
+// var ls = new SecureLS({ encodingType: '', isCompression: false })
 
 import auth from './auth'
 import user from './user'
@@ -26,17 +26,7 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
-    plugins: [
-      createPersistedState({
-        key: 'ott-token',
-        storage: {
-          getItem: (key) => ls.get(key),
-          setItem: (key, value) => ls.set(key, value),
-          removeItem: (key) => ls.remove(key)
-        }
-      }),
-      createCache({ timeout: 10000 })
-    ],
+    plugins: [createPersistedState({ key: 'otoken' })],
     modules: {
       address,
       auth,

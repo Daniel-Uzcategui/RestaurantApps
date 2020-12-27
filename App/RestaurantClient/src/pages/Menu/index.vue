@@ -5,10 +5,10 @@
       <div class="text-h5 menuTop sedetitle">Seleccionar Sede</div>
         <q-card flat class="my-card sedebuttons">
           <q-card-section class="row justify-center">
-          <q-spinner class="col" v-if="loading" size="lg" color="primary" />
-      <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p>
+          <!-- <q-spinner class="col" v-if="loading" size="lg" color="primary" /> -->
+      <!-- <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p> -->
       </q-card-section>
-        <q-card-section v-show="!loading" v-for="i in localizations" :key="i.index">
+        <q-card-section v-for="i in localizations" :key="i.index">
           <q-btn class="full-width" rounded color="primary" :label="i.name" @click.passive="i.id === sede || sede === null ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
         </q-card>
@@ -29,13 +29,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-ajax-bar
+    <!-- <q-ajax-bar
       ref="bar"
       position="bottom"
       color="accent"
       size="10px"
       skip-hijack
-    />
+    /> -->
   </q-page>
 </template>
 
@@ -73,43 +73,56 @@ export default {
     ...mapActions('menu', ['bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede', 'setFilter', 'setProduct', 'setProdType']),
     ...mapMutations('menu', ['delCart']),
     async init () {
-      try {
-        const bar = this.$refs.bar
+      // try {
+      // const bar = this.$refs.bar
 
-        bar.start()
-        var a = await this.bindLocalizations()
-        var b = await this.bindMenu()
-        var c = await this.bindCategorias()
-        var d = await this.bindPromos()
-        var e = await this.bindGroupComp()
-        var f = await this.bindItem()
-        if (a) {
-          bar.increment(1)
-        }
-        if (b) {
-          bar.increment(30)
-        }
-        if (c) {
-          bar.increment(5)
-        }
-        if (d) {
-          bar.increment(5)
-        }
-        if (e) {
-          bar.increment(15)
-        }
-        if (f) {
-          bar.stop()
-        }
-        if (a && b && c && d && e && f) {
-          this.loading = false
-          return 1
-        }
-      } catch (e) {
-        console.error(e)
-        this.loading = false
-        return 1
-      }
+      // bar.start()
+      // let a = await Promise.all([
+      //   this.bindLocalizations(),
+      //   this.bindMenu(),
+      //   this.bindCategorias(),
+      //   this.bindPromos(),
+      //   this.bindGroupComp()
+      //   // this.testQuery('item'),
+      //   // this.testQuery('menu'),
+      //   // this.testQuery('categorias'),
+      //   // this.testQuery('promos'),
+      //   // this.testQuery('groupcomp')
+      // ])
+      // var a = await this.bindLocalizations()
+      // var b = await this.bindMenu()
+      // var c = await this.bindCategorias()
+      // var d = await this.bindPromos()
+      // var e = await this.bindGroupComp()
+      // var f = await this.bindItem()
+      // if (a) {
+      //   bar.increment(1)
+      // }
+      // if (b) {
+      //   bar.increment(30)
+      // }
+      // if (c) {
+      //   bar.increment(5)
+      // }
+      // if (d) {
+      //   bar.increment(5)
+      // }
+      // if (e) {
+      //   bar.increment(15)
+      // }
+      // if (f) {
+      //   bar.stop()
+      // }
+      //   if (a) {
+      //     bar.stop()
+      //     this.loading = false
+      //     return 1
+      //   }
+      // } catch (e) {
+      //   console.error(e)
+      //   this.loading = false
+      //   return 1
+      // }
     },
     getLocById (id) {
       try {
