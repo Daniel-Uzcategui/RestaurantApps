@@ -19,7 +19,6 @@
     "build-ecr": "cross-env QENV=ecr quasar build"
   },
   "dependencies": {
-    "@eosrio/hyperion-stream-client": "^0.3.6",
     "@quasar/extras": "^1.6.0",
     "axios": "^0.19.2",
     "babel": "^6.23.0",
