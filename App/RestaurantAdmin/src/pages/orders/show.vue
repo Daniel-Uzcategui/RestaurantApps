@@ -136,7 +136,7 @@
             :value="props.row.name"
             @show="() => showPopup(props.row, 'name')"
             >
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
             </q-popup-edit>
           </q-td>
           <q-td key="quantity" :props="props">
@@ -144,7 +144,7 @@
                 @input="(e) => saved(e, props.row.quantity, props.row.id, 'quantity')"
                 :value="props.row.quantity"
                 dense
-                autofocus
+
                 type="number"
                 disabled
               />
@@ -154,7 +154,7 @@
                 @input="(e) => saved(e, props.row.prodPrice, props.row.id, 'price')"
                 :value="props.row.prodPrice"
                 dense
-                autofocus
+
                 type="number"
                 disabled
               />

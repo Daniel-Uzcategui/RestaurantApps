@@ -9,16 +9,15 @@
       title="Configuración de Opciones"
       :rows-per-page-options="[]"
       row-key="id"
-      class="bg-white"
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn flat color="white" push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
-          <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" no-caps push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
+          <q-btn flat color="white" no-caps push label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" no-caps push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
         </q-btn-group>
       </template>
       <template v-slot:header="props">

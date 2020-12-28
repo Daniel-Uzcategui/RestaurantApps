@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
+   <q-layout class="main my-font" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
       <q-header class="bg-primary text-white" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
          <q-toolbar>
             <q-btn
@@ -12,9 +12,9 @@
                />
             <q-toolbar-title class="text-caption">
                <q-avatar>
-                  <img alt="chopZI" src="~assets/app-logo-128x128.png" height="326px" width="300px">
+                  <img alt="chopZI" src="icons/iconwhite.png" height="326px" width="300px">
                </q-avatar>
-               {{getUserData('nombre')}} {{getUserData('apellido')}}
+               <span v-if="$q.screen.name !== 'xs'">{{getUserData('nombre')}} {{getUserData('apellido')}}</span>
             </q-toolbar-title>
             <div>
                <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
@@ -34,11 +34,14 @@
          </q-toolbar>
       </q-header>
       <q-drawer
+         on-layout="hide"
          v-if="$router.history.current.path !== '/editor/index'"
          v-model="leftDrawerOpen"
-         bordered
+         overlay
+         behavior="mobile"
          content-class="bg-blue-grey-9">
             <Nav
+              class="q-ma-xs"
                v-for="link in nav"
                :key="link.title"
                v-bind="link"
@@ -101,6 +104,7 @@ export default {
     })
   },
   async mounted () {
+    this.$q.dark.set(true)
     this.bindEnv().then(e => {
       // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
@@ -179,15 +183,32 @@ export default {
           caption: '',
           icon: 'fa fa-home',
           link: '#/home',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
+        },
+        {
+          title: 'Guías',
+          caption: '',
+          icon: 'fas fa-question-circle',
+          // separator: true,
+          tree: [
+            {
+              children: [
+                { label: 'Intro',
+                  link: 'intro',
+                  handler: (node) => this.onClickGuide(node) },
+                { label: 'Agregar opciones a Productos',
+                  link: 'addopts',
+                  handler: (node) => this.onClickGuide(node) }
+              ]
+            }]
         },
         {
           title: 'Sedes',
           caption: '',
           icon: 'fa fa-globe',
           link: '#/localization/index',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -195,7 +216,7 @@ export default {
           caption: '',
           icon: 'fa fa-bars',
           link: '#/menu/categorias',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -203,7 +224,7 @@ export default {
           caption: '',
           icon: 'fas fa-utensils',
           link: '#/menu/menu',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -211,7 +232,7 @@ export default {
           caption: '',
           icon: 'fas fa-filter',
           link: '#/menu/menufilters',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -219,7 +240,7 @@ export default {
           caption: '',
           icon: 'fab fa-gulp',
           link: '#/menu/options',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -227,7 +248,7 @@ export default {
           caption: '',
           icon: 'menu_book',
           link: '#/menu/optionsconf',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -235,7 +256,7 @@ export default {
           caption: '',
           icon: 'fas fa-ad',
           link: '#/menu/promo',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -243,7 +264,7 @@ export default {
           caption: '',
           icon: 'room_service',
           link: '#/orders/index',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         /* {
@@ -251,14 +272,14 @@ export default {
           caption: '',
           icon: 'fa fa-briefcase',
           link: '#/payments/index',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         }, */
         {
           title: 'Pagos',
           caption: '',
           icon: 'fa fa-briefcase',
-          separator: true,
+          // separator: true,
           tree: [
             {
               children: [
@@ -276,7 +297,7 @@ export default {
           caption: '',
           icon: 'fa fa-user',
           link: '#/clients/index',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -284,7 +305,7 @@ export default {
           caption: '',
           icon: 'far fa-object-group',
           link: '#/editor/index',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
@@ -292,14 +313,14 @@ export default {
           caption: '',
           icon: 'fa fa-users',
           link: '#/users/index',
-          separator: true,
+          // separator: true,
           tree: [{ children: [] }]
         },
         {
           title: 'Widgets',
           caption: '',
           icon: 'fa fa-cube',
-          separator: true,
+          // separator: true,
           tree: [
             {
               children: [
@@ -313,7 +334,7 @@ export default {
           title: 'Ajustes',
           caption: '',
           icon: 'fa fa-cog',
-          separator: true,
+          // separator: true,
           tree: [
             {
               children: [
@@ -328,29 +349,12 @@ export default {
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
-        },
-        {
-          title: 'Guías',
-          caption: '',
-          icon: 'fas fa-question-circle',
-          separator: true,
-          tree: [
-            {
-              children: [
-                { label: 'Intro',
-                  link: 'intro',
-                  handler: (node) => this.onClickGuide(node) },
-                { label: 'Agregar opciones a Productos',
-                  link: 'addopts',
-                  handler: (node) => this.onClickGuide(node) }
-              ]
-            }]
         } /*,
         /* {
           title: 'Reportes',
           caption: '',
           icon: 'fa fa-print',
-          separator: true,
+          // separator: true,
           tree: [
             {
               children: [
@@ -475,8 +479,15 @@ export default {
   }
 }
 </script>
-<style lang="stylus" scoped>
+<style lang="stylus">
   .main
     &.blur-layout
       filter blur(5px)
+  .q-drawer
+    border-top-right-radius 100px
+    overflow hidden
+  .q-toolbar
+    background-repeat no-repeat
+    background-size 15vmin
+    background-position center
 </style>

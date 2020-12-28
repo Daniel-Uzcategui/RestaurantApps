@@ -1,10 +1,11 @@
 <template>
-  <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-pt-lg'">
+  <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
    <q-table
       style="border-radius: 28px"
       :grid="$q.screen.lt.md"
       :dense="$q.screen.lt.md"
       :data="elmenu"
+      class="bg-dark"
       :columns="columns"
       title="Catálogos"
       :rows-per-page-options="[]"
@@ -23,11 +24,9 @@
                 :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
       <div class="q-pa-md">
       <q-select rounded outlined
-        bg-color="white"
         v-model="sede"
         :options="locList"
         style="width: 250px"
-        behavior="menu"
         emit-value
         map-options
         stack-label
@@ -35,8 +34,8 @@
       />
       </div>
         <q-btn-group flat push v-if="sede !== null">
-          <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+          <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         </q-btn-group>
         <q-input class="q-ma-md" v-model="searchBar" rounded outlined label="Buscar" dark filled/>
       </template>
@@ -59,7 +58,7 @@
               <q-input style="width: 200px"
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
-              autofocus
+
               rounded
               outlined />
           </q-td>
@@ -106,7 +105,7 @@
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
-                autofocus
+
                 style="width: 450px"
               />
           </q-td>
@@ -118,7 +117,7 @@
                 style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
-                autofocus
+
                 min="1" max="99999"
                 type="number"
               />
@@ -131,7 +130,7 @@
                 style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
                 :value="props.row.discount"
-                autofocus
+
                 label="%"
                 min="0" max="100"
                 type="number"
@@ -156,7 +155,7 @@
              <q-input style="width: 100px" rounded
              outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
              :value="props.row.priority"
-             autofocus
+
              min="1" max="999"
              type="number">
              </q-input>
@@ -171,7 +170,7 @@
                 outlined
                 @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)"
                 :value="props.row.disptype ? props.row.disptype : 0"
-                autofocus
+
                 min="1" max="99999"
                 type="number"
               />
@@ -329,7 +328,7 @@
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       :value="props.row.descripcion"
                       min-height="5rem"
-                      autofocus
+
                     />
                 </q-td>
               </q-item>

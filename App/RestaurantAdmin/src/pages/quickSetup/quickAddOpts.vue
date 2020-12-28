@@ -51,7 +51,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addcat" class="column no-wrap flex-center">
-          <AddCfgOpts class="text-black bg-white" style="height: 100%; border-radius: 28px"/>
+          <AddCfgOpts class="text-black bg-dark" style="height: 100%; border-radius: 28px"/>
         </q-carousel-slide>
         <q-carousel-slide name="addprodlorem" class="text-black column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">

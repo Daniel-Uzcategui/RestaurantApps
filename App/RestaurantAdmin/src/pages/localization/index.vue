@@ -5,6 +5,7 @@
       :grid="$q.screen.lt.md"
       class="localization"
       title="Sedes"
+      style="border-radius: 28px"
       color="primary"
       :data="localizations"
       :columns="columns"
@@ -17,9 +18,9 @@
       :selected.sync="selected"
       >
       <template v-slot:top-right>
-        <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="$router.replace('/localization/create')"/>
-        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
-        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="$router.replace('/localization/create')"/>
+        <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+        <q-btn flat color="white" push no-caps label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:header="props">
         <q-tr :props="props">

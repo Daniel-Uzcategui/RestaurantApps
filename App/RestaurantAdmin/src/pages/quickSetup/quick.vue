@@ -16,7 +16,7 @@
         transition-next="scale"
         swipeable
         animated
-        :control-color="['payserv', 'addsede', 'addcat', 'addprod'].includes(slide) ? 'grey' : 'white'"
+        :control-color="['payserv', 'addsede', 'addcat', 'addprod', 'theme'].includes(slide) ? 'grey' : 'white'"
         arrows
         height="100%"
         class="bg-primary text-white shadow-1 rounded-borders"
@@ -52,7 +52,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addcat" class="column no-wrap flex-center">
-          <AddCategoria class="text-black bg-white" style="height: 100%; border-radius: 28px"/>
+          <AddCategoria class="text-black bg-dark" style="height: 100%; border-radius: 28px"/>
         </q-carousel-slide>
         <q-carousel-slide name="addprodlorem" class="text-black column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
@@ -60,7 +60,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addprod" class="column no-wrap flex-center">
-          <AddProd :quick="false" class="text-black bg-white" style="height: 100%; border-radius: 28px"/>
+          <AddProd :quick="false" class="text-black bg-dark" style="height: 100%; border-radius: 28px"/>
         </q-carousel-slide>
         <q-carousel-slide name="skipofin" class="text-black column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">

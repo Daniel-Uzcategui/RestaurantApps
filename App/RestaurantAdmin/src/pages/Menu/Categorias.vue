@@ -11,7 +11,6 @@
       selection="single"
       dense
       flat
-      class="bg-white"
       rounded
       style="min-width: 320px; border-radius: 28px"
       :selected.sync="selected"
@@ -20,8 +19,8 @@
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+          <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">

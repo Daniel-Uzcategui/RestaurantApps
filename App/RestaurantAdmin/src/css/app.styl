@@ -7,6 +7,13 @@ a
   font-size 2em
   &:before
     opacity .9!important
+@font-face
+  font-family: customfont
+  src: url(./font/Montserrat-Regular.woff)
+
+// declare a class which applies it
+.my-font
+  font-family: 'customfont'
 
 fluid-font-size($minimumSize = 12, $maximumSize = 18, $minimumViewportWidth = 300, $maximumViewportWidth = 2440)
   font-size: 'calc(%spx + (%s - %s) * ((100vw - %spx) / (%s - %s))) !important' % ($minimumSize $maximumSize $minimumSize $minimumViewportWidth $maximumViewportWidth $minimumViewportWidth)

@@ -3,7 +3,6 @@
    <q-table
       style="border-radius: 28px"
       :data="itemPlain"
-      class="bg-white"
       :columns="columns"
       title="Opciones"
       :rows-per-page-options="[]"
@@ -15,9 +14,9 @@
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn flat color="white" push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
-          <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" no-caps push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
+          <q-btn flat color="white" no-caps push label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" no-caps push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
@@ -31,7 +30,7 @@
             :value="props.row.name"
             @show="() => showPopup(props.row, 'name')"
             >
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
             </q-popup-edit>
           </q-td>
 
@@ -41,7 +40,7 @@
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
-                autofocus
+
               />
           </q-td>
 
@@ -73,7 +72,7 @@
               />
           </q-td>
            <q-td key="priority" :props="props">
-              <q-input @input="(e) => saved(e || 0, props.row.priority, props.row.id, 'priority')" type="number" :value="props.row.priority" dense autofocus />
+              <q-input @input="(e) => saved(e || 0, props.row.priority, props.row.id, 'priority')" type="number" :value="props.row.priority" dense  />
            </q-td>
            <q-td key="price" :props="props">
             <q-decimal style="width: 135px" :rules="[validate]"
@@ -114,7 +113,7 @@
               rounded
               outlined />
           </q-item>
-          <q-item class="column items-start" key="groupComp" :props="props">
+          <q-item class="column items-start" key="estatus" :props="props">
              <q-td><label class="label-expand">Estatus</label></q-td>
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"

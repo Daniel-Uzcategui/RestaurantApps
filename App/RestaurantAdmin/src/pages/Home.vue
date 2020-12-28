@@ -1,11 +1,11 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div class="row justify-between">
-        <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="col-xs-6 col-sm-6 col-md-4 col-lg-3"  >
-         <q-card flat square class="text-white" horizontal>
+        <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center col-xs-6 col-sm-6 col-md-4 col-lg-3"  >
+         <q-card flat style="border-radius: 28px" class="text-white q-ma-sm" horizontal>
           <q-card-section class="bg-secondary">
             <div class="text-h5">
-              <i class="fa fa-bell" aria-hidden="true"></i>
+              <i class="fas fa-tasks" aria-hidden="true"></i>
               <span class="separate">{{totalOrders(0)}}</span>
             </div>
             <div class="text-subtitle2">Ordenes Por Confirmar </div>
@@ -13,17 +13,17 @@
           <q-separator dark />
           <q-card-actions class="bg-primary" vertical>
            <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right"
-           label="Más info"
+
            @click.native="$router.push({ path: '/orders/index', query: { status: 0 } })" />
           </q-card-actions>
            </q-card>
           </div>
-         <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
-          <q-card flat square class=" text-white" horizontal>
+         <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
+          <q-card flat style="border-radius: 28px" class=" text-white q-ma-sm" horizontal>
           <q-card-section  class="bg-secondary">
-            <div class="text-h5">
-              <i class="fa fa-bell" aria-hidden="true"></i>
-              <span class="separate">{{totalOrders(1)}}</span>
+            <div class="text-h5 row justify-between">
+              <i class="fas fa-spinner col-3" aria-hidden="true"></i>
+              <div class="col-3">{{totalOrders(1)}}</div>
             </div>
             <div class="text-subtitle2">Ordenes en Progreso</div>
           </q-card-section>
@@ -31,22 +31,22 @@
           <q-card-actions  class="bg-primary" vertical>
             <q-btn no-caps flat
             icon-right="fa fa-arrow-alt-circle-right"
-            label="Más info"
+
             @click.native="$router.push({ path: '/orders/index', query: { status: 1 } })" />
           </q-card-actions>
            </q-card>
           </div>
-          <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
-            <q-card flat square class="text-white" horizontal>
+          <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+            <q-card flat style="border-radius: 28px" class="text-white q-ma-sm" horizontal>
               <q-card-section  class="bg-secondary">
-              <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
+              <div class="text-h5"><i class="fas fa-bell-slash" aria-hidden="true"></i>
               <span class="separate">{{totalOrders(4)}}</span>
               </div>
               <div class="text-subtitle2">Ordenes en Anuladas</div>
              </q-card-section>
            <q-separator dark />
             <q-card-actions class="bg-primary" vertical>
-              <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right" label="Más info"
+              <q-btn no-caps flat icon-right="fa fa-arrow-alt-circle-right"
               @click.native="$router.push({ path: '/orders/index', query: { status: 4 } })" />
             </q-card-actions>
           </q-card>
@@ -196,10 +196,6 @@ export default {
 .flex-break
   flex: 1 0 100% !important
   height: 0 !important
-.header-container
-  .header-cell
-    margin: 2px
-    padding: 4px 8px
 .totalCard
    width: 30%
 </style>

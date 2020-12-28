@@ -1,9 +1,9 @@
  <template>
-  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'" >
     <div>
       <q-table flat square
       class="table"
-      style="border-radius: 0px"
+      style="border-radius: 28px"
       title="Ordenes"
       color="primary"
       :data="OrderClient"

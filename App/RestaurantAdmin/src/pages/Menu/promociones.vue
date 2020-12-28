@@ -13,8 +13,8 @@
          >
          <template v-slot:top-right>
             <q-btn-group flat push >
-          <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
-          <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
         </q-btn-group>
          </template>
          <template v-slot:body="props">
@@ -33,14 +33,14 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense autofocus />
+              <q-input style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
           </q-td>
           <q-td key="descripcion" :props="props">
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
-                autofocus
+
               />
           </q-td>
            <q-td key="price" :props="props">
