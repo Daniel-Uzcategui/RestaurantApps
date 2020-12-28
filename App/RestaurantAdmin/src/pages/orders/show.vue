@@ -9,28 +9,29 @@
           </div>
        </q-card-section>
          <div class='filled'></div>
+        <q-card-section>
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
-         <div class="header-cell col-3">
+         <div class="header-cell q-ma-sm col-3">
           <q-input label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disable/>
         </div>
-        <div class="header-cell col-3">
+        <div class="header-cell q-ma-sm col-3">
           <q-input label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable />
         </div>
-        <div class="header-cell col-2">
+        <div class="header-cell q-ma-sm col-2">
           <q-input label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
         </div>
-        <div v-if="order.delivery" class="header-cell col-2">
+        <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
           <q-input label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable />
         </div>
-        <div class="header-cell col-2">
+        <div class="header-cell q-ma-sm col-2">
           <q-input label="Total" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
         </div>
          <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-4">
+         <div class="header-cell q-ma-sm col-4">
           <q-input label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
         </div>
-        <div class="header-cell col-4">
+        <div style="min-width: 300px" class="header-cell q-ma-sm col-4">
         <q-input label="Fecha de Entrega" v-if="order && order.orderWhen && order.orderWhen.orderWhen == '1'" v-model="orderDate" filled>
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
@@ -57,14 +58,14 @@
           </q-input>
           <q-input label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" disabled />
         </div>
-        <div class="header-cell col-4">
+        <div class="header-cell q-ma-sm col-4">
           <q-input label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
         </div>
-        <div class="header-cell col-4" v-if="order.tipEnvio==2">
+        <div class="header-cell q-ma-sm col-4" v-if="order.tipEnvio==2">
           <q-input label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-4">
+         <div class="header-cell q-ma-sm col-4">
           <q-select :value="order.status"
             @input="(e) => { checkOrder(e)
             }"
@@ -74,23 +75,23 @@
             :options="estatus_options"
             label="Estatus" />
         </div>
-        <div class="header-cell col-3">
+        <div class="header-cell q-ma-sm col-3">
           <q-select :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
             :options="typePayment_options" map-options emit-value label="Tipo de Pago" />
         </div>
-        <div class="header-cell col-3">
+        <div class="header-cell q-ma-sm col-3">
           <label>Comanda</label><br>
           <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
-         <div class="header-cell col-6">
+         <div v-if="puntoRef" class="header-cell2 q-pa-sm col-6">
             <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
          </div>
-         <div class="header-cell col-6">
+         <div class="header-cell2 q-pa-sm col-6">
             <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
          <div class="flex-break q-pa-md"></div>
-        <div class="header-cell col-6" v-if="order.userComment">
+        <div class="header-cell q-ma-sm col-6" v-if="order.userComment">
           <q-input label="punto de Referencia" :value="order.userComment"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
         </div>
       </div>
@@ -116,7 +117,7 @@
       </div>
      </div>
       <div class="flex-break q-py-md "></div>
-     <div class="header-cell col-7 filled">
+     <div class="header-cell q-ma-sm col-7 filled">
           <q-table
           title="Detalle de Orden"
           color="primary"
@@ -223,7 +224,9 @@
         </q-tr>
       </template>
     </q-table>
-    </div> <q-dialog v-model="photoDiag">
+    </div>
+    </q-card-section>
+     <q-dialog v-model="photoDiag">
       <q-card>
         <q-btn flat color="primary" label="Descargar Factura" icon="fas fa-download" @click="downloadWithCSS"/>
         <q-card-section class="row items-center q-pb-none">
@@ -527,9 +530,9 @@ export default {
 .header
  padding-bottom: 50px
 .header-cell
-  padding-left: 30px
-.filled
-  padding-top: 50px
+  min-width: 130px
+.header-cell2
+  min-width: 200px
 .filled-soport
   padding-top: 30px
 .table

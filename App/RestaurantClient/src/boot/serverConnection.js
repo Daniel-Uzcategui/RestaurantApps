@@ -3,6 +3,7 @@ import firebaseService from '../services/firebase'
 
 export default ({ router, store, Vue }) => {
   if (process.env.MODE === 'pwa') {
+    console.log = function () {}
     Axios.get('/__/firebase/init.json').then(async response => {
       const cfg = await response.data
       if (!firebaseService.appslength()) {

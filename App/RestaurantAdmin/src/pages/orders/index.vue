@@ -1,7 +1,9 @@
  <template>
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
-      <q-table class="table"
+      <q-table flat square
+      class="table"
+      style="border-radius: 0px"
       title="Ordenes"
       color="primary"
       :data="OrderClient"

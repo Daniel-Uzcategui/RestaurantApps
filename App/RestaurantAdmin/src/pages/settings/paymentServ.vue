@@ -1,7 +1,7 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <div style="min-width: 320px;" :class="$q.screen.gt.xs ? 'q-ma-lg' : ''" >
      <div class="q-gutter-md">
-      <q-card>
+      <q-card style="border-radius: 28px">
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Medios de Pagos y Tipos de Servicios</div>
           <div>
@@ -9,44 +9,45 @@
               <q-btn class="header-btn" flat color="white" push label="Guardar" @click="validator" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="add" icon="fas fa-save"/>
             </div>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+            <q-btn v-if="quick" class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>
          </q-card-section>
-        <div class='filled'></div>
+
+        <q-card-section>
         <div class="row header-container">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tipo de Servicios</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tipo de Servicios</div>
        </div>
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusDelivery" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Delivery" />
         </div>
         <div class="flex-break q-py-md "></div>
       </div>
        <div class="row header-container">
-         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusPickup" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Pick Up" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusInlocal" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="In Local" />
         </div>
         <div class="flex-break q-py-md "></div>
       </div>
       <div class="row header-container">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Recompensas</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Recompensas</div>
        </div>
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Activar Recompensas" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded
           label="Cantidad Necesitada"
           type="number"
@@ -58,156 +59,162 @@
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Medios de Pagos</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Medios de Pagos</div>
        </div>
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusPto" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Punto de Venta" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Zelle" />
         </div>
         <div class="flex-break q-py-md "></div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Venmo" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusCash" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Efectivo" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Paypal" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal text-white"
-          outlined :options="estatus_options" label="Tarjeta crédito CreditCorp" />
+          outlined :options="estatus_options" label="CreditCorp" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Pago Móvil" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statustransfer" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Transferencia Bancaria" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="statusMercantil" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Mercantil" />
         </div>
         </div>
-        <div class="row header-container">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones especiales API</div>
+        <div v-if="statusPaypal || statusCreditCorp || statusMercantil" class="row header-container">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones especiales API</div>
        </div>
         <div v-if="statusPaypal" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Paypal</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Paypal</div>
        </div>
        <div v-if="statusPaypal" class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="PaypalApi" standout="bg-teal text-white"
           outlined label="Paypal API" />
         </div>
         </div>
         <div  v-if="statusCreditCorp" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito CreditCorp</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito CreditCorp</div>
        </div>
        <div v-if="statusCreditCorp"  class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="CreditCorp" standout="bg-teal text-white"
           outlined label="CreditCorp API" />
         </div>
         </div>
         <div  v-if="statusCreditCorp" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito Mercantil</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito Mercantil</div>
        </div>
        <div v-if="statusMercantil"  class="row header-container">
-        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-select rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal text-white"
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Desarrollo'}]" label="Ambiente" />
         </div>
-        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="Mercantil.xibm" standout="bg-teal text-white"
           outlined label="x-ibm-client-id" />
         </div>
-        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="Mercantil.integratorId" standout="bg-teal text-white"
           outlined label="integratorId" />
         </div>
-        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="Mercantil.merchantId" standout="bg-teal text-white"
           outlined label="merchantId" />
         </div>
-        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="Mercantil.terminalId" standout="bg-teal text-white"
           outlined label="terminalId" />
         </div>
-        <div class="header-cell q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="Mercantil.claveSecreta" standout="bg-teal text-white"
           outlined label="Clave secreta" />
         </div>
         </div>
          <div class="flex-break q-py-md "></div>
-        <div class="row header-container">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones textos Medios de pago</div>
+        <div v-if="statusZelle || statusVenmo || statuspagomovil || statustransfer" class="row header-container">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones textos Medios de pago</div>
        </div>
         <div v-if="statusZelle" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Zelle</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Zelle</div>
        </div>
        <div v-if="statusZelle" class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="zelleEmail" standout="bg-teal text-white"
           outlined label="Email Zelle" />
         </div>
         </div>
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
        </div>
        <div v-if="statusVenmo" class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="venmoAcc" standout="bg-teal text-white"
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
           <div  v-if="statuspagomovil" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Pago móvil</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Pago móvil</div>
        </div>
        <div v-if="statuspagomovil"  class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="pagomovil" standout="bg-teal text-white"
           outlined label="Pago Movil" />
         </div>
         </div>
           <div v-if="statustransfer" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Transferencia Bancaria</div>
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Transferencia Bancaria</div>
        </div>
        <div v-if="statustransfer"  class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input rounded v-model="transfer" standout="bg-teal text-white"
-          outlined label="Transferencia Bancaria" />
+          outlined label="Datos para Transferir" />
         </div>
         </div>
-         <div class='filled'></div>
+         </q-card-section>
      </q-card>
   </div>
-</q-page>
+</div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 export default {
+  props: {
+    quick: {
+      type: Boolean,
+      default: () => true
+    }
+  },
   created () {
     this.bindConfigs().then(e => console.log(this.afterBindigs()))
   },
@@ -285,7 +292,7 @@ export default {
         pagomovil: this.pagomovil,
         source: 'paymentServ'
       }
-      this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+      this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$emit('done', true) })
     },
     validator () {
       if (this.statusDelivery === 0 && this.statusPickup === 0 && this.statusInlocal === 0) {
@@ -384,6 +391,7 @@ export default {
         cancel: false,
         persistent: true
       }).onOk(() => {
+        this.$emit('done', true)
       })
     },
     afterBindigs () {
@@ -429,8 +437,7 @@ export default {
   position: absolute; right:120px !important
 .header
  padding-bottom: 50px
-.header-cell
-  padding-left: 30px
+
 .filled
   padding-top: 50px
 </style>

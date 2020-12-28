@@ -52,7 +52,6 @@
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
-                              {{(checkAvail(displayVal.id, displayVal.prodType, rewards)[0])}}
                               <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
                               <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
                                  <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />

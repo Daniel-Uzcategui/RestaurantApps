@@ -17,16 +17,16 @@ module.exports = function (ctx) {
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
-      'material-icons-outlined',
-      'material-icons-round',
-      'material-icons-sharp',
-      'mdi-v3',
-      'ionicons-v4',
-      'eva-icons',
+      // 'material-icons-outlined',
+      // 'material-icons-round',
+      // 'material-icons-sharp',
+      // 'mdi-v3',
+      // 'ionicons-v4',
+      // 'eva-icons',
       'fontawesome-v5',
-      'themify',
-      'line-awesome',
-      'roboto-font', // optional, you are not bound to it
+      // 'themify',
+      // 'line-awesome',
+      // 'roboto-font', // optional, you are not bound to it
       'material-icons' // optional, you are not bound to it
     ],
 

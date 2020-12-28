@@ -121,6 +121,23 @@ exports.CheckCart = functions.firestore
       merge: true
     })
   })
+exports.FirstUser = functions.firestore
+  .document('users/{userId}')
+  .onCreate(async (change) => {
+    const userRef = db.collection('config').doc('firstUser')
+    const snapshot = await userRef.get()
+    if (!snapshot.exists) {
+      const data = {
+        user: 'created'
+      }
+      const res = await db.collection('config').doc('firstUser').set(data)
+      const res2 = change.ref.set({
+        rol: ['Admin'],
+        firstAccess: true
+      }, { merge: true })
+      return [res, res2]
+    }
+  })
 exports.facturasSequence = functions.firestore
   .document('orders/{ordersId}')
   .onCreate(async (change) => {

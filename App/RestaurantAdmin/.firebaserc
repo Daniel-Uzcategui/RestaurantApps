@@ -2,7 +2,8 @@
   "projects": {
     "default": "restaurant-testnet",
     "QA": "qa-restaurant-testnet",
-    "ecr": "ecrhwei8"
+    "ecr": "ecrhwei8",
+    "staging": "chopzip6kds"
   },
   "targets": {
     "restaurant-testnet": {

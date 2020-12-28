@@ -1,12 +1,12 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <div style="min-width: 320px" :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
-      <q-card >
+      <q-card style="border-radius: 28px" >
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Agregar Sedes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+            <q-btn v-if="!quickAdded" class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
+            <q-btn v-if="quick" class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>
@@ -58,7 +58,7 @@
      </div>
        <diV class='filled'></diV>
      </q-card>
-     <q-card v-if="Delivery">
+     <q-card style="border-radius: 28px" v-if="Delivery">
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Zonas de delivery (Opcional)</div>
        </q-card-section>
@@ -80,7 +80,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-</q-page>
+</div>
 </template>
 <script>
 import { GeoPoint } from '../../services/firebase/db.js'
@@ -95,6 +95,12 @@ Vue.use(GmapVue, {
   }
 })
 export default {
+  props: {
+    quick: {
+      type: Boolean,
+      default: () => true
+    }
+  },
   components: {
     gzones: require('../../components/GmapZones').default,
     GoogleMap: require('../../components/GoogleMap.vue').default
@@ -103,9 +109,10 @@ export default {
     return {
       validationError: false,
       name: '',
+      quickAdded: false,
       tables: '',
       capacity: '',
-      status: 1,
+      status: 0,
       deliveryZone: null,
       PickUP: true,
       Delivery: true,
@@ -156,7 +163,11 @@ export default {
         Delivery: this.Delivery,
         Inlocal: this.Inlocal
       }
-      this.addLoc(payload).then(e => { this.$q.loading.hide(); this.$router.replace('/localization/index') })
+      this.addLoc(payload).then(e => {
+        this.$q.loading.hide(); if (this.quick) { this.$router.replace('/localization/index') }
+        this.quickAdded = true
+        this.$emit('done', true)
+      })
     }
   },
   mounted () {

@@ -3,9 +3,9 @@
   <div>
     <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
     <q-btn-group rounded spread class="full-width">
-      <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
+      <q-btn v-if="localZones.length !== 0" no-caps color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" icon="add" />
-      <q-btn no-caps color="secondary" icon="remove" @click="deleteLocalZones({id: value})" />
+      <q-btn v-if="localZones.length !== 0" no-caps color="secondary" icon="remove" @click="deleteLocalZones({id: value})" />
     </q-btn-group>
     <div class="row justify-center q-pa-md">
       <q-spinner-cube class="col" v-if="loading && (typeof noload === 'undefined' || noload === null)" size="lg" color="primary" />

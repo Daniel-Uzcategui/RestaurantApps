@@ -20,6 +20,36 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'quick',
+        name: 'quick',
+        component: () => import('pages/quickSetup/quick.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/guide',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'intro',
+        name: 'intro',
+        component: () => import('pages/quickSetup/quick.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'addopts',
+        name: 'AgregarOpcionesAProds',
+        component: () => import('pages/quickSetup/quickAddOpts.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },

@@ -18,23 +18,23 @@ module.exports = function (ctx) {
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
-      'material-icons-outlined',
-      'material-icons-round',
-      'material-icons-sharp',
-      'mdi-v3',
-      'ionicons-v4',
-      'eva-icons',
+      // 'material-icons-outlined',
+      // 'material-icons-round',
+      // 'material-icons-sharp',
+      // 'mdi-v3',
+      // 'ionicons-v4',
+      // 'eva-icons',
       'fontawesome-v5',
-      'themify',
-      'line-awesome',
-      'roboto-font', // optional, you are not bound to it
+      // 'themify',
+      // 'line-awesome',
+      // 'roboto-font', // optional, you are not bound to it
       'material-icons' // optional, you are not bound to it
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       // iconSet: 'ionicons-v4', // Quasar icon set
-       lang: 'es', // Quasar language pack
+      lang: 'es', // Quasar language pack
 
       // Possible values for "all":
       // * 'auto' - Auto-import needed Quasar components & directives

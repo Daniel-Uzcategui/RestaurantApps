@@ -95,6 +95,7 @@ export default {
     ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
+    ...mapGetters('localization', ['localizations']),
     ...mapGetters('editor', ['blocks', 'page', 'routes']),
     nav () {
       // return this.navigateFill()
@@ -107,10 +108,16 @@ export default {
             title: x.name,
             caption: x.descripcion,
             icon: x.icon,
-            link: '#/menu/index',
+            // link: '#/menu/index',
             click: () => {
               this.setFilter(x.id)
               this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
             }
           }
         })
@@ -122,10 +129,16 @@ export default {
             title: this.menucfg.dispName,
             caption: '',
             icon: 'menu_book',
-            link: '#/menu/index',
+            // link: '#/menu/index',
             click: () => {
               this.setFilter('')
               this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
             }
           }]
         } else {
@@ -133,10 +146,16 @@ export default {
             title: 'Catálogo',
             caption: '',
             icon: 'menu_book',
-            link: '#/menu/index',
+            // link: '#/menu/index',
             click: () => {
               this.setFilter('')
               this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
             }
           }]
         }
@@ -394,7 +413,7 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
-    ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
+    ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
     addRoutes () {
       let { routes } = this.$router.options
       let routerAdd = this.routes

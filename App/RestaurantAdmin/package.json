@@ -10,6 +10,7 @@
     "dev-prod": "cross-env QENV=dev-prod quasar dev",
     "dev-pwa": "cross-env QENV=development quasar dev -m pwa",
     "dev-qa": "cross-env QENV=qa quasar dev",
+    "dev-qa2": "cross-env QENV=dev-qa quasar dev",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
     "build": "cross-env QENV=production quasar build",

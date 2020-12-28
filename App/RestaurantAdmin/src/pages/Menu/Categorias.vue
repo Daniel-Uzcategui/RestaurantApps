@@ -1,5 +1,5 @@
 <template>
-<q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+<div :class="$q.screen.gt.xs ? 'q-ma-lg' : ''" >
    <div>
    <q-table
       :grid="$q.screen.lt.md"
@@ -10,6 +10,10 @@
       :selected-rows-label="getSelectedString"
       selection="single"
       dense
+      flat
+      class="bg-white"
+      rounded
+      style="min-width: 320px; border-radius: 28px"
       :selected.sync="selected"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
@@ -38,7 +42,7 @@
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
-                autofocus
+
               />
            </q-td>
               <q-td>
@@ -66,7 +70,7 @@
               </div>
              </q-td>
              <q-td key="priority" :props="props">
-              <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense autofocus />
+              <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
            </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
@@ -83,7 +87,7 @@
                 @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
                 :value="props.row.FechaAct"
                 dense
-                autofocus
+
               />
             </q-popup-edit>
           </q-td>
@@ -91,9 +95,9 @@
       </template>
       <template v-slot:item="props">
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
-              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-cyan-2' : ''" >
                 <q-item-section>
-                  <q-item-label>{{props.row.name}}</q-item-label>
+                  <q-item-label>{{props.row.name ? props.row.name : 'Toca la flechita para editarme'}}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-caption text-grey">
                   <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
@@ -142,7 +146,7 @@
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       :value="props.row.descripcion"
                       min-height="5rem"
-                      autofocus
+
                     />
                 </q-item>
                     <q-item class="column items-start">
@@ -168,8 +172,8 @@
                       />
                   </q-item>
                   <q-item class="column items-start" key="priority" :props="props">
-                     <p class="text-bold">Prioridad</p>
-                    <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" autofocus />
+                     <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
+                    <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority"  />
                 </q-item>
                 <q-item class="column items-start" key="estatus" :props="props">
                     <q-toggle
@@ -187,7 +191,7 @@
                       @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
                       :value="props.row.FechaAct"
                       label="Fecha"
-                      autofocus
+
                     />
                   </q-popup-edit>
                 </q-item>
@@ -210,7 +214,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
- </q-page>
+ </div>
 </template>
 <script>
 const columns = [
@@ -260,8 +264,8 @@ export default {
       }
       if (this.selected.length > 0) {
         this.$q.dialog({
-          title: 'Eliminar producto',
-          message: '¿Desea Eliminar el producto seleccionado ?',
+          title: 'Eliminar Categoría',
+          message: '¿Desea Eliminar la categoría seleccionada ?',
           cancel: true,
           persistent: true
         }).onOk(() => {

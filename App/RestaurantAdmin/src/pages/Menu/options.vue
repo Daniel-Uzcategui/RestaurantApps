@@ -1,17 +1,21 @@
 <template>
-  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''">
+  <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
    <q-table
+      style="border-radius: 28px"
       :data="itemPlain"
+      class="bg-white"
       :columns="columns"
       title="Opciones"
       :rows-per-page-options="[]"
       row-key="id"
+      :grid="$q.screen.lt.md || grid"
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
+          <q-btn flat color="white" push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
         </q-btn-group>
@@ -79,6 +83,102 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:item="props">
+        <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        :style="props.selected ? 'transform: scale(0.95);' : ''">
+        <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-cyan' : ''" >
+                <q-item-section>
+                  <q-item-label>{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
+                </q-item-section>
+                <q-item-section class="text-caption text-grey">
+                  <q-item-label>{{props.row.estatus ? props.row.estatus[sede] ? 'activo' : 'inactivo' : 'inactivo'}}</q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+              </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+        </q-list>
+          <q-card>
+            <q-list v-if="props.expand">
+          <q-item class="column items-start" key="desc" :props="props">
+            <q-td><label class="label-expand">Nombre</label></q-td>
+              <q-input
+              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              :value="props.row.name"
+              rounded
+              outlined />
+          </q-item>
+          <q-item class="column items-start" key="groupComp" :props="props">
+             <q-td><label class="label-expand">Estatus</label></q-td>
+              <q-toggle
+                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
+                :value="props.row.estatus ? true : false"
+                color="#3c8dbc"
+              />
+          </q-item>
+           <q-item class="column items-start" key="groupComp" :props="props">
+             <q-td><label class="label-expand">Grupos</label></q-td>
+              <q-select
+                rounded
+                outlined
+                :value="props.row.group_id"
+                @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                @new-value="createValue"
+                :options="filterOptions"
+                :option-label="(item) => item === null ? null : item.name"
+                :option-value="(item) => item === null ? null : item.id"
+                @filter="filterFn"
+                style="width: 250px"
+                stack-label
+                emit-value
+                map-options
+              />
+          </q-item>
+              <q-item class="column items-start" v-show="props.expand" :props="props">
+                <q-td><label class="col label-expand">Descripción</label></q-td>
+                <q-td class="col-12" key="descripcion" :props="props">
+                    <q-editor
+                      @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
+                      :value="props.row.descripcion"
+                    />
+                </q-td>
+              </q-item>
+              <q-item class="row justify-center" v-show="props.expand" :props="props">
+                <div class="col-6 q-pa-xs">
+                <p class="text-bold">Precio</p>
+                  <q-decimal
+                  :rules="[validate]"
+                  rounded
+                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  :value="props.row.price"
+                  input-style="text-align: right">
+                  </q-decimal>
+                </div>
+                <div class="col-6 q-pa-xs">
+                  <p class="text-bold">Prioridad</p>
+                  <q-input
+                  rounded
+                  outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
+                  :value="props.row.priority"
+                  min="1" max="999"
+                  type="number">
+                  </q-input>
+                </div>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
+      </template>
     </q-table>
     <q-dialog v-model="noSelect">
       <q-card>
@@ -112,6 +212,7 @@ export default {
   },
   data () {
     return {
+      grid: false,
       columns,
       selected: [],
       popupEditData: '',

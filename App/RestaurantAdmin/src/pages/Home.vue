@@ -1,8 +1,8 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
-    <div class="row justify-center">
-        <div class="q-ma-md col-xs-12 col-sm-6 col-md-4 col-lg-3"  >
-         <q-card class="text-white" horizontal>
+    <div class="row justify-between">
+        <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="col-xs-6 col-sm-6 col-md-4 col-lg-3"  >
+         <q-card flat square class="text-white" horizontal>
           <q-card-section class="bg-secondary">
             <div class="text-h5">
               <i class="fa fa-bell" aria-hidden="true"></i>
@@ -18,8 +18,8 @@
           </q-card-actions>
            </q-card>
           </div>
-         <div class="q-ma-md header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3" >
-          <q-card class=" text-white" horizontal>
+         <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
+          <q-card flat square class=" text-white" horizontal>
           <q-card-section  class="bg-secondary">
             <div class="text-h5">
               <i class="fa fa-bell" aria-hidden="true"></i>
@@ -36,8 +36,8 @@
           </q-card-actions>
            </q-card>
           </div>
-          <div class="q-ma-md header-cell col-xs-12 col-sm-6 col-md-4 col-lg-3">
-            <q-card class="text-white" horizontal>
+          <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+            <q-card flat square class="text-white" horizontal>
               <q-card-section  class="bg-secondary">
               <div class="text-h5"><i class="fa fa-bell" aria-hidden="true"></i>
               <span class="separate">{{totalOrders(4)}}</span>

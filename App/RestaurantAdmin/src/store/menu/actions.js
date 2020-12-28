@@ -41,6 +41,7 @@ export const addRow = firestoreAction(async (state, payload) => {
     name: '',
     softDelete: 0,
     descripcion: '',
+    estatus: true,
     DateIn: firebase.firestore.FieldValue.serverTimestamp()
   }
   if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {

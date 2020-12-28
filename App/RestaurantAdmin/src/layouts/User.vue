@@ -106,7 +106,7 @@ export default {
       let ver = localStorage.getItem('envVer')
       if (ver === null) {
         localStorage.setItem('envVer', e.version)
-      } else if (ver !== e.version) {
+      } else if (e && ver !== e.version) {
         this.$q.dialog({
           title: 'Nueva Version',
           message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
@@ -124,7 +124,7 @@ export default {
           this.getNewVer()
         })
       }
-      if (ver === e.version) {
+      if (e && ver === e.version) {
         // console.log('App is in the newer version')
       }
     })
@@ -135,6 +135,17 @@ export default {
       // is available before the page renders
       // console.log(this.currentUser)
       this.$q.loading.hide()
+      if (currentUser.firstAccess) {
+        this.$router.push({ path: '/guide/intro' })
+        try {
+          this.updateUserData({
+            ...currentUser,
+            firstAccess: false
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      }
     }
     if (firebase.messaging.isSupported()) {
       if (!firebase.apps.length) {
@@ -198,7 +209,7 @@ export default {
         {
           title: 'Filtros de Productos',
           caption: '',
-          icon: 'fas fa-utensils',
+          icon: 'fas fa-filter',
           link: '#/menu/menufilters',
           separator: true,
           tree: [{ children: [] }]
@@ -212,7 +223,7 @@ export default {
           tree: [{ children: [] }]
         },
         {
-          title: 'Configuración de Opciones',
+          title: 'Config Grupos de Opciones',
           caption: '',
           icon: 'menu_book',
           link: '#/menu/optionsconf',
@@ -317,6 +328,23 @@ export default {
                   handler: (node) => this.onClickOption(node) }
               ]
             }]
+        },
+        {
+          title: 'Guías',
+          caption: '',
+          icon: 'fas fa-question-circle',
+          separator: true,
+          tree: [
+            {
+              children: [
+                { label: 'Intro',
+                  link: 'intro',
+                  handler: (node) => this.onClickGuide(node) },
+                { label: 'Agregar opciones a Productos',
+                  link: 'addopts',
+                  handler: (node) => this.onClickGuide(node) }
+              ]
+            }]
         } /*,
         /* {
           title: 'Reportes',
@@ -349,6 +377,7 @@ export default {
     ...mapActions('order', ['bindOrders']),
     ...mapActions('config', ['bindEnv']),
     ...mapActions('menu', ['setValue']),
+    ...mapActions('user', ['updateUserData']),
     setupNotif () {
       if (!('PushManager' in window)) {
         console.log('Push messaging isn\'t supported.')
@@ -402,6 +431,9 @@ export default {
     onClickOption (node) {
       this.$router.push({ path: '/settings/' + node.link })
     },
+    onClickGuide (node) {
+      this.$router.push({ path: '/guide/' + node.link })
+    },
     onClickPayments (node) {
       this.$router.push({ path: '/payments/' + node.link })
     },
@@ -410,9 +442,21 @@ export default {
     }
   },
   watch: {
-    currentUser () {
+    currentUser (e) {
       this.$q.loading.hide()
       this.setupNotif()
+      console.log('User Data available', { e })
+      if (e.firstAccess) {
+        this.$router.push({ path: '/guide/intro' })
+        try {
+          this.updateUserData({
+            ...e,
+            firstAccess: false
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      }
     },
     orders () {
       if (this.initAudio === 0) {

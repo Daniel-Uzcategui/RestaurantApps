@@ -1,6 +1,7 @@
 <template>
-  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''">
+  <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-pt-lg'">
    <q-table
+      style="border-radius: 28px"
       :grid="$q.screen.lt.md"
       :dense="$q.screen.lt.md"
       :data="elmenu"
@@ -14,14 +15,12 @@
       no-data-label="No se encontraron registros"
     >
     <template v-slot:top-right>
-      <q-toggle @input="(e) => saved3(e, menucfg.displayType, 'menu', 'displayType')" color="warning"
-                :value="menucfg.displayType ? true : false" label="Tipo de Display" left-label />
-      <q-input rounded outlines color="white" dark filled class="q-pr-md" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'dispName')"
-                :value="menucfg.dispName ? menucfg.dispName : 'Catálogo'" label="Nombre de display" />
-      <q-toggle @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
+      <q-input rounded outlined color="white" dark filled style="min-width: 300px" class="q-pr-md" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'dispName')"
+                :value="menucfg.dispName ? menucfg.dispName : 'Catálogo'" label="Nombre de display (ejemplo: Menú o Servicios)" />
+      <q-toggle v-if="quick" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
                 :value="menucfg.iconsactive ? true : false" label="Activar iconos" left-label />
-      <q-toggle @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
-                :value="menucfg.menuactive ? true : false" label="Mostrar en Menú" left-label />
+      <q-toggle v-if="quick" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
+                :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
       <div class="q-pa-md">
       <q-select rounded outlined
         bg-color="white"
@@ -39,6 +38,7 @@
           <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         </q-btn-group>
+        <q-input class="q-ma-md" v-model="searchBar" rounded outlined label="Buscar" dark filled/>
       </template>
       <template v-slot:body="props">
         <q-tr v-if="sede !== null" :props="props">
@@ -452,6 +452,12 @@ export default {
   components: {
     'fbq-uploader': () => import('../../components/FBQUploader.vue')
   },
+  props: {
+    quick: {
+      type: Boolean,
+      default: () => true
+    }
+  },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
@@ -466,9 +472,17 @@ export default {
     },
     elmenu () {
       var sort = Array.from(this.menu)
-      return sort.sort((a, b) => {
+      var sorted = sort.sort((a, b) => {
         return b.DateIn - a.DateIn
       })
+      if (this.searchBar !== null && typeof this.searchBar !== 'undefined' && this.searchBar !== '') {
+        var filteredMenu = sorted.filter(x => {
+          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+        })
+        return filteredMenu
+      } else {
+        return sorted
+      }
     },
     locList () {
       return this.localizations.map(x => {
@@ -492,6 +506,7 @@ export default {
   },
   data () {
     return {
+      searchBar: '',
       sede: null,
       columns,
       selected: [],
@@ -512,6 +527,20 @@ export default {
   methods: {
     validate (value) {
       return value >= 0 || 'error'
+    },
+    search () {
+      if (this.selectedCat !== null) {
+        this.filteredMenu = this.origMenu.filter(x => {
+          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+        })
+        this.filteredMenu = this.filteredMenu.filter(x => {
+          return x.categoria.includes(this.selectedCat.id)
+        })
+      } else {
+        this.filteredMenu = this.origMenu.filter(x => {
+          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+        })
+      }
     },
     CatExists (values) {
       let cat = this.plaincategorias
