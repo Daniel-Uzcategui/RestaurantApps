@@ -5,7 +5,7 @@
             <q-icon name="fas fa-search" />
          </template>
       </q-input>
-      <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+      <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : ''" >
          <q-card-section class="q-pt-xl">
             <div class="row header-title relative-position">
                <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg.dispName : (filters.find( e => e.id === selectedFilter).name)}}</div>
@@ -363,8 +363,10 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex'
+import store from '../../store/index'
 import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
 export default {
+  store,
   props: {
     global_class: {
       type: String,
@@ -571,6 +573,9 @@ export default {
     // this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
   },
   watch: {
+    Sede (e) {
+      this.setSede(e)
+    },
     menu () {
       this.menuLoading = false
       this.filteredMenu = this.origMenu

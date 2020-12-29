@@ -1,5 +1,5 @@
 <template>
-<div :class="$q.screen.gt.xs ? 'q-ma-lg' : ''" >
+<div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
    <div>
    <q-table
       :grid="$q.screen.lt.md"
@@ -17,7 +17,7 @@
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
     >
-    <template v-slot:top-right>
+    <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
@@ -94,7 +94,7 @@
       </template>
       <template v-slot:item="props">
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
-              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-cyan-2' : ''" >
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
                   <q-item-label>{{props.row.name ? props.row.name : 'Toca la flechita para editarme'}}</q-item-label>
                 </q-item-section>
@@ -213,6 +213,12 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-footer v-if="$q.screen.lt.sm" reveal>
+   <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+     <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+      <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+   </q-tabs>
+ </q-footer>
  </div>
 </template>
 <script>

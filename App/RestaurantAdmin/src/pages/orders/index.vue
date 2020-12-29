@@ -14,7 +14,7 @@
       rows-per-page-label="Registros por página"
       >
       <template v-slot:top-right>
-        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn no-caps flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })">

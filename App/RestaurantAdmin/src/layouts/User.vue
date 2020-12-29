@@ -17,8 +17,8 @@
                <span v-if="$q.screen.name !== 'xs'">{{getUserData('nombre')}} {{getUserData('apellido')}}</span>
             </q-toolbar-title>
             <div>
-               <q-btn class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
-               <q-btn class="text-caption" flat @click="logoutUser()" label="Cerrar Sesión" >  </q-btn>
+               <q-btn no-caps class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" label="Perfil" />
+               <q-btn no-caps class="text-caption" flat @click="logoutUser()" label="Cerrar Sesión" >  </q-btn>
                <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
                   <user-settings></user-settings>
                </q-dialog>
@@ -187,7 +187,7 @@ export default {
           tree: [{ children: [] }]
         },
         {
-          title: 'Guías',
+          title: 'Asistentes',
           caption: '',
           icon: 'fas fa-question-circle',
           // separator: true,

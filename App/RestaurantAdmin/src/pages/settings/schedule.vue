@@ -1,23 +1,22 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
-      <q-card>
+      <q-card style="border-radius: 28px">
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Ajustes de Horarios</div>
            <div v-show="sede">
             <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="updatedHours" icon="fas fa-save"/>
+              <q-btn no-caps class="header-btn" flat color="white" push label="Guardar" @click="updatedHours" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+              <q-btn no-caps class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
             </div>
           </div>
-          <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
-       </q-card-section>
-     <q-card-section>
-      <div class="q-pa-md">SEDE</div>
-      <q-select
-        bg-color="white"
+          <q-btn no-caps class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+          <q-select
+          class="q-mt-md"
+        rounded
+        dense
         outlined
         v-model="sede"
         :options="locList"
@@ -26,9 +25,11 @@
         emit-value
         map-options
         stack-label
-        label="Seleccione"
+        label="Seleccionar Sede"
         @input="getDays"
       />
+       </q-card-section>
+     <q-card-section>
       <div class="business-hours-container">
         <div class="business-hours-component">
       <business-hours v-show="sede"

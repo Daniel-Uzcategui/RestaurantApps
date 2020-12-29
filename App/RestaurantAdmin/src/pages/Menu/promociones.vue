@@ -1,9 +1,12 @@
 <template>
-   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''">
+   <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
          <q-table
+         style="border-radius: 28px"
+         :grid="$q.screen.lt.md"
          dense
-         :data="promos"
+         :data="promosCopy"
          :columns="columns2"
+         :visible-columns="visibleColumns"
          title="Promociones"
          :rows-per-page-options="[]"
          row-key="id"
@@ -11,7 +14,7 @@
          selection="multiple"
          :selected.sync="selected2"
          >
-         <template v-slot:top-right>
+         <template v-if="$q.screen.gt.xs" v-slot:top-right>
             <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
@@ -25,15 +28,15 @@
            <q-td key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-blue-grey-10">Click para editar</span></div>
+                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption">Click para editar</span></div>
             <div class="column items-center" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
-                </q-avatar><span class="text-blue-grey-10"><q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </q-avatar><span ><q-icon class="q-mr-sm" name="edit" size="16px"></q-icon>Click para editar</span></div>
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
+              <q-input dense rounded outlined style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name"  />
           </q-td>
           <q-td key="descripcion" :props="props">
               <q-editor
@@ -44,8 +47,8 @@
               />
           </q-td>
            <q-td key="price" :props="props">
-                  <q-decimal style="width: 150px" class="q-mb-md" :rules="[validate]"
-                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  <q-decimal dense rounded outlined  style="width: 150px" class="q-mb-md" :rules="[validate]"
+                   @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
                 :value="props.row.price" input-style="text-align: right"></q-decimal>
                </q-td>
                <q-td key="estatus" :props="props">
@@ -61,8 +64,8 @@
           </q-tr>
           <q-tr v-show="props.expand" :props="props">
                <q-td colspan="2" key="groupComp" :props="props">
-              <q-select
-                filled
+              <q-select dense rounded outlined
+
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -82,8 +85,8 @@
               />
           </q-td>
               <q-td key="prods" :props="props">
-              <q-select
-                filled
+              <q-select dense rounded outlined
+
                 :value="props.row.prods"
                 @input="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
                 use-input
@@ -101,10 +104,9 @@
               />
           </q-td>
           <q-td key="cantidad">
-              <q-input style="width: 150px"
-              filled
+              <q-input dense rounded outlined style="width: 200px"
               v-model.number="cantidad"
-              label="Cantidad por Producto"
+              label="Cantidad a añadir"
               type="number"
               min="1"
               max="99"/>
@@ -131,6 +133,131 @@
             </q-td>
           </q-tr>
          </template>
+         <template v-slot:item="props">
+        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        :style="props.selected ? 'transform: scale(0.95);' : ''">
+        <q-list @click.native="props.selected = !props.selected;" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+                <q-item-section>
+                  <q-item-label>{{props.row.name ? props.row.name: 'Agregar Nombre'}}</q-item-label>
+                </q-item-section>
+                <q-item-section class="text-caption text-grey">
+                  <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+              </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+        </q-list>
+          <q-card>
+            <q-list v-if="props.expand">
+          <q-item class="column items-start" key="photo" :props="props">
+            <div class="text-center" @click="showPhotoUpload(props.row.id)">
+            <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
+                <q-avatar round class="q-mb-sm"  color="white" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-white">Click para editar</span></div>
+            <div class="column items-start" v-else>
+                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
+                    <q-img :src="props.row.photo"></q-img>
+                </q-avatar><span class="text-white"><q-icon class="q-mr-sm" color="white" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </div>
+          </q-item>
+          <q-item class="column items-start" v-show="props.expand" :props="props">
+                <q-td><label class="col label-expand">Estatus</label></q-td>
+                <q-td class="col" key="status" :props="props">
+                  <q-toggle
+                    @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus`)"
+                    :value="props.row.estatus ? true : false"
+                    color="#3c8dbc"
+                  />
+                </q-td>
+              </q-item>
+          <q-item class="column items-start" key="desc" :props="props">
+            <q-td><label class="label-expand">Nombre</label></q-td>
+              <q-input dense rounded outlined
+              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              :value="props.row.name"
+               />
+          </q-item>
+          <q-item class="column items-start" key="categoria" :props="props">
+            <q-td><label class="label-expand">Productos</label></q-td>
+              <q-select dense rounded outlined
+
+                :value="props.row.prods"
+                @input="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
+                use-input
+                :option-value="(item) => item === null ? null : { id: item.id, quantity: cantidad, name: item.name }"
+                :option-label="(item) => item === null ? null : typeof item.quantity === 'undefined' ? item.name : `${item.name} * ${item.quantity}`"
+                use-chips
+                multiple
+                input-debounce="0"
+                :options="filterOptions"
+                @filter="filterFn"
+                style="width: 250px"
+                stack-label
+                emit-value
+                label="Productos"
+              />
+          </q-item>
+          <q-item class="column items-start" v-show="props.expand" :props="props">
+                <q-td><label class="label-expand">Cantidad a añadir</label></q-td>
+                  <q-input dense rounded outlined style="width: 150px"
+                    v-model.number="cantidad"
+                    label="Cantidad a añadir"
+                    type="number"
+                    min="1"
+                    max="99"/>
+              </q-item>
+           <q-item class="column items-start" key="groupComp" :props="props">
+             <q-td><label class="label-expand">Opciones</label></q-td>
+              <q-select dense rounded outlined
+
+                :value="props.row.groupComp"
+                @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                @new-value="createValue"
+                :options="groupComp"
+                :option-label="(item) => item === null ? null : item.name"
+                :option-value="(item) => item === null ? null : item.id"
+                @filter="filterFn"
+                style="width: 250px"
+                map-options
+                emit-value
+                stack-label
+                label="Opciones"
+              />
+          </q-item>
+              <q-item class="column items-start" v-show="props.expand" :props="props">
+                <q-td><label class="col label-expand">Descripción</label></q-td>
+                <q-td class="col" key="descripcion" :props="props">
+                    <q-editor
+                      @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
+                      :value="props.row.descripcion"
+                      min-height="5rem"
+
+                    />
+                </q-td>
+              </q-item>
+              <q-item class="column items-start" v-show="props.expand" :props="props">
+                <q-td><label class="col label-expand">Precio</label></q-td>
+                  <q-decimal dense rounded outlined
+                  :rules="[validate]"
+                   @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  :value="props.row.price"
+                  input-style="text-align: right">
+                  </q-decimal>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
+      </template>
       </q-table>
       <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
         <fbq-uploader
@@ -155,6 +282,12 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-footer v-if="$q.screen.lt.sm" reveal>
+    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+      <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+        <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+   </q-tabs>
+   </q-footer>
    </div>
 </template>
 <script>
@@ -171,8 +304,10 @@ const columns2 = [
   { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' },
   { name: 'groupComp', align: 'center', field: 'groupComp' },
   { name: 'prods', align: 'center', field: 'prods' },
-  { name: 'cantidad', align: 'center', field: 'cantidad' }
+  { name: 'cantidad', align: 'center', field: 'cantidad' },
+  { name: 'horarios', field: 'horarios' }
 ]
+const visibleColumns = ['photo', 'desc', 'descripcion', 'price', 'estatus', 'groupComp', 'prods', 'cantidad']
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
 import BusinessHours from 'vue-business-hours'
@@ -186,6 +321,15 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'promos', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
+    promosCopy () {
+      return this.promos.map(x => {
+        return {
+          ...x,
+          id: x.id,
+          horarios: false
+        }
+      })
+    },
     locList () {
       return this.localizations.map(x => {
         return {
@@ -210,6 +354,7 @@ export default {
     return {
       cantidad: 1,
       columns,
+      visibleColumns,
       columns2,
       selected: [],
       selected2: [],

@@ -41,6 +41,7 @@
     "vue-prism-editor": "^1.2.2",
     "vue-uuid": "^2.0.2",
     "vuedraggable": "^2.24.1",
+    "vuex-persistedstate": "^4.0.0-beta.1",
     "vuexfire": "^3.2.4",
     "xhr2": "^0.2.0",
     "xmlhttprequest": "^1.8.0"

@@ -1,7 +1,7 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
-      <q-card>
+      <q-card style="border-radius: 28px">
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Editar Sedes</div>
           <div>
@@ -70,7 +70,7 @@
 
      </q-card-section>
      </q-card>
-     <q-card v-if="config && config.statusDelivery && localization.Delivery">
+     <q-card style="border-radius: 28px" v-if="config && config.statusDelivery && localization.Delivery">
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Zonas de delivery (Opcional)</div>
        </q-card-section>

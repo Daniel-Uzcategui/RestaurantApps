@@ -1,7 +1,7 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
-      <q-card>
+      <q-card style="border-radius: 28px">
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Orden</div>
           <div class="absolute-bottom-right q-pa-md">

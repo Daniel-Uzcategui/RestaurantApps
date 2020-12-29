@@ -199,7 +199,7 @@
                   label="Añade tu comentario"
                   type="textarea"
                   min-height="5rem"
-                  
+
                   />
             </q-card-section>
          </q-card>
