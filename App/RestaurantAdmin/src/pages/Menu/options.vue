@@ -15,7 +15,7 @@
     <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn-group flat push >
           <q-btn flat color="white" no-caps push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
-          <q-btn flat color="white" no-caps push label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
         </q-btn-group>
       </template>
@@ -193,7 +193,7 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-      <q-tab flat color="white" no-caps push label="Agregar" icon="fas fa-plus" @click="addrow"/>
+      <q-tab flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
           <q-tab flat color="white" no-caps push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
    </q-tabs>
    </q-footer>

@@ -5,7 +5,7 @@
        <q-card-section  class="bg-secondary text-white header" >
           <div class="text-h5">Agregar Ordenes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="fas fa-plus"/>
+            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="add"/>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/orders/index')"/>
           </div>
        </q-card-section>

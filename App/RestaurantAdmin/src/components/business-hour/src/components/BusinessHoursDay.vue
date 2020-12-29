@@ -28,7 +28,7 @@
       </div>
     <div class="column">
     <div class="self-center">
-        <q-btn flat type="button" size="xs" icon="fas fa-trash-alt" class="font-awesome-button" v-if="showRemoveButton() && isOpenToday" @click="removeRow(index)">
+        <q-btn flat type="button" size="xs" icon="delete_outline" class="font-awesome-button" v-if="showRemoveButton() && isOpenToday" @click="removeRow(index)">
         </q-btn>
     </div>
     <div class="self-center">

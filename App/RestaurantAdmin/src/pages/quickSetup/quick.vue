@@ -52,7 +52,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addcat" class="column no-wrap flex-center">
-          <AddCategoria class="text-black bg-dark" style="height: 100%; border-radius: 28px"/>
+          <AddCategoria class="text-black bg-dark" style="height: 100%; width: 100%; border-radius: 28px"/>
         </q-carousel-slide>
         <q-carousel-slide name="addprodlorem" class="text-black column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
@@ -60,7 +60,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addprod" class="column no-wrap flex-center">
-          <AddProd :quick="false" class="text-black bg-dark" style="height: 100%; border-radius: 28px"/>
+          <AddProd :quick="false" class="text-black bg-dark" style="height: 100%; width: 100%; border-radius: 28px"/>
         </q-carousel-slide>
         <q-carousel-slide name="skipofin" class="text-black column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
@@ -68,12 +68,12 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="theme" class="q-pa-none text-white row justify-between">
-          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
-          <q-img style="max-width: 500px" @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Flocalhost_8080_(Galaxy%20S5)211775?alt=media&token=43b971ec-33c1-414a-a39b-f89d247dc995" />
-          <q-radio v-model="displayType" :val="0" :size="$q.screen.name" color="white" label="Horizontal" />
-          </div>
           <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
-          <q-img @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Flocalhost_8080_(Galaxy%20S5)%20(1)282300?alt=media&token=af077d39-1cdf-457c-bd46-5ecfc43b3b91" />
+          <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Flocalhost_8080_(Galaxy%20S5)211775?alt=media&token=43b971ec-33c1-414a-a39b-f89d247dc995" />
+          <q-radio v-model="displayType" :val="1" :size="$q.screen.name" color="white" label="Horizontal" />
+          </div>
+          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <q-img @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Flocalhost_8080_(Galaxy%20S5)%20(1)282300?alt=media&token=af077d39-1cdf-457c-bd46-5ecfc43b3b91" />
           <q-radio v-model="displayType" :val="1" :size="$q.screen.name" color="white" label="Vertical" />
           </div>
           <div v-show="photoClick === 2 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">

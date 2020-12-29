@@ -12,14 +12,15 @@
       dense
       flat
       rounded
-      style="min-width: 320px; border-radius: 28px"
+      class="text-white"
+      style="min-width: 320px; border-radius: 28px;"
       :selected.sync="selected"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
     >
     <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
         </q-btn-group>
       </template>
@@ -32,41 +33,38 @@
               <q-input filled rounded outlined  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                 :value="props.row.name"
                 dense
+                style="min-width: 100px"
                 />
           </q-td>
 
           <q-td key="descripcion" :props="props">
-            <div v-html="props.row.descripcion"></div>
               <q-editor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
-                min-height="5rem"
-
+                style="max-height: 150px"
               />
            </q-td>
-              <q-td>
-                <div  class="q-pa-md row items-start q-gutter-md" key="color" :props="props">
+              <q-td key="color"  :props="props">
+                <div class="column items-center">
                <q-color
                  default-value="#285de0"
                 :value="props.row.color"
                  default-view="palette"
                 :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
                  @change="val => saved(val, props.row.color, props.row.id, 'color')"
-                 style="max-width: 250px"
                  />
-              </div>
+                 </div>
              </q-td>
-             <q-td>
-                <div  class="q-pa-md row items-start q-gutter-md" key="textcolor" :props="props">
+             <q-td key="textcolor"  :props="props">
+               <div class="column items-center" >
                <q-color
                  default-value="#285de0"
                 :value="props.row.textcolor"
                  default-view="palette"
                  :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
                  @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
-                 style="max-width: 250px"
                  />
-              </div>
+                 </div>
              </q-td>
              <q-td key="priority" :props="props">
               <q-input filled rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
@@ -215,20 +213,20 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-     <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
-      <q-tab flat push no-caps icon="fas fa-trash-alt" @click="softDelete"/>
+     <q-tab flat  push no-caps icon="add" @click="addrow"/>
+      <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
    </q-tabs>
  </q-footer>
  </div>
 </template>
 <script>
 const columns = [
-  { name: 'desc', style: 'min-width: 280px; width: 280px', align: 'left', label: 'Nombre', field: 'name' },
-  { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
-  { name: 'color', align: 'left', label: 'Color de fondo', field: 'color' },
-  { name: 'textcolor', align: 'left', label: 'Color del texto ', field: 'textcolor' },
-  { name: 'priority', style: 'min-width: 10px; width: 10px', align: 'left', label: 'Prioridad ', field: 'priority' },
-  { name: 'estatus', align: 'left', label: 'Activar', field: 'estatus' }
+  { name: 'desc', style: 'width: 150px;', align: 'center', label: 'Nombre', field: 'name' },
+  { name: 'descripcion', style: 'max-width: 250px;', align: 'center', label: 'Descripción', field: 'descripcion' },
+  { name: 'color', align: 'center', label: 'Color de fondo', field: 'color' },
+  { name: 'textcolor', align: 'center', label: 'Color del texto ', field: 'textcolor' },
+  { name: 'priority', style: 'min-width: 10px; width: 10px', align: 'center', label: 'Prioridad ', field: 'priority' },
+  { name: 'estatus', align: 'center', label: 'Activar', field: 'estatus' }
 ]
 
 import { mapActions, mapGetters } from 'vuex'

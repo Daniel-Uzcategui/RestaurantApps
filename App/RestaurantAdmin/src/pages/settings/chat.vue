@@ -9,7 +9,7 @@
               <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="add"/>
             </div>
             <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
           </div>

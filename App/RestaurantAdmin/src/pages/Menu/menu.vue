@@ -5,7 +5,7 @@
       :grid="$q.screen.lt.md"
       :dense="$q.screen.lt.md"
       :data="elmenu"
-      class="bg-dark"
+      class="bg-dark text-white"
       :columns="columns"
       :title="menucfg.dispName ? menucfg.dispName : 'Catálogo'"
       :rows-per-page-options="[]"
@@ -21,7 +21,7 @@
       <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
                 :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
       <div class="q-pa-md">
-      <q-select filled rounded
+      <q-select filled rounded dense
         v-model="sede"
         :options="locList"
         style="width: 250px"
@@ -32,10 +32,10 @@
       />
       </div>
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
-          <q-btn flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
           <q-btn flat icon="visibility" text-color="white" no-caps label="Vista en Cliente" @click="preview = !preview" />
-          <q-btn flat icon="fas fa-signature" text-color="white" no-caps label="Cambio de Nombre" @click="promptNombre()" />
+          <q-btn flat icon="label" text-color="white" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar"  dark>
           <template v-slot:prepend>
@@ -59,15 +59,15 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input filled dense  style="width: 200px"
+              <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
-
+               style="width: 150px;"
               rounded
               outlined />
           </q-td>
           <q-td key="categoria" :props="props">
-              <q-select filled rounded
+              <q-select filled rounded dense
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -75,14 +75,14 @@
                 multiple
                 input-debounce="0"
                 :options="listcategorias"
-                style="width: 250px"
                 map-options
                 emit-value
                 stack-label
+                style="max-width: 200px"
               />
           </q-td>
            <q-td key="groupComp" :props="props">
-              <q-select filled rounded
+              <q-select filled rounded dense
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -92,10 +92,10 @@
                 :options="groupComp"
                 :option-label="(item) => item === null ? null : item.name"
                 :option-value="(item) => item === null ? null : item.id"
-                style="width: 250px"
                 map-options
                 emit-value
                 stack-label
+                style="max-width: 200px"
               />
           </q-td>
           <q-td auto-width >
@@ -237,7 +237,7 @@
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Categorias</label></q-td>
-              <q-select filled rounded
+              <q-select filled rounded dense
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -252,7 +252,7 @@
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Opciones</label></q-td>
-              <q-select filled rounded
+              <q-select filled rounded dense
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -393,10 +393,10 @@
     </q-dialog>
     <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
-      <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
-      <q-tab flat push no-caps icon="fas fa-trash-alt" @click="softDelete"/>
-      <q-tab flat icon="fas fa-signature" text-color="white" no-caps @click="promptNombre()" />
+      <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
+      <q-tab flat icon="label" text-color="white" no-caps @click="promptNombre()" />
       <q-tab flat icon="visibility" text-color="white" no-caps @click="preview = !preview" />
+      <q-tab flat push no-caps icon="add" @click="addrow"/>
     </q-tabs>
   </q-footer>
   </div>
@@ -404,7 +404,7 @@
 <script>
 const columns = [
   { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'desc', align: 'center', label: 'Nombre', field: 'name', sortable: true },
+  { name: 'desc', style: 'width: 175px;', align: 'center', label: 'Nombre', field: 'name', sortable: true },
   { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
   { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
   { name: 'descripcion', align: 'left', field: 'descripcion' },

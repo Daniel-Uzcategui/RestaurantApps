@@ -12,7 +12,7 @@
     <template v-slot:top-right>
         <q-btn-group flat push >
           <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
-          <q-btn flat color="white" push label="Agregar" icon="fas fa-plus" @click="addrow"/>
+          <q-btn flat color="white" push label="Agregar" icon="add" @click="addrow"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
