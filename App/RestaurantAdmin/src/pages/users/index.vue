@@ -59,8 +59,7 @@
             {{ props.row.apellido }}
           </q-td>
            <q-td>
-            <q-select
-                filled
+            <q-select filled
                 :value="props.row.rol"
                 @input="(e) => saved(e, props.row.rol, props.row.id, `rol`)"
                 @remove="(e) => removed({...e, id: props.row.id})"
@@ -86,7 +85,7 @@
             </div>
           </q-td>
           <q-td key="typeAccess" :props="props">
-            <q-select map-options emit-value standout="bg-teal text-white"
+            <q-select filled map-options emit-value standout="bg-teal text-white"
             :value="props.row.typeAccess"
             @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'typeAccess')"
             :options="typeAccess_options" />
@@ -113,7 +112,7 @@
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Sexo: </label></q-td>
           <q-td colspan="2">
-            <div class="text-left"><q-select map-options emit-value standout="bg-teal text-white"
+            <div class="text-left"><q-select filled map-options emit-value standout="bg-teal text-white"
             :value="props.row.sexo"
             @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'sexo')"
             :options="sexo_options" /></div>
@@ -147,7 +146,7 @@
           <q-td colspan=2 key="statusUbicacion">
             <label class="label-expand">Estatus de Ubicación</label>
             <div class="text-left">
-              <q-select map-options emit-value standout="bg-teal text-white"
+              <q-select filled map-options emit-value standout="bg-teal text-white"
               :value="props.row.statusUbicacion"
               @input="(e) => saved(e, props.row.statusUbicacion, props.row.id, 'statusUbicacion')"
               :options="estatus_ubicacion" />
@@ -158,7 +157,7 @@
          <q-td colspan=2 key="movilidad">
             <label class="label-expand">Tipo movilidad </label>
             <div class="text-left">
-              <q-select map-options emit-value standout="bg-teal text-white"
+              <q-select filled map-options emit-value standout="bg-teal text-white"
               :value="props.row.movilidad"
               @input="(e) => saved(e, props.row.movilidad, props.row.id, 'movilidad')"
               :options="tipo_options" />
@@ -167,7 +166,7 @@
           <q-td colspan=2 key="statusdelivery">
             <label class="label-expand">Estatus delivery </label>
             <div class="text-left">
-              <q-select map-options emit-value standout="bg-teal text-white"
+              <q-select filled map-options emit-value standout="bg-teal text-white"
               :value="props.row.statusdelivery"
               @input="(e) => saved(e, props.row.statusdelivery, props.row.id, 'statusdelivery')"
               :options="estatus_delivery" />
@@ -217,7 +216,7 @@
                <q-item  key="desc" :props="props">
                 <div class="col-10 q-pa-xs">
                   <label class="label-expand">Sexo:</label>
-                  <q-select map-options emit-value standout="bg-teal text-white"
+                  <q-select filled map-options emit-value standout="bg-teal text-white"
                    :value="props.row.sexo"
                    @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'sexo')"
                    :options="sexo_options" />
@@ -226,8 +225,7 @@
                <q-item>
                   <div class="col-10 q-pa-xs">
                   <label class="label-expand">Rol:</label>
-              <q-select
-                filled rounded outlined
+              <q-select filled rounded outlined
                 :value="props.row.rol"
                 @input="(e) => saved(e, props.row.rol, props.row.id, `rol`)"
                 @remove="(e) => removed({...e, id: props.row.id})"
@@ -254,7 +252,7 @@
                   </div>
                  <div class="col-6 q-pa-xs">
                  <label class="label-expand">Tipo de Aplicación</label>
-                 <q-select map-options emit-value standout="bg-teal text-white"
+                 <q-select filled map-options emit-value standout="bg-teal text-white"
                     :value="props.row.typeAccess" rounded outlined
                     @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'typeAccess')"
                     :options="typeAccess_options" />

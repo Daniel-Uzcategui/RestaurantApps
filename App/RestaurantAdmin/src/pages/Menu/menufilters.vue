@@ -68,8 +68,7 @@
               />
           </q-td>
           <q-td key="cats" :props="props">
-              <q-select
-                filled
+              <q-select filled
                 :value="props.row.cats"
                 @input="(e) => saved(e, props.row.cats, props.row.id, 'cats')"
                 use-input
@@ -136,7 +135,7 @@
           </q-item>
            <q-item class="column items-start" key="group" :props="props">
              <q-td><label class="label-expand">Categorías</label></q-td>
-              <q-select
+              <q-select filled
                 rounded
                 outlined
                 :value="props.row.cats"
@@ -184,7 +183,7 @@
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
-        <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+        <q-tab flat color="white" push no-caps icon="fas fa-minus" @click="delrow"/>
    </q-tabs>
    </q-footer>
   </div>

@@ -31,7 +31,7 @@
             @input="(e) => saved(e, this.$route.query.client_Id, 'phone')"
             type="text" float-label="Float Label" placeholder="Telefono" />
           <label>Estatus</label>
-          <q-select map-options emit-value standout="bg-teal text-white"
+          <q-select filled map-options emit-value standout="bg-teal text-white"
             :value="client.status"
             @input="(e) => saved(e, this.$route.query.client_Id, 'status')"
             :options="estatus_client" />

@@ -26,7 +26,7 @@
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Key default chat']"/>
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select filled v-model="status" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Estatus" />
         </div>
          <div class='filled'></div>

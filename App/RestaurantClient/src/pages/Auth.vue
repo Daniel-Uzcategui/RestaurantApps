@@ -106,7 +106,7 @@
           </q-icon>
         </template>
       </q-input>
-      <q-select map-options emit-value standout="bg-teal text-white"
+      <q-select filled map-options emit-value standout="bg-teal text-white"
           v-model="sexo"
           v-if="isRegistration"
           :options="sexo_options"

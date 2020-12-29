@@ -19,11 +19,11 @@
       <q-input filled mask="###### #### ########" type="tel" rounded outlined v-model="valueFields.cardNumber" title="Number" data-card-field="" autocomplete="off" maxlength="21" class=""/>
     </div>
     <div class="row justify-start"><label class="col-12" for="cardName" >Cédula</label>
-      <q-select class="col-3" rounded outlined v-model="valueFields.customerIdV" :options="['V','E']" />
+      <q-select filled class="col-3" rounded outlined v-model="valueFields.customerIdV" :options="['V','E']" />
       <q-input filled type="number" class="col-9" rounded outlined v-model="valueFields.customerId" title="v-card-name" data-card-field="" autocomplete="off"/>
     </div>
     <div class="row justify-start"><label class="col-12" for="cardName" >Tipo de Cuenta</label>
-      <q-select class="col-12" rounded outlined v-model="valueFields.account_type" emit-value map-options :options="[ { label: 'Cuenta Corriente', value: 'CC' }, { label: 'Cuenta de Ahorros', value: 'CA' } ]" />
+      <q-select filled class="col-12" rounded outlined v-model="valueFields.account_type" emit-value map-options :options="[ { label: 'Cuenta Corriente', value: 'CC' }, { label: 'Cuenta de Ahorros', value: 'CA' } ]" />
     </div>
     <div class="row">
         <div class="col-12">
@@ -31,11 +31,11 @@
                     <label for="cardMonth" aria-label="Expiration Date" >Fecha de Expiración</label>
                     <div class="card-input">
                       <label>Mes</label>
-                      <q-select rounded outlined map-options emit-value standout="bg-teal text-white"
+                      <q-select filled rounded outlined map-options emit-value standout="bg-teal text-white"
                       v-model="valueFields.cardMonth"
                       :options="month_options" />
                       <label>Año</label>
-                      <q-select rounded outlined map-options emit-value standout="bg-teal text-white"
+                      <q-select filled rounded outlined map-options emit-value standout="bg-teal text-white"
                       v-model="valueFields.cardYear"
                       :options="year_options" />
                     </div>

@@ -22,7 +22,7 @@
     "@quasar/extras": "^1.6.0",
     "axios": "^0.19.2",
     "babel": "^6.23.0",
-    "core-js": "3.0.0",
+    "core-js": "^3.8.1",
     "cross-env": "^7.0.2",
     "crypto-js": "^4.0.0",
     "dom-to-image-more": "^2.8.0",

@@ -293,7 +293,7 @@
                      </q-input>
          <q-card v-if="app_options" class="my-card">
        <q-card-section>
-       <q-select v-model="scssSelect" :options="scopedCss" :option-label="(item) => item === null ? null : item.route" emit-value  :option-value="(item) => item === null ? null : item.route" label="Select Page route" />
+       <q-select filled v-model="scssSelect" :options="scopedCss" :option-label="(item) => item === null ? null : item.route" emit-value  :option-value="(item) => item === null ? null : item.route" label="Select Page route" />
        <q-input filled v-model="newScss" label="Add new page route">
           <template v-slot:append>
             <q-btn @click="saveScss()" round dense flat icon="add" />
@@ -354,7 +354,7 @@
                      <div class="text-center" v-for="(prp, idx) in prop" :key="idx">
                         Slide # {{idx}} {{blocks[selectedBLock.block_index].child[selectedBLock.child_index].props}}
                          <q-btn v-if="prop.length > 1" class="q-ml-md" color="primary" label="Delete Slide" @click="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].splice(idx, 1)" />
-                        <q-select v-if="selectedBLockProps.type" filled :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx]['is']" label="Widget" />
+                        <q-select filled v-if="selectedBLockProps.type" :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx]['is']" label="Widget" />
                         <div v-for="(prp1, idx1) in prp" :key="idx1">
                            <q-input filled v-if="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] && idx1 !== 'is'"
                               v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1]"
@@ -443,7 +443,7 @@
     <q-dialog v-model="SaveReq" transition-hide="scale" transition-show="scale">
        <q-card class="my-card">
        <q-card-section>
-       <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
+       <q-select filled v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
        <q-input filled v-model="newVerAlias" label="Add new prototype Version Alias">
           <template v-slot:append>
             <q-btn @click="saveV()" round dense flat icon="add" />
@@ -459,7 +459,7 @@
     <q-dialog v-model="loadReq" transition-hide="scale" transition-show="scale">
        <q-card class="my-card">
        <q-card-section>
-       <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
+       <q-select filled v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
        </q-card-section>
        <q-card-section class="row justify-between">
           <q-btn color="primary" @click="loadB(true);" label="Load Prototype" />

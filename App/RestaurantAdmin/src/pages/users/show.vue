@@ -31,7 +31,7 @@
         </div>
         <div class="row header-container">
           <div class="header-cell col-6" >
-           <q-select :value="user.rol" @input="(e) => saved(e, this.$route.query.user_Id, 'rol')" standout="bg-teal text-white"
+           <q-select filled :value="user.rol" @input="(e) => saved(e, this.$route.query.user_Id, 'rol')" standout="bg-teal text-white"
             :options="userRolOptions" label="Rol" />
           </div>
        </div>

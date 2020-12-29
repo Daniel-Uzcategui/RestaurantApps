@@ -56,7 +56,7 @@
               />
           </q-td>
           <q-td key="required" :props="props">
-            <q-select dense
+            <q-select filled dense
                 rounded outlined
                 :value="props.row.required"
                 @input="(e) => saved2(e, props.row.required, props.row.id, 'required')"
@@ -79,7 +79,7 @@
               />
           </q-td>
           <q-td key="group_id" :props="props">
-              <q-select dense
+              <q-select filled dense
                 rounded outlined
                 :value="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
@@ -97,7 +97,7 @@
               />
           </q-td>
           <q-td key="type" :props="props">
-              <q-select dense
+              <q-select filled dense
                 rounded outlined
                 :value="props.row.type"
                 @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
@@ -113,7 +113,7 @@
               />
           </q-td>
           <q-td key="free" :props="props">
-            <q-select dense
+            <q-select filled dense
                 rounded outlined
                 :value="props.row.free"
                 @input="(e) => saved2(e, props.row.free, props.row.id, 'free')"
@@ -187,7 +187,7 @@
           </q-item>
           <q-item class="column items-start" key="required" :props="props">
              <q-td><label class="label-expand">Requerido</label></q-td>
-              <q-select dense
+              <q-select filled dense
                 rounded
                 outlined
                 :value="props.row.required"
@@ -205,7 +205,7 @@
           </q-item>
           <q-item class="column items-start" key="group_id" :props="props">
              <q-td><label class="label-expand">Grupo</label></q-td>
-              <q-select dense
+              <q-select filled dense
                 rounded outlined
                 :value="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
@@ -246,7 +246,7 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Tipo</label></q-td>
               <q-td key="type" :props="props">
-              <q-select dense
+              <q-select filled dense
                 rounded outlined
                 :value="props.row.type"
                 @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
@@ -265,7 +265,7 @@
           <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Gratis</label></q-td>
           <q-td key="free" :props="props">
-            <q-select dense
+            <q-select filled dense
                 rounded outlined
                 :value="props.row.free"
                 @input="(e) => saved2(e, props.row.free, props.row.id, 'free')"

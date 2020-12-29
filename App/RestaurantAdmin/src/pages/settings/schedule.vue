@@ -2,18 +2,22 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card style="border-radius: 28px">
-       <q-card-section  class="bg-secondary text-white header" >
+        <q-card-section  class="bg-secondary text-white" >
           <div class="text-h5">Ajustes de Horarios</div>
-           <div v-show="sede">
+          <div v-if="$q.screen.gt.xs" class="absolute-bottom-right row bg-secondary text-white">
+          <q-btn class="q-mr-md" no-caps flat color="white" push icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+          <div class="q-mr-md" v-show="sede">
             <div v-if="config">
-              <q-btn no-caps class="header-btn" flat color="white" push label="Guardar" @click="updatedHours" icon="fas fa-save"/>
+              <q-btn no-caps flat color="white" push @click="updatedHours" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn no-caps class="header-btn" flat color="white" push label="Agregar" @click="add" icon="fas fa-plus"/>
+              <q-btn no-caps flat color="white" push @click="add" icon="fas fa-save"/>
             </div>
           </div>
-          <q-btn no-caps class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
-          <q-select
+        </div>
+        </q-card-section>
+       <q-card-section  class="bg-secondary text-white" >
+          <q-select filled
           class="q-mt-md"
         rounded
         dense
@@ -29,28 +33,30 @@
         @input="getDays"
       />
        </q-card-section>
-     <q-card-section>
-      <div class="business-hours-container">
-        <div class="business-hours-component">
-      <business-hours v-show="sede"
+     <q-card-section class="column items-center">
+      <business-hours style="max-width: 650px" v-if="sede && !destroy"
             :days="days"
             name="dayHours"
             type="select"
             :time-increment="15"
             :localization="localization"
-            color="#00af0b"
           ></business-hours>
-        </div>
-      </div>
       </q-card-section>
     </q-card>
     </div>
+    <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
+      <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
+        <q-tab no-caps flat push icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+        <q-tab v-if="config" no-caps flat push @click="updatedHours" icon="fas fa-save"/>
+        <q-tab v-else no-caps flat push @click="add" icon="fas fa-save"/>
+      </q-tabs>
+    </q-footer>
   </q-page>
 </template>
-
 <script>
+
 import { mapActions, mapGetters } from 'vuex'
-import BusinessHours from 'vue-business-hours'
+import BusinessHours from '../../components/business-hour/src/components/BusinessHours'
 export default {
   created () {
     this.bindLocalizations()
@@ -137,6 +143,7 @@ export default {
   data () {
     return {
       sede: null,
+      destroy: false,
       days: [],
       cache: 0,
       default: {
@@ -216,7 +223,7 @@ export default {
           'midnightNotLast': 'La medianoche solo se puede seleccionar para la última hora de cierre del día.'
         },
         't24hours': '24 horas',
-        'midnight': 'Medianoche',
+        'midnight': window.outerWidth < 377 ? '12:00 AM' : 'Medianoche',
         'days': {
           'sunday': 'Domingo',
           'monday': 'Lunes',
@@ -227,6 +234,14 @@ export default {
           'saturday': 'Sábado'
         }
       }
+    }
+  },
+  watch: {
+    sede (e) {
+      this.destroy = true
+      setTimeout(() => {
+        this.destroy = false
+      }, 200)
     }
   }
 }
@@ -239,18 +254,7 @@ export default {
   position: absolute; right: 10px !important
 .header-btn-back
   position: absolute; right:120px !important
-.header
- padding-bottom: 50px
-.header-cell
-  padding-left: 30px
+
 .error
  color: red
-.business-hours-container
-  margin: 50px auto
-  width: 800px
-  font-family: -apple-system, Helvetica, Arial, sans-serif
-  color: #3d4852
-.business-hours-component
-  width: 660px
-  margin-bottom: 50px
 </style>

@@ -17,7 +17,7 @@
         </div>
         <div class="header-cell col-4">
           <label>Estatus del Pago</label>
-          <q-select :value="payment.status"  @input="(e) => saved(e, this.$route.query.payment_Id, 'status')" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select filled :value="payment.status"  @input="(e) => saved(e, this.$route.query.payment_Id, 'status')" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
@@ -26,7 +26,7 @@
         </div>
         <div class="header-cell col-4">
           <label>Tipo de Pago</label>
-          <q-select :value="payment.typePayment"  @input="(e) => saved(e, this.$route.query.payment_Id, 'typePayment')" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
+          <q-select filled :value="payment.typePayment"  @input="(e) => saved(e, this.$route.query.payment_Id, 'typePayment')" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
         </div>
       </div>
      </div>

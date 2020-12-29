@@ -52,8 +52,7 @@
               />
           </q-td>
           <q-td key="group_id" :props="props">
-              <q-select
-                filled
+              <q-select filled
                 :value="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
                 use-input
@@ -123,7 +122,7 @@
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Grupos</label></q-td>
-              <q-select
+              <q-select filled
                 rounded
                 outlined
                 :value="props.row.group_id"

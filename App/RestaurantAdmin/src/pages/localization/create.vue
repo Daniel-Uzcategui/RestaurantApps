@@ -22,7 +22,7 @@
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre de la Sede']"/>
         </div>
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
-          <q-select rounded v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select filled rounded v-model="status" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>

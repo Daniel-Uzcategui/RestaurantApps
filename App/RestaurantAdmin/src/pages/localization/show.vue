@@ -18,7 +18,7 @@
           />
         </div>
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-select rounded outlined map-options emit-value standout="bg-teal text-white"
+          <q-select filled rounded outlined map-options emit-value standout="bg-teal text-white"
           :value="localization.status"
           @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')"
           :options="estatus_options" />

@@ -46,7 +46,7 @@
                     >Fecha de Expiración</label>
                   <div class='card-input'>
                     <label>Mes</label>
-                    <q-select
+                    <q-select filled
                       map-options
                       emit-value
                       standout='bg-teal text-white'
@@ -54,7 +54,7 @@
                       :options='month_options'
                     />
                     <label>Año</label>
-                    <q-select
+                    <q-select filled
                       map-options
                       emit-value
                       standout='bg-teal text-white'

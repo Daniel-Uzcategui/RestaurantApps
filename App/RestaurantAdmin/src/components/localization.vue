@@ -5,7 +5,7 @@
           <q-input filled :value="localization.name"  type="text" float-label="Float Label" placeholder="Nombre de la Sede" />
         </div>
         <div class="header-cell col-4">
-          <q-select standout="bg-teal text-white"  :value="localization.status" :options="estatus_options" label="Estatus" />
+          <q-select filled standout="bg-teal text-white"  :value="localization.status" :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
@@ -14,7 +14,7 @@
         </div>
          <div class="header-cell col-8">
           <label>Dirección</label>
-         <q-input filled :value="localization.address" filled type="textarea" placeholder="Dirección"  />
+         <q-input filled :value="localization.address" type="textarea" placeholder="Dirección"  />
       </div>
      </div>
 </template>

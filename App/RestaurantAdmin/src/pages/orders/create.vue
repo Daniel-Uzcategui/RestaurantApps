@@ -19,7 +19,7 @@
           <q-input filled v-model="paid"  type="text" float-label="Float Label" placeholder="Monto" />
         </div>
         <div class="header-cell col-4">
-          <q-select v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select filled v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
@@ -29,7 +29,7 @@
           <q-input filled v-model="sede"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
         </div>
         <div class="header-cell col-4">
-          <q-select v-model="typePayment" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
+          <q-select filled v-model="typePayment" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">

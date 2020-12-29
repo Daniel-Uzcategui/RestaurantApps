@@ -22,7 +22,7 @@
                  <q-input filled class="col" id="fecnac" v-model="fecnac" borderless="borderless" dense="dense"  readonly></q-input>
           </div>
           <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="sexo">Sexo</label>
-             <q-select map-options emit-value standout="bg-teal text-white"  v-model="sexo"  :options="sexo_options"  class="col"  />
+             <q-select filled map-options emit-value standout="bg-teal text-white"  v-model="sexo"  :options="sexo_options"  class="col"  />
         </div>
         <div class="row justify-between q-mb-lg">
             <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>

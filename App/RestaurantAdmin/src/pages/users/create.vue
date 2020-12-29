@@ -34,7 +34,7 @@
           />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <q-select v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select filled v-model="status" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
@@ -55,7 +55,7 @@
          </div>
       <div class="flex-break q-py-md "></div>
       <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-      <q-select map-options emit-value standout="bg-teal text-white"
+      <q-select filled map-options emit-value standout="bg-teal text-white"
           v-model="sexo" outlined
           :options="sexo_options"
           label="Sexo" />
@@ -173,15 +173,15 @@
         </div>
         <!-- delivery -->
         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'" >
-         <q-select v-model="statusUbicacion" map-options emit-value standout="bg-teal text-white"
+         <q-select filled v-model="statusUbicacion" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_ubicacion" label="Estatus de Ubicación" />
           </div>
           <div class="header-cell col-xs-6 col-sm-6 col-md-2 col-lg-2" v-if="typeAccess==='Delivery'">
-          <q-select v-model="movilidad" map-options emit-value standout="bg-teal text-white"
+          <q-select filled v-model="movilidad" map-options emit-value standout="bg-teal text-white"
           outlined :options="tipo_options" label="Tipo movilidad" />
          </div>
          <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'">
-         <q-select v-model="statusdelivery" map-options emit-value standout="bg-teal text-white"
+         <q-select filled v-model="statusdelivery" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_delivery" label="Estatus delivery" />
          </div>
           </div>
