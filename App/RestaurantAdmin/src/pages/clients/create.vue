@@ -11,23 +11,23 @@
        </q-card-section>
         <div class="row header-container">
          <div class="header-cell col-4">
-          <q-input  type="text" float-label="Float Label" placeholder="Identificación" />
+          <q-input filled  type="text" float-label="Float Label" placeholder="Identificación" />
         </div>
         <div class="header-cell col-4">
-          <q-input  type="text" float-label="Float Label" placeholder="Nombre" />
+          <q-input filled  type="text" float-label="Float Label" placeholder="Nombre" />
         </div>
         <div class="header-cell col-4">
-          <q-input  type="text" float-label="Float Label" placeholder="Apellido" />
+          <q-input filled  type="text" float-label="Float Label" placeholder="Apellido" />
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell col-3">
-           <q-input  type="text" float-label="Float Label" placeholder="Correo Electrónico" />
+           <q-input filled  type="text" float-label="Float Label" placeholder="Correo Electrónico" />
         </div>
         <div class="header-cell col-3">
-            <q-input  type="text" float-label="Float Label" placeholder="Telefono" />
+            <q-input filled  type="text" float-label="Float Label" placeholder="Telefono" />
         </div>
          <div class="header-cell col-4">
-            <q-input  filled type="textarea" placeholder="Dirección"  />
+            <q-input filled type="textarea" placeholder="Dirección"  />
       </div>
      </div>
        <diV class='filled'></diV>

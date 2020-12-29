@@ -13,7 +13,7 @@
               <div class='col-12 '>
                 <div class='card-input'>
                   <label for='cardNumber'>Numero de tarjeta</label>
-                  <q-input
+                  <q-input filled
                     type='tel'
                     mask="#### #### #### ####"
                     v-model='valueFields.cardNumber'
@@ -29,11 +29,11 @@
               <div class='col-12'>
                 <div class='card-input'>
                   <label for='cardName'>Nombre</label>
-                  <q-input
+                  <q-input filled
                     outlined v-model="firstname"  ref="firstname"
                   />
                   <label for='cardName'>Apellido</label>
-                  <q-input
+                  <q-input filled
                     outlined v-model="lastname" ref="lastname"
                   />
                 </div>
@@ -69,7 +69,7 @@
               <div class='col-6'>
                 <div class='card-input'>
                   <label for='cardCvv' aria-label='Card CVV'>CVV</label>
-                  <q-input
+                  <q-input filled
                     type='tel'
                     v-model='valueFields.cardCvv'
                     title='CVV'
@@ -83,7 +83,7 @@
               <div class='col-6 offset-col'>
                 <div class='card-input'>
                   <label for='city' aria-label='city'>Ciudad</label>
-                  <q-input
+                  <q-input filled
                     type='text'
                     v-model='valueFields.cardcity'
                     title='ciudad'
@@ -98,7 +98,7 @@
               <div class='col-6'>
                 <div class='card-input'>
                   <label for='state' aria-label='state'>Estado</label>
-                  <q-input
+                  <q-input filled
                     type='text'
                     v-model='valueFields.cardstate'
                     title='Estado'
@@ -113,7 +113,7 @@
                   <label for='zipcode' aria-label='zipcode'
                     >Codigo postal</label
                   >
-                  <q-input
+                  <q-input filled
                     type='text'
                     v-model='valueFields.cardzipcode'
                     title='zipcode'

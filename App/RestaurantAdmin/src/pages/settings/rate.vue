@@ -18,7 +18,7 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="rateValue" :props="props" v-if="add">
-              <q-input
+              <q-input filled
                 @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
                 :value="props.row.rateValue"
                 type="number"
@@ -26,7 +26,7 @@
                 />
           </q-td>
            <q-td key="rateValue" :props="props" v-else-if="add==false">
-              <q-input
+              <q-input filled
                 @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
                 :value="props.row.rateValue"
                 type="number"
@@ -34,14 +34,14 @@
                 />
           </q-td>
           <q-td key="currency" :props="props">
-              <q-input
+              <q-input filled
               :value="props.row.currency"  dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'currency')"
               input-style="text-align: right"
                 />
           </q-td>
           <q-td key="dateIn" :props="props">
-             <q-input  :value="formatDate(props.row.dateIn)"  dense  disable input-style="text-align: right"
+             <q-input filled  :value="formatDate(props.row.dateIn)"  dense  disable input-style="text-align: right"
                 />
            </q-td>
         </q-tr>

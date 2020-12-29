@@ -36,7 +36,7 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input dense rounded outlined style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name"  />
+              <q-input filled dense rounded outlined style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name"  />
           </q-td>
           <q-td key="descripcion" :props="props">
               <q-editor
@@ -104,7 +104,7 @@
               />
           </q-td>
           <q-td key="cantidad">
-              <q-input dense rounded outlined style="width: 200px"
+              <q-input filled dense rounded outlined style="width: 200px"
               v-model.number="cantidad"
               label="Cantidad a añadir"
               type="number"
@@ -178,7 +178,7 @@
               </q-item>
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
-              <q-input dense rounded outlined
+              <q-input filled dense rounded outlined
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
                />
@@ -205,7 +205,7 @@
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="label-expand">Cantidad a añadir</label></q-td>
-                  <q-input dense rounded outlined style="width: 150px"
+                  <q-input filled dense rounded outlined style="width: 150px"
                     v-model.number="cantidad"
                     label="Cantidad a añadir"
                     type="number"
@@ -284,7 +284,7 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-      <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+      <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
         <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
    </q-tabs>
    </q-footer>

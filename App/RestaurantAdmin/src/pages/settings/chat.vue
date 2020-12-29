@@ -17,7 +17,7 @@
        <div class='filled'></div>
         <div class="row header-container">
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input
+          <q-input filled
           v-model="key"
           type="text"
           float-label="Float Label"

@@ -13,26 +13,26 @@
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell q-ma-sm col-3">
-          <q-input label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disable/>
+          <q-input filled label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disable/>
         </div>
         <div class="header-cell q-ma-sm col-3">
-          <q-input label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable />
+          <q-input filled label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable />
         </div>
         <div class="header-cell q-ma-sm col-2">
-          <q-input label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+          <q-input filled label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
-          <q-input label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable />
+          <q-input filled label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable />
         </div>
         <div class="header-cell q-ma-sm col-2">
-          <q-input label="Total" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+          <q-input filled label="Total" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
-          <q-input label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
+          <q-input filled label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
         </div>
         <div style="min-width: 300px" class="header-cell q-ma-sm col-4">
-        <q-input label="Fecha de Entrega" v-if="order && order.orderWhen && order.orderWhen.orderWhen == '1'" v-model="orderDate" filled>
+        <q-input filled label="Fecha de Entrega" v-if="order && order.orderWhen && order.orderWhen.orderWhen == '1'" v-model="orderDate" >
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy transition-show="scale" transition-hide="scale">
@@ -56,13 +56,13 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" disabled />
+          <q-input filled label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" disabled />
         </div>
         <div class="header-cell q-ma-sm col-4">
-          <q-input label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
+          <q-input filled label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
         </div>
         <div class="header-cell q-ma-sm col-4" v-if="order.tipEnvio==2">
-          <q-input label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
+          <q-input filled label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
         </div>
         <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
@@ -85,14 +85,14 @@
         </div>
          <div class="flex-break q-pa-md"></div>
          <div v-if="puntoRef" class="header-cell2 q-pa-sm col-6">
-            <q-input label="punto de Referencia" :value="puntoRef"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
+            <q-input filled label="punto de Referencia" :value="puntoRef"  type="textarea" placeholder="Punto de referencia"  disabled/>
          </div>
          <div class="header-cell2 q-pa-sm col-6">
-            <q-input label="Dirección de entrega" :value="addressDelivery"  filled type="textarea" placeholder="Dirección del cliente" disabled />
+            <q-input filled label="Dirección de entrega" :value="addressDelivery"  type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
          <div class="flex-break q-pa-md"></div>
         <div class="header-cell q-ma-sm col-6" v-if="order.userComment">
-          <q-input label="punto de Referencia" :value="order.userComment"  filled type="textarea" placeholder="Punto de referencia"  disabled/>
+          <q-input filled label="punto de Referencia" :value="order.userComment"  type="textarea" placeholder="Punto de referencia"  disabled/>
         </div>
       </div>
       <div v-if="(order.typePayment !== 3 ) && order.photo" class="column items-center filled-soport">
@@ -136,11 +136,11 @@
             :value="props.row.name"
             @show="() => showPopup(props.row, 'name')"
             >
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
+              <q-input filled @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
             </q-popup-edit>
           </q-td>
           <q-td key="quantity" :props="props">
-              <q-input
+              <q-input filled
                 @input="(e) => saved(e, props.row.quantity, props.row.id, 'quantity')"
                 :value="props.row.quantity"
                 dense
@@ -150,7 +150,7 @@
               />
           </q-td>
           <q-td key="price" :props="props">
-              <q-input
+              <q-input filled
                 @input="(e) => saved(e, props.row.prodPrice, props.row.id, 'price')"
                 :value="props.row.prodPrice"
                 dense

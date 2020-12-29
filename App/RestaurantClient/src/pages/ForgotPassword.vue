@@ -6,7 +6,7 @@
       </router-link>
       <h4 class="q-mb-none">Olvido de contraseña</h4>
       <div class="inst q-mb-lg">Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.</div>
-      <q-input
+      <q-input filled
         v-model="email"
         outlined
         autocomplete="email"

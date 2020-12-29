@@ -110,7 +110,7 @@
           <q-item>
             <q-item-section style="min-width: 100px">
 
-              <q-input
+              <q-input filled
                 dense
                 :color="mode == 1 ? 'positive' : 'primary'"
                 :dark="mode == 1"

@@ -133,7 +133,7 @@
             <q-list v-if="props.expand">
                 <q-item class="column items-start" key="desc" :props="props">
                   <p class="text-bold">Nombre</p>
-                    <q-input dense filled rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                    <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                       :value="props.row.name"
                       />
                 </q-item>
@@ -172,7 +172,7 @@
                   </q-item>
                   <q-item class="column items-start" key="priority" :props="props">
                      <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
-                    <q-input dense filled rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority"  />
+                    <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority"  />
                 </q-item>
                 <q-item class="column items-start" key="estatus" :props="props">
                     <q-toggle
@@ -185,7 +185,7 @@
                 <q-item class="column items-start" key="categorias" :props="props">
                   <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
                   <q-popup-edit v-model.number="props.row.FechaAct">
-                    <q-input dense filled rounded outlined
+                    <q-input filled dense rounded outlined
                       readonly
                       @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
                       :value="props.row.FechaAct"
@@ -215,8 +215,8 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-     <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
-      <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+     <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
+      <q-tab flat push no-caps icon="fas fa-trash-alt" @click="softDelete"/>
    </q-tabs>
  </q-footer>
  </div>

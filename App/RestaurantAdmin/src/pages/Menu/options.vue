@@ -30,7 +30,7 @@
             :value="props.row.name"
             @show="() => showPopup(props.row, 'name')"
             >
-              <q-input @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
+              <q-input filled @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
             </q-popup-edit>
           </q-td>
 
@@ -72,7 +72,7 @@
               />
           </q-td>
            <q-td key="priority" :props="props">
-              <q-input @input="(e) => saved(e || 0, props.row.priority, props.row.id, 'priority')" type="number" :value="props.row.priority" dense  />
+              <q-input filled @input="(e) => saved(e || 0, props.row.priority, props.row.id, 'priority')" type="number" :value="props.row.priority" dense  />
            </q-td>
            <q-td key="price" :props="props">
             <q-decimal style="width: 135px" :rules="[validate]"
@@ -107,7 +107,7 @@
             <q-list v-if="props.expand">
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
-              <q-input
+              <q-input filled
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
               rounded
@@ -165,7 +165,7 @@
                 </div>
                 <div class="col-6 q-pa-xs">
                   <p class="text-bold">Prioridad</p>
-                  <q-input
+                  <q-input filled
                   rounded
                   outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
                   :value="props.row.priority"

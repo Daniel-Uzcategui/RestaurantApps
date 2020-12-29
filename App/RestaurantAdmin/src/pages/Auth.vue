@@ -11,7 +11,7 @@
             </q-card-section>
     <q-card-section>
      <q-form class="authentication q-px-sm q-pt-xl" ref="emailAuthenticationForm" @submit="onSubmit">
-       <q-input
+       <q-input filled
         square
         clearable
         v-model="nombre"
@@ -20,7 +20,7 @@
         color="primary"
         @keyup.enter="onSubmit(); $event.target.blur()"
       />
-      <q-input
+      <q-input filled
         square
         clearable
         v-model="apellido"
@@ -29,7 +29,7 @@
         color="primary"
         @keyup.enter="onSubmit(); $event.target.blur()"
       />
-      <q-input
+      <q-input filled
         square
         clearable
         v-model="cedula"
@@ -39,7 +39,7 @@
         type="number"
         @keyup.enter="onSubmit(); $event.target.blur()"
       />
-      <q-input
+      <q-input filled
         square
         clearable
         v-model="email"
@@ -58,7 +58,7 @@
           v-if="isRegistration"
           :options="sexo_options"
           label="Sexo" />
-        <q-input  label="Fecha de Nacimiento" v-if="isRegistration" class="filled" v-model="fecnac" :rules="['fecnac']">
+        <q-input filled  label="Fecha de Nacimiento" v-if="isRegistration" class="filled" v-model="fecnac" :rules="['fecnac']">
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy>
@@ -67,7 +67,7 @@
           </q-icon>
         </template>
       </q-input>
-      <q-input
+      <q-input filled
         square
         clearable
         v-model="password"
@@ -83,7 +83,7 @@
           <q-icon class="cursor-pointer" :name="isPwd ? 'visibility_off' : 'visibility'" @click="isPwd = !isPwd" />
         </template>
       </q-input>
-      <q-input
+      <q-input filled
         square
         clearable
         v-if="isRegistration"

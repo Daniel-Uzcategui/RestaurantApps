@@ -11,21 +11,21 @@
        <diV class='filled'></diV>
         <div class="row header-container">
           <div class="header-cell col-6" >
-            <q-input label="Identificación" :value="user.cedula"   @input="(e) => saved(e, this.$route.query.user_Id, 'cedula')"
+            <q-input filled label="Identificación" :value="user.cedula"   @input="(e) => saved(e, this.$route.query.user_Id, 'cedula')"
              type="text" float-label="Float Label" placeholder="Identificación" />
           </div>
           <div class="header-cell col-4" >
-          <q-input label="Correo Electrónico" :value="user.email"    @input="(e) => saved(e, this.$route.query.user_Id, 'email')"
+          <q-input filled label="Correo Electrónico" :value="user.email"    @input="(e) => saved(e, this.$route.query.user_Id, 'email')"
             type="text" float-label="Float Label" placeholder="Correo Electrónico" />
          </div>
         </div>
        <div class="row header-container">
         <div class="header-cell col-6" >
-           <q-input label="Nombre" :value="user.nombre"   @input="(e) => saved(e, this.$route.query.user_Id, 'nombre')"
+           <q-input filled label="Nombre" :value="user.nombre"   @input="(e) => saved(e, this.$route.query.user_Id, 'nombre')"
              type="text" float-label="Float Label" placeholder="Nombre" />
           </div>
          <div class="header-cell col-4" >
-           <q-input label="Apellido" :value="user.apellido" @input="(e) => saved(e, this.$route.query.user_Id, 'apellidos')"
+           <q-input filled label="Apellido" :value="user.apellido" @input="(e) => saved(e, this.$route.query.user_Id, 'apellidos')"
              type="text" float-label="Float Label" placeholder="Apellido" />
           </div>
         </div>

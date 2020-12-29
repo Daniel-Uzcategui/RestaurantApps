@@ -2,7 +2,7 @@
   <div>
     <gmap-autocomplete ref="gmapAutocomplete" :position.sync="markersClone[0].position" v-if="!readOnly" class="introInput" @place_changed="(e) => {consoleme(e); addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})}" >
                     <template v-slot:input="slotProps">
-                        <q-input rounded outlined
+                        <q-input filled rounded outlined
                                       prepend-inner-icon="place"
                                       placeholder="Buscar"
                                       ref="input"

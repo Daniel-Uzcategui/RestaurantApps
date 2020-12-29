@@ -189,11 +189,11 @@
                   <strong>NOTA: Estos precios incluyen el IVA</strong>
                   <p v-if="ordenDet.tipEnvio == 1">{{getAddById(ordenDet.address)}}</p>
 
-                 <q-input label="Fecha de Entrega" readonly v-if="(ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1')" :value=" ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1' ? new Date(ordenDet.orderWhen.orderDate.seconds * 1000).toLocaleString() : 'De inmediato'"  type="text" disabled />
+                 <q-input filled label="Fecha de Entrega" readonly v-if="(ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1')" :value=" ordenDet && ordenDet.orderWhen && ordenDet.orderWhen.orderWhen == '1' ? new Date(ordenDet.orderWhen.orderDate.seconds * 1000).toLocaleString() : 'De inmediato'"  type="text" disabled />
                </q-card-section>
             </q-card-section>
             <q-card-section :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-               <q-input
+               <q-input filled
                   @input="(e) => saved(e, ordenDet.id, 'userComment')"
                   :value="ordenDet.userComment"
                   label="Añade tu comentario"

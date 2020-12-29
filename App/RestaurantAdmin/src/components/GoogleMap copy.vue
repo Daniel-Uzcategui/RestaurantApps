@@ -2,7 +2,7 @@
   <div>
     <gmap-autocomplete class="introInput" @place_changed="(e) => addMark({ latLng: { lat: e.geometry.location.lat(), lng: e.geometry.location.lng()}})" >
                     <template v-slot:input="slotProps">
-                        <q-input outlined
+                        <q-input filled outlined
                                       prepend-inner-icon="place"
                                       placeholder="Buscar"
                                       ref="input"

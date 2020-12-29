@@ -93,7 +93,7 @@
           <q-card-section class="q-pa-lg">
             <div class="text-caption text-center">Ingresar Código del cupón</div>
             <div class="column items-center">
-            <q-input
+            <q-input filled
               :rules="[val => val.length === 0 || 'Cupón no válido']"
               style="width: 60%" v-model="cupon" :loading="loadingState" @input="setLoadingState()" />
             </div>
@@ -159,7 +159,7 @@
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
                             </div>
                             <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
-                              <q-input readonly v-model="orderDate" hint="Seleccione Fecha y hora">
+                              <q-input filled readonly v-model="orderDate" hint="Seleccione Fecha y hora">
                                 <template v-slot:prepend>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy transition-show="scale" transition-hide="scale">

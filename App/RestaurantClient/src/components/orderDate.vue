@@ -6,7 +6,7 @@
                               <q-radio v-model="orderWhen" @input="$emit('validated', false)" val=1 label="Fecha en específico" />
                             </div>
                             <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
-                              <q-input @click="date = true; validate = false" readonly v-model="orderDate" hint="Seleccione Fecha y hora">
+                              <q-input filled @click="date = true; validate = false" readonly v-model="orderDate" hint="Seleccione Fecha y hora">
                                 <template v-slot:prepend>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy @show="validate = false" @hide="time = true" v-model="date" transition-show="scale" transition-hide="scale">

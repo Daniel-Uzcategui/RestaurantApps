@@ -54,11 +54,11 @@
           class="q-gutter-md"
         >
       <div class="column items-center">
-        <q-input class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" v-model="alias" label="Alias de Mapa" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+        <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" v-model="alias" label="Alias de Mapa" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
           <div class="col-12 row justify-center">
             <div class="q-pa-md" v-for="(zone, index) in zones" :key="index" >
-              <q-input class="q-pb-md" :value="zone.alias" @input="(e) => zone.alias = e" ref="zonealias" rounded outlined :label="'Zona ' + index + ' Alias'" />
-              <q-input rounded outlined :value="zone.price" @input="(e) => zone.price = parseInt(e)" type="number" :label="'Zona ' + index + ' Costo delivery'" />
+              <q-input filled class="q-pb-md" :value="zone.alias" @input="(e) => zone.alias = e" ref="zonealias" rounded outlined :label="'Zona ' + index + ' Alias'" />
+              <q-input filled rounded outlined :value="zone.price" @input="(e) => zone.price = parseInt(e)" type="number" :label="'Zona ' + index + ' Costo delivery'" />
             </div>
           </div>
       </div>

@@ -10,23 +10,23 @@
        </q-card-section>
         <div class="row header-container">
          <div class="header-cell col-4" v-if="typeof client !== 'undefined'">
-           <q-input label="Identificación"
+           <q-input filled label="Identificación"
              :value="client.cedula"
              @input="(e) => saved(e, this.$route.query.client_Id, 'cedula')"
              type="text" float-label="Float Label" placeholder="Identificación" />
-          <q-input label="Nombre"
+          <q-input filled label="Nombre"
              :value="client.nombre"
              @input="(e) => saved(e, this.$route.query.client_Id, 'nombre')"
              type="text" float-label="Float Label" placeholder="Nombre" />
-          <q-input label="Apellido"
+          <q-input filled label="Apellido"
              :value="client.apellido"
              @input="(e) => saved(e, this.$route.query.client_Id, 'apellido')"
             type="text" float-label="Float Label" placeholder="Apellido" />
-          <q-input label="Correo Electrónico"
+          <q-input filled label="Correo Electrónico"
             :value="client.email"
             @input="(e) => saved(e, this.$route.query.client_Id, 'email')"
             type="text" float-label="Float Label" placeholder="Correo Electrónico" />
-          <q-input label="Telefono"
+          <q-input filled label="Telefono"
             :value="client.phone"
             @input="(e) => saved(e, this.$route.query.client_Id, 'phone')"
             type="text" float-label="Float Label" placeholder="Telefono" />
@@ -36,8 +36,8 @@
             @input="(e) => saved(e, this.$route.query.client_Id, 'status')"
             :options="estatus_client" />
           <br>
-          <q-input  label="Dirección" :value="addressDelivery"
-            filled type="textarea" placeholder="Dirección" disabled  />
+          <q-input filled  label="Dirección" :value="addressDelivery"
+           type="textarea" placeholder="Dirección" disabled  />
         </div>
         <div class="header-cell col-6 filled">
           <q-table

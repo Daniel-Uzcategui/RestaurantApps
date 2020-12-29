@@ -57,7 +57,7 @@
             />
          </div>
          <div v-if="containerSel === null" class="q-pl-sm q-pr-sm">
-            <q-input v-model="newPageName" label="Add child page to selected">
+            <q-input filled v-model="newPageName" label="Add child page to selected">
                <template v-slot:append>
                   <q-btn @click="addPage()" round dense flat icon="add" />
                </template>
@@ -77,9 +77,8 @@
                     <div class="row">
                       <q-input filled  v-model="page.class" placeholder="default-bg-image" label="Page Class"  class="col"/>
                      </div>
-                     <q-input
+                     <q-input filled
                         v-model="page.style"
-                        filled
                         type="textarea"
                         label="Page Style"
                         >
@@ -283,7 +282,7 @@
                </q-expansion-item>
             </q-card-section>
          </q-card>
-         <q-input type="textarea" v-if="app_options" v-model="insertCss" label="Global CSS" >
+         <q-input filled type="textarea" v-if="app_options" v-model="insertCss" label="Global CSS" >
             <template v-slot:append>
                         <q-icon name="edit">
                            <q-popup-edit persistent buttons v-model="insertCss" content-class="text-white">
@@ -295,12 +294,12 @@
          <q-card v-if="app_options" class="my-card">
        <q-card-section>
        <q-select v-model="scssSelect" :options="scopedCss" :option-label="(item) => item === null ? null : item.route" emit-value  :option-value="(item) => item === null ? null : item.route" label="Select Page route" />
-       <q-input v-model="newScss" label="Add new page route">
+       <q-input filled v-model="newScss" label="Add new page route">
           <template v-slot:append>
             <q-btn @click="saveScss()" round dense flat icon="add" />
          </template>
        </q-input>
-       <q-input type="textarea" v-if="app_options && typeof scopedCss.find(e => e.route === scssSelect) !== 'undefined'" :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" label="Scoped CSS" >
+       <q-input filled type="textarea" v-if="app_options && typeof scopedCss.find(e => e.route === scssSelect) !== 'undefined'" :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" label="Scoped CSS" >
             <template v-slot:append>
                         <q-icon name="edit">
                            <q-popup-edit persistent buttons :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" content-class="text-white">
@@ -313,8 +312,8 @@
        </q-card>
          <q-card v-if="!app_options && selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'" class="my-card">
             <q-card-section>
-               <q-input readonly filled v-model="selectedBLock.block_index" label="Selected Block" />
-               <q-input readonly filled v-model="selectedBLock.child_index" label="Selected Child" />
+               <q-input filled readonly v-model="selectedBLock.block_index" label="Selected Block" />
+               <q-input filled readonly v-model="selectedBLock.child_index" label="Selected Child" />
             </q-card-section>
             <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'">
                Block Options
@@ -334,12 +333,12 @@
             </q-card-section>
             <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'">
                <div v-for="(prop, index) in selectedBLockProps" :key="index">
-                  <q-input v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index === 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" >
+                  <q-input filled v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index === 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" >
                      <template v-slot:append>
                         <q-btn @click="photoGallery = true; imgsbi = selectedBLock.block_index; imgsbc = selectedBLock.child_index; imgsi = index" round dense flat icon="add" />
                      </template>
                   </q-input>
-                  <q-input
+                  <q-input filled
                         v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index"
                         >
                      <template v-slot:append>
@@ -357,9 +356,9 @@
                          <q-btn v-if="prop.length > 1" class="q-ml-md" color="primary" label="Delete Slide" @click="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].splice(idx, 1)" />
                         <q-select v-if="selectedBLockProps.type" filled :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx]['is']" label="Widget" />
                         <div v-for="(prp1, idx1) in prp" :key="idx1">
-                           <q-input v-if="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] && idx1 !== 'is'"
+                           <q-input filled v-if="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] && idx1 !== 'is'"
                               v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1]"
-                              :placeholder="prp1" filled :label="idx1" />
+                              :placeholder="prp1" :label="idx1" />
                         </div>
                      </div>
                      <q-btn color="primary" label="Add Slide"
@@ -445,7 +444,7 @@
        <q-card class="my-card">
        <q-card-section>
        <q-select v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
-       <q-input v-model="newVerAlias" label="Add new prototype Version Alias">
+       <q-input filled v-model="newVerAlias" label="Add new prototype Version Alias">
           <template v-slot:append>
             <q-btn @click="saveV()" round dense flat icon="add" />
          </template>
@@ -486,36 +485,36 @@
     <q-dialog v-model="appProperties" transition-hide="scale" transition-show="scale">
        <q-card class="my-card">
        <q-card-section>
-       <q-input placeholder="name" v-model="app_name" label="name" />
-         <q-input placeholder="short_name" v-model="app_short_name" label="short_name" />
-         <q-input placeholder="description" v-model="app_description" label="description" />
-         <q-input placeholder="display" v-model="app_display" label="display" />
-      <q-input placeholder="favicon" v-model="appicons.favicon" label="favicon" >
+       <q-input filled placeholder="name" v-model="app_name" label="name" />
+         <q-input filled placeholder="short_name" v-model="app_short_name" label="short_name" />
+         <q-input filled placeholder="description" v-model="app_description" label="description" />
+         <q-input filled placeholder="display" v-model="app_display" label="display" />
+      <q-input filled placeholder="favicon" v-model="appicons.favicon" label="favicon" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'favicon'" round dense flat icon="add" />
          </template>
        </q-input>
-       <q-input placeholder="128x128" v-model="appicons.icon128x128" label="icon128x128" >
+       <q-input filled placeholder="128x128" v-model="appicons.icon128x128" label="icon128x128" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'icon128x128'" round dense flat icon="add" />
          </template>
        </q-input>
-       <q-input placeholder="192x192" v-model="appicons.icon192x192" label="icon192x192" >
+       <q-input filled placeholder="192x192" v-model="appicons.icon192x192" label="icon192x192" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'icon192x192'" round dense flat icon="add" />
          </template>
        </q-input>
-       <q-input placeholder="256x256" v-model="appicons.icon256x256" label="icon256x256" >
+       <q-input filled placeholder="256x256" v-model="appicons.icon256x256" label="icon256x256" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'icon256x256'" round dense flat icon="add" />
          </template>
        </q-input>
-       <q-input placeholder="384x384" v-model="appicons.icon384x384" label="icon384x384" >
+       <q-input filled placeholder="384x384" v-model="appicons.icon384x384" label="icon384x384" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'icon384x384'" round dense flat icon="add" />
          </template>
        </q-input>
-       <q-input placeholder="512x512" v-model="appicons.icon512x512" label="icon512x512" >
+       <q-input filled placeholder="512x512" v-model="appicons.icon512x512" label="icon512x512" >
          <template v-slot:append>
             <q-btn @click="photoGallery = true; iconmodel = 'icon512x512'" round dense flat icon="add" />
          </template>

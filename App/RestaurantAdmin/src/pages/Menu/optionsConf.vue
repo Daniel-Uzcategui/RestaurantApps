@@ -44,7 +44,7 @@
             <q-checkbox v-model="props.selected" />
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input style="width: 150px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
+              <q-input filled style="width: 150px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
           </q-td>
 
           <q-td key="descripcion" :props="props">
@@ -129,16 +129,16 @@
               />
           </q-td>
           <q-td key="priority" :props="props">
-            <q-input @input="(e) => saved2(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
+            <q-input filled @input="(e) => saved2(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
           </q-td>
           <q-td key="min" v-if="props.row.type !== 1" :props="props">
-            <q-input @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" :value="props.row.min" dense  />
+            <q-input filled @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" :value="props.row.min" dense  />
           </q-td>
           <q-td key="max" v-if="props.row.type !== 1" :props="props">
-            <q-input @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" :value="props.row.max" dense  />
+            <q-input filled @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" :value="props.row.max" dense  />
           </q-td>
           <q-td key="maxUnit" v-if="props.row.type == 2" :props="props">
-            <q-input @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" :value="props.row.maxUnit" dense  />
+            <q-input filled @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" :value="props.row.maxUnit" dense  />
           </q-td>
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
@@ -179,7 +179,7 @@
             <q-list v-if="props.expand">
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
-              <q-input dense
+              <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
               rounded
@@ -234,7 +234,7 @@
               <q-item class="row justify-center" v-show="props.expand" :props="props">
                 <div class="col q-pa-xs">
                   <p class="text-bold">Prioridad</p>
-                  <q-input dense
+                  <q-input filled dense
                   rounded
                   outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
                   :value="props.row.priority"
@@ -284,19 +284,19 @@
           <q-item v-if="props.row.type !== 1" class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Min</label></q-td>
           <q-td key="min" :props="props">
-            <q-input rounded outlined @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" :value="props.row.min" dense  />
+            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" :value="props.row.min" dense  />
           </q-td>
           </q-item>
           <q-item class="column items-start" v-if="props.row.type !== 1" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Max</label></q-td>
           <q-td key="max" :props="props">
-            <q-input rounded outlined @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" :value="props.row.max" dense  />
+            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" :value="props.row.max" dense  />
           </q-td>
           </q-item>
           <q-item class="column items-start" v-if="props.row.type == 2" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Max Unidades</label></q-td>
           <q-td key="maxUnit" :props="props">
-            <q-input rounded outlined @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" :value="props.row.maxUnit" dense  />
+            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" :value="props.row.maxUnit" dense  />
           </q-td>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
@@ -330,7 +330,7 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-      <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
+      <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
         <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
    </q-tabs>
    </q-footer>

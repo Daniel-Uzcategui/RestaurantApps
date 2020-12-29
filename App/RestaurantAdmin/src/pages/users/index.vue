@@ -95,19 +95,19 @@
        <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Correo Electronico: </label></q-td>
           <q-td colspan="2">
-            <div class="text-left"><q-input :value="props.row.email" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.email" disable/></div>
           </q-td>
          </q-tr>
           <q-tr v-show="props.expand" :props="props">
            <q-td><label class="label-expand">Telefono: </label></q-td>
           <q-td colspan="2">
-            <div class="text-left"><q-input :value="props.row.phone" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.phone" disable/></div>
           </q-td>
          </q-tr>
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Fecha Nacimiento: </label></q-td>
           <q-td colspan="2">
-            <div class="text-left"><q-input :value="props.row.fecnac" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.fecnac" disable/></div>
           </q-td>
          </q-tr>
          <q-tr v-show="props.expand" :props="props">
@@ -122,27 +122,27 @@
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Proveedor'">
           <q-td colspan=2>
             <label class="label-expand">Codigo</label>
-            <div class="text-left"><q-input :value="props.row.codigoDelivery" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.codigoDelivery" disable/></div>
           </q-td>
           <q-td colspan=2>
             <label class="label-expand">Razón Social </label>
-            <div class="text-left"><q-input :value="props.row.razonSocial" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.razonSocial" disable/></div>
           </q-td>
          </q-tr>
          <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Proveedor'">
           <q-td colspan=2>
             <label class="label-expand">Id Fiscal </label>
-            <div class="text-left"><q-input :value="props.row.RIF" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.RIF" disable/></div>
           </q-td>
           <q-td colspan=2>
             <label class="label-expand">Razón Comercial</label>
-            <div class="text-left"><q-input :value="props.row.razonComercial" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.razonComercial" disable/></div>
           </q-td>
         </q-tr>
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Delivery'">
           <q-td colspan=2>
             <label class="label-expand">Codigo </label>
-            <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.codigo" disable/></div>
           </q-td>
           <q-td colspan=2 key="statusUbicacion">
             <label class="label-expand">Estatus de Ubicación</label>
@@ -177,7 +177,7 @@
         <q-tr v-show="props.expand" :props="props" v-if="props.row.typeAccess==='Seller'">
           <q-td colspan=2>
             <label class="label-expand">Codigo del vendedor </label>
-            <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
+            <div class="text-left"><q-input filled :value="props.row.codigo" disable/></div>
           </q-td>
         </q-tr>
       </template>

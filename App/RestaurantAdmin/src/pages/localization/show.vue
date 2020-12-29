@@ -11,7 +11,7 @@
        </q-card-section>
        <q-card-section class="row justify-between" v-if="typeof localization !== 'undefined'">
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
-          <q-input rounded outlined label="Sede" :value="localization.name"
+          <q-input filled rounded outlined label="Sede" :value="localization.name"
           @input="(e) => saved(e, this.$route.query.Localization_Id, 'name')"
           type="text" float-label="Float Label"
           placeholder="Nombre de la Sede"
@@ -33,7 +33,7 @@
         </div>
          <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-5">
           <label>Dirección</label>
-         <q-input rounded outlined :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" filled type="textarea" placeholder="Dirección"  />
+         <q-input filled rounded outlined :value="localization.address"  @input="(e) => saved(e, this.$route.query.Localization_Id, 'address')" type="textarea" placeholder="Dirección"  />
       </div>
       <div class="flex-break q-py-md "></div>
          <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3">
@@ -49,7 +49,7 @@
         </div>
         <div v-if="config && config.statusInlocal">
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="localization.Inlocal">
-          <q-input rounded outlined :value="localization.tables"
+          <q-input filled rounded outlined :value="localization.tables"
           type="number"
           label="Mesas"
           float-label="Float Label"
@@ -59,7 +59,7 @@
         </div>
         <div v-if="config && config.statusInlocal">
          <div class="q-pa-md col-xs-12 col-sm-6 col-md-3 col-lg-3"  v-show="localization.Inlocal">
-          <q-input rounded outlined :value="localization.capacity"
+          <q-input filled rounded outlined :value="localization.capacity"
           type="numbery"
           label="Capacidad"
           float-label="Float Label"

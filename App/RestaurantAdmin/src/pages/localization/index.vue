@@ -121,7 +121,7 @@
  <q-footer v-if="$q.screen.lt.sm" reveal>
    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
      <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="$router.replace('/localization/create')"/>
-        <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+        <q-tab flat push no-caps icon="fas fa-trash-alt" @click="softDelete"/>
         <q-tab flat color="white" push no-caps label="Exportar a csv" icon="archive" @click="exportTable"/>
    </q-tabs>
  </q-footer>

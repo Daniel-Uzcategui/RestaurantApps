@@ -117,7 +117,7 @@
         <q-tr v-show="props.expand" :props="props">
            <q-td><label class="label-expand">Stock</label></q-td>
            <q-td colspan="100%" key="stock" :props="props">
-               <q-input filled dense  rounded outlined
+               <q-input filled rounded outlined
                 style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
@@ -157,7 +157,7 @@
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Prioridad</label></q-td>
           <q-td colspan="100%" key="priority" :props="props">
-             <q-input filled dense  style="width: 100px" rounded
+             <q-input filled  style="width: 100px" rounded
              outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
              :value="props.row.priority"
 
@@ -393,10 +393,10 @@
     </q-dialog>
     <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
-      <q-tab flat color="white" push no-caps label="Agregar" icon="fas fa-plus" @click="addrow"/>
-      <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
-      <q-tab flat icon="fas fa-signature" text-color="white" no-caps label="Cambio de Nombre" @click="promptNombre()" />
-      <q-tab flat icon="visibility" text-color="white" no-caps label="Vista en Cliente" @click="preview = !preview" />
+      <q-tab flat  push no-caps icon="fas fa-plus" @click="addrow"/>
+      <q-tab flat push no-caps icon="fas fa-trash-alt" @click="softDelete"/>
+      <q-tab flat icon="fas fa-signature" text-color="white" no-caps @click="promptNombre()" />
+      <q-tab flat icon="visibility" text-color="white" no-caps @click="preview = !preview" />
     </q-tabs>
   </q-footer>
   </div>

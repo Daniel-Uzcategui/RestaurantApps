@@ -12,31 +12,31 @@
        <div class='filled'></div>
         <div class="row header-container">
         <div class="header-cell col-4">
-          <q-input  v-model="name"  type="text" float-label="Float Label" placeholder="Nombre del Cliente"
+          <q-input filled  v-model="name"  type="text" float-label="Float Label" placeholder="Nombre del Cliente"
           :rules="[ val => val && val.length > 0 || 'Please type something']" />
         </div>
         <div class="header-cell col-4">
-          <q-input v-model="paid"  type="text" float-label="Float Label" placeholder="Monto" />
+          <q-input filled v-model="paid"  type="text" float-label="Float Label" placeholder="Monto" />
         </div>
         <div class="header-cell col-4">
           <q-select v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
-          <q-input v-model="responsable"  type="text" float-label="Float Label" placeholder="Responsable" />
+          <q-input filled v-model="responsable"  type="text" float-label="Float Label" placeholder="Responsable" />
         </div>
         <div class="header-cell col-4">
-          <q-input v-model="sede"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
+          <q-input filled v-model="sede"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
         </div>
         <div class="header-cell col-4">
           <q-select v-model="typePayment" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">
-            <q-input v-model="delivered" filled type="textarea" placeholder="Dirección de entrega"  />
+            <q-input filled v-model="delivered" type="textarea" placeholder="Dirección de entrega"  />
          </div>
          <div class="header-cell col-3">
-          <q-input v-model="order_date" mask="date" label="Fecha de la orden" >
+          <q-input filled v-model="order_date" mask="date" label="Fecha de la orden" >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">

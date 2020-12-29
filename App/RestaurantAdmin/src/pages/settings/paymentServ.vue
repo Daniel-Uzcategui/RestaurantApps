@@ -48,7 +48,7 @@
           outlined :options="estatus_options" label="Activar Recompensas" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded
+          <q-input filled rounded
           label="Cantidad Necesitada"
           type="number"
           float-label="Float Label"
@@ -118,7 +118,7 @@
        </div>
        <div v-if="statusPaypal" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="PaypalApi" standout="bg-teal text-white"
+          <q-input filled rounded v-model="PaypalApi" standout="bg-teal text-white"
           outlined label="Paypal API" />
         </div>
         </div>
@@ -127,7 +127,7 @@
        </div>
        <div v-if="statusCreditCorp"  class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="CreditCorp" standout="bg-teal text-white"
+          <q-input filled rounded v-model="CreditCorp" standout="bg-teal text-white"
           outlined label="CreditCorp API" />
         </div>
         </div>
@@ -140,23 +140,23 @@
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Desarrollo'}]" label="Ambiente" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="Mercantil.xibm" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.xibm" standout="bg-teal text-white"
           outlined label="x-ibm-client-id" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="Mercantil.integratorId" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.integratorId" standout="bg-teal text-white"
           outlined label="integratorId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="Mercantil.merchantId" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.merchantId" standout="bg-teal text-white"
           outlined label="merchantId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="Mercantil.terminalId" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.terminalId" standout="bg-teal text-white"
           outlined label="terminalId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="Mercantil.claveSecreta" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.claveSecreta" standout="bg-teal text-white"
           outlined label="Clave secreta" />
         </div>
         </div>
@@ -169,7 +169,7 @@
        </div>
        <div v-if="statusZelle" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="zelleEmail" standout="bg-teal text-white"
+          <q-input filled rounded v-model="zelleEmail" standout="bg-teal text-white"
           outlined label="Email Zelle" />
         </div>
         </div>
@@ -178,7 +178,7 @@
        </div>
        <div v-if="statusVenmo" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="venmoAcc" standout="bg-teal text-white"
+          <q-input filled rounded v-model="venmoAcc" standout="bg-teal text-white"
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
@@ -187,7 +187,7 @@
        </div>
        <div v-if="statuspagomovil"  class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="pagomovil" standout="bg-teal text-white"
+          <q-input filled rounded v-model="pagomovil" standout="bg-teal text-white"
           outlined label="Pago Movil" />
         </div>
         </div>
@@ -196,7 +196,7 @@
        </div>
        <div v-if="statustransfer"  class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input rounded v-model="transfer" standout="bg-teal text-white"
+          <q-input filled rounded v-model="transfer" standout="bg-teal text-white"
           outlined label="Datos para Transferir" />
         </div>
         </div>

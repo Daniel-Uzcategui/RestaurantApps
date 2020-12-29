@@ -12,7 +12,7 @@
        <div class='filled'></div>
         <div class="row header-container">
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input
+          <q-input filled
           v-model="nombre"
           type="text"
           float-label="Float Label"
@@ -23,7 +23,7 @@
           />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input
+          <q-input filled
           v-model="apellido"
           type="text"
           float-label="Float Label"
@@ -46,11 +46,11 @@
           <q-radio  dense label="Vendedor" color="yellow" val="Seller"  v-model="typeAccess" class="typeAccess" />
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
-            <q-input label="Identificación" v-model="cedula" outlined
+            <q-input filled label="Identificación" v-model="cedula" outlined
              type="text" float-label="Float Label" placeholder="Identificación" />
           </div>
           <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" >
-          <q-input label="Correo Electrónico"  v-model="email" outlined
+          <q-input filled label="Correo Electrónico"  v-model="email" outlined
             type="text" float-label="Float Label" placeholder="Correo Electrónico" />
          </div>
       <div class="flex-break q-py-md "></div>
@@ -61,7 +61,7 @@
           label="Sexo" />
       </div>
       <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
-        <q-input  label="Fecha de Nacimiento"  v-model="fecnac" :rules="['fecnac']" outlined>
+        <q-input filled  label="Fecha de Nacimiento"  v-model="fecnac" :rules="['fecnac']" outlined>
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy>
@@ -72,7 +72,7 @@
       </q-input>
       </div>
       <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <q-input
+          <q-input filled
           v-model="phone"
           type="text"
           float-label="Float Label"
@@ -83,7 +83,7 @@
         </div>
       <div class="flex-break q-py-md "></div>
       <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-      <q-input
+      <q-input filled
         square outlined
         clearable
         v-model="password"
@@ -101,7 +101,7 @@
       </q-input>
       </div>
       <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
-        <q-input
+        <q-input filled
         square outlined
         clearable
         lazy-rules="lazy-rules"
@@ -121,7 +121,7 @@
       </div> <!-- Proveedor -->
       <div class="flex-break q-py-md "></div>
          <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >
-          <q-input
+          <q-input filled
           v-model="codigoDelivery"
           type="text"
           float-label="Float Label"
@@ -131,7 +131,7 @@
           outlined/>
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >
-            <q-input
+            <q-input filled
           v-model="razonSocial"
           type="text"
           float-label="Float Label"
@@ -141,7 +141,7 @@
           outlined/>
           </div>
           <div class="header-cell col-xs-6 col-sm-6 col-md-2 col-lg-2" v-if="typeAccess==='Proveedor'">
-          <q-input
+          <q-input filled
           v-model="RIF"
           type="text"
           float-label="Float Label"
@@ -151,7 +151,7 @@
           outlined/>
          </div>
          <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'">
-          <q-input
+          <q-input filled
           v-model="razonComercial"
           type="razonComercial"
           float-label="Float Label"
@@ -162,7 +162,7 @@
         <!-- delivery  o seller-->
        <div class="flex-break q-py-md "></div>
          <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery' ||  typeAccess==='Seller'" >
-          <q-input
+          <q-input filled
           v-model="codigo"
           type="text"
           float-label="Float Label"

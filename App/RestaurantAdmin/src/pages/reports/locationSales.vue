@@ -11,7 +11,7 @@
        <!--div class="q-pb-sm">
 <div class="q-pa-md" style="max-width: 300px">
 Filtros por Dias
-  <q-input filled v-model="days">
+  <q-input filled filled v-model="days">
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">

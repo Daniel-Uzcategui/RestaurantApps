@@ -12,7 +12,7 @@
        <div class='filled'></div>
         <div class="row justify-between">
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
-          <q-input rounded
+          <q-input filled rounded
           v-model="name"
           type="text"
           float-label="Float Label"
@@ -34,7 +34,7 @@
                 @update-mark="(e) => { localizacion_sede = e.position; address = e.address }" />
         </div>
          <div class="q-pa-md col-xs-12 col-sm-6 col-md-5 col-lg-5">
-            <q-input rounded v-model="address" filled type="textarea"
+            <q-input filled rounded v-model="address" type="textarea"
             placeholder="Dirección"
             :rules="[ val => val && val.length > 0 || '*Requerido el campo de dirección']"  />
         </div>
@@ -50,10 +50,10 @@
             </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
-          <q-input rounded v-model="tables" outlined  type="text" float-label="Float Label" placeholder="Mesas" />
+          <q-input filled rounded v-model="tables" outlined  type="text" float-label="Float Label" placeholder="Mesas" />
         </div>
          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-show="Inlocal">
-          <q-input rounded v-model="capacity" outlined type="text" float-label="Float Label" placeholder="Capacidad" />
+          <q-input filled rounded v-model="capacity" outlined type="text" float-label="Float Label" placeholder="Capacidad" />
         </div>
      </div>
        <diV class='filled'></diV>

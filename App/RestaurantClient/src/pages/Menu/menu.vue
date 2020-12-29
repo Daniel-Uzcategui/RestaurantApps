@@ -1,6 +1,6 @@
 <template>
    <div @click.passive="click()" :class="global_class" :style="global_style">
-      <q-input v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-pa-lg q-pt-xl" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
+      <q-input filled v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-pa-lg q-pt-xl" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
          <template v-slot:prepend>
             <q-icon name="fas fa-search" />
          </template>

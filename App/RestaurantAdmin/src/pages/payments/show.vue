@@ -13,7 +13,7 @@
        <div class="row header-container">
         <div class="header-cell col-4">
           <label>Monto</label>
-          <q-input :value="payment.amount"  @input="(e) => saved(e, this.$route.query.payment_Id, 'amount')"  type="text" float-label="Float Label" placeholder="Monto" />
+          <q-input filled :value="payment.amount"  @input="(e) => saved(e, this.$route.query.payment_Id, 'amount')"  type="text" float-label="Float Label" placeholder="Monto" />
         </div>
         <div class="header-cell col-4">
           <label>Estatus del Pago</label>
@@ -22,7 +22,7 @@
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
           <label>Factura</label>
-          <q-input :value="payment.invoice"  @input="(e) => saved(e, this.$route.query.payment_Id, 'invoice')"  type="text" float-label="Float Label" placeholder="Factura" />
+          <q-input filled :value="payment.invoice"  @input="(e) => saved(e, this.$route.query.payment_Id, 'invoice')"  type="text" float-label="Float Label" placeholder="Factura" />
         </div>
         <div class="header-cell col-4">
           <label>Tipo de Pago</label>

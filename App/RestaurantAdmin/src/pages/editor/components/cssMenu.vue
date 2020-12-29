@@ -2,7 +2,7 @@
 <div>
   <q-card>
     <q-card-section>
-      <q-input v-model="getStyles[style]" @input="(e) => setCss(e, style)" :label="style" v-for="(style, index) in Object.keys(getStyles)" :key="index" />
+      <q-input filled v-model="getStyles[style]" @input="(e) => setCss(e, style)" :label="style" v-for="(style, index) in Object.keys(getStyles)" :key="index" />
     </q-card-section>
   </q-card>
 </div>

@@ -88,7 +88,7 @@
         <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section style="min-width: 100px">
-              <q-input
+              <q-input filled
                 :color="mode == 1 ? 'positive' : 'primary'"
                 :dark="mode == 1"
                 rounded

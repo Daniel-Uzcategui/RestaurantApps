@@ -4,22 +4,22 @@
         <section class="user-info">
             <h6 class="q-mt-none q-mb-md text-center">Editar Perfil</h6>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
-                <q-input class="col" id="nombre" v-model="nombre" borderless="borderless" dense="dense" type="text"></q-input>
+                <q-input filled class="col" id="nombre" v-model="nombre" borderless="borderless" dense="dense" type="text"></q-input>
             </div>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Apellido</label>
-                <q-input class="col" id="apellido" v-model="apellido" borderless="borderless" dense="dense" type="text"></q-input>
+                <q-input filled class="col" id="apellido" v-model="apellido" borderless="borderless" dense="dense" type="text"></q-input>
             </div>
             <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="email">Email</label>
-                <q-input class="col" id="email" v-model="email" borderless="borderless" dense="dense" type="text"></q-input>
+                <q-input filled class="col" id="email" v-model="email" borderless="borderless" dense="dense" type="text"></q-input>
             </div>
             <div class="row justify-between items-center q-mb-lg "><label class="col-3" for="cedula">Cedula</label>
-                <q-input class="col" id="cedula" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
+                <q-input filled class="col" id="cedula" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
             <div class="row justify-between items-center q-mb-lg "><label class="col-3" for="phone">Teléfono</label>
-                <q-input class="col" id="phone" v-model="phone" borderless="borderless" dense="dense" type="number"></q-input>
+                <q-input filled class="col" id="phone" v-model="phone" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fecnac">Fecha  de Nac.</label>
-                 <q-input class="col" id="fecnac" v-model="fecnac" borderless="borderless" dense="dense"  readonly></q-input>
+                 <q-input filled class="col" id="fecnac" v-model="fecnac" borderless="borderless" dense="dense"  readonly></q-input>
           </div>
           <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="sexo">Sexo</label>
              <q-select map-options emit-value standout="bg-teal text-white"  v-model="sexo"  :options="sexo_options"  class="col"  />
