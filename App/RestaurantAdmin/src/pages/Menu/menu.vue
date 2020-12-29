@@ -21,7 +21,7 @@
       <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
                 :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
       <div class="q-pa-md">
-      <q-select dense  rounded outlined
+      <q-select filled rounded
         v-model="sede"
         :options="locList"
         style="width: 250px"
@@ -37,7 +37,7 @@
           <q-btn flat icon="visibility" text-color="white" no-caps label="Vista en Cliente" @click="preview = !preview" />
           <q-btn flat icon="fas fa-signature" text-color="white" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
-        <q-input dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar"  dark filled>
+        <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar"  dark>
           <template v-slot:prepend>
           <q-icon name="fas fa-search"/>
         </template>
@@ -59,7 +59,7 @@
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input dense  style="width: 200px"
+              <q-input filled dense  style="width: 200px"
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
 
@@ -67,7 +67,7 @@
               outlined />
           </q-td>
           <q-td key="categoria" :props="props">
-              <q-select dense  rounded outlined
+              <q-select filled rounded
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -82,7 +82,7 @@
               />
           </q-td>
            <q-td key="groupComp" :props="props">
-              <q-select dense  rounded outlined
+              <q-select filled rounded
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -117,7 +117,7 @@
         <q-tr v-show="props.expand" :props="props">
            <q-td><label class="label-expand">Stock</label></q-td>
            <q-td colspan="100%" key="stock" :props="props">
-               <q-input dense  rounded outlined
+               <q-input filled dense  rounded outlined
                 style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
                 :value="props.row.stock ? props.row.stock[sede] : 0"
@@ -130,7 +130,7 @@
         <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Descuento</label></q-td>
           <q-td colspan="100%" key="discount" :props="props">
-              <q-input dense  rounded outlined
+              <q-input filled dense  rounded outlined
                 style="width: 100px"
                 @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
                 :value="props.row.discount"
@@ -144,7 +144,7 @@
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Precio</label></q-td>
           <q-td colspan="100%" key="price" :props="props">
-             <q-decimal style="width: 150px"
+             <q-decimal filled style="width: 150px"
              dense
              :rules="[validate]"
              rounded
@@ -157,7 +157,7 @@
          <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Prioridad</label></q-td>
           <q-td colspan="100%" key="priority" :props="props">
-             <q-input dense  style="width: 100px" rounded
+             <q-input filled dense  style="width: 100px" rounded
              outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
              :value="props.row.priority"
 
@@ -169,7 +169,7 @@
         <q-tr v-show="props.expand" :props="props">
           <q-td><label class="label-expand">Display Type</label></q-td>
           <q-td colspan="100%" key="disptype" :props="props">
-             <q-input dense
+             <q-input filled dense
                 style="width: 100px"
                 rounded
                 outlined
@@ -229,16 +229,15 @@
           </q-item>
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
-              <q-input dense
+              <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               :value="props.row.name"
-              filled
               rounded
               outlined />
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Categorias</label></q-td>
-              <q-select dense  rounded outlined
+              <q-select filled rounded
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -253,7 +252,7 @@
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Opciones</label></q-td>
-              <q-select dense  rounded outlined
+              <q-select filled rounded
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -282,7 +281,7 @@
               <q-item class="row justify-center" v-show="props.expand" :props="props">
                   <div class="col-6 q-pa-xs">
                     <p class="text-bold">Stock</p>
-                    <q-input dense
+                    <q-input filled dense
                       rounded
                       outlined
                       @input="(e) => saved(e, parseInt(props.row.stock), props.row.id, `stock.${sede}`)"
@@ -293,7 +292,7 @@
                   </div>
                   <div class="col-6 q-pa-xs">
                     <p class="text-bold">Descuento</p>
-                    <q-input dense
+                    <q-input filled dense
                       rounded
                       outlined
                       @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
@@ -309,6 +308,7 @@
                 <p class="text-bold">Precio</p>
                   <q-decimal
                   dense
+                  filled
                   :rules="[validate]"
                   rounded
                   outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
@@ -318,7 +318,7 @@
                 </div>
                 <div class="col-6 q-pa-xs">
                   <p class="text-bold">Prioridad</p>
-                  <q-input dense
+                  <q-input filled dense
                   rounded
                   outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
                   :value="props.row.priority"
@@ -330,7 +330,7 @@
               <q-item class="row justify-center" v-show="props.expand" :props="props">
                 <div class="col-6 q-pa-xs">
                 <p class="text-bold">Tipo de Display</p>
-                  <q-input dense
+                  <q-input filled dense
                       rounded
                       outlined
                       @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)"

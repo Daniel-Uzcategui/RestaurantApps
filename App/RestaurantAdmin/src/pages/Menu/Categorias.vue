@@ -29,7 +29,7 @@
             <q-checkbox v-model="props.selected" />
           </q-td>
           <q-td key="desc" :props="props">
-              <q-input rounded outlined  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              <q-input filled rounded outlined  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                 :value="props.row.name"
                 dense
                 />
@@ -69,7 +69,7 @@
               </div>
              </q-td>
              <q-td key="priority" :props="props">
-              <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
+              <q-input filled rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
            </q-td>
           <q-td key="estatus" :props="props">
               <q-toggle
@@ -81,7 +81,7 @@
           <q-td key="categorias" :props="props">
             <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
             <q-popup-edit v-model.number="props.row.FechaAct">
-              <q-input rounded outlined
+              <q-input filled rounded outlined
                 readonly
                 @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
                 :value="props.row.FechaAct"
@@ -133,7 +133,7 @@
             <q-list v-if="props.expand">
                 <q-item class="column items-start" key="desc" :props="props">
                   <p class="text-bold">Nombre</p>
-                    <q-input rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                    <q-input dense filled rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
                       :value="props.row.name"
                       />
                 </q-item>
@@ -172,7 +172,7 @@
                   </q-item>
                   <q-item class="column items-start" key="priority" :props="props">
                      <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
-                    <q-input rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority"  />
+                    <q-input dense filled rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority"  />
                 </q-item>
                 <q-item class="column items-start" key="estatus" :props="props">
                     <q-toggle
@@ -185,7 +185,7 @@
                 <q-item class="column items-start" key="categorias" :props="props">
                   <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
                   <q-popup-edit v-model.number="props.row.FechaAct">
-                    <q-input rounded outlined
+                    <q-input dense filled rounded outlined
                       readonly
                       @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
                       :value="props.row.FechaAct"
