@@ -2,8 +2,10 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
       <q-table class="table"
+      :grid="$q.screen.lt.md"
       title="Usuarios"
       color="primary"
+      style="border-radius: 28px"
       :data="users"
       :columns="columns"
       :dense="$q.screen.lt.md"
@@ -178,6 +180,87 @@
             <div class="text-left"><q-input :value="props.row.codigo" disable/></div>
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+            <q-list  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+              <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+                <q-item-section>
+                  <q-item-label>{{props.row.name}}</q-item-label>
+                </q-item-section>
+                 <q-item-section side>
+                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+               </q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+            </q-list>
+             <q-list v-if="props.expand">
+               <q-item class="row justify-center" key="desc" :props="props">
+                <div class="col-6 q-pa-xs">
+                  <label class="label-expand">Nombre:</label>
+                  {{ props.row.nombre }}
+                </div>
+                <div class="col-6 q-pa-xs">
+                  <label class="label-expand">Apellido:</label>
+                  {{ props.row.apellido}}
+                </div>
+               </q-item>
+               <q-item class="row justify-center" key="desc" :props="props">
+                <div class="col-6 q-pa-xs">
+                  <label class="label-expand">Correo Electronico:</label>
+                  {{ props.row.email }}
+                </div>
+                <div class="col-6 q-pa-xs">
+                  <label class="label-expand">Telefono:</label>
+                  {{ props.row.phone}}
+                </div>
+               </q-item>
+               <q-item  key="desc" :props="props">
+                <div class="col-10 q-pa-xs">
+                  <label class="label-expand">Sexo:</label>
+                  <q-select map-options emit-value standout="bg-teal text-white"
+                   :value="props.row.sexo"
+                   @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'sexo')"
+                   :options="sexo_options" />
+                </div>
+               </q-item>
+               <q-item>
+                  <div class="col-10 q-pa-xs">
+                  <label class="label-expand">Rol:</label>
+              <q-select
+                filled rounded outlined
+                :value="props.row.rol"
+                @input="(e) => saved(e, props.row.rol, props.row.id, `rol`)"
+                @remove="(e) => removed({...e, id: props.row.id})"
+                use-input
+                use-chips
+                multiple
+                input-debounce="0"
+                :options="rolOpt"
+                :option-label="(item) => item === null ? null : item.label"
+                :option-value="(item) => item === null ? null : item.value"
+                map-options
+                emit-value
+                stack-label
+              /></div>
+               </q-item>
+                <q-item  class="row justify-center">
+                 <div  class="col-6 q-pa-xs" v-if="props.row.status !== undefined" >
+                   <label class="label-expand">Estatus:</label>
+                  <q-toggle
+                      @input="(e) => saved(e, props.row.status, props.row.id, 'status')"
+                      :value="props.row.status"
+                      color="#3c8dbc"
+                    />
+                  </div>
+                 <div class="col-6 q-pa-xs">
+                 <label class="label-expand">Tipo de Aplicación</label>
+                 <q-select map-options emit-value standout="bg-teal text-white"
+                    :value="props.row.typeAccess" rounded outlined
+                    @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'typeAccess')"
+                    :options="typeAccess_options" />
+                 </div>
+               </q-item>
+          </q-list>
       </template>
     </q-table>
  </div>
