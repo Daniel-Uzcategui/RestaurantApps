@@ -1,11 +1,12 @@
 <template>
   <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
+    <!-- :grid="$q.screen.lt.md" -->
    <q-table
       style="border-radius: 28px"
-      :grid="$q.screen.lt.md"
       :dense="$q.screen.lt.md"
       :data="elmenu"
       class="bg-dark text-white"
+      grid
       :columns="columns"
       :title="menucfg.dispName ? menucfg.dispName : 'Catálogo'"
       :rows-per-page-options="[]"
@@ -33,7 +34,7 @@
       </div>
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
           <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <q-btn flat icon="visibility" text-color="white" no-caps label="Vista en Cliente" @click="preview = !preview" />
           <q-btn flat icon="label" text-color="white" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
@@ -51,11 +52,11 @@
           <q-td key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="white" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-white">Click para editar</span></div>
+                <q-avatar round class="q-mb-sm"  color="secondary" icon="insert_photo" font-size="50px" size="180px" text-color="white"></q-avatar></div>
             <div class="column items-center" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
-                </q-avatar><span class="text-white"><q-icon class="q-mr-sm" color="white" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </q-avatar></div>
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
@@ -105,7 +106,7 @@
         <q-tr v-show="props.expand" :props="props">
            <q-td><label class="label-expand">Descripción</label></q-td>
            <q-td colspan="100%" key="descripcion" :props="props">
-              <q-editor
+              <q-insert_photoor
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
@@ -199,8 +200,18 @@
         :style="props.selected ? 'transform: scale(0.95);' : ''">
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
+                <q-item-section class="column items-start" key="photo" :props="props">
+                  <div class="text-center" @click="showPhotoUpload(props.row.id)">
+                  <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
+                      <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="38px" size="50px" text-color="white"></q-avatar></div>
+                  <div class="column items-start" v-else>
+                      <q-avatar round class="q-mb-sm shadow-5" size="50px" @click="showPhotoUpload(props.row.id)">
+                          <q-img :src="props.row.photo"></q-img>
+                      </q-avatar></div>
+                      </div>
+                </q-item-section>
                 <q-item-section>
-                  <q-item-label>{{props.row.name ? props.row.name: 'Agregar Nombre'}}</q-item-label>
+                  <q-item-label>{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-caption text-grey">
                   <q-item-label>{{props.row.estatus ? props.row.estatus[sede] ? 'activo' : 'inactivo' : 'inactivo'}}</q-item-label>
@@ -210,23 +221,31 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
         </q-list>
-          <q-card>
-            <q-list v-if="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
+            <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="white" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-white">Click para editar</span></div>
+                <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" text-color="white"></q-avatar></div>
             <div class="column items-start" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
-                </q-avatar><span class="text-white"><q-icon class="q-mr-sm" color="white" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </q-avatar></div>
                 </div>
           </q-item>
+          <q-item v-show="props.expand" :props="props">
+                  <p class="text-bold">Activar</p>
+                  <q-toggle
+                      @input="(e) => saved(e, props.row.status, props.row.id, `estatus.${sede}`)"
+                      :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
+                      color="#3c8dbc"
+                    />
+              </q-item>
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled dense
@@ -270,7 +289,7 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
                 <q-td class="col" key="descripcion" :props="props">
-                    <q-editor
+                    <q-insert_photoor
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       :value="props.row.descripcion"
                       min-height="5rem"
@@ -339,17 +358,9 @@
                       type="number"
                     />
                 </div>
-                <div class="col-6 q-pa-xs">
-                  <p class="text-bold">Activar</p>
-                  <q-toggle
-                      @input="(e) => saved(e, props.row.status, props.row.id, `estatus.${sede}`)"
-                      :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
-                      color="#3c8dbc"
-                    />
-                </div>
               </q-item>
             </q-list>
-          </q-card>
+          </q-dialog>
         </div>
       </template>
     </q-table>
@@ -483,7 +494,7 @@ export default {
       sede: null,
       columns,
       selected: [],
-      popupEditData: '',
+      popupeditorData: '',
       photoType: '',
       photoUpload: false,
       noSelect: false
@@ -545,7 +556,7 @@ export default {
       this.photoType = ''
     },
     showPopup (row, col) {
-      this.popupEditData = row[col]
+      this.popupinsert_photoData = row[col]
     },
     saved (value, initialValue, id, key) {
       console.log(this.sede)

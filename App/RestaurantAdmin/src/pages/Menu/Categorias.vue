@@ -21,7 +21,7 @@
     <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
@@ -100,7 +100,7 @@
                   <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>

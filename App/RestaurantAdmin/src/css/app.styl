@@ -4,21 +4,40 @@ a
   text-decoration none
 .q-footer
   background-color $secondary !important
+.q-diag-glassMorph
+  border-radius 28px !important
+  background rgba( 0, 0, 0, 0.15 )
+  box-shadow 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )
+  backdrop-filter blur( 8.0px )
+  -webkit-backdrop-filter blur( 8.0px )
+  border-radius 10px
+
+.q-dialog__backdrop
+  background-color transparent
+
+.q-select__dialog
+  @extends .q-diag-glassMorph
+
+.q-dialog-plugin
+  @extends .q-diag-glassMorph
+  
+.q-dialog__message
+  font-weight 800
 
 .loader
   font-size 2em
   &:before
     opacity .9!important
 @font-face
-  font-family: customfont
-  src: url(./font/Montserrat-Regular.woff)
+  font-family customfont
+  src url(./font/Montserrat-Regular.woff)
 
 // declare a class which applies it
 .my-font
-  font-family: 'customfont'
+  font-family 'customfont'
 
 fluid-font-size($minimumSize = 12, $maximumSize = 18, $minimumViewportWidth = 300, $maximumViewportWidth = 2440)
-  font-size: 'calc(%spx + (%s - %s) * ((100vw - %spx) / (%s - %s))) !important' % ($minimumSize $maximumSize $minimumSize $minimumViewportWidth $maximumViewportWidth $minimumViewportWidth)
+  font-size 'calc(%spx + (%s - %s) * ((100vw - %spx) / (%s - %s))) !important' % ($minimumSize $maximumSize $minimumSize $minimumViewportWidth $maximumViewportWidth $minimumViewportWidth)
 
 for num in (8..56)
   .fontsize-{num}

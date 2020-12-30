@@ -19,7 +19,7 @@
       >
       <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="$router.replace('/localization/create')"/>
-        <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="softDelete"/>
+        <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
         <q-btn flat color="white" push no-caps label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:header="props">
@@ -94,7 +94,7 @@
                   <q-item-label>{{props.row.status ? 'activo' : 'inactivo'}}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="fas fa-chevron-right" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
+                <q-icon name="arrow_drop_down" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -120,9 +120,9 @@
  </div>
  <q-footer v-if="$q.screen.lt.sm" reveal>
    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-     <q-tab flat color="white" push no-caps label="Agregar" icon="add" @click="$router.replace('/localization/create')"/>
+     <q-tab flat color="white" push no-caps icon="add" @click="$router.replace('/localization/create')"/>
         <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
-        <q-tab flat color="white" push no-caps label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-tab flat color="white" push no-caps icon="archive" @click="exportTable"/>
    </q-tabs>
  </q-footer>
  <q-dialog v-model="noSelectLoc">

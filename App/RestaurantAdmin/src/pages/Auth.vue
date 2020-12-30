@@ -6,12 +6,12 @@
                <img alt="chopZI" src="~assets/chopzi-01.png" class="imglogo">
             </template>
             <div class="absolute-bottom-right q-pr-md" style="transform: translateY(50%);">
-              <q-btn fab :label="inverseGetAuthType" color="secondary" :to="routeAuthentication" />
+              <q-btn fab no-caps :label="inverseGetAuthType" color="secondary" :to="routeAuthentication" />
             </div>
             </q-card-section>
     <q-card-section>
      <q-form class="authentication q-px-sm q-pt-xl" ref="emailAuthenticationForm" @submit="onSubmit">
-       <q-input filled
+       <q-input class="q-mb-md" filled
         square
         clearable
         v-model="nombre"
@@ -20,7 +20,7 @@
         color="primary"
         @keyup.enter="onSubmit(); $event.target.blur()"
       />
-      <q-input filled
+      <q-input class="q-mb-md" filled
         square
         clearable
         v-model="apellido"
@@ -29,12 +29,12 @@
         color="primary"
         @keyup.enter="onSubmit(); $event.target.blur()"
       />
-      <q-input filled
+      <q-input class="q-mb-md" filled
         square
         clearable
         v-model="cedula"
         v-if="isRegistration"
-        label="Cedula"
+        label="Documento de identidad"
         color="primary"
         type="number"
         @keyup.enter="onSubmit(); $event.target.blur()"
@@ -75,7 +75,7 @@
         autocomplete="current-password new-password"
         color="primary"
         data-cy="password"
-        label="contraseña"
+        label="Contraseña"
         :rules="[val =&gt; !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
         @keyup.enter="onSubmit(); $event.target.blur()"
       >
@@ -108,10 +108,12 @@
         class="full-width q-mt-md"
         color="primary"
         type="submit"
+        rounded
+        no-caps
         :label="getAuthType"
       >
       </q-btn>
-      <p v-if="!isRegistration" class="q-ma-sm text-center">
+      <p v-if="!isRegistration" class="q-mb-md text-center">
           <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
       </p>
      <q-dialog v-model="viewTermsDialog" full-height="full-height" persistent="persistent" >
@@ -281,5 +283,6 @@ export default {
   border-radius:150px;
   }
 .filled
-  padding-top: 20px;
+  padding-top 15px
+
 </style>

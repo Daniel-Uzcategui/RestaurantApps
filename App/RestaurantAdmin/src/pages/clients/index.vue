@@ -14,7 +14,7 @@
       :selected.sync="selected"
       >
      <template v-slot:top-right>
-        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
+        <q-btn flat color="white" push label="Eliminar" icon="delete_outline" @click="deleted"/>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:body="props">

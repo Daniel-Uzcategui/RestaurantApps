@@ -121,7 +121,7 @@
           <q-table
           title="Detalle de Orden"
           color="primary"
-          grid
+          style="border-radius: 28px"
           :data="detailOrder"
           :columns="columns"
           :dense="$q.screen.lt.md"

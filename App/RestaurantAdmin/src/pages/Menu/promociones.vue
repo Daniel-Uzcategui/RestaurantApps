@@ -17,7 +17,7 @@
          <template v-if="$q.screen.gt.xs" v-slot:top-right>
             <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
          </template>
          <template v-slot:body="props">
@@ -28,11 +28,11 @@
            <q-td key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="blue-grey-10" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption">Click para editar</span></div>
+                <q-avatar round class="q-mb-sm"  color="secondary" icon="insert_photo" font-size="50px" size="180px" text-color="white"></q-avatar></div>
             <div class="column items-center" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
-                </q-avatar><span ><q-icon class="q-mr-sm" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </q-avatar></div>
                 </div>
           </q-td>
           <q-td key="desc" :props="props">
@@ -149,7 +149,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -159,11 +159,11 @@
           <q-item class="column items-start" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="white" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar><span class="text-caption text-white">Click para editar</span></div>
+                <q-avatar round class="q-mb-sm" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar></div>
             <div class="column items-start" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
-                </q-avatar><span class="text-white"><q-icon class="q-mr-sm" color="white" name="edit" size="16px"></q-icon>Click para editar</span></div>
+                </q-avatar></div>
                 </div>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
@@ -285,7 +285,7 @@
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
-        <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+        <q-tab flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
    </q-tabs>
    </q-footer>
    </div>

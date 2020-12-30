@@ -17,7 +17,7 @@
         <q-btn-group flat push >
           <q-btn flat color="white" no-caps push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" no-caps push label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+          <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
       <template v-slot:header="props">
@@ -170,7 +170,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -331,7 +331,7 @@
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
-        <q-tab flat color="white" push no-caps label="Eliminar" icon="fas fa-minus" @click="delrow"/>
+        <q-tab flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
    </q-tabs>
    </q-footer>
   </div>

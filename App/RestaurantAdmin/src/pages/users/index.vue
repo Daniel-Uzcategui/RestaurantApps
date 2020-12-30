@@ -1,7 +1,7 @@
  <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
     <div>
-      <q-table class="table"
+      <q-table class="table text-white"
       :grid="$q.screen.lt.md"
       title="Usuarios"
       color="primary"
@@ -17,9 +17,9 @@
       :selected.sync="selected"
       >
       <template v-slot:top-right>
-        <q-btn flat color="white" push label="Agregar" icon="add" @click="$router.replace('/users/create')"/>
-        <q-btn flat color="white" push label="Eliminar" icon="fas fa-minus" @click="deleted"/>
-        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="$router.replace('/users/create')"/>
+        <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="deleted"/>
+        <q-btn flat color="white" no-caps push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -184,10 +184,10 @@
             <q-list  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
-                  <q-item-label>{{props.row.name}}</q-item-label>
+                  <q-item-label>{{props.row.nombre}} {{ props.row.apellido}}</q-item-label>
                 </q-item-section>
                  <q-item-section side>
-                <q-icon name="fas fa-chevron-right" @click="props.expand = !props.expand" />
+                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
                </q-item-section>
               </q-item>
               <q-separator></q-separator>
