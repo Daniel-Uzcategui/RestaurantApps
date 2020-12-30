@@ -7,19 +7,18 @@
       title="Opciones"
       :rows-per-page-options="[]"
       row-key="id"
-      :grid="$q.screen.lt.md || grid"
+      grid
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
     >
     <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn flat color="white" no-caps push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
-      <template v-slot:body="props">
+      <!-- <template v-slot:body="props">
         <q-tr :props="props">
           <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
@@ -80,11 +79,11 @@
                 :value="props.row.price" input-style="text-align: right"></q-decimal>
           </q-td>
         </q-tr>
-      </template>
+      </template> -->
       <template v-slot:item="props">
         <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
-        <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+        <q-list @click.native="props.selected = !props.selected" class="q-p-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
                   <q-item-label>{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
@@ -102,8 +101,8 @@
               </q-item>
               <q-separator></q-separator>
         </q-list>
-          <q-card>
-            <q-list v-if="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
+            <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled
@@ -144,17 +143,18 @@
           </q-item>
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
-                <q-td class="col-12" key="descripcion" :props="props">
+                <q-td class="col" key="descripcion" :props="props">
                     <q-editor
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       :value="props.row.descripcion"
+                      min-height="5rem"
                     />
                 </q-td>
               </q-item>
               <q-item class="row justify-center" v-show="props.expand" :props="props">
                 <div class="col-6 q-pa-xs">
                 <p class="text-bold">Precio</p>
-                  <q-decimal
+                  <q-decimal filled
                   :rules="[validate]"
                   rounded
                   outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
@@ -174,7 +174,7 @@
                 </div>
               </q-item>
             </q-list>
-          </q-card>
+          </q-dialog>
         </div>
       </template>
     </q-table>
@@ -193,8 +193,8 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-      <q-tab flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
-          <q-tab flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
+      <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
+          <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
    </q-tabs>
    </q-footer>
   </div>
@@ -202,7 +202,7 @@
 <script>
 const columns = [
   { name: 'desc', style: 'min-width: 260px; width: 260px', align: 'left', label: 'Nombre', field: 'name', sortable: true },
-  { name: 'descripcion', style: 'min-width: 300px; width: 300px', align: 'left', label: 'Descripción', field: 'descripcion' },
+  { name: 'descripcion', align: 'left', label: 'Descripción', field: 'descripcion' },
   { name: 'estatus', align: 'right', label: 'Activar', field: 'estatus', style: 'min-width: 100px; width: 100px' },
   { name: 'group_id', style: 'min-width: 300px; width: 300px', align: 'center', label: 'Grupos', field: 'group_id' },
   { name: 'priority', style: 'min-width: 10px; width: 10px', align: 'left', label: 'Prioridad ', field: 'priority' },
@@ -216,7 +216,6 @@ export default {
   },
   data () {
     return {
-      grid: false,
       columns,
       selected: [],
       popupEditData: '',
@@ -306,8 +305,5 @@ export default {
 </script>
 
 <style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
 
 </style>

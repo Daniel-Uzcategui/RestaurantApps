@@ -1,12 +1,12 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
-      <q-card style="border-radius: 28px">
-       <q-card-section  class="bg-secondary text-white header" >
+      <q-card class="q-cardGlass">
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Editar Sedes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="back"/>
-            <q-btn class="header-btn" flat color="white" push label="Guardar" icon="update" v-if="false" @click="saveLocation"/>
+            <q-btn class="header-btn" flat color="white" push  icon="arrow_back" @click="back"/>
+            <!-- <q-btn class="header-btn" flat color="white" push  icon="update" v-if="false" @click="saveLocation"/> -->
           </div>
        </q-card-section>
        <q-card-section class="row justify-between" v-if="typeof localization !== 'undefined'">
@@ -70,8 +70,8 @@
 
      </q-card-section>
      </q-card>
-     <q-card style="border-radius: 28px" v-if="config && config.statusDelivery && localization.Delivery">
-       <q-card-section  class="bg-secondary text-white header" >
+     <q-card class="q-cardGlass" v-if="config && config.statusDelivery && localization.Delivery">
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Zonas de delivery (Opcional)</div>
        </q-card-section>
        <q-card-section class="column items-center">

@@ -1,11 +1,11 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
-      <q-card style="border-radius: 28px">
-        <q-card-section  class="bg-secondary text-white" >
+      <q-card class="q-cardGlass">
+        <q-card-section  class="q-cardtop text-white" >
           <div class="text-h5">Ajustes de Horarios</div>
-          <div v-if="$q.screen.gt.xs" class="absolute-bottom-right row bg-secondary text-white">
-          <q-btn class="q-mr-md" no-caps flat color="white" push icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+          <div v-if="$q.screen.gt.xs" class="absolute-bottom-right row text-white">
+          <q-btn class="q-mr-md" no-caps flat color="white" push icon="arrow_back" @click="$router.replace('/home')"/>
           <div class="q-mr-md" v-show="sede">
             <div v-if="config">
               <q-btn no-caps flat color="white" push @click="updatedHours" icon="fas fa-save"/>
@@ -16,7 +16,7 @@
           </div>
         </div>
         </q-card-section>
-       <q-card-section  class="bg-secondary text-white" >
+       <q-card-section  class="q-cardtop text-white" >
           <q-select filled
           class="q-mt-md"
         rounded
@@ -46,7 +46,7 @@
     </div>
     <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
       <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
-        <q-tab no-caps flat push icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+        <q-tab no-caps flat push icon="arrow_back" @click="$router.replace('/home')"/>
         <q-tab v-if="config" no-caps flat push @click="updatedHours" icon="fas fa-save"/>
         <q-tab v-else no-caps flat push @click="add" icon="fas fa-save"/>
       </q-tabs>

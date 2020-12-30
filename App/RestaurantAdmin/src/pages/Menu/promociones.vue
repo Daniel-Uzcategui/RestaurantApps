@@ -2,7 +2,7 @@
    <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
          <q-table
          style="border-radius: 28px"
-         :grid="$q.screen.lt.md"
+         grid
          dense
          :data="promosCopy"
          :columns="columns2"
@@ -20,7 +20,7 @@
           <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
          </template>
-         <template v-slot:body="props">
+         <!-- <template v-slot:body="props">
             <q-tr :props="props">
                <q-td  auto-width>
                   <q-checkbox v-model="props.selected" />
@@ -132,7 +132,7 @@
             </div>
             </q-td>
           </q-tr>
-         </template>
+         </template> -->
          <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
@@ -154,8 +154,8 @@
               </q-item>
               <q-separator></q-separator>
         </q-list>
-          <q-card>
-            <q-list v-if="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
+            <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
@@ -255,7 +255,7 @@
                   </q-decimal>
               </q-item>
             </q-list>
-          </q-card>
+          </q-dialog>
         </div>
       </template>
       </q-table>
@@ -315,6 +315,7 @@ export default {
   mixins: [ QUploaderBase ],
   components: {
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
+    // eslint-disable-next-line vue/no-unused-components
     BusinessHours
   },
   computed: {
@@ -627,9 +628,7 @@ export default {
 </script>
 
 <style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
+
   .group
      width: 100px
      height: 100px

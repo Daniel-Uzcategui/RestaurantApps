@@ -2,11 +2,11 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="bg-secondary text-white header" >
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Agregar Ordenes</div>
           <div>
             <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="add"/>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/orders/index')"/>
+            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/orders/index')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>

@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main my-font" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
+   <q-layout class="main my-font backgroundImage" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
       <q-header class="bg-primary text-white" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
          <q-toolbar>
             <q-btn
@@ -19,7 +19,7 @@
             <div>
                <q-btn icon="fas fa-user" no-caps class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" />
                <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="logoutUser()" >  </q-btn>
-               <q-dialog v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="setBlur">
+               <q-dialog v-model="editUserDialog" persistent="persistent" @before-hide="setBlur">
                   <user-settings></user-settings>
                </q-dialog>
             </div>
@@ -39,7 +39,7 @@
          v-model="leftDrawerOpen"
          overlay
          behavior="mobile"
-         content-class="bg-blue-grey-9">
+         >
             <Nav
               class="q-ma-xs"
                v-for="link in nav"
@@ -427,7 +427,7 @@ export default {
     },
     ...mapMutations('user', ['setEditUserDialog']),
     setBlur () {
-      this.blurLayout = !this.blurLayout
+      // this.blurLayout = !this.blurLayout
     },
     getUserData (attr) {
       return (this.currentUser[attr]) ? this.currentUser[attr] : 'Please update your profile'

@@ -19,7 +19,7 @@
         :control-color="['payserv', 'addsede', 'addcat', 'addprod', 'theme'].includes(slide) ? 'grey' : 'white'"
         arrows
         height="100%"
-        class="bg-primary text-white shadow-1 rounded-borders"
+        class="q-fullscreen-glassMorph text-white shadow-1 rounded-borders"
       >
         <q-carousel-slide name="style" class="column no-wrap flex-center" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
           <q-img width="128px" src="icons/iconwhite.png" />
@@ -27,42 +27,43 @@
             {{ lorem }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="layers" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="layers" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem2 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="payserv" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="payserv" class="column no-wrap flex-center">
           <PayServ class="full-width" @done="slide = 'addsedelorem'" :quick="false" style="height: 100%;"/>
         </q-carousel-slide>
-        <q-carousel-slide name="addsedelorem" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="addsedelorem" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem3 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="addsede" class="text-black column no-wrap flex-center">
-          <AddSede v-show="!sedeAdded && !localizations.length" @done="slide = 'addcatlorem'; sedeAdded = true" :quick="false" style="height: 100%;"/>
+        <q-carousel-slide name="addsede" class="column no-wrap flex-center">
+          <!-- <AddSede v-show="!sedeAdded && !localizations.length" @done="slide = 'addcatlorem'; sedeAdded = true" :quick="false" style="height: 100%;"/>
           <div v-if="sedeAdded || localizations.length" class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem4 }}
-          </div>
+          </div> -->
+          <AddSede v-show="true" @done="slide = 'addcatlorem'; sedeAdded = true" :quick="false" style="height: 100%;"/>
         </q-carousel-slide>
-        <q-carousel-slide name="addcatlorem" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="addcatlorem" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem5 }}
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addcat" class="column no-wrap flex-center">
-          <AddCategoria class="text-black bg-dark" style="height: 100%; width: 100%; border-radius: 28px"/>
+          <AddCategoria style="height: 100%; width: 100%;"/>
         </q-carousel-slide>
-        <q-carousel-slide name="addprodlorem" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="addprodlorem" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem6 }}
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addprod" class="column no-wrap flex-center">
-          <AddProd :quick="false" class="text-black bg-dark" style="height: 100%; width: 100%; border-radius: 28px"/>
+          <AddProd :quick="false" style="height: 100%; width: 100%;"/>
         </q-carousel-slide>
-        <q-carousel-slide name="skipofin" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="skipofin" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem7 }}
           </div>
@@ -74,14 +75,14 @@
           </div>
           <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Flocalhost_8080_(Galaxy%20S5)%20(1)282300?alt=media&token=af077d39-1cdf-457c-bd46-5ecfc43b3b91" />
-          <q-radio v-model="displayType" :val="1" :size="$q.screen.name" color="white" label="Vertical" />
+          <q-radio v-model="displayType" :val="0" :size="$q.screen.name" color="white" label="Vertical" />
           </div>
           <div v-show="photoClick === 2 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img @click="photoClick === 2 ? photoClick = 99 : photoClick = 2" :width="photoClick === 2 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Flocalhost_8080_(Galaxy%20S5)%20(2)155297?alt=media&token=bd2ffd6c-b709-412f-8a11-39f02ae33107" />
           <q-radio v-model="displayType" :val="2" color="white" :size="$q.screen.name" label="Lista" />
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="themefin" class="text-black column no-wrap flex-center">
+        <q-carousel-slide name="themefin" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem8 }}
           </div>
@@ -153,7 +154,7 @@ export default {
       lorem5: 'Excelente!, ya estamos casi listos 😄, ahora crearemos las categorías de los productos, siempre puedes agregar más luego',
       lorem6: 'Ahora vamos con los productos 😁, los productos se comparten entre todas las sedes, pero puedes desactivarlos para alguna en particular',
       lorem7: 'Un pasito más y estamos listos 😉, es para escoger el tema del menú, como tus clientes ven tus productos',
-      lorem8: 'Ya estamos ready 😎💪, si necesitas ver esta guía u otras ve a la sección guías, esta de último en el menú'
+      lorem8: 'Ya estamos ready 😎💪, si necesitas ver esta guía u otras ve a la sección guías, ve al menú'
 
     }
   }

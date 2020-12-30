@@ -2,10 +2,10 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="bg-secondary text-white header" >
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Editar Clientes</div>
           <div>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/clients/index')"/>
+            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/clients/index')"/>
           </div>
        </q-card-section>
         <div class="row header-container">

@@ -4,7 +4,7 @@
      <div class="flex-break"></div>
      <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
-       <q-card-section  class="bg-secondary text-white" >
+       <q-card-section  class="q-cardtop text-white" >
         <div class="text-h5">Ventas por Categorias  (En desarrollo)</div>
        <!--q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/-->
       </q-card-section>

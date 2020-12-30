@@ -2,11 +2,11 @@
   <q-page class="q-pa-lg" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="bg-secondary text-white header" >
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Agregar Usuarios</div>
           <div>
             <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="add"/>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/users/index')"/>
+            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/users/index')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>

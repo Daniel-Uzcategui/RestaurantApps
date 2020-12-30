@@ -1,25 +1,24 @@
 <template>
-  <div class="user-settings full-width" v-if="currentUser">
-    <q-form class="full-height" @submit="saveUserData">
-      <q-banner class="bg-transparent"/> <q-banner class="bg-transparent"/>
-        <section class="user-info">
-            <h6 class="q-mt-none q-mb-md text-center">Editar Perfil</h6>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
+  <div class="q-diag-glassMorph full-width" v-if="currentUser">
+    <q-form @submit="saveUserData">
+        <section class="user-info text-bold">
+            <h6 class="q-mt-none q-mb-md text-center q-cardtop">Editar Perfil</h6>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
                 <q-input filled rounded outlined dense class="col" id="nombre" v-model="nombre" borderless="borderless"  type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Apellido</label>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="fullName">Apellido</label>
                 <q-input filled rounded outlined dense class="col" id="apellido" v-model="apellido" borderless="borderless"  type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="email">Email</label>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="email">Email</label>
                 <q-input filled rounded outlined dense class="col" id="email" v-model="email" borderless="borderless"  type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="email">Cedula</label>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="email">Cedula</label>
                 <q-input filled rounded outlined dense class="col" id="email" v-model="cedula" borderless="borderless"  type="number"></q-input>
             </div>
         </section>
         <div class="row justify-between q-my-lg q-px-md ">
-            <q-btn rounded color="primary" label="Cancelar" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
-            <q-btn rounded color="primary" type="submit" label="GUARDAR" style="min-width:6em;"></q-btn>
+            <q-btn rounded no-caps color="primary" label="Cancelar" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
+            <q-btn rounded no-caps color="primary" label="Guardar" type="submit"  style="min-width:6em;"></q-btn>
         </div>
     </q-form>
 </div>

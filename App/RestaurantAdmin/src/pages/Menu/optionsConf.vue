@@ -3,7 +3,7 @@
    <q-table
    style="border-radius: 28px"
       dense
-      :grid="$q.screen.lt.md || grid"
+      grid
       :data="groupComp"
       :columns="columns"
       title="Configuración de Opciones"
@@ -15,7 +15,6 @@
     >
     <template v-if="$q.screen.gt.xs" v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn flat color="white" no-caps push v-if="$q.screen.gt.sm" icon="fas fa-grip-horizontal" @click="grid = !grid"/>
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
@@ -35,7 +34,7 @@
           </q-th>
         </q-tr>
       </template>
-      <template v-slot:body="props">
+      <!-- <template v-slot:body="props">
         <q-tr :props="props">
           <q-td auto-width>
             <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
@@ -153,7 +152,7 @@
               </q-card>
           </q-td>
         </q-tr>
-      </template>
+      </template> -->
       <template v-slot:item="props">
         <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
@@ -175,8 +174,8 @@
               </q-item>
               <q-separator></q-separator>
         </q-list>
-          <q-card>
-            <q-list v-if="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
+            <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled dense
@@ -311,7 +310,7 @@
               </q-card>
               </q-item>
             </q-list>
-          </q-card>
+          </q-dialog>
         </div>
       </template>
     </q-table>
@@ -439,8 +438,5 @@ export default {
 </script>
 
 <style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
 
 </style>

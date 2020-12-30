@@ -2,16 +2,16 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card>
-       <q-card-section  class="bg-secondary text-white header" >
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Widgets Chat</div>
           <div>
             <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="save" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat color="white" push  @click="save" icon="fas fa-save"/>
             </div>
             <div v-else>
               <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="add"/>
             </div>
-            <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>

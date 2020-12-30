@@ -5,11 +5,10 @@
       style="border-radius: 28px"
       :dense="$q.screen.lt.md"
       :data="elmenu"
-      class="bg-dark text-white"
       grid
       :columns="columns"
       :title="menucfg.dispName ? menucfg.dispName : 'Catálogo'"
-      :rows-per-page-options="[]"
+      :rows-per-page-options="[0, 10, 20, 30]"
       row-key="id"
       :selected-rows-label="getSelectedString"
       selection="multiple"
@@ -44,7 +43,7 @@
         </template>
         </q-input>
       </template>
-      <template v-slot:body="props">
+      <!-- <template v-slot:body="props">
         <q-tr v-if="sede !== null" :props="props">
           <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
@@ -194,14 +193,15 @@
           <q-td colspan="100%" >
           </q-td>
         </q-tr>
-      </template>
+      </template> -->
       <template v-slot:item="props">
         <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
-        <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+        <q-list @click.native="props.selected = !props.selected" class="q-m-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section class="column items-start" key="photo" :props="props">
-                  <div class="text-center" @click="showPhotoUpload(props.row.id)">
+                  <div class="row justify-between no-wrap full-width">
+                  <div style="min-width: 50px" class="text-center col-2 self-center" @click="showPhotoUpload(props.row.id)">
                   <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
                       <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="38px" size="50px" text-color="white"></q-avatar></div>
                   <div class="column items-start" v-else>
@@ -209,26 +209,18 @@
                           <q-img :src="props.row.photo"></q-img>
                       </q-avatar></div>
                       </div>
+                  <q-item-label class="col-5 self-center">{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
+                  <q-icon style="min-width: 25px" class="col-1 self-center" size="md" :name="props.row.estatus ? props.row.estatus[sede] ? 'toggle_on' : 'toggle_off' : 'toggle_off'" />
+                  <q-item-label class="col-3 self-center text-right" :style="$q.screen.lt.md ? 'max-width: 200px' : ''" caption>{{(props.row.price).toFixed(2)}}</q-item-label>
+                  <q-btn class="col-1 self-center" flat push rounded icon="arrow_drop_down" @click.stop="props.expand = !props.expand" />
+                  </div>
                 </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
-                </q-item-section>
-                <q-item-section class="text-caption text-grey">
-                  <q-item-label>{{props.row.estatus ? props.row.estatus[sede] ? 'activo' : 'inactivo' : 'inactivo'}}</q-item-label>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
-              </q-item-section>
               </q-item>
               <q-separator></q-separator>
         </q-list>
           <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
-          <q-item class="column items-start" key="photo" :props="props">
+          <q-item class="column items-center" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
                 <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" text-color="white"></q-avatar></div>
@@ -289,12 +281,13 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
                 <q-td class="col" key="descripcion" :props="props">
-                    <q-insert_photoor
+                    <q-editor
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       :value="props.row.descripcion"
                       min-height="5rem"
 
                     />
+
                 </q-td>
               </q-item>
               <q-item class="row justify-center" v-show="props.expand" :props="props">
@@ -369,6 +362,7 @@
       maximized
       @show="$q.dark.set(false)"
       @hide="$q.dark.set(true)"
+      class="bg-white"
       >
       <q-card>
         <q-card-section side>
@@ -635,9 +629,6 @@ export default {
 </script>
 
 <style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
   .label-expand
     font-weight: bold
 </style>

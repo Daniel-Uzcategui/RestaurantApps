@@ -1,17 +1,17 @@
 <template>
   <div style="min-width: 320px;" :class="$q.screen.gt.xs ? 'q-ma-lg' : ''" >
      <div class="q-gutter-md">
-      <q-card style="border-radius: 28px">
-       <q-card-section  class="bg-secondary text-white header" >
+      <q-card class="q-cardGlass">
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Ajustes de Medios de Pagos y Tipos de Servicios</div>
           <div>
            <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="validator" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat color="white" push  @click="validator" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push label="Guardar" @click="add" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat color="white" push  @click="add" icon="fas fa-save"/>
             </div>
-            <q-btn v-if="quick" class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+            <q-btn v-if="quick" class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
           </div>
          </q-card-section>
 

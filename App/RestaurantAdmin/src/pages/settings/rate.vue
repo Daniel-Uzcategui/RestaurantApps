@@ -11,7 +11,7 @@
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/home')"/>
+          <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
           <q-btn flat color="white" push label="Agregar" icon="add" @click="addrow"/>
         </q-btn-group>
       </template>
@@ -107,7 +107,5 @@ export default {
 </script>
 
 <style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
+
 </style>

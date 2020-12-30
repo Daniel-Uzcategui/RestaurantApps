@@ -6,13 +6,11 @@
       class="localization"
       title="Sedes"
       style="border-radius: 28px"
-      color="primary"
       :data="localizations"
       :columns="columns"
       :dense="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
-      rows-per-page-label="Registros por página"
       :selected-rows-label="getSelectedString"
       selection="single"
       :selected.sync="selected"
@@ -259,7 +257,5 @@ export default {
  .localization
   width: 100%
   margin-bottom: 50%
- .q-table__top
-   background-color $secondary
-   color white
- </style>
+
+</style>

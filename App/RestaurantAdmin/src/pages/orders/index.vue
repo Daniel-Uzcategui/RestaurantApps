@@ -5,16 +5,15 @@
       class="table"
       style="border-radius: 28px"
       title="Ordenes"
-      color="primary"
       :data="OrderClient"
       :columns="columns"
       :grid="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
-      rows-per-page-label="Registros por página"
+      rows-per-page-label=" "
       >
       <template v-slot:top-right>
-        <q-btn no-caps flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn no-caps flat color="white" push icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })">
@@ -224,7 +223,4 @@ export default {
  .table
   width: 100%
   margin-bottom: 50%
- .q-table__top
-   background-color $secondary
-   color white
- </style>
+</style>

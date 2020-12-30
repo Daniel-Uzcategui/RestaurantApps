@@ -1,12 +1,12 @@
 <template>
   <div style="min-width: 320px" :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
-      <q-card style="border-radius: 28px" >
-       <q-card-section  class="bg-secondary text-white header" >
+      <q-card class="q-cardGlass">
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Agregar Sedes</div>
           <div>
-            <q-btn v-if="!quickAdded" class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="add"/>
-            <q-btn v-if="quick" class="header-btn-back" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/localization/index')"/>
+            <q-btn v-if="!quickAdded" class="header-btn" flat color="white" push no-caps label="Guardar" @click="agregar" icon="save"/>
+            <q-btn v-if="quick" class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>
@@ -58,8 +58,8 @@
      </div>
        <diV class='filled'></diV>
      </q-card>
-     <q-card style="border-radius: 28px" v-if="Delivery">
-       <q-card-section  class="bg-secondary text-white header" >
+     <q-card class="q-cardGlass" v-if="Delivery">
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Zonas de delivery (Opcional)</div>
        </q-card-section>
        <q-card-section class="column items-center">

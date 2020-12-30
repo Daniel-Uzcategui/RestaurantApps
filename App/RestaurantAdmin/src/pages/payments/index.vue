@@ -162,7 +162,5 @@ export default {
  .table
   width: 100%
   margin-bottom: 50%
- .q-table__top
-   background-color $secondary
-   color white
+
  </style>

@@ -2,8 +2,8 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div class="row justify-between">
         <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center col-xs-6 col-sm-6 col-md-4 col-lg-3"  >
-         <q-card flat  class="notifCard bg-primary bg-primary text-white q-ma-sm" horizontal>
-          <q-card-section class="notifCardSection bg-secondary row justify-center">
+         <q-card flat  class="notifCard q-cardGlass bg text-white q-ma-sm" horizontal>
+          <q-card-section class="notifCardSection q-cardtop row justify-center">
             <div class="text-h5 row justify-between col-12">
               <i class="fas fa-tasks col-3" aria-hidden="true"></i>
               <div class="col-3">{{totalOrders(0)}}</div>
@@ -20,8 +20,8 @@
            </q-card>
           </div>
          <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
-          <q-card flat  class="notifCard bg-primary text-white q-ma-sm" horizontal>
-          <q-card-section  class="notifCardSection bg-secondary row justify-center">
+          <q-card flat  class="notifCard q-cardGlass text-white q-ma-sm" horizontal>
+          <q-card-section  class="notifCardSection q-cardtop row justify-center">
             <div class="text-h5 row justify-between col-12">
               <i class="fas fa-spinner col-3" aria-hidden="true"></i>
               <div class="col-3">{{totalOrders(1)}}</div>
@@ -39,8 +39,8 @@
            </q-card>
           </div>
           <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
-            <q-card flat  class="notifCard text-white q-ma-sm" horizontal>
-              <q-card-section  class="notifCardSection bg-secondary row justify-center">
+            <q-card flat  class="notifCard q-cardGlass text-white q-ma-sm" horizontal>
+              <q-card-section  class="notifCardSection q-cardtop row justify-center">
               <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
               <div class="col-3">{{totalOrders(4)}}</div>
               </div>

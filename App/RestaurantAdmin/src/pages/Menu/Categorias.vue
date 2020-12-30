@@ -2,7 +2,7 @@
 <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
    <div>
    <q-table
-      :grid="$q.screen.lt.md"
+      grid
       :data="categorias"
       :columns="columns"
       title="Categorias"
@@ -24,7 +24,7 @@
           <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
         </q-btn-group>
       </template>
-      <template v-slot:body="props">
+      <!-- <template v-slot:body="props">
         <q-tr :props="props">
           <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
@@ -89,7 +89,7 @@
             </q-popup-edit>
           </q-td>
         </q-tr>
-      </template>
+      </template> -->
       <template v-slot:item="props">
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
@@ -104,31 +104,8 @@
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
-          <q-card>
-            <!-- <q-card-section>
-             <q-list dense>
-              <q-item>
-                <q-item-section>
-                  <q-checkbox dense v-model="props.selected" :label="props.row.name" />
-                </q-item-section>
-                <q-item-section side>
-                  <q-icon v-ripple name="edit" @click="props.expand = !props.expand" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-            </q-card-section> -->
-            <!-- <q-separator />
-            <q-list v-if="!props.expand" dense>
-              <q-item v-for="col in props.cols" :key="col.name">
-                <q-item-section>
-                  <q-item-label>{{ col.label }}</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption>{{ col.value }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list> -->
-            <q-list v-if="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
+            <q-list class="q-diag-glassMorph">
                 <q-item class="column items-start" key="desc" :props="props">
                   <p class="text-bold">Nombre</p>
                     <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
@@ -193,7 +170,7 @@
                   </q-popup-edit>
                 </q-item>
             </q-list>
-          </q-card>
+          </q-dialog>
           </q-list>
       </template>
     </q-table>
@@ -288,10 +265,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
-
-</style>

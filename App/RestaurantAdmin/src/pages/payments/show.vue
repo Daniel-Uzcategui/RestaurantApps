@@ -2,10 +2,10 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card>
-       <q-card-section  class="bg-secondary text-white header" >
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Editar Pago</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/payments/index')"/>
+            <q-btn class="header-btn" flat color="white" push  icon="arrow_back" @click="$router.replace('/payments/index')"/>
           </div>
        </q-card-section>
          <div class='filled'></div>

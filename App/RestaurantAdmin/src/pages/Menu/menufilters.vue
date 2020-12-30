@@ -7,7 +7,7 @@
       :rows-per-page-options="[]"
       row-key="id"
       style="border-radius: 28px"
-      :grid="$q.screen.lt.md || grid"
+      grid
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
@@ -18,7 +18,7 @@
           <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
-      <template v-slot:body="props">
+      <!-- <template v-slot:body="props">
         <q-tr :props="props">
           <q-td  auto-width>
             <q-checkbox v-model="props.selected" />
@@ -85,7 +85,7 @@
               />
           </q-td>
         </q-tr>
-      </template>
+      </template> -->
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
@@ -103,8 +103,8 @@
               </q-item>
               <q-separator></q-separator>
         </q-list>
-          <q-card>
-            <q-list v-if="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
+            <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled
@@ -163,7 +163,7 @@
                 </q-td>
               </q-item>
             </q-list>
-          </q-card>
+          </q-dialog>
         </div>
       </template>
     </q-table>
@@ -268,10 +268,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus">
-  .q-table__top
-    background-color $secondary
-    color white
-
-</style>

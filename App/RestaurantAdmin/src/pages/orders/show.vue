@@ -1,11 +1,11 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
-      <q-card style="border-radius: 28px">
-       <q-card-section  class="bg-secondary text-white header" >
+      <q-card class="q-cardGlass">
+       <q-card-section  class="q-cardtop text-white header" >
           <div class="text-h5">Orden</div>
           <div class="absolute-bottom-right q-pa-md">
-            <q-btn flat color="white" label="Regresar" icon="fa fa-arrow-left" @click="$router.replace('/Orders/index')"/>
+            <q-btn flat color="white"  icon="arrow_back" @click="$router.replace('/Orders/index')"/>
           </div>
        </q-card-section>
          <div class='filled'></div>
@@ -120,7 +120,6 @@
      <div class="header-cell q-ma-sm col-7 filled">
           <q-table
           title="Detalle de Orden"
-          color="primary"
           style="border-radius: 28px"
           :data="detailOrder"
           :columns="columns"

@@ -1,6 +1,6 @@
 <template>
   <q-card style="width: 700px; max-width: 80vw">
-    <q-card-section class="bg-secondary row text-white items-center q-pb-none">
+    <q-card-section class="q-cardtop row text-white items-center q-pb-none">
       <div class="text-h5">TÉRMINOS Y CONDICIONES DE USO DE LA APLICACIÓN</div>
       <q-space />
       <q-btn icon="close" flat round dense v-close-popup />
