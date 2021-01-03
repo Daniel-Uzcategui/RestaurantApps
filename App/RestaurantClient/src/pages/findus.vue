@@ -1,6 +1,6 @@
 <template>
-  <q-page >
-     <q-card flat class="menudiv full-height" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+  <q-page :class="$q.screen.gt.sm ? 'q-ma-xl' : 'q-mt-lg'">
+     <q-card class="q-cardGlass menudiv full-height">
       <q-card-section>
         <div class="text-h5 menuTop">Encuentranos</div>
       </q-card-section>

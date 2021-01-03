@@ -1,5 +1,5 @@
 <template>
-  <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+  <div >
     <div v-if="readOnly">
         <q-list dense v-for="(items, indice) in value" :key="indice">
           <q-item v-ripple>
@@ -22,7 +22,7 @@
         :size="$q.screen.name"
         color="primary"
       />
-    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-lg text-white col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
+    <div :class="mode == 1 ? 'q-cardGlass itemcompback q-ma-md q-pa-lg col-5' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
@@ -112,9 +112,8 @@
 
               <q-input filled
                 dense
-                :color="mode == 1 ? 'positive' : 'primary'"
-                :dark="mode == 1"
                 rounded
+                :dark="mode == 1 || ($q.dark.isActive && mode !== 1)"
                 outlined
                 @input="(x)=> qSliderInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, parseInt(x) < 0 || isNaN(parseInt(x)) ? 0 : Math.min(parseInt(x), qSliderMax(component, items)))"
                 :value="value.length ? typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined' ? value.find(x => (x['component'] === component.id && x['item'] === items.id))['quantity'] : 0 : 0"

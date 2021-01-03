@@ -1,5 +1,5 @@
 <template>
-     <q-card flat class="menudiv full-height" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+     <q-card flat class="menudiv full-height q-cardGlass">
       <q-card-section>
         <div class="text-h5 menuTop">Encuentranos</div>
       </q-card-section>

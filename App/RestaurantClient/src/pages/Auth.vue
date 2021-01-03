@@ -1,6 +1,6 @@
 <template>
   <q-page class="bgimage">
-    <q-card class="bg-transparent q-pt-xl relative-position" flat square>
+    <q-card class="bg-transparent q-fullscreen-glassMorph q-pt-xl relative-position" flat square>
       <q-card-section class="relative-position">
          <div class="absolute-right q-mr-xl">
               <q-btn fab :label="inverseGetAuthType" color="secondary" :to="routeAuthentication" />

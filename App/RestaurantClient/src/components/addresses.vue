@@ -23,7 +23,7 @@
       </div>
 
   <div v-if="!readOnly">
-    <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+    <div >
     <q-btn-group v-if="!isAnonymous" rounded spread class="full-width">
       <q-btn no-caps color="secondary" v-if="addressRadio.length !== 0" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" icon="add" />
@@ -60,7 +60,7 @@
           margin: 0px;
           padding: 0px;
           overflow-x: hidden;"
-          :class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'">
+          class="q-fullscreen-glassMorph">
         <q-bar class="bg-transparent q-mt-sm">
               <q-btn flat ></q-btn>
                <q-btn style="z-index: 2001" dense flat icon="fas fa-chevron-left" v-close-popup>

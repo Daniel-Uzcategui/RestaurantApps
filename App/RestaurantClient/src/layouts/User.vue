@@ -1,6 +1,52 @@
 <template>
-   <q-layout class="main my-font2" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #ffffff;' + page.style : 'background-color: #1d1d1d;' + page.style" view="hhh LpR fFf">
-         <q-toolbar class="absolute-top logocont" >
+   <q-layout class="main my-font2 backgroundImage" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }" :style="!$q.dark.isActive ? pagecfg.style :  pagecfg.style" view="hhh LpR fFf">
+     <q-header class="bg-primary" v-if="$q.screen.gt.sm && mobileGreatView">
+       <q-toolbar>
+          <q-avatar>
+            <img src="favicon.ico">
+          </q-avatar>
+
+          <q-toolbar-title>{{ManiName}}</q-toolbar-title>
+          <q-btn @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
+            <q-badge color="red" floating>{{getCartQ}}</q-badge>
+          </q-btn>
+          <q-btn flat @click="isAnonymous ? (() => {})() : (() => { setEditUserDialog(true); setBlur() })()" icon="fas fa-user" />
+          <q-btn flat @click="isAnonymous ? (() => { $router.push({ path: '/auth/login' }) })() : (() => { logoutUser(); localStorage.removeItem('ott-token') })()" icon="fas fa-sign-out-alt" />
+        </q-toolbar>
+      <q-tabs dense shrink stretch>
+                <q-tab v-show="nav2[1].length === 1" no-caps v-for="(link, index) in nav2[1]"
+               :key="index + 'i'"
+                @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title" />
+                <q-btn-dropdown no-caps auto-close stretch flat label="Catálogos">
+                  <q-list>
+                  <q-item clickable v-show="nav2[1].length > 1" no-caps v-for="(link, index) in nav2[1]"
+                    :key="index + 'j'"
+                    >
+                    <q-btn no-caps @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :icon="link.icon" :label="link.title" flat />
+                  </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+                <q-tab no-caps v-for="(link, index) in nav2[0]"
+               :key="index + 'o'"
+                @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title" />
+      </q-tabs>
+     </q-header>
+     <q-footer v-if="$q.screen.lt.md && mobileGreatView" class="bg-primary">
+      <q-tabs>
+        <q-tab flat
+              indicator-color="transparent"
+               dense
+               round
+               icon='fas fa-bars'
+               name="cart"
+               @click="leftDrawerOpen = !leftDrawerOpen"
+               exact />
+        <q-tab @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
+          <q-badge color="red" floating>{{getCartQ}}</q-badge>
+        </q-tab>
+      </q-tabs>
+     </q-footer>
+         <q-toolbar v-if="!mobileGreatView" class="absolute-top logocont" >
            <div class="relative-position full-width">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
@@ -9,7 +55,7 @@
                icon='fas fa-bars'
                class="burgericon"
                name="cart"
-               @click.passive="leftDrawerOpen = !leftDrawerOpen"
+               @click="leftDrawerOpen = !leftDrawerOpen; $forceUpdate()"
                style="z-index: 99999"
                exact />
                <div class="absolute-right">
@@ -23,11 +69,13 @@
                   <user-settings></user-settings>
                </q-dialog>
          </q-toolbar>
+         <q-dialog v-if="!isAnonymous" v-model="editUserDialog" full-height="full-height" persistent="persistent" @before-hide="blurLayout = false">
+                  <user-settings></user-settings>
+               </q-dialog>
       <q-drawer
          style="z-index: 99999"
          overlay
          on-layout="hide"
-         :content-class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'"
          v-model="leftDrawerOpen"
          behavior="mobile"
          >
@@ -43,7 +91,7 @@
             @click.native="Tawk_API.toggleVisibility()"
             clickable
           >
-            <q-item-section v-if="this.menucfg && this.menucfg.iconsactive"
+            <q-item-section v-if="(menucfg && menucfg.iconsactive) || (menucfg === null)"
               avatar
             >
               <q-icon name="fas fa-comment" />
@@ -58,13 +106,15 @@
          </q-list>
       </q-drawer>
       <q-page-container>
+            <component :is="themeUser">
          <transition
             name="transitions"
             enter-active-class="animated slideInUp"
             leave-active-class="animated slideOutDown"
             mode="out-in">
-            <router-view @setBlur="setBlur" />
+              <router-view @setBlur="setBlur" />
          </transition>
+            </component>
       </q-page-container>
       <q-ajax-bar
       ref="bar"
@@ -88,15 +138,176 @@ export default {
   name: 'UserLayout',
   components: {
     Nav,
-    'user-settings': () => import('../pages/user/profile/UserSettings.vue')
+    'user-settings': () => import('../pages/user/profile/UserSettings.vue'),
+    // eslint-disable-next-line vue/no-unused-components
+    'GlassDark': () => import('./themes/GlassDark'),
+    // eslint-disable-next-line vue/no-unused-components
+    'GlassLight': () => import('./themes/GlassLight'),
+    // eslint-disable-next-line vue/no-unused-components
+    'ClassicDark': () => import('./themes/ClassicDark'),
+    // eslint-disable-next-line vue/no-unused-components
+    'ClassicLight': () => import('./themes/ClassicLight')
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg']),
+    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('editor', ['blocks', 'page', 'routes']),
+    pagecfg () {
+      if (this.page) {
+        return this.page
+      } else {
+        return {}
+      }
+    },
+    themeUser () {
+      if (this.themecfg && this.themecfg.current) {
+        return this.themecfg.current
+      } else {
+        return 'ClassicLight'
+      }
+    },
+    mobileGreatView () {
+      if (this.themecfg && typeof this.themecfg.mobile !== 'undefined') {
+        return this.themecfg.mobile
+      } else {
+        return true
+      }
+    },
+    ManiName () {
+      return document.title
+      // return window.browser.runtime.getManifest()
+    },
+    nav2 () {
+      // return this.navigateFill()
+      var mapping = []
+      var mapping2 = []
+      var filtro = this.filters.filter(x => x.show === true)
+      var menu = []
+      if (filtro.length) {
+        menu = filtro.map(x => {
+          return {
+            title: x.name,
+            caption: x.descripcion,
+            icon: x.icon,
+            // link: '#/menu/index',
+            click: () => {
+              this.setFilter(x.id)
+              this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
+            }
+          }
+        })
+        console.log(menu)
+      }
+      if ((this.menucfg && this.menucfg.menuactive) || (typeof this.menucfg === 'undefined' || this.menucfg === null)) {
+        if (this.menucfg && this.menucfg.dispName) {
+          let inter = [{
+            title: this.menucfg.dispName,
+            caption: '',
+            icon: 'menu_book',
+            // link: '#/menu/index',
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
+            }
+          }]
+          menu = [ ...menu, ...inter ]
+        } else {
+          let inter = [{
+            title: 'Catálogo',
+            caption: '',
+            icon: 'menu_book',
+            // link: '#/menu/index',
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
+            }
+          }]
+          menu = [ ...menu, ...inter ]
+        }
+      }
+      mapping = [...mapping2, ...mapping]
+      if (this.paymentServ && this.paymentServ.statusRewards) {
+        mapping = [...mapping,
+          {
+            title: 'Mis Recompensas',
+            caption: '',
+            icon: 'fas fa-gift',
+            link: '#/user/rewards',
+            click: () => {
+              this.leftDrawerOpen = false
+            }
+          }
+        ]
+      }
+      if (!(this.blocks === null || typeof this.blocks === 'undefined' || (typeof this.blocks !== 'undefined' && this.blocks.length === 0))) {
+        mapping = [{
+          title: 'Inicio',
+          caption: '',
+          icon: 'fa fa-home',
+          link: '#/home',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        }, ...mapping]
+      }
+      let navig = [
+        ...mapping,
+        {
+          title: 'Tus Ordenes',
+          caption: '',
+          icon: 'room_service',
+          link: '#/orders/index',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        },
+        {
+          title: 'Mis Direcciones',
+          caption: '',
+          icon: 'fas fa-map-marked-alt',
+          link: '#/user/address',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        },
+        {
+          title: 'Encuentranos',
+          caption: '',
+          icon: 'fa fa-globe',
+          link: '#/findus',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        }
+      ]
+      console.log({ men: this.menucfg })
+      if (this.menucfg && !this.menucfg.iconsactive) {
+        navig = navig.map(x => { return { ...x, icon: '' } })
+      }
+      console.log({ menu })
+      return [navig, menu]
+    },
     nav () {
       // return this.navigateFill()
       var mapping = []
@@ -174,57 +385,60 @@ export default {
           }
         ]
       }
-      let navig = [{
-        title: 'Inicio',
-        caption: '',
-        icon: 'fa fa-home',
-        link: '#/home',
-        click: () => {
-          this.leftDrawerOpen = false
-        }
-      },
-      ...mapping,
-      {
-        title: 'Tus Ordenes',
-        caption: '',
-        icon: 'room_service',
-        link: '#/orders/index',
-        click: () => {
-          this.leftDrawerOpen = false
-        }
-      },
-      {
-        title: 'Mis Direcciones',
-        caption: '',
-        icon: 'fas fa-map-marked-alt',
-        link: '#/user/address',
-        click: () => {
-          this.leftDrawerOpen = false
-        }
-      },
-      {
-        title: 'Encuentranos',
-        caption: '',
-        icon: 'fa fa-globe',
-        link: '#/findus',
-        click: () => {
-          this.leftDrawerOpen = false
-        }
-      },
-      {
-        title: 'Perfil',
-        caption: '',
-        icon: 'fas fa-user',
-        link: '#',
-        click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
-      },
-      {
-        title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
-        caption: '',
-        icon: 'fas fa-sign-out-alt',
-        link: '#',
-        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
-      }]
+      if (!(this.blocks === null || typeof this.blocks === 'undefined' || (typeof this.blocks !== 'undefined' && this.blocks.length === 0))) {
+        mapping = [{
+          title: 'Inicio',
+          caption: '',
+          icon: 'fa fa-home',
+          link: '#/home',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        }, ...mapping]
+      }
+      let navig = [
+        ...mapping,
+        {
+          title: 'Tus Ordenes',
+          caption: '',
+          icon: 'room_service',
+          link: '#/orders/index',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        },
+        {
+          title: 'Mis Direcciones',
+          caption: '',
+          icon: 'fas fa-map-marked-alt',
+          link: '#/user/address',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        },
+        {
+          title: 'Encuentranos',
+          caption: '',
+          icon: 'fa fa-globe',
+          link: '#/findus',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        },
+        {
+          title: 'Perfil',
+          caption: '',
+          icon: 'fas fa-user',
+          link: '#',
+          click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
+        },
+        {
+          title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
+          caption: '',
+          icon: 'fas fa-sign-out-alt',
+          link: '#',
+          click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
+        }]
       console.log({ men: this.menucfg })
       if (this.menucfg && !this.menucfg.iconsactive) {
         navig = navig.map(x => { return { ...x, icon: '' } })
@@ -233,8 +447,9 @@ export default {
     },
     getCartQ () {
       var amt = 0
-      for (const i in this.cart) {
-        amt = this.cart[i].quantity + amt
+      var cart = this.cart
+      for (const i in cart) {
+        amt = cart[i].quantity + amt
       }
       return amt
     },
@@ -269,9 +484,9 @@ export default {
       this.$q.loading.hide()
       // console.log({ bindblock: e })
       var obj = e
-      this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
+      this.insCss(typeof obj !== 'undefined' && obj !== null && typeof obj.css !== 'undefined' && obj.length ? obj.css : '')
       var css
-      let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
+      let scopedCss = typeof obj !== 'undefined' && obj !== null && typeof obj.scopedCss === 'undefined' ? obj.scopedCss : ''
       if (scopedCss !== '') {
         css = scopedCss.find(e => e.route === this.fullPath)
         if (typeof css !== 'undefined' && css !== '') {
@@ -302,11 +517,11 @@ export default {
       this.chatServe(this.chat)
     }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindManif().then(e => {
-      if (e.icons && e.icons.favicon) {
+      if (e && e.icons && e.icons.favicon) {
         const favicon = document.getElementById('favicon')
         favicon.setAttribute('href', e.icons.favicon)
       }
-      if (e.name) {
+      if (e && e.name) {
         const title = document.getElementById('apptitle')
         title.innerText = e.name
       }
@@ -392,7 +607,16 @@ export default {
     this.bindCategorias().catch(e => console.error('error fetching data firebase', { e }))
     this.bindPromos().catch(e => console.error('error fetching data firebase', { e }))
     this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
-    this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindItem().finally(() => {
+      if ((this.blocks === null || typeof this.blocks === 'undefined' || (typeof this.blocks !== 'undefined' && this.blocks.length === 0)) && (window.location.hash === '#/home' || window.location.hash === '#/')) {
+        if (this.localizations.length === 1) {
+          this.setSede(this.localizations[0].id)
+          this.$router.push({ path: '/menu/menu' })
+        } else {
+          this.$router.push({ path: '/menu/index' })
+        }
+      }
+    }).catch(e => console.error('error fetching data firebase', { e }))
   },
   updated () {
     this.fullPath = this.$router.history.current.fullPath
@@ -411,13 +635,19 @@ export default {
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg']),
+    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindthemecfg']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
+    appendFile () {
+      let file = document.createElement('link')
+      file.rel = 'stylesheet'
+      file.href = 'myfile.css'
+      document.head.appendChild(file)
+    },
     addRoutes () {
       let { routes } = this.$router.options
       let routerAdd = this.routes
-      if (typeof routerAdd !== 'undefined') {
+      if (typeof routerAdd !== 'undefined' && routerAdd !== null) {
         let routeData = routes.find(r => r.path === '/pg')
         let node, ii
         let stack = []
@@ -425,7 +655,8 @@ export default {
         stack.push(parent)
         while (stack.length > 0) {
           node = stack.pop()
-          if (typeof node.children !== 'undefined') {
+          console.log('nodeeeeeeeee', { node })
+          if (node !== null && typeof node.children !== 'undefined') {
             for (ii = 0; ii < node.children.length; ii += 1) {
               node.children[ii].component = () => import('pages/pgs.vue')
               stack.push(node.children[ii])
@@ -613,7 +844,7 @@ export default {
         window.Tawk_API.onLoad = function () {
           // console.log('Tawk loaded')
           Vue.set(that, 'Tawk_API', window.Tawk_API)
-          if (that.$q.platform.is.mobile) {
+          if (that.$q.screen.lt.md) {
             window.Tawk_API.hideWidget()
           }
         };
@@ -658,7 +889,7 @@ export default {
     blocks (e) {
       // console.log('editor updated')
       var obj = e
-      this.insCss(typeof obj === 'undefined' ? '' : typeof obj.css === 'undefined' ? '' : obj.css)
+      this.insCss(typeof obj !== 'undefined' && obj !== null && typeof obj.css !== 'undefined' && obj.length ? obj.css : '')
     },
     currentUser () {
       this.$q.loading.hide()
@@ -667,10 +898,13 @@ export default {
     Tawk_API () {
       // console.log('asdasdasd')
     },
+    getCartQ (e) {
+      console.log(e, 'Getcart')
+    },
     fullPath (d) {
       var css
       let obj = this.blocks
-      let scopedCss = typeof obj === 'undefined' ? '' : typeof obj.scopedCss === 'undefined' ? '' : obj.scopedCss
+      let scopedCss = typeof obj !== 'undefined' && obj !== null && typeof obj.scopedCss !== 'undefined' ? obj.scopedCss : ''
       if (scopedCss !== '') {
         css = scopedCss.find(e => e.route === d)
         if (typeof css !== 'undefined' && css !== '') {

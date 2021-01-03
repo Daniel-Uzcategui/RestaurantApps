@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-center q-pt-xl">
-    <q-card class="q-pa-lg menudiv">
+    <q-card class="q-cardGlass q-pa-lg menudiv">
         <q-item class="fontsize-18">
           <q-item-section>
                 <q-item-label>

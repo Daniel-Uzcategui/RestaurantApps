@@ -99,7 +99,7 @@ import { mapGetters, mapActions } from 'vuex'
 import AddSede from '../localization/create'
 import PayServ from '../settings/paymentServ'
 import AddCategoria from '../Menu/Categorias'
-import AddProd from '../Menu/menu'
+import AddProd from '../Menu/menuAdm'
 export default {
   components: {
     AddSede,

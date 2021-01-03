@@ -1,6 +1,6 @@
 <template>
    <q-page>
-      <q-card flat square class="bg-dark text-white">
+      <q-card flat class="bg-dark text-white q-cardGlass">
          <q-card-section class="q-pa-xl text-h5 text-bold" :class="$q.screen.lt.md ? 'text-center' : ''">
             <div class="q-pt-xl">
                Status de
@@ -55,7 +55,7 @@
          transition-show="slide-up"
          transition-hide="slide-down"
          >
-         <q-card class="full-width">
+         <q-card class="full-width q-fullscreen-glassMorph">
            <q-bar class="bg-transparent q-mt-sm">
               <q-btn flat ></q-btn>
                <q-btn style="z-index: 9999" dense flat icon="fas fa-chevron-left" v-close-popup>
@@ -128,7 +128,7 @@
                </q-list>
             </q-card-section>
             <q-card-section class="column items-center">
-               <q-card bordered class="q-pa-lg q-ma-xs" style="border-radius: 28px; min-width: 40vmin">
+               <q-card bordered class="q-cardGlass q-pa-lg q-ma-xs" style="border-radius: 28px; min-width: 40vmin">
                   <q-card-section>
                      <p v-if="carrito.length == 0" class="text-h4 text-center">No hay productos en esta orden</p>
                      <div v-if="carrito.length" >

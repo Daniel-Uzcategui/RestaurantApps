@@ -22,30 +22,31 @@ export default {
   mounted () {
     this.$q.dark.set(true)
     this.bindEnv().then(e => {
-      console.log({ environment: e })
-      let ver = localStorage.getItem('envVer')
-      if (ver === null) {
-        localStorage.setItem('envVer', e.version)
-      } else if (ver !== e.version) {
-        this.$q.dialog({
-          title: 'Nueva Version',
-          message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
-          cancel: true,
-          persistent: true
-        }).onOk(() => {
+      if (e) {
+        let ver = localStorage.getItem('envVer')
+        if (ver === null) {
           localStorage.setItem('envVer', e.version)
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (registrations) {
-              for (let registration of registrations) {
-                registration.update()
-              }
-            })
-          }
-          this.getNewVer()
-        })
-      }
-      if (ver === e.version) {
-        console.log('App is in the newer version')
+        } else if (ver !== e.version) {
+          this.$q.dialog({
+            title: 'Nueva Version',
+            message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
+            cancel: true,
+            persistent: true
+          }).onOk(() => {
+            localStorage.setItem('envVer', e.version)
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                  registration.update()
+                }
+              })
+            }
+            this.getNewVer()
+          })
+        }
+        if (ver === e.version) {
+          console.log('App is in the newer version')
+        }
       }
     })
   },

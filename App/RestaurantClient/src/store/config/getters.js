@@ -5,3 +5,4 @@ export const chat = ({ chat }) => chat
 export const menucfg = ({ menucfg }) => menucfg
 export const rates = ({ rates }) => rates
 export const menuDispType = ({ menuDispType }) => menuDispType
+export const themecfg = ({ themecfg }) => themecfg

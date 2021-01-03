@@ -1,7 +1,7 @@
 <template>
   <q-page v-on:scroll.passive="onScroll" padding>
-    <div class=" q-pa-md menudiv sedecontainer" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-      <div class="sedechildcontainer">
+    <div class=" q-pa-md menudiv sedecontainer">
+      <div class="sedechildcontainer q-cardGlass">
       <div class="text-h5 menuTop sedetitle">Seleccionar Sede</div>
         <q-card flat class="my-card sedebuttons">
           <q-card-section class="row justify-center">
@@ -9,7 +9,7 @@
       <!-- <p v-if="localizations.length === 0 && !loading" class="text-h4 col text-center">No existen Sedes activas</p> -->
       </q-card-section>
         <q-card-section v-for="i in localizations" :key="i.index">
-          <q-btn class="full-width" rounded color="primary" :label="i.name" @click.passive="i.id === sede || sede === null ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
+          <q-btn class="full-width" rounded color="primary" :label="i.name" @click="i.id === sede || sede === null ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
         </q-card>
       </div>
@@ -190,7 +190,6 @@ export default {
     text-align center
     line-height unset
     height auto !important
-    color #393939
 
   .sedechildcontainer
     position absolute

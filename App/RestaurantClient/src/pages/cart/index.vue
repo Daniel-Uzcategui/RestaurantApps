@@ -1,6 +1,6 @@
 <template>
-  <q-page padding>
-        <div class="menudiv2" :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+  <q-page padding class="q-fullscreen-glassMorph">
+        <div class="menudiv2" >
          <div class="text-h5 menuTop q-mt-md">Tu Carrito</div>
          <div class="column items-center">
          <q-list v-for="(item, index) in cart" :key="index" class="full-width">
@@ -72,7 +72,7 @@
                </q-item-section>
             </q-item>
          </q-list>
-         <q-card class="q-pa-lg" style="border-radius: 28px; min-width: 40vmin">
+         <q-card class="q-pa-lg q-cardGlass" style="border-radius: 28px; min-width: 40vmin">
            <q-card-section>
            <p v-if="cart.length == 0" class="text-h4 text-center">No ha seleccionado productos</p>
             <div v-if="cart.length" >
@@ -122,7 +122,7 @@
           margin: 0px;
           padding: 0px;
           overflow-x: hidden;"
-          class="bg-white full-width">
+          class="q-fullscreen-glassMorph full-width">
             <q-bar class="bg-transparent q-mt-sm">
               <q-btn flat ></q-btn>
                <q-btn style="z-index: 2001" dense flat icon="fas fa-chevron-left" v-close-popup>
@@ -150,7 +150,7 @@
                       </q-list>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 350px">
-                       <q-card class="q-pa-xl" style="border-radius: 28px">
+                       <q-card class="q-pa-xl q-cardGlass" style="border-radius: 28px">
                          <q-card-section>
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
                            <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el la fecha</p>
@@ -253,7 +253,7 @@
                         </div>
                       </div>
                       <br>
-                       <q-card class="q-pa-xl" style="border-radius: 28px;"  @click="showPhotoUpload()">
+                       <q-card class="q-pa-xl q-cardGlass" style="border-radius: 28px;"  @click="showPhotoUpload()">
                         <q-card-section>
                             <div class="column items-center ">
                                 <div class=" column items-center" v-show='photoMessage'>

@@ -50,6 +50,14 @@ const routes = [
         meta: {
           requiresAuth: true
         }
+      },
+      {
+        path: 'quicktheme',
+        name: 'quickTheme',
+        component: () => import('pages/quickSetup/quickTheme.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },
@@ -152,7 +160,7 @@ const routes = [
       {
         path: 'menu',
         name: 'Menu',
-        component: () => import('pages/menu/menu.vue'),
+        component: () => import('pages/menu/menuAdm.vue'),
         meta: {
           requiresAuth: true,
           nombre: 'Menu'

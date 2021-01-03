@@ -1,32 +1,32 @@
 <template>
-  <div class="user-settings full-width" v-if="currentUser">
-    <q-form class="full-height q-pa-sm" @submit="saveUserData">
-        <section class="user-info">
-            <h6 class="q-mt-none q-mb-md text-center">Editar Perfil</h6>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
-                <q-input filled class="col" id="nombre" v-model="nombre" borderless="borderless" dense="dense" type="text"></q-input>
+  <div class="q-diag-glassMorph full-width" style="border-radius: 28px" v-if="currentUser">
+    <q-form @submit="saveUserData">
+        <section class="user-info text-bold">
+            <h6 class="q-mt-none q-mb-md text-center q-cardtop">Editar Perfil</h6>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="fullName">Nombre</label>
+                <q-input filled rounded outlined dense class="col" id="nombre" v-model="nombre" borderless="borderless"  type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fullName">Apellido</label>
-                <q-input filled class="col" id="apellido" v-model="apellido" borderless="borderless" dense="dense" type="text"></q-input>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="fullName">Apellido</label>
+                <q-input filled rounded outlined dense class="col" id="apellido" v-model="apellido" borderless="borderless"  type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="email">Email</label>
-                <q-input filled class="col" id="email" v-model="email" borderless="borderless" dense="dense" type="text"></q-input>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="email">Email</label>
+                <q-input filled rounded outlined dense class="col" id="email" v-model="email" borderless="borderless"  type="text"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg "><label class="col-3" for="cedula">Cedula</label>
-                <q-input filled class="col" id="cedula" v-model="cedula" borderless="borderless" dense="dense" type="number"></q-input>
+            <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="email">Cedula</label>
+                <q-input filled rounded outlined dense class="col" id="email" v-model="cedula" borderless="borderless"  type="number"></q-input>
             </div>
-            <div class="row justify-between items-center q-mb-lg "><label class="col-3" for="phone">Teléfono</label>
+            <div class="column q-mr-md q-ml-md q-mb-lg "><label class="col-3" for="phone">Teléfono</label>
                 <q-input filled class="col" id="phone" v-model="phone" borderless="borderless" dense="dense" type="number"></q-input>
             </div>
-           <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="fecnac">Fecha  de Nac.</label>
+           <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="fecnac">Fecha  de Nac.</label>
                  <q-input filled class="col" id="fecnac" v-model="fecnac" borderless="borderless" dense="dense"  readonly></q-input>
           </div>
-          <div class="row justify-between items-center q-mb-lg"><label class="col-3" for="sexo">Sexo</label>
+          <div class="column q-mr-md q-ml-md q-mb-lg"><label class="col-3" for="sexo">Sexo</label>
              <q-select filled map-options emit-value standout="bg-teal text-white"  v-model="sexo"  :options="sexo_options"  class="col"  />
         </div>
-        <div class="row justify-between q-mb-lg">
-            <q-btn color="primary" label="CANCELAR" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
-            <q-btn color="primary" type="submit" label="GUARDAR" style="min-width:6em;"></q-btn>
+        <div class="row justify-between q-my-lg q-px-md ">
+            <q-btn  rounded no-caps color="primary" label="Cancelar" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
+            <q-btn  rounded no-caps color="primary" type="submit" label="Guardar" style="min-width:6em;"></q-btn>
         </div>
         </section>
     </q-form>

@@ -24,7 +24,7 @@ export default {
     ...mapGetters('editor', ['blocks']),
     blocks2 () {
       let obj = this.blocks
-      if (typeof obj !== 'undefined' && obj.addedPages && obj.addedPages['Home']) {
+      if (typeof obj !== 'undefined' && obj !== null && obj.addedPages && obj.addedPages['Home']) {
         return JSON.parse(JSON.stringify(obj.addedPages['Home']))
       } else {
         return []
@@ -63,6 +63,7 @@ export default {
   },
   mounted () {
     this.visible = false
+    console.log('mounted')
   },
   watch: {
     blocks (e) {

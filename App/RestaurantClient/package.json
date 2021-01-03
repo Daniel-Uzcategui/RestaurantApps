@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "cross-env QENV=development quasar dev",
     "dev-prod": "cross-env QENV=dev-prod quasar dev",
+    "dev-bar": "cross-env QENV=bar quasar dev",
     "dev-pwa": "cross-env QENV=development quasar dev -m pwa",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
@@ -30,7 +31,7 @@
     "firebase": "8.0.1",
     "gmap-vue": "^1.2.1",
     "hasha": "^5.2.2",
-    "quasar": "^1.14.7",
+    "quasar": "^1.15.0",
     "quasar-app-extension-firebase-messaging": "^0.1.1",
     "secure-ls": "^1.2.6",
     "text-decoding": "^1.0.0",
@@ -42,7 +43,7 @@
     "vuexfire": "^3.2.4"
   },
   "devDependencies": {
-    "@quasar/app": "2.1.13",
+    "@quasar/app": "2.1.14",
     "@quasar/quasar-app-extension-qenv": "^1.0.3",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",

@@ -1,26 +1,26 @@
 <template>
-   <div @click.passive="click()" :class="global_class" :style="global_style">
-      <q-input filled v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-pa-lg q-pt-xl" :bg-color=" $q.dark.isActive ? 'dark' : 'white'" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
+   <div @click="click()" :class="global_class" class="" :style="global_style">
+      <q-input filled v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-cardGlass q-pa-lg q-mt-xl q-mr-lg q-ml-lg" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
          <template v-slot:prepend>
             <q-icon name="fas fa-search" />
          </template>
       </q-input>
-      <q-card flat class="menu-div2" :class=" $q.dark.isActive ? 'bg-dark text-white' : ''" >
-         <q-card-section class="q-pt-xl">
+      <q-card :class="$q.screen.gt.xs ? 'q-mr-lg q-ml-lg': ''" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+         <q-card-section class="">
             <div class="row header-title relative-position">
                <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg.dispName : (filters.find( e => e.id === selectedFilter).name)}}</div>
-               <q-btn flat class="fontsize-13 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click.passive="nextFilter()" icon="fas fa-chevron-circle-right" />
+               <q-btn flat class="fontsize-13 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click="nextFilter()" icon="fas fa-chevron-circle-right" />
                <!-- <div v-if="filters.length && (rewards ? false : promo ? false : true)" class="fontsize-10 self-center">(Siguiente Catálogo)</div> -->
-               <q-btn flat class="fontsize-13 self-center absolute-bottom-right" @click.passive="nextDisp()" icon="fas fa-grip-horizontal"/>
+               <q-btn flat class="fontsize-13 self-center absolute-bottom-right" @click="nextDisp()" icon="fas fa-grip-horizontal"/>
             </div>
             <p v-if="typeof this.sede === 'undefined' || this.sede === null"> Ninguna sede seleccionada</p>
             <div>
-               <q-list class="bg-dark" style="opacity: .7;overflow: hidden; z-index: 10; position: fixed; top: 50%; right: -16px; border-top-left-radius: 28px; padding-right: -15px; border-bottom-left-radius: 28px;">
+               <q-list class="bg-dark" style="opacity: .7;overflow: hidden; z-index: 10; position: fixed; top: 50%; right: -16px; border-radius: 28px; padding-right: -15px; border-bottom-left-radius: 28px;">
                   <q-item v-ripple style="padding-left: 10px;" v-if="pointsCat && Object.keys(pointsCat).length  && !promo && paymentServ && paymentServ.statusRewards">
-                     <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click.passive="rewards = !rewards" />
+                     <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click="rewards = !rewards" />
                   </q-item>
                   <q-item v-ripple :ripple='false' style="padding-left: 10px;" v-if="(promoData.length || promo)  && !rewards">
-                     <q-btn dense round flat color="white" icon="fab fa-creative-commons-nc" @click.passive="promo = !promo" />
+                     <q-btn dense round flat color="white" icon="fab fa-creative-commons-nc" @click="promo = !promo" />
                   </q-item>
                </q-list>
             </div>
@@ -36,7 +36,7 @@
                v-if="displayType == 1"
                class="wrapel "
                >
-               <div class="wrapel background-color" content-class="wrapel"  v-for="tabs in filtercat"
+               <div class="wrapel" :class="$q.dark.isActive ? 'background-color q-cardGlass' : 'background-color'" content-class="wrapel"  v-for="tabs in filtercat"
                   :key="tabs.id">
                   <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
                   <q-card-section class="q-pa-none q-ma-none" v-if="!promo && !rewards">
@@ -48,7 +48,7 @@
                         <slide class="row justify-center" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
                            <div v-if="typeof item.not === 'undefined'">
                               <div  style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col relative-position" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                                 <q-card v-ripple @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
+                                 <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false; dgbg = {'background-color':tabs.color}" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                                     <div class="container-photo">
                                        <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                                     </div>
@@ -84,9 +84,9 @@
                content-class="wrapel"
                :value="selectedCat ? selectedCat.id : ''"
                >
-               <q-tab class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
+               <q-tab no-caps class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
                   :key="index"
-                  @click.passive="selectedCat=tabs; search()"
+                  @click="selectedCat=tabs; search()"
                   :name="tabs.id"
                   >
                   {{tabs.name.toLowerCase()}}
@@ -95,7 +95,7 @@
             <div>
                <div class="row justify-around">
                   <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
-                     :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]" @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]" @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(selectedCat ? selectedCat.id : '')" :key="item.id" >
                      <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                         <div class="menuitem row">
@@ -144,7 +144,7 @@
             <div style="max-width: 600px">
                <q-list v-if="selectedCat !== null"  separator>
                   <q-item v-ripple
-                     @click.passive.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     @click.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(selectedCat !== null ? selectedCat.id : filtercat ? filtercat[0] ? filtercat[0].id : '' : '')" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -172,7 +172,7 @@
                  <p class="text-bold text-grey q-ma-md">{{tabs.name}}</p>
                <q-list separator>
                   <q-item v-ripple
-                     @click.passive.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     @click.native="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(tabs.id)" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -211,7 +211,7 @@
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click.passive="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
+                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                            <div class="container-photo">
                               <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                            </div>
@@ -239,9 +239,9 @@
                content-class="wrapel"
                :value="selectedCat ? selectedCat.id : ''"
                >
-               <q-tab class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
+               <q-tab no-caps class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
                   :key="index"
-                  @click.passive="selectedCat=tabs; search()"
+                  @click="selectedCat=tabs; search()"
                   :name="tabs.id"
                   >
                   {{tabs.name.toLowerCase()}}
@@ -251,7 +251,7 @@
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
                <q-card v-ripple class="q-ma-md q-pa-md bg-secondary text-white" style="border-radius: 28px;"
                   :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'}]"
-                  @click.passive="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
+                  @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
                   v-for="(item, key) in filteredMenu" :key="key"
                   v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''"  class="menuitemcont">
@@ -290,7 +290,7 @@
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in promoData" :key="item.id" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
+                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                            <div class="container-photo">
                               <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                            </div>
@@ -320,7 +320,7 @@
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
                <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
                   :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]"
-                  @click.passive="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false"
+                  @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false"
                   v-for="item in promoData" :key="item.id" >
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                      <div class="menuitem row">
@@ -363,10 +363,10 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex'
-import store from '../../store/index'
+// import store from '../../store/index'
 import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
 export default {
-  store,
+  // store,
   props: {
     global_class: {
       type: String,
@@ -653,8 +653,10 @@ export default {
     nextDisp () {
       if (this.displayType === 2) {
         this.displayType = 0
+        this.selectedCat = this.filtercat[0]
       } else {
         this.displayType = this.displayType + 1
+        this.selectedCat = this.filtercat[0]
       }
       if (this.displayType === 1) {
         this.selectedCat = null
@@ -983,7 +985,6 @@ export default {
     border-radius 20px
     width 90% !important
     height 90%
-    background-color #e0dada
     -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
     box-shadow -4px 8px 18px rgba(0,0,0,0.1)
 
@@ -993,7 +994,6 @@ export default {
     border-radius 20px
     width 90% !important
     height 100%
-    background-color #e0dada
     -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
     box-shadow -4px 8px 18px rgba(0,0,0,0.1)
 </style>

@@ -20,6 +20,7 @@
               addId2 = null"
          >
          <q-card
+         class="q-fullscreen-glassMorph"
           style="width: 100%;
           height: 100%;
           margin: 0px;
@@ -471,11 +472,14 @@ export default {
             dispType: 2
           }
         }
-        this.addCart(toCart).then(() => this.$q.notify({
-          message: 'Producto Añadido',
-          color: 'secondary',
-          position: 'bottom'
-        })
+        this.addCart(toCart).then(() => {
+          this.$q.notify({
+            message: 'Producto Añadido',
+            color: 'secondary',
+            position: 'bottom'
+          })
+          this.$forceUpdate()
+        }
         )
       } else {
         this.addCart({
@@ -486,11 +490,14 @@ export default {
           items: this.itComp,
           prods: this.displayVal.prods,
           prodType: this.displayVal.prodType
-        }).then(() => this.$q.notify({
-          message: 'Producto Añadido',
-          color: 'secondary',
-          position: 'bottom'
-        })
+        }).then(() => {
+          this.$q.notify({
+            message: 'Producto Añadido',
+            color: 'secondary',
+            position: 'bottom'
+          })
+          this.$forceUpdate()
+        }
         )
       }
     },

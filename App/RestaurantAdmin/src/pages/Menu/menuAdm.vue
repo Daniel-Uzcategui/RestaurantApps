@@ -8,7 +8,7 @@
       grid
       :columns="columns"
       :title="menucfg.dispName ? menucfg.dispName : 'Catálogo'"
-      :rows-per-page-options="[0, 10, 20, 30]"
+      :rows-per-page-options="[20, 30, 0]"
       row-key="id"
       :selected-rows-label="getSelectedString"
       selection="multiple"
@@ -470,13 +470,19 @@ export default {
       })
     },
     meta () {
+      if (!(this.currentUser && this.currentUser.id)) {
+        return {
+          id: '',
+          photoType: this.photoType
+        }
+      }
       return {
         id: this.currentUser.id,
         photoType: this.photoType
       }
     },
     prefixPath () {
-      const id = this.currentUser.id,
+      const id = this.currentUser && this.currentUser.id ? this.currentUser.id : '',
         path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
       return path
     }

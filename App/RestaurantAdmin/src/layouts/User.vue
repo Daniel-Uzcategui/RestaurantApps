@@ -199,6 +199,9 @@ export default {
                   handler: (node) => this.onClickGuide(node) },
                 { label: 'Agregar opciones a Productos',
                   link: 'addopts',
+                  handler: (node) => this.onClickGuide(node) },
+                { label: 'Cambiar Tema de Cliente',
+                  link: 'quicktheme',
                   handler: (node) => this.onClickGuide(node) }
               ]
             }]
