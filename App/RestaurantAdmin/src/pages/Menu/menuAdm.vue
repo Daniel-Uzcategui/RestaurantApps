@@ -560,7 +560,7 @@
           label="Please Upload a Photo"
           :meta="meta"
           :prefixPath="prefixPath"
-          @uploaded="(e) => {uploadComplete(e); saveTemp({ payload: { value: e.link, id: photoProp.id, key: 'photo' }, collection: 'promos' }); photoProp.photo = e.link }"
+          @uploaded="(e) => {uploadComplete(e); saveTemp({ payload: { value: e.link, id: photoProp.id, key: 'photo' }, collection: 'menu' }); photoProp.photo = e.link }"
           :onlyLink="true"
           document='menu'
         />

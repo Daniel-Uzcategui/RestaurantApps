@@ -704,7 +704,7 @@ export default {
       let filtered = []
       if (Array.isArray(this.filteredMenu) && e) {
         filtered = this.filteredMenu.filter(x => {
-          if (typeof x.categorias === 'undefined') {
+          if (typeof x.categorias === 'undefined' || x.categorias === null) {
             return false
           }
           if (x.categoria.includes(e)) {
