@@ -92,7 +92,7 @@
                   <q-item-label>{{props.row.status ? 'activo' : 'inactivo'}}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
+                <q-icon name="edit" @click="$router.push({ path: '/localization/show', query: { Localization_Id: props.row.id } })" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>

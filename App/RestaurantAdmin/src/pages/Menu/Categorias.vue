@@ -3,22 +3,28 @@
    <div>
    <q-table
       grid
-      :data="categorias"
+      :data="elcat"
       :columns="columns"
       title="Categorias"
       row-key="id"
       :selected-rows-label="getSelectedString"
+      :rows-per-page-options="[20, 30, 0]"
       selection="single"
       dense
       flat
       rounded
+      ref="table"
       class="text-white"
       style="min-width: 320px; border-radius: 28px;"
       :selected.sync="selected"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
     >
-    <template v-if="$q.screen.gt.xs" v-slot:top-right>
+    <template v-if="$q.screen.gt.xs" v-slot:top>
+      <p class="text-h5 text-bold q-ma-md">
+      Categorías
+      </p>
+      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
@@ -38,7 +44,7 @@
           </q-td>
 
           <q-td key="descripcion" :props="props">
-              <q-editor
+              <q-editor content-class="bg-blue-6"
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 style="max-height: 150px"
@@ -47,7 +53,7 @@
               <q-td key="color"  :props="props">
                 <div class="column items-center">
                <q-color
-                 default-value="#285de0"
+                 default-value="#2B3742"
                 :value="props.row.color"
                  default-view="palette"
                 :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
@@ -58,7 +64,7 @@
              <q-td key="textcolor"  :props="props">
                <div class="column items-center" >
                <q-color
-                 default-value="#285de0"
+                 default-value="#2B3742"
                 :value="props.row.textcolor"
                  default-view="palette"
                  :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
@@ -94,13 +100,21 @@
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
-                  <q-item-label>{{props.row.name ? props.row.name : 'Toca la flechita para editarme'}}</q-item-label>
+                  <q-item-label>{{props.row.name ? props.row.name : 'Nueva Categoría'}}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-caption text-grey">
-                  <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
+                  <q-icon
+                    @click.stop="(e) => {saved(
+                        typeof props.row.estatus === 'undefined' ? true : !props.row.estatus,
+                          props.row.estatus, props.row.id,
+                          `estatus`);
+                        typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus
+                        }"
+                      :color="props.row.estatus ? 'blue' : 'red'"
+                   style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? 'toggle_on' : 'toggle_off'" />
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
+                <q-icon name="edit" @click.stop="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -109,25 +123,35 @@
                 <q-item class="column items-start" key="desc" :props="props">
                   <p class="text-bold">Nombre</p>
                     <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-                      :value="props.row.name"
+                      v-model="props.row.name"
                       />
                 </q-item>
-
+                <q-item class="column items-start" key="estatus" :props="props">
+                    <q-toggle
+                      label="Estatus"
+                      @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
+                      :value="props.row.estatus ? true : false"
+                      color="blue"
+                    />
+                </q-item>
                 <q-item class="column items-start" key="descripcion" :props="props">
                   <p class="text-bold">Descripción</p>
-                    <q-editor
+                    <q-editor content-class="bg-blue-6"
                       rounded outlined
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                      :value="props.row.descripcion"
+                      v-model="props.row.descripcion"
                       min-height="5rem"
 
                     />
                 </q-item>
+                <q-item>
+                  <p class="text-bold">Avanzado</p>
+                </q-item>
                     <q-item class="column items-start">
                         <p class="text-bold">Color de Fondo</p>
                     <q-color
-                      default-value="#285de0"
-                      :value="props.row.color"
+                      default-value="#2B3742"
+                      v-model="props.row.color"
                       default-view="palette"
                       :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
                       @change="val => saved(val, props.row.color, props.row.id, 'color')"
@@ -137,8 +161,8 @@
                   <q-item class="column items-start">
                         <p class="text-bold">Color de Texto</p>
                     <q-color
-                      default-value="#285de0"
-                      :value="props.row.textcolor"
+                      default-value="#2B3742"
+                      v-model="props.row.textcolor"
                       default-view="palette"
                       :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
                       @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
@@ -147,23 +171,16 @@
                   </q-item>
                   <q-item class="column items-start" key="priority" :props="props">
                      <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
-                    <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority"  />
+                    <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" v-model="props.row.priority"  />
                 </q-item>
-                <q-item class="column items-start" key="estatus" :props="props">
-                    <q-toggle
-                      label="Estatus"
-                      @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                      :value="props.row.estatus ? true : false"
-                      color="#3c8dbc"
-                    />
-                </q-item>
+
                 <q-item class="column items-start" key="categorias" :props="props">
                   <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
                   <q-popup-edit v-model.number="props.row.FechaAct">
                     <q-input filled dense rounded outlined
                       readonly
                       @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
-                      :value="props.row.FechaAct"
+                      v-model="props.row.FechaAct"
                       label="Fecha"
 
                     />
@@ -213,6 +230,8 @@ export default {
   },
   data () {
     return {
+      elcat: [],
+      temp1: {},
       columns,
       selected: [],
       noSelect: false,
@@ -220,24 +239,71 @@ export default {
     }
   },
   mounted () {
-    this.bindCategorias()
+    this.bindCategorias().then((e) => {
+      this.elcat = JSON.parse(JSON.stringify(e))
+    })
     console.log(this.$router)
   },
   methods: {
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
+    // saved (value, initialValue, id, key) {
+    //   console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
+    //   this.setValue({ payload: { value, id, key }, collection: 'categorias' })
+    // },
     saved (value, initialValue, id, key) {
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.setValue({ payload: { value, id, key }, collection: 'categorias' })
+      this.saveTemp({ payload: { value, id, key }, collection: 'categorias' })
+    },
+    executeSave () {
+      for (let collection in this.temp1) {
+        for (let document in this.temp1[collection]) {
+          if (this.temp1[collection][document].isNew) {
+            let data = this.temp1[collection][document]
+            delete data.isNew
+            delete data.id
+            this.newAddRow({ collection, data })
+          } else {
+            for (let key in this.temp1[collection][document]) {
+              var value = this.temp1[collection][document][key]
+              console.log({ payload: { value, document, key }, collection: collection })
+              this.setValue2({ payload: { value, id: document, key }, collection: collection })
+            }
+          }
+        }
+      }
+      this.temp1 = {}
+      this.$q.notify({ message: 'Cambios Guardados' })
+    },
+    saveTemp (temp) {
+      if (typeof this.temp1[temp.collection] === 'undefined') {
+        this.temp1[temp.collection] = {}
+      }
+      if (typeof this.temp1[temp.collection][temp.payload.id] === 'undefined') {
+        this.temp1[temp.collection][temp.payload.id] = {}
+      }
+      this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
+      this.$forceUpdate()
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindCategorias']),
+    ...mapActions('menu', ['setValue2', 'newAddRow', 'bindCategorias']),
     /* delrow () {
       this.delrows({ payload: this.selected, collection: 'categorias' })
     }, */
+    delrows (payload) {
+      this.$refs.table.clearSelection()
+      for (let i in payload.payload) {
+        let index = this.elcat.findIndex(x => x.id === payload.payload[i].id)
+        this.elcat.splice(index, 1)
+        if (typeof this.temp1[payload.collection] === 'undefined') {
+          this.temp1[payload.collection] = {}
+        }
+        this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
+      }
+    },
     softDelete () {
       if (this.selected.length === 0) {
         this.noSelect = true
@@ -260,7 +326,13 @@ export default {
       return objSelectedString
     },
     addrow () {
-      this.addRow({ collection: 'categorias' })
+      const rand = Math.random().toString(16).substr(2, 8)
+      if (typeof this.temp1.categorias === 'undefined') {
+        this.temp1.categorias = {}
+      }
+      this.temp1.categorias[rand] = { id: rand, isNew: true, descripcion: '' }
+      this.elcat.unshift({ id: rand, descripcion: '' })
+      this.$forceUpdate()
     }
   }
 }

@@ -1,21 +1,26 @@
 <template>
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'">
    <q-table
-      :data="filters"
+      :data="elfilters"
       :columns="columns"
       title="Filtros"
       :rows-per-page-options="[]"
       row-key="id"
       style="border-radius: 28px"
       grid
+      ref="table"
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
     >
-    <template v-if="$q.screen.gt.xs" v-slot:top-right>
+    <template v-if="$q.screen.gt.xs" v-slot:top>
+      <p class="text-h5 text-bold q-ma-md">
+      Filtros
+      </p>
+      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >
-          <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
+          <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click.stop="addrow"/>
+          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click.stop="delrow"/>
         </q-btn-group>
       </template>
       <!-- <template v-slot:body="props">
@@ -45,7 +50,7 @@
 
           <q-td key="descripcion" :props="props">
             <div v-html="props.row.descripcion"></div>
-              <q-editor
+              <q-editor content-class="bg-blue-6"
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
@@ -57,14 +62,14 @@
               <q-toggle
                 @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
                 :value="props.row.estatus ? true : false"
-                color="#3c8dbc"
+                color="blue"
               />
           </q-td>
           <q-td key="show" :props="props">
               <q-toggle
                 @input="(e) => saved(e, props.row.show, props.row.id, 'show')"
                 :value="props.row.show ? true : false"
-                color="#3c8dbc"
+                color="blue"
               />
           </q-td>
           <q-td key="cats" :props="props">
@@ -92,13 +97,21 @@
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
-                  <q-item-label>{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
+                  <q-item-label>{{props.row.name ? props.row.name: 'Nuevo Filtro'}}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-caption text-grey">
-                  <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
+                  <q-icon
+                    @click.stop="(e) => {saved(
+                        typeof props.row.estatus === 'undefined' ? true : !props.row.estatus,
+                          props.row.estatus, props.row.id,
+                          `estatus`);
+                        typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus
+                        }"
+                      :color="props.row.estatus ? 'blue' : 'red'"
+                   style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? 'toggle_on' : 'toggle_off'" />
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
+                <q-icon name="edit" @click.stop="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -109,36 +122,36 @@
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-              :value="props.row.name"
+              v-model="props.row.name"
               rounded
               outlined />
           </q-item>
           <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Estatus</label></q-td>
               <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
+                @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
                 :value="props.row.estatus ? true : false"
-                color="#3c8dbc"
+                color="blue"
               />
           </q-item>
           <q-item class="column items-start" key="showmenu" :props="props">
              <q-td><label class="label-expand">Mostrar en Menú</label></q-td>
               <q-toggle
-                @input="(e) => saved(e, props.row.show, props.row.id, 'show')"
+                @input="(e) => {saved(e, props.row.show, props.row.id, 'show'); typeof props.row.show === 'undefined' ? props.row.show=true : props.row.show=!props.row.show}"
                 :value="props.row.show ? true : false"
-                color="#3c8dbc"
+                color="blue"
               />
           </q-item>
           <q-item class="column items-start" key="icon" :props="props">
              <q-td><label class="label-expand">icono</label></q-td>
-              <q-input filled @input="(e) => saved(e, props.row.icon, props.row.id, 'icon')" :value="props.row.icon" dense  />
+              <q-input filled @input="(e) => saved(e, props.row.icon, props.row.id, 'icon')" v-model="props.row.icon" dense  />
           </q-item>
            <q-item class="column items-start" key="group" :props="props">
              <q-td><label class="label-expand">Categorías</label></q-td>
               <q-select filled
                 rounded
                 outlined
-                :value="props.row.cats"
+                v-model="props.row.cats"
                 @input="(e) => saved(e, props.row.cats, props.row.id, 'cats')"
                 use-input
                 use-chips
@@ -156,9 +169,9 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
                 <q-td class="col-12" key="descripcion" :props="props">
-                    <q-editor
+                    <q-editor content-class="bg-blue-6"
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                      :value="props.row.descripcion"
+                      v-model="props.row.descripcion"
                     />
                 </q-td>
               </q-item>
@@ -182,8 +195,8 @@
     </q-dialog>
     <q-footer v-if="$q.screen.lt.sm" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-      <q-tab flat  push no-caps icon="add" @click="addrow"/>
-        <q-tab flat color="white" push no-caps icon="delete_outline" @click="delrow"/>
+      <q-tab flat  push no-caps icon="add" @click.stop="addrow"/>
+        <q-tab flat color="white" push no-caps icon="delete_outline" @click.stop="delrow"/>
    </q-tabs>
    </q-footer>
   </div>
@@ -201,29 +214,22 @@ const columns = [
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('menu', ['item', 'itemGroup', 'filters', 'categorias'])
+    ...mapGetters('menu', ['filters', 'categorias'])
   },
   data () {
     return {
       grid: false,
       columns,
+      elfilters: [],
       selected: [],
       popupEditData: '',
       filterOptions: '',
-      noSelect: false
-    }
-  },
-  watch: {
-    itemGroup (e) {
-      console.log({ e })
-      this.filterOptions = Array.from(e)
+      noSelect: false,
+      temp1: []
     }
   },
   created () {
-    console.log({ sha256: this.sha256 })
-    this.bindItem()
-    this.bindItemGroup()
-    this.bindFilters()
+    this.bindFilters().then(e => { this.elfilters = JSON.parse(JSON.stringify(e)) })
     this.bindCategorias()
     console.log({ it: this.filters })
   },
@@ -231,16 +237,46 @@ export default {
     validate (value) {
       return value >= 0 || 'error'
     },
+    saveTemp (temp) {
+      if (typeof this.temp1[temp.collection] === 'undefined') {
+        this.temp1[temp.collection] = {}
+      }
+      if (typeof this.temp1[temp.collection][temp.payload.id] === 'undefined') {
+        this.temp1[temp.collection][temp.payload.id] = {}
+      }
+      this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
+      this.$forceUpdate()
+    },
+    executeSave () {
+      for (let collection in this.temp1) {
+        for (let document in this.temp1[collection]) {
+          if (this.temp1[collection][document].isNew) {
+            let data = this.temp1[collection][document]
+            delete data.isNew
+            delete data.id
+            this.newAddRow({ collection, data })
+          } else {
+            for (let key in this.temp1[collection][document]) {
+              var value = this.temp1[collection][document][key]
+              console.log({ payload: { value, document, key }, collection: collection })
+              this.setValue2({ payload: { value, id: document, key }, collection: collection })
+            }
+          }
+        }
+      }
+      this.temp1 = {}
+      this.$q.notify({ message: 'Cambios Guardados' })
+    },
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
-      this.setValue({ payload: { value, id, key }, collection: 'filters' })
+      this.saveTemp({ payload: { value, id, key }, collection: 'filters' })
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindItem', 'bindItemGroup', 'bindFilters', 'bindCategorias']),
+    ...mapActions('menu', ['setValue2', 'newAddRow', 'addRow', 'bindFilters', 'bindCategorias']),
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true
@@ -257,13 +293,31 @@ export default {
         })
       }
     },
+    delrows (payload) {
+      this.$refs.table.clearSelection()
+      for (const i in payload.payload) {
+        let index = this.elfilters.findIndex(x => x.id === payload.payload[i].id)
+        this.elfilters.splice(index, 1)
+        if (typeof this.temp1[payload.collection] === 'undefined') {
+          this.temp1[payload.collection] = {}
+        }
+        this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
+      }
+      console.log(this.temp1)
+    },
+    addrow () {
+      const rand = Math.random().toString(16).substr(2, 8)
+      if (typeof this.temp1.filters === 'undefined') {
+        this.temp1.filters = {}
+      }
+      this.temp1.filters[rand] = { id: rand, isNew: true, price: 0, descripcion: '' }
+      this.elfilters.unshift({ id: rand, descripcion: '' })
+      this.$forceUpdate()
+    },
     getSelectedString () {
       let literal = this.selected.length > 1 ? 's' : ''
       let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.filters.length}`
       return objSelectedString
-    },
-    addrow () {
-      this.addRow({ collection: 'filters' })
     }
   }
 }

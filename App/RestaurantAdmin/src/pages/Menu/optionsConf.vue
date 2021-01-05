@@ -4,16 +4,21 @@
    style="border-radius: 28px"
       dense
       grid
-      :data="groupComp"
+      :data="elGroup"
       :columns="columns"
       title="Configuración de Opciones"
       :rows-per-page-options="[]"
       row-key="id"
+      ref="table"
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
     >
-    <template v-if="$q.screen.gt.xs" v-slot:top-right>
+    <template v-if="$q.screen.gt.xs" v-slot:top>
+      <p class="text-h5 text-bold q-ma-md">
+      Configuración de Opciones
+      </p>
+      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
@@ -47,7 +52,7 @@
           </q-td>
 
           <q-td key="descripcion" :props="props">
-              <q-editor
+              <q-editor content-class="bg-blue-6"
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
@@ -154,22 +159,30 @@
         </q-tr>
       </template> -->
       <template v-slot:item="props">
-        <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
-                  <q-item-label>{{props.row.name ? props.row.name: 'Dale a la flechita'}}</q-item-label>
+                  <q-item-label>{{props.row.name ? props.row.name: 'Nueva Config'}}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-caption text-grey">
-                  <q-item-label>{{props.row.estatus ? props.row.estatus[sede] ? 'activo' : 'inactivo' : 'inactivo'}}</q-item-label>
+                  <q-icon
+                    @click.stop="(e) => {saved(
+                        typeof props.row.estatus === 'undefined' ? true : !props.row.estatus,
+                          props.row.estatus, props.row.id,
+                          `estatus`);
+                        typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus
+                        }"
+                      :color="props.row.estatus ? 'blue' : 'red'"
+                   style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? 'toggle_on' : 'toggle_off'" />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
+                <q-icon name="edit" @click.stop="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -180,33 +193,30 @@
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-              :value="props.row.name"
+              v-model="props.row.name"
               rounded
               outlined />
           </q-item>
+          <q-item class="column items-start" key="estatus" :props="props">
+             <q-td><label class="label-expand">Estatus</label></q-td>
+              <q-toggle
+                @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
+                :value="props.row.estatus ? true : false"
+                color="blue"
+              />
+          </q-item>
           <q-item class="column items-start" key="required" :props="props">
              <q-td><label class="label-expand">Requerido</label></q-td>
-              <q-select filled dense
-                rounded
-                outlined
-                :value="props.row.required"
-                @input="(e) => saved2(e, props.row.required, props.row.id, 'required')"
-                use-input
-                input-debounce="0"
-                :options="typeFree === '' ? [] : typeFree"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
+             <div class="row">
+              <q-radio color="blue" v-model="props.row.required" :val="1" label="Si" />
+              <q-radio color="blue" v-model="props.row.required" :val="0" label="No" />
+             </div>
           </q-item>
           <q-item class="column items-start" key="group_id" :props="props">
              <q-td><label class="label-expand">Grupo</label></q-td>
               <q-select filled dense
                 rounded outlined
-                :value="props.row.group_id"
+                v-model="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
                 use-input
                 use-chips
@@ -224,9 +234,9 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
                 <q-td class="col-12" key="descripcion" :props="props">
-                    <q-editor
+                    <q-editor content-class="bg-blue-6"
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                      :value="props.row.descripcion"
+                      v-model="props.row.descripcion"
                     />
                 </q-td>
               </q-item>
@@ -236,7 +246,7 @@
                   <q-input filled dense
                   rounded
                   outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
-                  :value="props.row.priority"
+                  v-model="props.row.priority"
                   min="1" max="999"
                   type="number">
                   </q-input>
@@ -247,7 +257,7 @@
               <q-td key="type" :props="props">
               <q-select filled dense
                 rounded outlined
-                :value="props.row.type"
+                v-model="props.row.type"
                 @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
                 use-input
                 input-debounce="0"
@@ -264,42 +274,32 @@
           <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Gratis</label></q-td>
           <q-td key="free" :props="props">
-            <q-select filled dense
-                rounded outlined
-                :value="props.row.free"
-                @input="(e) => saved2(e, props.row.free, props.row.id, 'free')"
-                use-input
-                input-debounce="0"
-                :options="typeFree === '' ? [] : typeFree"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
+            <div class="row">
+              <q-radio color="blue" v-model="props.row.free" :val="1" label="Si" />
+              <q-radio color="blue" v-model="props.row.free" :val="0" label="No" />
+             </div>
           </q-td>
           </q-item>
           <q-item v-if="props.row.type !== 1" class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Min</label></q-td>
           <q-td key="min" :props="props">
-            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" :value="props.row.min" dense  />
+            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" type="number" v-model="props.row.min" dense  />
           </q-td>
           </q-item>
           <q-item class="column items-start" v-if="props.row.type !== 1" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Max</label></q-td>
           <q-td key="max" :props="props">
-            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" :value="props.row.max" dense  />
+            <q-input type="number" filled rounded outlined @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" v-model="props.row.max" dense  />
           </q-td>
           </q-item>
           <q-item class="column items-start" v-if="props.row.type == 2" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Max Unidades</label></q-td>
           <q-td key="maxUnit" :props="props">
-            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" :value="props.row.maxUnit" dense  />
+            <q-input filled rounded outlined @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" v-model="props.row.maxUnit" dense  />
           </q-td>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
-                <q-td><label class="col label-expand">Vista previa</label></q-td>
+                <q-td><label class="col label-expand">Vista previa (solo disponible)</label></q-td>
             <q-card style="max-width: 400px" class="text-left">
               <q-card-section>
                 <itemcomp
@@ -367,6 +367,8 @@ export default {
       columns,
       selected: [],
       popupEditData: '',
+      temp1: [],
+      elGroup: [],
       noSelect: false,
       filterOptions: ''
     }
@@ -379,23 +381,55 @@ export default {
   mounted () {
     this.bindItem()
     this.bindItemGroup()
-    this.bindGroupComp()
+    this.bindGroupComp().then(e => {
+      this.elGroup = JSON.parse(JSON.stringify(e))
+    })
     this.filterOptions = Array.from(this.itemGroup)
   },
   methods: {
+    saveTemp (temp) {
+      if (typeof this.temp1[temp.collection] === 'undefined') {
+        this.temp1[temp.collection] = {}
+      }
+      if (typeof this.temp1[temp.collection][temp.payload.id] === 'undefined') {
+        this.temp1[temp.collection][temp.payload.id] = {}
+      }
+      this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
+      this.$forceUpdate()
+    },
+    executeSave () {
+      for (let collection in this.temp1) {
+        for (let document in this.temp1[collection]) {
+          if (this.temp1[collection][document].isNew) {
+            let data = this.temp1[collection][document]
+            delete data.isNew
+            delete data.id
+            this.newAddRow({ collection, data })
+          } else {
+            for (let key in this.temp1[collection][document]) {
+              var value = this.temp1[collection][document][key]
+              console.log({ payload: { value, document, key }, collection: collection })
+              this.setValue2({ payload: { value, id: document, key }, collection: collection })
+            }
+          }
+        }
+      }
+      this.temp1 = {}
+      this.$q.notify({ message: 'Cambios Guardados' })
+    },
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
-      this.setValue({ payload: { value, id, key }, collection: 'groupComp' })
+      this.saveTemp({ payload: { value, id, key }, collection: 'groupComp' })
     },
     saved2 (value, initialValue, id, key) {
-      this.setValue({ payload: { value: parseFloat(value), id, key }, collection: 'groupComp' })
+      this.saveTemp({ payload: { value: parseFloat(value), id, key }, collection: 'groupComp' })
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindItem', 'bindItemGroup', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue2', 'bindItem', 'newAddRow', 'bindItemGroup', 'bindGroupComp']),
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true
@@ -417,8 +451,26 @@ export default {
       let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.item.length}`
       return objSelectedString
     },
+    delrows (payload) {
+      this.$refs.table.clearSelection()
+      for (const i in payload.payload) {
+        let index = this.elGroup.findIndex(x => x.id === payload.payload[i].id)
+        this.elGroup.splice(index, 1)
+        if (typeof this.temp1[payload.collection] === 'undefined') {
+          this.temp1[payload.collection] = {}
+        }
+        this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
+      }
+      console.log(this.temp1)
+    },
     addrow () {
-      this.addRow({ collection: 'groupComp' })
+      const rand = Math.random().toString(16).substr(2, 8)
+      if (typeof this.temp1.groupComp === 'undefined') {
+        this.temp1.groupComp = {}
+      }
+      this.temp1.groupComp[rand] = { id: rand, isNew: true, price: 0, descripcion: '' }
+      this.elGroup.unshift({ id: rand, descripcion: '', price: 0 })
+      this.$forceUpdate()
     },
     filterFn (val, update) {
       update(() => {

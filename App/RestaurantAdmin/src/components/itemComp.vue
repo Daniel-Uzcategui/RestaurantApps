@@ -5,10 +5,10 @@
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
+        <q-list  class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
-              <q-radio :dark="mode == 1" :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id, component_name: component.name, name: items.name }) : JSON.stringify({ item: items.id, price: 0, component: component.id, component_name: component.name, name: items.name })" color="teal" />
+              <q-radio  :value="value.length ? JSON.stringify(value.find(x => x['component'] === component.id)) : ''" @input="(x) => {radioInput(x)}" :val="!component.free ? JSON.stringify({ item: items.id, price: items.price, component: component.id, component_name: component.name, name: items.name }) : JSON.stringify({ item: items.id, price: 0, component: component.id, component_name: component.name, name: items.name })" color="teal" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{items.name}}</q-item-label>
@@ -25,11 +25,11 @@
         <div class="text-caption" v-if="component.min > 0">Mínimo {{component.min}}</div>
         <div class="text-caption" v-if="component.max">Máximo en Total {{component.max}}</div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" class="full-width" v-for="(items, indice) in component.items" :key="indice">
+        <q-list  class="full-width" v-for="(items, indice) in component.items" :key="indice">
           <q-item tag="label" v-ripple>
             <q-item-section avatar>
               <q-checkbox
-                :dark="mode == 1"
+
                 checked-icon="fas fa-dot-circle"
                 unchecked-icon="fas fa-circle"
                 icon="fas fa-circle"
@@ -54,12 +54,12 @@
         <div class="text-caption" v-if="component.max">Máximo en Total {{component.max}}</div>
         <div class="text-caption" v-if="component.max > component.maxUnit">Máximo por Elemento {{component.maxUnit}}</div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
+        <q-list  v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section style="min-width: 100px">
               <q-slider
                 :color="mode == 1 ? 'positive' : 'primary'"
-                :dark="mode == 1"
+
                 @input="(x)=> qSliderInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, x)"
                 :value="value.length ? typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined' ? value.find(x => (x['component'] === component.id && x['item'] === items.id))['quantity'] : 0 : 0"
                 label-always
@@ -85,12 +85,12 @@
         <div class="text-caption" v-if="component.max > component.maxUnit">Máximo por Elemento {{component.maxUnit}}</div>
          </div>
         <p class="text-caption" v-html="component.descripcion"></p>
-        <q-list :dark="mode == 1" v-for="(items, indice) in component.items" :key="indice">
+        <q-list  v-for="(items, indice) in component.items" :key="indice">
           <q-item>
             <q-item-section style="min-width: 100px">
               <q-input filled
                 :color="mode == 1 ? 'positive' : 'primary'"
-                :dark="mode == 1"
+
                 rounded
                 outlined
                 @input="(x)=> qSliderInput({ component: component.id, component_name: component.name, item: items.id, price: items.price, name: items.name }, parseInt(x) < 0 || isNaN(parseInt(x)) ? 0 : Math.min(parseInt(x), qSliderMax(component, items)))"

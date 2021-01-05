@@ -187,7 +187,7 @@
                   <q-item-label>{{props.row.nombre}} {{ props.row.apellido}}</q-item-label>
                 </q-item-section>
                  <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
+                <q-icon name="edit" @click="props.expand = !props.expand" />
                </q-item-section>
               </q-item>
               <q-separator></q-separator>

@@ -41,7 +41,6 @@ export const addRow = firestoreAction(async (state, payload) => {
     name: '',
     softDelete: 0,
     descripcion: '',
-    estatus: true,
     DateIn: firebase.firestore.FieldValue.serverTimestamp()
   }
   if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {
@@ -60,7 +59,28 @@ export const addRow = firestoreAction(async (state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
-
+export const newAddRow = firestoreAction(async (state, payload) => {
+  let data = {
+    softDelete: 0,
+    ...payload.data,
+    DateIn: firebase.firestore.FieldValue.serverTimestamp()
+  }
+  if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {
+    data = {
+      ...data,
+      price: 0
+    }
+  }
+  return firestore()
+    .collection(payload.collection).add({ ...data })
+    .then(function (docRef) {
+      console.log('Document written with ID: ', docRef.id)
+      return docRef.id
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error)
+    })
+})
 export const delrows = firestoreAction((context, payload) => {
   for (const i in payload.payload) {
     firestore().collection(payload.collection)
@@ -73,13 +93,21 @@ export const delrows = firestoreAction((context, payload) => {
 })
 /// ////// END Action ////////
 /// Bindings ////
+const serialize = (snapshot) => {
+  // snapshot.data() DOES NOT contain the `id` of the document. By
+  // default, Vuefire adds it as a non enumerable property named id.
+  // This allows to easily create copies when updating documents, as using
+  // the spread operator won't copy it
+  // return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
+  return { ...snapshot.data(), id: snapshot.id }
+}
 export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
   return bindFirestoreRef('menu', firestore()
     .collection('menu')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingFilters')
@@ -87,40 +115,40 @@ export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
     .collection('filters')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindCategorias = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingCategorias')
   return bindFirestoreRef('categorias', firestore().collection('categorias')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindPromos = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingPromos')
   return bindFirestoreRef('promos', firestore().collection('promos')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindItem = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItem')
   return bindFirestoreRef('item', firestore().collection('item')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindItemGroup = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindItemsGroup')
   return bindFirestoreRef('itemGroup', firestore().collection('itemGroup')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindGroupComp = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindGroupComp')
   return bindFirestoreRef('groupComp', firestore().collection('groupComp')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1), { reset: false })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })

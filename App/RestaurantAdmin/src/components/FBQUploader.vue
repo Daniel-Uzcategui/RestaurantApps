@@ -8,6 +8,10 @@ export default {
     meta: {
       type: Object
     },
+    onlyLink: {
+      type: Boolean,
+      default: () => false
+    },
     prefixPath: {
       type: String
     },
@@ -110,12 +114,16 @@ export default {
               this.updateComponent(index, 0, 'uploaded')
               const link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
               console.log({ doc: this.document, meta: meta.photoType, link })
-              if (this.myPath === 'none') {
-                userRef(this.document, meta.photoType).update({ [`photo`]: link })
+              if (!this.onlyLink) {
+                if (this.myPath === 'none') {
+                  userRef(this.document, meta.photoType).update({ [`photo`]: link })
+                } else {
+                  userRef(this.document, 'photo').set({ [filePreffix]: link }, { merge: true })
+                }
+                this.$emit('uploaded', { files: [ file.name ] })
               } else {
-                userRef(this.document, 'photo').set({ [filePreffix]: link }, { merge: true })
+                this.$emit('uploaded', { files: [ file.name ], link })
               }
-              this.$emit('uploaded', { files: [ file.name ] })
             })
             resolve()
           }

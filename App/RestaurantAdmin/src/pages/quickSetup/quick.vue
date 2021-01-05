@@ -148,7 +148,7 @@ export default {
       sedeAdded: false,
       slide: 'style',
       lorem: 'Bienvenido a Chopzi, el Ecommerce diseñado para tí 😉, te guiaremos para que tu negocio pueda disfrutar de nuestra plataforma en pocos minutos ✌️.',
-      lorem2: 'Primero seleccionaremos los tipos de servicio que su empresa va a dar a sus clientes, siempre los puedes ajustar más adelante 👍',
+      lorem2: 'Primero seleccionaremos los tipos de servicio que su empresa va a dar a sus clientes, siempre los puedes ajustar más adelante 👍, algunos ajustes de medios de pagos son avanzados, configuralos con más tiempo',
       lorem3: 'Ahora agregaremos la info de su empresa, la localización es la que tus clientes usarán para pickup 📍, con nuestra plataforma puedes hacer manejo de múltiples sedes, así que manejaremos el stock de todas ellas 😲',
       lorem4: 'Sede Agregada, la puedes modificar al finalizar',
       lorem5: 'Excelente!, ya estamos casi listos 😄, ahora crearemos las categorías de los productos, siempre puedes agregar más luego',

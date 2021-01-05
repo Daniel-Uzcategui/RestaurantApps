@@ -1,13 +1,14 @@
 <template>
   <q-list>
   <q-item
+    v-if="!tree.length"
     clickable
     tag="a"
     :href="link"
   >
     <q-item-section
       v-if="icon"
-      avatar
+      side
     >
       <q-icon :name="icon" color="white"/>
     </q-item-section>
@@ -16,20 +17,26 @@
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
-      <q-tree
-        :nodes="tree"
-        node-key="label"
-        dark
-      />
     </q-item-section>
+  </q-item>
+  <q-item v-else>
+    <navtree
+      :icon="icon"
+      :title="title"
+      :tree="tree"
+    />
   </q-item>
   <q-separator v-if="separator"/>
    </q-list>
  </template>
 
 <script>
+import navtree from './navtree'
 export default {
   name: 'EssentialLink',
+  components: {
+    navtree
+  },
   props: {
     title: {
       type: String,
@@ -54,7 +61,7 @@ export default {
       default: false
     },
     tree: {
-      default: []
+      default: () => []
     }
   }
 }

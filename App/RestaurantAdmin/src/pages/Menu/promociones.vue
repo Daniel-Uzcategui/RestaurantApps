@@ -4,7 +4,7 @@
          style="border-radius: 28px"
          grid
          dense
-         :data="promosCopy"
+         :data="elpromos"
          :columns="columns2"
          :visible-columns="visibleColumns"
          title="Promociones"
@@ -12,9 +12,14 @@
          row-key="id"
          :selected-rows-label="getSelectedString2"
          selection="multiple"
+         ref="table"
          :selected.sync="selected2"
          >
-         <template v-if="$q.screen.gt.xs" v-slot:top-right>
+         <template v-if="$q.screen.gt.xs" v-slot:top>
+           <p class="text-h5 text-bold q-ma-md">
+      Promociones
+      </p>
+      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
             <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
@@ -39,7 +44,7 @@
               <q-input filled dense rounded outlined style="width: 250px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name"  />
           </q-td>
           <q-td key="descripcion" :props="props">
-              <q-editor
+              <q-editor content-class="bg-amber-3"
                 @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                 :value="props.row.descripcion"
                 min-height="5rem"
@@ -142,14 +147,22 @@
                   <q-item-label>{{props.row.name ? props.row.name: 'Agregar Nombre'}}</q-item-label>
                 </q-item-section>
                 <q-item-section class="text-caption text-grey">
-                  <q-item-label>{{props.row.estatus ? 'activo' : 'inactivo'}}</q-item-label>
+                  <q-icon
+                    @click.stop="(e) => {saved(
+                        typeof props.row.estatus === 'undefined' ? true : !props.row.estatus,
+                          props.row.estatus, props.row.id,
+                          `estatus`);
+                        typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus
+                        }"
+                      :color="props.row.estatus ? 'blue' : 'red'"
+                   style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? 'toggle_on' : 'toggle_off'" />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                <q-icon name="arrow_drop_down" @click="props.expand = !props.expand" />
+                <q-icon name="edit" @click.stop="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
@@ -157,37 +170,35 @@
           <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="photo" :props="props">
-            <div class="text-center" @click="showPhotoUpload(props.row.id)">
-            <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
+            <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
+            <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo, props.row)">
                 <q-avatar round class="q-mb-sm" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar></div>
             <div class="column items-start" v-else>
-                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
+                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id, props.row)">
                     <q-img :src="props.row.photo"></q-img>
                 </q-avatar></div>
                 </div>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Estatus</label></q-td>
-                <q-td class="col" key="status" :props="props">
                   <q-toggle
-                    @input="(e) => saved(e, props.row.estatus, props.row.id, `estatus`)"
-                    :value="props.row.estatus ? true : false"
-                    color="#3c8dbc"
+                  @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
+                  :value="props.row.estatus ? true : false"
+                  color="blue"
                   />
-                </q-td>
               </q-item>
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled dense rounded outlined
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-              :value="props.row.name"
+              v-model="props.row.name"
                />
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Productos</label></q-td>
               <q-select filled dense rounded outlined
-
-                :value="props.row.prods"
+                bottom-slots
+                v-model="props.row.prods"
                 @input="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
                 use-input
                 :option-value="(item) => item === null ? null : { id: item.id, quantity: cantidad, name: item.name }"
@@ -201,7 +212,11 @@
                 stack-label
                 emit-value
                 label="Productos"
-              />
+              >
+               <template v-slot:hint>
+                  Para aumentar, la cantidad de productos coloque la cantidad en el campo inferior
+                </template>
+              </q-select>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="label-expand">Cantidad a añadir</label></q-td>
@@ -216,7 +231,7 @@
              <q-td><label class="label-expand">Opciones</label></q-td>
               <q-select filled dense rounded outlined
 
-                :value="props.row.groupComp"
+                v-model="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
                 use-chips
@@ -237,9 +252,9 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
                 <q-td class="col" key="descripcion" :props="props">
-                    <q-editor
+                    <q-editor content-class="bg-blue-6"
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                      :value="props.row.descripcion"
+                      v-model="props.row.descripcion"
                       min-height="5rem"
 
                     />
@@ -247,10 +262,10 @@
               </q-item>
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Precio</label></q-td>
-                  <q-decimal dense rounded outlined
+                  <q-decimal dense rounded outlined filled
                   :rules="[validate]"
                    @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                  :value="props.row.price"
+                  v-model="props.row.price"
                   input-style="text-align: right">
                   </q-decimal>
               </q-item>
@@ -265,7 +280,8 @@
           label="Por favor cargar una foto"
           :meta="meta"
           :prefixPath="prefixPath"
-          @uploaded="uploadComplete"
+          :onlyLink="true"
+          @uploaded="(e) => {uploadComplete(e); saveTemp({ payload: { value: e.link, id: photoProp.id, key: 'photo' }, collection: 'promos' }); photoProp.photo = e.link }"
           document='promos'
         ></fbq-uploader>
     </q-dialog>
@@ -355,8 +371,11 @@ export default {
     return {
       cantidad: 1,
       columns,
+      photoProp: null,
       visibleColumns,
       columns2,
+      elpromos: [],
+      temp1: [],
       selected: [],
       selected2: [],
       popupEditData: '',
@@ -468,7 +487,9 @@ export default {
     })
     this.bindCategorias()
     this.bindLocalizations()
-    this.bindPromos()
+    this.bindPromos().then((e) => {
+      this.elpromos = JSON.parse(JSON.stringify(e))
+    })
     this.bindItem()
     this.bindItemGroup()
     this.bindGroupComp()
@@ -492,14 +513,44 @@ export default {
       this.popupEditData = row[col]
     },
     saved (value, initialValue, id, key) {
-      this.setValue({ payload: { value, id, key }, collection: 'promos' })
+      this.saveTemp({ payload: { value, id, key }, collection: 'promos' })
     },
     saved2 (value, initialValue, id, key) {
       console.log({ key })
       if (key === 'discount') { value = parseFloat(value) } else if (key === 'price') { value = parseFloat(value) } else if (key.includes('stock')) { value = parseFloat(value) }
       if (key === 'estatus') { if (value) { value = 1 } else { value = 0 } }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.setValue({ payload: { value, id, key }, collection: 'promos' })
+      this.saveTemp({ payload: { value, id, key }, collection: 'promos' })
+    },
+    saveTemp (temp) {
+      if (typeof this.temp1[temp.collection] === 'undefined') {
+        this.temp1[temp.collection] = {}
+      }
+      if (typeof this.temp1[temp.collection][temp.payload.id] === 'undefined') {
+        this.temp1[temp.collection][temp.payload.id] = {}
+      }
+      this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
+      this.$forceUpdate()
+    },
+    executeSave () {
+      for (let collection in this.temp1) {
+        for (let document in this.temp1[collection]) {
+          if (this.temp1[collection][document].isNew) {
+            let data = this.temp1[collection][document]
+            delete data.isNew
+            delete data.id
+            this.newAddRow({ collection, data })
+          } else {
+            for (let key in this.temp1[collection][document]) {
+              var value = this.temp1[collection][document][key]
+              console.log({ payload: { value, document, key }, collection: collection })
+              this.setValue2({ payload: { value, id: document, key }, collection: collection })
+            }
+          }
+        }
+      }
+      this.temp1 = {}
+      this.$q.notify({ message: 'Cambios Guardados' })
     },
     getStatus (value) {
       let status
@@ -509,7 +560,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'addRow', 'delrows', 'bindMenu', 'bindCategorias', 'bindPromos', 'bindItemGroup', 'bindItem', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue2', 'addRow', 'newAddRow', 'bindMenu', 'bindCategorias', 'bindPromos', 'bindItemGroup', 'bindItem', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
     delrow () {
       console.log({ payload: this.selected2, collection: 'promos' })
@@ -528,6 +579,18 @@ export default {
         })
       }
     },
+    delrows (payload) {
+      this.$refs.table.clearSelection()
+      for (const i in payload.payload) {
+        let index = this.elpromos.findIndex(x => x.id === payload.payload[i].id)
+        this.elpromos.splice(index, 1)
+        if (typeof this.temp1[payload.collection] === 'undefined') {
+          this.temp1[payload.collection] = {}
+        }
+        this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
+      }
+      console.log(this.temp1)
+    },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.menu.length}`
     },
@@ -537,9 +600,16 @@ export default {
       return objSelectedString
     },
     addrow () {
-      this.addRow({ collection: 'promos' })
+      const rand = Math.random().toString(16).substr(2, 8)
+      if (typeof this.temp1.promos === 'undefined') {
+        this.temp1.promos = {}
+      }
+      this.temp1.promos[rand] = { id: rand, isNew: true, price: 0, descripcion: '' }
+      this.elpromos.unshift({ id: rand, price: 0, descripcion: '' })
+      this.$forceUpdate()
     },
-    showPhotoUpload (type) {
+    showPhotoUpload (type, prop) {
+      this.photoProp = prop
       this.photoUpload = true
       this.photoType = type
     },
@@ -552,6 +622,7 @@ export default {
       console.log(this.prefixPath)
       console.log(this.currentUser)
       let fileNames = []
+      console.log({ info })
       info.files.forEach(file => fileNames.push(file))
       this.photoUpload = false
       this.$q.notify({

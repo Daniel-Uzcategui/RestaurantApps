@@ -179,96 +179,97 @@ export default {
       leftDrawerOpen: false,
       nav: [
         {
-          title: 'Inicio',
+          title: 'Dashboard',
           caption: '',
-          icon: 'fa fa-home',
-          link: '#/home',
+          icon: 'dashboard',
+          link: '#/home'
           // separator: true,
-          tree: [{ children: [] }]
+
         },
         {
           title: 'Asistentes',
           caption: '',
-          icon: 'fas fa-question-circle',
+          icon: 'assistant',
           // separator: true,
-          tree: [
-            {
-              children: [
-                { label: 'Intro',
-                  link: 'intro',
-                  handler: (node) => this.onClickGuide(node) },
-                { label: 'Agregar opciones a Productos',
-                  link: 'addopts',
-                  handler: (node) => this.onClickGuide(node) },
-                { label: 'Cambiar Tema de Cliente',
-                  link: 'quicktheme',
-                  handler: (node) => this.onClickGuide(node) }
-              ]
-            }]
+          tree:
+             [
+               { label: 'Intro',
+                 link: 'intro',
+                 handler: (node) => this.onClickGuide('intro') },
+               { label: 'Agregar opciones a Productos',
+                 link: 'addopts',
+                 handler: (node) => this.onClickGuide('addopts') },
+               { label: 'Cambiar Tema de Cliente',
+                 link: 'quicktheme',
+                 handler: (node) => this.onClickGuide('quicktheme') }
+             ]
+
         },
         {
-          title: 'Sedes',
-          caption: '',
-          icon: 'fa fa-globe',
-          link: '#/localization/index',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Categorias',
-          caption: '',
-          icon: 'fa fa-bars',
-          link: '#/menu/categorias',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Catálogos',
-          caption: '',
-          icon: 'fas fa-utensils',
-          link: '#/menu/menu',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Filtros de Productos',
-          caption: '',
-          icon: 'fas fa-filter',
-          link: '#/menu/menufilters',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Opciones',
-          caption: '',
-          icon: 'fab fa-gulp',
-          link: '#/menu/options',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Config Grupos de Opciones',
+          title: 'Catálogo',
           caption: '',
           icon: 'menu_book',
-          link: '#/menu/optionsconf',
           // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Promociones',
-          caption: '',
-          icon: 'fas fa-ad',
-          link: '#/menu/promo',
-          // separator: true,
-          tree: [{ children: [] }]
+          tree: [
+
+            {
+              label: 'Categorías',
+              caption: '',
+              icon: 'fa fa-bars',
+              handler: () => this.$router.push({ path: '/menu/categorias' })
+              // separator: true,
+
+            },
+            {
+              label: 'Productos',
+              caption: '',
+              icon: 'fas fa-utensils',
+              handler: () => this.$router.push({ path: '/menu/menu' })
+              // separator: true,
+
+            },
+            {
+              label: 'Filtros de Productos',
+              caption: '',
+              icon: 'fas fa-filter',
+              handler: () => this.$router.push({ path: '/menu/menufilters' })
+              // separator: true,
+
+            },
+            {
+              label: 'Opciones',
+              caption: '',
+              icon: 'fab fa-gulp',
+              handler: () => this.$router.push({ path: '/menu/options' })
+              // separator: true,
+
+            },
+            {
+              label: 'Config Grupos de Opciones',
+              caption: '',
+              icon: 'menu_book',
+              handler: () => this.$router.push({ path: '/menu/optionsconf' })
+              // separator: true,
+
+            },
+            {
+              label: 'Promociones',
+              caption: '',
+              icon: 'fas fa-ad',
+              handler: () => this.$router.push({ path: '/menu/promo' })
+              // separator: true,
+
+            }
+
+          ]
         },
         {
           title: 'Ordenes',
           caption: '',
           icon: 'room_service',
-          link: '#/orders/index',
+          link: '#/orders/index'
           // separator: true,
-          tree: [{ children: [] }]
+
         },
         /* {
           title: 'Pagos',
@@ -276,82 +277,71 @@ export default {
           icon: 'fa fa-briefcase',
           link: '#/payments/index',
           // separator: true,
-          tree: [{ children: [] }]
+
         }, */
         {
           title: 'Pagos',
           caption: '',
-          icon: 'fa fa-briefcase',
+          icon: 'request_quote',
           // separator: true,
           tree: [
-            {
-              children: [
-                { label: 'Consulta general',
-                  link: 'index',
-                  handler: (node) => this.onClickPayments(node) },
-                { label: 'Transacciones',
-                  link: 'transactions',
-                  handler: (node) => this.onClickPayments(node) }
-              ]
-            }]
+
+            { label: 'Consulta general',
+              link: 'index',
+              handler: (node) => this.onClickPayments('index') },
+            { label: 'Transacciones',
+              link: 'transactions',
+              handler: (node) => this.onClickPayments('transactions') }
+
+          ]
         },
         {
           title: 'Clientes',
           caption: '',
           icon: 'fa fa-user',
-          link: '#/clients/index',
+          link: '#/clients/index'
           // separator: true,
-          tree: [{ children: [] }]
+
         },
         {
-          title: 'Editor Web',
-          caption: '',
-          icon: 'far fa-object-group',
-          link: '#/editor/index',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Usuarios',
-          caption: '',
-          icon: 'fa fa-users',
-          link: '#/users/index',
-          // separator: true,
-          tree: [{ children: [] }]
-        },
-        {
-          title: 'Widgets',
-          caption: '',
-          icon: 'fa fa-cube',
-          // separator: true,
-          tree: [
-            {
-              children: [
-                { label: 'Chat',
-                  link: 'chat',
-                  handler: (node) => this.onClickOption(node) }
-              ]
-            }]
-        },
-        {
-          title: 'Ajustes',
+          title: 'Configuración',
           caption: '',
           icon: 'fa fa-cog',
           // separator: true,
           tree: [
+
             {
-              children: [
-                { label: 'Horarios',
-                  link: 'schedule',
-                  handler: (node) => this.onClickOption(node) },
-                { label: 'Pagos y Servicios',
-                  link: 'paymentServ',
-                  handler: (node) => this.onClickOption(node) },
-                { label: 'Tasa de cambio',
-                  link: 'rate',
-                  handler: (node) => this.onClickOption(node) }
+              label: 'Sedes',
+              handler: () => this.$router.push({ path: '/localization/index' })
+            },
+            { label: 'Horarios',
+              link: 'schedule',
+              handler: (node) => this.onClickOption('schedule') },
+            { label: 'Pagos y Servicios',
+              link: 'paymentServ',
+              handler: (node) => this.onClickOption('paymentServ') },
+            { label: 'Tasa de cambio',
+              link: 'rate',
+              handler: (node) => this.onClickOption('rate') },
+            {
+              label: 'Usuarios',
+              handler: () => this.$router.push({ path: '/users/index' })
+
+            },
+            {
+              label: 'Widgets',
+              // separator: true,
+              tree: [
+                { label: 'Chat',
+                  link: 'chat',
+                  handler: (node) => this.onClickOption('chat') }
               ]
-            }]
+            }
+            // {
+            //   label: 'Editor Web',
+            //   link: () => this.$router.push({ path: '/editor/index' })
+            // }
+          ]
         } /*,
         /* {
           title: 'Reportes',
@@ -436,16 +426,16 @@ export default {
       return (this.currentUser[attr]) ? this.currentUser[attr] : 'Please update your profile'
     },
     onClickOption (node) {
-      this.$router.push({ path: '/settings/' + node.link })
+      this.$router.push({ path: '/settings/' + node })
     },
     onClickGuide (node) {
-      this.$router.push({ path: '/guide/' + node.link })
+      this.$router.push({ path: '/guide/' + node })
     },
     onClickPayments (node) {
-      this.$router.push({ path: '/payments/' + node.link })
+      this.$router.push({ path: '/payments/' + node })
     },
     onClickReports (node) {
-      this.$router.push({ path: '/reports/' + node.link })
+      this.$router.push({ path: '/reports/' + node })
     }
   },
   watch: {

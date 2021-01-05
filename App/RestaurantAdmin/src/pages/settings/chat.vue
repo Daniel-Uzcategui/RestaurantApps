@@ -1,15 +1,18 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
-      <q-card>
+      <q-card class="q-cardGlass">
        <q-card-section  class="q-cardtop text-white header" >
-          <div class="text-h5">Widgets Chat</div>
+          <div class="text-h5">Widgets Chat
+            <q-btn flat color="white" push @click="explain = true" icon="help" />
+
+          </div>
           <div>
             <div v-if="config">
               <q-btn class="header-btn" flat color="white" push  @click="save" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push label="Agregar" @click="add" icon="add"/>
+              <q-btn class="header-btn" flat color="white" push @click="add" icon="add"/>
             </div>
             <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
           </div>
@@ -19,6 +22,7 @@
          <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input filled
           v-model="key"
+          label="PropiedadId"
           type="text"
           float-label="Float Label"
           placeholder="Key default chat"
@@ -33,6 +37,17 @@
     </div>
      </q-card>
   </div>
+  <q-dialog v-model="explain">
+    <q-card class="q-cardGlass">
+      <q-card-section class="column items-center">
+
+    <p class="text-h6 text-bold"> Para configurar el chat dirigirse a </p>
+    <q-btn :href="'//' + 'tawk.to'" type="a" target="_blank" label="Tawk.to" rounded color="primary"/>
+    <p class="text-h6 text-bold q-ma-md"> Crear una cuenta al iniciar sesión abajo a la izquierda entras a la configuración, en visión general buscar el campo PropiedadId, copiar los datos de ese campo</p>
+    <q-img width="200px" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture3290?alt=media&token=d8e76081-26ba-496b-b4df-f8a49d489385"/>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 <q-dialog v-model="validationError">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
@@ -110,6 +125,7 @@ export default {
   },
   data () {
     return {
+      explain: false,
       validationError: false,
       messageError: [],
       key: '',
