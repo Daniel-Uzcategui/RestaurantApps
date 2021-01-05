@@ -702,16 +702,8 @@ export default {
     },
     filteredMenuCat (e) {
       let filtered = []
-      if (Array.isArray(this.filteredMenu) && e) {
-        filtered = this.filteredMenu.filter(x => {
-          if (typeof x.categorias === 'undefined' || x.categorias === null) {
-            return false
-          }
-          if (x.categoria.includes(e)) {
-            return true
-          }
-          return false
-        })
+      if (Array.isArray(this.filteredMenu)) {
+        filtered = this.filteredMenu.filter(x => x && x.categoria && x.categoria.includes(e))
       } else {
         filtered = [{ id: 'kkfkff', not: true }]
       }

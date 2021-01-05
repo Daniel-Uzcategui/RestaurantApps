@@ -115,7 +115,11 @@ export const formFieldMixin = {
   },
   methods: {
     inputEventHandler: function (e) {
-      this.$emit('input-change', e.target.value)
+      if (e && e.target && e.target.value) {
+        this.$emit('input-change', e.target.value)
+      } else {
+        this.$emit('input-change', e)
+      }
     },
     inputEventHandler2: function (e) {
       this.$emit('input-change', e)
