@@ -118,12 +118,13 @@ export default {
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           // tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
+          let mtoTotal = obj.paid + obj.delivery
           OrderClient.push({
             'id': obj.id,
             'nombre': fullname,
             'typePayment': tipoPago,
             'status': statusOrder,
-            'paid': obj.paid,
+            'paid': mtoTotal,
             'dateIn': obj.dateIn,
             'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
             'factura': obj.factura,

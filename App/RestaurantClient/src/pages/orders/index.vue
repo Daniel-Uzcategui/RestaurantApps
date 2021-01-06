@@ -145,7 +145,7 @@
                               <p class="col-6">Extras</p>
                               <p class="text-right col-6"> $ {{getTotalCarrito()[1].toFixed(2)}} </p>
                            </div>
-                           <div class="row" v-if="ordenDet.tipEnvio == 1">
+                           <div class="row" v-if="ordenDet.delivery > 0">
                               <p class="col-6"> Delivery </p>
                               <p class="text-right col-6"> $ {{parseFloat(ordenDet.delivery).toFixed(2)}}</p>
                            </div>

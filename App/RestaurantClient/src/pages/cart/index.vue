@@ -288,7 +288,7 @@
                         <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
                       </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
-                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8" >Total: Bs {{getRates(totalPrice)}}</div>
+                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8" >Total: Bs {{getRates(totalPrice + deliveryPrice)}}</div>
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
@@ -590,7 +590,9 @@ export default {
         orderWhen: this.orderWhen,
         orderDate: this.orderDate === null || typeof this.orderDate === 'undefined' ? 'NA' : new Date(this.orderDate)
       }
+      let deliveryview = this.deliveryPrice
       console.log({ orderWhen })
+      console.log({ deliveryview })
       let order = { photo: this.photoSRC, orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof details !== 'undefined' && typeof details.id === 'undefined') { order = { ...order, paypal: details } }
       if (typeof details !== 'undefined' && typeof details.id !== 'undefined') { order = { ...order, onlinePay: details } }
