@@ -288,7 +288,9 @@
                         <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
                       </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
-                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8" >Total: Bs {{getRates(totalPrice + deliveryPrice)}}</div>
+                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8" >Total: Bs
+                          {{ getRates(totalPrice + deliveryPrice)}}
+                        </div>
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
