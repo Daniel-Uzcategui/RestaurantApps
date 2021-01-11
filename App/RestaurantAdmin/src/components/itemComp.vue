@@ -1,7 +1,20 @@
 <template>
-  <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
-    <div class="row justify-center">
-    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-lg text-white col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
+  <div class="q-cardGlass">
+    <div v-if="readOnly && Group.length">
+      <div  v-for="(component, index) in Group" :key="index">
+      <div>
+        <q-list v-for="(items, indice) in component.items" :key="indice">
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{items.name}}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+      </div>
+    </div>
+    <div class="row justify-center" v-if="!readOnly && Group.length">
+    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-lg  col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>
@@ -118,7 +131,7 @@
 
 import { mapGetters } from 'vuex'
 export default {
-  props: ['comp', 'required'],
+  props: ['comp', 'required', 'readOnly', 'value'],
   computed: {
     ...mapGetters('menu', ['item', 'groupComp']),
     Group () {
@@ -155,7 +168,6 @@ export default {
   },
   data () {
     return {
-      value: [],
       mode: 0
     }
   },

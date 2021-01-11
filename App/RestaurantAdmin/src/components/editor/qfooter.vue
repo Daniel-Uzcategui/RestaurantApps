@@ -5,7 +5,7 @@
   <div class="q-pa-md text-center row justify-center">
 
     <!-- Grid row-->
-    <div class="row col-6 text-white">
+    <div class="row col-6 ">
           <a class="col" v-if="facebook !== ''" :href="facebook">
             <q-icon name="fab fa-facebook-f" color="white"/>
           </a>
@@ -37,7 +37,7 @@
 
   <!-- Copyright -->
   <div class="q-pa-xs text-center text-caption">© 2020 Copyright:
-    <a href="https://chopzi.com/" class="text-white"> ChopZi.com</a>
+    <a href="https://chopzi.com/" class=""> ChopZi.com</a>
   </div>
   <!-- Copyright -->
 

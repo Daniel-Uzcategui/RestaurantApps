@@ -2,7 +2,7 @@
   <div style="min-width: 320px;" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Servicios y Rewards</div>
           <div>
            <div v-if="config">
@@ -30,12 +30,12 @@
        <div class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
            <p>Pick Up</p>
-          <q-option-group color="blue" filled rounded v-model="statusPickup" map-options emit-value standout="bg-teal text-white"
+          <q-option-group color="blue" filled rounded v-model="statusPickup" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Pick Up" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>In Local</p>
-          <q-option-group color="blue" filled rounded v-model="statusInlocal" map-options emit-value standout="bg-teal text-white"
+          <q-option-group color="blue" filled rounded v-model="statusInlocal" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="In Local" />
         </div>
         <div class="flex-break q-py-md "></div>
@@ -46,7 +46,7 @@
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-option-group dense inline color="blue" filled rounded v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
+          <q-option-group dense inline color="blue" filled rounded v-model="statusRewards" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Activar Recompensas" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">

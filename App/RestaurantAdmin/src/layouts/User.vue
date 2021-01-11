@@ -1,6 +1,6 @@
 <template>
    <q-layout class="main my-font backgroundImage" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
-      <q-header class="bg-primary text-white" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
+      <q-header class="bg-primary" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
          <q-toolbar>
             <q-btn
                flat
@@ -48,6 +48,7 @@
                />
       </q-drawer>
       <q-page-container>
+        <component :is="themeUser">
          <transition
             name="transitions"
             enter-active-class="animated slideInUp"
@@ -55,6 +56,7 @@
             mode="out-in">
             <router-view @setBlur="setBlur" />
          </transition>
+          </component>
       </q-page-container>
    </q-layout>
 </template>
@@ -69,7 +71,15 @@ export default {
   name: 'UserLayout',
   components: {
     Nav,
-    'user-settings': () => import('../pages/user/profile/UserSettings.vue')
+    'user-settings': () => import('../pages/user/profile/UserSettings.vue'),
+    // eslint-disable-next-line vue/no-unused-components
+    'GlassDark': () => import('./themes/GlassDark'),
+    // eslint-disable-next-line vue/no-unused-components
+    'GlassLight': () => import('./themes/GlassLight'),
+    // eslint-disable-next-line vue/no-unused-components
+    'ClassicDark': () => import('./themes/ClassicDark'),
+    // eslint-disable-next-line vue/no-unused-components
+    'ClassicLight': () => import('./themes/ClassicLight')
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
@@ -104,7 +114,7 @@ export default {
     })
   },
   async mounted () {
-    this.$q.dark.set(true)
+    // this.$q.dark.set(true)
     this.bindEnv().then(e => {
       // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
@@ -164,6 +174,7 @@ export default {
   },
   data () {
     return {
+      themeUser: 'GlassDark',
       audio: {
         sources: [
           {

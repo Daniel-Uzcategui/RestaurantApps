@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card>
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Editar Pago</div>
           <div>
             <q-btn class="header-btn" flat color="white" push  icon="arrow_back" @click="$router.replace('/payments/index')"/>
@@ -17,7 +17,7 @@
         </div>
         <div class="header-cell col-4">
           <label>Estatus del Pago</label>
-          <q-select filled :value="payment.status"  @input="(e) => saved(e, this.$route.query.payment_Id, 'status')" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select options-selected-class="text-blue" filled :value="payment.status"  @input="(e) => saved(e, this.$route.query.payment_Id, 'status')" standout="bg-teal "  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
@@ -26,7 +26,7 @@
         </div>
         <div class="header-cell col-4">
           <label>Tipo de Pago</label>
-          <q-select filled :value="payment.typePayment"  @input="(e) => saved(e, this.$route.query.payment_Id, 'typePayment')" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
+          <q-select options-selected-class="text-blue" filled :value="payment.typePayment"  @input="(e) => saved(e, this.$route.query.payment_Id, 'typePayment')" standout="bg-teal "  :options="typePayment_options" label="Tipo de Pago" />
         </div>
       </div>
      </div>

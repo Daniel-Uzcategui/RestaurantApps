@@ -13,7 +13,7 @@
       :selected.sync="selected"
       ref="table"
     >
-    <template v-if="$q.screen.gt.xs" v-slot:top>
+    <template v-if="$q.screen.gt.xs || isDiag" v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
       Opciones
       </p>
@@ -56,7 +56,7 @@
               />
           </q-td>
           <q-td key="group_id" :props="props">
-              <q-select filled
+              <q-select options-selected-class="text-blue" filled
                 :value="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
                 use-input
@@ -88,7 +88,7 @@
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
-        <q-list @click.native="props.selected = !props.selected" class="q-p-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
+        <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section>
                   <q-item-label>{{props.row.name ? props.row.name: 'Nueva Opción'}}</q-item-label>
@@ -134,17 +134,16 @@
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Grupos</label></q-td>
-              <q-select filled
+              <q-select options-selected-class="text-blue" filled
               bottom-slots
                 rounded
                 outlined
-                :value="props.row.group_id"
+                v-model="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
                 use-input
                 use-chips
                 multiple
                 input-debounce="0"
-                @new-value="createValue"
                 :options="filterOptions"
                 :option-label="(item) => item === null ? null : item.name"
                 :option-value="(item) => item === null ? null : item.id"
@@ -154,8 +153,12 @@
                 emit-value
                 map-options
               >
-                <template v-slot:hint>
-                  Para agregar grupo, escribir el nuevo nombre y darle enter
+                <template v-slot:append>
+                  <q-icon
+                    name="add"
+                    class="cursor-pointer"
+                    @click="createValue()"
+                  />
                 </template>
               </q-select>
           </q-item>
@@ -209,7 +212,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm" reveal>
+    <q-footer v-if="$q.screen.lt.sm && !isDiag" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
           <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
@@ -232,8 +235,15 @@ export default {
   computed: {
     ...mapGetters('menu', ['itemPlain', 'itemGroup'])
   },
+  props: {
+    isDiag: {
+      type: Boolean,
+      default: () => false
+    }
+  },
   data () {
     return {
+      addopt: false,
       elitem: [],
       elitemGroup: [],
       columns,
@@ -264,14 +274,34 @@ export default {
     validate (value) {
       return value >= 0 || 'error'
     },
-    createValue (val, done) {
-      if (val.length > 0) {
-        if (!this.itemGroup.includes(val)) {
-          this.addRow({ collection: 'itemGroup' })
-            .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }) })
+    // createValue (val, done) {
+    //   if (val.length > 0) {
+    //     if (!this.itemGroup.includes(val)) {
+    //       this.addRow({ collection: 'itemGroup' })
+    //         .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }) })
+    //     }
+    //     done(val, 'toggle')
+    //   }
+    // },
+    createValue () {
+      this.$q.dialog({
+        title: 'Prompt',
+        message: '¿Qué nombre desea para el nuevo grupo?',
+        prompt: {
+          model: '',
+          type: 'text' // optional
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(val => {
+        // console.log('>>>> OK, received', data)
+        if (val.length > 0) {
+          if (!this.itemGroup.includes(val)) {
+            this.addRow({ collection: 'itemGroup' })
+              .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }) })
+          }
         }
-        done(val, 'toggle')
-      }
+      })
     },
     showPopup (row, col) {
       this.popupEditData = row[col]

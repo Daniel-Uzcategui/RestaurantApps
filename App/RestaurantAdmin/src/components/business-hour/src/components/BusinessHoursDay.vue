@@ -1,6 +1,6 @@
 
 <template>
-  <div class="text-white">
+  <div class="">
     <div class="q-mt-md" v-for="({ open, close, id, isOpen }, index) in hours" :key="id">
       <div class="row justify-center">
     <div class="self-end row q-mr-md q-mb-sm" style="min-width: 170px">

@@ -36,7 +36,7 @@
                 <q-item-section>
                   <q-item-label>{{props.row.factura}}</q-item-label>
                 </q-item-section>
-                <q-item-section class="text-caption text-grey">
+                <q-item-section >
                   <q-item-label>{{props.row.status}}</q-item-label>
                 </q-item-section>
                 <q-item-section side>

@@ -2,7 +2,7 @@
   <div style="min-width: 320px;" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Ajustes de Medios de Pagos</div>
           <div>
            <div v-if="config">
@@ -20,23 +20,23 @@
         <div class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <p>Punto de Venta</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusPto" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusPto" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Punto de Venta" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Zelle</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusZelle" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Zelle" />
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Venmo</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusVenmo" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Venmo" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Efectivo</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusCash" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusCash" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Efectivo" />
         </div>
         </div>
@@ -44,12 +44,12 @@
         <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Paypal</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusPaypal" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Paypal" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>CreditCorp</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="CreditCorp" />
         </div>
         </div>
@@ -57,12 +57,12 @@
         <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Pago Móvil</p>
-<q-option-group color="blue" inline  filled rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Pago Móvil" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <p>Transferencia Bancaria</p>
-<q-option-group color="blue" inline  filled rounded v-model="statustransfer" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statustransfer" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Transferencia Bancaria" />
         </div>
         </div>
@@ -70,7 +70,7 @@
         <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Mercantil</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusMercantil" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="statusMercantil" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Mercantil" />
         </div>
         </div>
@@ -82,7 +82,7 @@
        </div>
        <div v-if="statusPaypal" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PaypalApi" standout="bg-teal text-white"
+          <q-input filled rounded v-model="PaypalApi" standout="bg-teal "
           outlined label="Paypal API" />
         </div>
         </div>
@@ -91,7 +91,7 @@
        </div>
        <div v-if="statusCreditCorp"  class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="CreditCorp" standout="bg-teal text-white"
+          <q-input filled rounded v-model="CreditCorp" standout="bg-teal "
           outlined label="CreditCorp API" />
         </div>
         </div>
@@ -101,27 +101,27 @@
        <div v-if="statusMercantil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Ambiente</p>
-<q-option-group color="blue" inline  filled rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal text-white"
+<q-option-group color="blue" inline  filled rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Mercantil.xibm" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.xibm" standout="bg-teal "
           outlined label="x-ibm-client-id" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Mercantil.integratorId" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.integratorId" standout="bg-teal "
           outlined label="integratorId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Mercantil.merchantId" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.merchantId" standout="bg-teal "
           outlined label="merchantId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Mercantil.terminalId" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.terminalId" standout="bg-teal "
           outlined label="terminalId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Mercantil.claveSecreta" standout="bg-teal text-white"
+          <q-input filled rounded v-model="Mercantil.claveSecreta" standout="bg-teal "
           outlined label="Clave secreta" />
         </div>
         </div>
@@ -134,7 +134,7 @@
        </div>
        <div v-if="statusZelle" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="zelleEmail" standout="bg-teal text-white"
+          <q-input filled rounded v-model="zelleEmail" standout="bg-teal "
           outlined label="Email Zelle" />
         </div>
         </div>
@@ -143,7 +143,7 @@
        </div>
        <div v-if="statusVenmo" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="venmoAcc" standout="bg-teal text-white"
+          <q-input filled rounded v-model="venmoAcc" standout="bg-teal "
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
@@ -152,7 +152,7 @@
        </div>
        <div v-if="statuspagomovil"  class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="pagomovil" standout="bg-teal text-white"
+          <q-input filled rounded v-model="pagomovil" standout="bg-teal "
           outlined label="Pago Movil" />
         </div>
         </div>
@@ -161,7 +161,7 @@
        </div>
        <div v-if="statustransfer"  class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="transfer" standout="bg-teal text-white"
+          <q-input filled rounded v-model="transfer" standout="bg-teal "
           outlined label="Datos para Transferir" />
         </div>
         </div>

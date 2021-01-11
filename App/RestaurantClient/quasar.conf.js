@@ -153,10 +153,10 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
       workboxPluginMode: 'GenerateSW',
-
       workboxOptions: {
         skipWaiting: true,
         clientsClaim: true,
+        maximumFileSizeToCacheInBytes: 5000000,
         runtimeCaching: [{
           urlPattern: new RegExp('^https://firebasestorage\\.googleapis\\.com/'),
           handler: 'StaleWhileRevalidate',

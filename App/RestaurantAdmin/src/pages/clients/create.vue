@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Agregar Clientes</div>
           <div>
             <q-btn class="header-btn" flat color="white" push label="Agregar" icon="add" @click="create" />

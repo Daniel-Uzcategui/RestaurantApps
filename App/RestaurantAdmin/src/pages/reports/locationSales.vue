@@ -4,7 +4,7 @@
      <div class="flex-break"></div>
      <div class="col-12" tabindex="0">
       <q-card class="qSection">
-       <q-card-section  class="q-cardtop text-white" >
+       <q-card-section  class="q-cardtop " >
         <div class="text-h5">Ventas por Sede</div>
        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </q-card-section>

@@ -123,7 +123,6 @@ module.exports = function (ctx) {
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
       extendWebpack (cfg) {
         cfg.module.rules.push({
-          maximumFileSizeToCacheInBytes: 5000000,
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
@@ -157,7 +156,13 @@ module.exports = function (ctx) {
       // workboxOptions: {}, // only for NON InjectManifest
       workboxOptions: {
         skipWaiting: true,
-        clientsClaim: true
+        clientsClaim: true,
+        maximumFileSizeToCacheInBytes: 5000000,
+        runtimeCaching: [{
+          urlPattern: new RegExp('^https://firebasestorage\\.googleapis\\.com/'),
+          handler: 'StaleWhileRevalidate',
+          options: { cacheName: 'app-images', expiration: { maxEntries: 50 } }
+        }]
       },
       manifest: {
         // name: 'QUploader implementation with Google Cloud Storage',

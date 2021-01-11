@@ -69,7 +69,7 @@
           </q-tr>
           <q-tr v-show="props.expand" :props="props">
                <q-td colspan="2" key="groupComp" :props="props">
-              <q-select filled dense rounded outlined
+              <q-select options-selected-class="text-blue" filled dense rounded outlined
 
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
@@ -90,7 +90,7 @@
               />
           </q-td>
               <q-td key="prods" :props="props">
-              <q-select filled dense rounded outlined
+              <q-select options-selected-class="text-blue" filled dense rounded outlined
 
                 :value="props.row.prods"
                 @input="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
@@ -196,7 +196,7 @@
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Productos</label></q-td>
-              <q-select filled dense rounded outlined
+              <q-select options-selected-class="text-blue" filled dense rounded outlined
                 bottom-slots
                 v-model="props.row.prods"
                 @input="(e) => saved(e, props.row.prods, props.row.id, 'prods')"
@@ -229,7 +229,7 @@
               </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Opciones</label></q-td>
-              <q-select filled dense rounded outlined
+              <q-select options-selected-class="text-blue" filled dense rounded outlined
 
                 v-model="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"

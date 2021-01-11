@@ -25,7 +25,7 @@
       <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
                 :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
       <div class="q-pa-md">
-      <q-select filled rounded dense
+      <q-select options-selected-class="text-blue" filled rounded dense
         v-model="sede"
         :options="locList"
         style="width: 250px"
@@ -36,12 +36,12 @@
       />
       </div>
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
-          <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
-          <q-btn flat icon="visibility" text-color="white" no-caps label="Vista en Cliente" @click="preview = !preview" />
-          <q-btn flat icon="label" text-color="white" no-caps label="Cambio de Nombre" @click="promptNombre()" />
+          <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
+          <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
+          <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" />
+          <q-btn flat icon="label" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
-        <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar"  dark>
+        <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>
           <q-icon name="fas fa-search"/>
         </template>
@@ -71,7 +71,7 @@
               outlined />
           </q-td>
           <q-td key="categoria" :props="props">
-              <q-select filled rounded dense
+              <q-select options-selected-class="text-blue" filled rounded dense
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -86,7 +86,7 @@
               />
           </q-td>
            <q-td key="groupComp" :props="props">
-              <q-select filled rounded dense
+              <q-select options-selected-class="text-blue" filled rounded dense
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -252,7 +252,7 @@
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Categorias</label></q-td>
-              <q-select filled rounded dense
+              <q-select options-selected-class="text-blue" filled rounded dense
                 :value="CatExists(props.row.categoria)"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
@@ -267,7 +267,7 @@
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Opciones</label></q-td>
-              <q-select filled rounded dense
+              <q-select options-selected-class="text-blue" filled rounded dense
                 :value="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -367,11 +367,11 @@
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section class="column items-start" key="photo" :props="props">
                   <div class="row justify-between no-wrap full-width">
-                  <div style="min-width: 50px" class="text-center col-2 self-center" @click.stop="showPhotoUpload(props.row.id)">
+                  <div style="min-width: 50px" class="text-center col-2 self-center" @click.stop="showPhotoUpload(props.row.id, props.row)">
                   <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
                       <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="38px" size="50px" text-color="white"></q-avatar></div>
                   <div class="column items-start" v-else>
-                      <q-avatar round class="q-mb-sm shadow-5" size="50px" @click.stop="showPhotoUpload(props.row.id)">
+                      <q-avatar round class="q-mb-sm shadow-5" size="50px" @click.stop="showPhotoUpload(props.row.id, props.row)">
                           <q-img :src="props.row.photo"></q-img>
                       </q-avatar></div>
                       </div>
@@ -418,35 +418,46 @@
                     />
               </q-item>
           <q-item class="column items-start" key="desc" :props="props">
-            <q-td><label class="label-expand">Nombre</label></q-td>
+            <div class="col-12 label-expand">Nombre</div>
               <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               v-model="props.row.name"
               rounded
+              class="col-12 full-width"
               outlined />
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Categorias</label></q-td>
-              <q-select filled rounded dense
+              <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="props.row.categoria"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
                 use-chips
+                class="col-12"
                 multiple
                 input-debounce="0"
                 :options="listcategorias"
                 map-options
                 emit-value
                 stack-label
-              />
+              >
+              <template v-slot:append>
+          <q-icon
+            name="add"
+            class="cursor-pointer"
+            @click.stop="addcat = !addcat"
+          />
+        </template>
+              </q-select>
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
              <q-td><label class="label-expand">Opciones</label></q-td>
-              <q-select filled rounded dense
+              <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
                 use-chips
+                class="full-width"
                 multiple
                 input-debounce="0"
                 :options="groupComp"
@@ -455,7 +466,15 @@
                 map-options
                 emit-value
                 stack-label
-              />
+              >
+              <template v-slot:append>
+          <q-icon
+            name="add"
+            class="cursor-pointer"
+            @click.stop="addopt = !addopt"
+          />
+        </template>
+              </q-select>
           </q-item>
               <q-item class="column items-start"  :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
@@ -539,6 +558,18 @@
       </template>
     </q-table>
     <q-dialog
+     v-model="addcat"
+      full-width
+      >
+      <AddCat :isDiag="true" class="q-diag-glassMorph" />
+    </q-dialog>
+    <q-dialog
+     v-model="addopt"
+     full-width
+      >
+      <AddOpt :isDiag="true" class="q-diag-glassMorph" />
+    </q-dialog>
+    <q-dialog
       v-model="preview"
       maximized
       @show="$q.dark.set(false)"
@@ -609,7 +640,9 @@ export default {
   mixins: [ QUploaderBase ],
   components: {
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
-    ClientMenu
+    ClientMenu,
+    AddCat: () => import('./Categorias'),
+    AddOpt: () => import('./optionsConf')
   },
   props: {
     quick: {
@@ -676,6 +709,8 @@ export default {
   },
   data () {
     return {
+      addopt: false,
+      addcat: false,
       preview: false,
       searchBar: '',
       menuTemp: [],

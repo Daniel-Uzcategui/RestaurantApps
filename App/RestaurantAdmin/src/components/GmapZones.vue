@@ -32,7 +32,8 @@
           margin: 0px;
           padding: 0px;
           overflow-x: hidden;"
-          :class=" $q.dark.isActive ? 'bg-dark' : 'bg-white'">
+          class="q-cardGlass"
+          >
         <q-bar class="bg-transparent q-mt-sm">
               <q-btn flat ></q-btn>
                <q-btn style="z-index: 2001" dense flat icon="fas fa-chevron-left" v-close-popup>
@@ -44,8 +45,8 @@
       <gmap-polygon :options="{ strokeColor:'#' + colors[index]}" v-for="(polypath, index) in path" :key="index" :draggable="true" :paths="polypath" :editable="true" @click="clickedPoly(index)" @paths_changed="updateEdited($event, index)" />
     </gmap-map>
     <div class="row justify-center">
-    <q-btn label="Añadir Zona" class="q-ma-md" rounded @click="addPoly()"></q-btn>
-    <q-btn label="Eliminar Zona" class="q-ma-md" rounded @click="rmPoly()"></q-btn>
+    <q-btn label="Añadir Zona" color="primary" class="q-ma-md" no-caps rounded @click="addPoly()"></q-btn>
+    <q-btn label="Eliminar Zona" color="primary" class="q-ma-md" no-caps rounded @click="rmPoly()"></q-btn>
     </div>
     </q-card-section>
       <q-card-section class="q-pt-none q-pa-md">

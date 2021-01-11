@@ -1,20 +1,20 @@
 <template>
   <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
    <q-table
-   style="border-radius: 28px"
+   style="border-radius: 28px;"
       dense
       grid
       :data="elGroup"
       :columns="columns"
       title="Configuración de Opciones"
-      :rows-per-page-options="[]"
+      :rows-per-page-options="[5,20,30,50,0]"
       row-key="id"
       ref="table"
       :selected-rows-label="getSelectedString"
       selection="multiple"
       :selected.sync="selected"
     >
-    <template v-if="$q.screen.gt.xs" v-slot:top>
+    <template v-if="$q.screen.gt.xs || isDiag" v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
       Configuración de Opciones
       </p>
@@ -60,7 +60,7 @@
               />
           </q-td>
           <q-td key="required" :props="props">
-            <q-select filled dense
+            <q-select options-selected-class="text-blue" filled dense
                 rounded outlined
                 :value="props.row.required"
                 @input="(e) => saved2(e, props.row.required, props.row.id, 'required')"
@@ -83,7 +83,7 @@
               />
           </q-td>
           <q-td key="group_id" :props="props">
-              <q-select filled dense
+              <q-select options-selected-class="text-blue" filled dense
                 rounded outlined
                 :value="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
@@ -101,7 +101,7 @@
               />
           </q-td>
           <q-td key="type" :props="props">
-              <q-select filled dense
+              <q-select options-selected-class="text-blue" filled dense
                 rounded outlined
                 :value="props.row.type"
                 @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
@@ -117,7 +117,7 @@
               />
           </q-td>
           <q-td key="free" :props="props">
-            <q-select filled dense
+            <q-select options-selected-class="text-blue" filled dense
                 rounded outlined
                 :value="props.row.free"
                 @input="(e) => saved2(e, props.row.free, props.row.id, 'free')"
@@ -190,7 +190,7 @@
           <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
-            <q-td><label class="label-expand">Nombre</label></q-td>
+            <q-td><label class="label-expand">Nombre de la Configuración</label></q-td>
               <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               v-model="props.row.name"
@@ -213,8 +213,8 @@
              </div>
           </q-item>
           <q-item class="column items-start" key="group_id" :props="props">
-             <q-td><label class="label-expand">Grupo</label></q-td>
-              <q-select filled dense
+             <q-td><label class="label-expand">Grupo a asociar a esta Configuración</label></q-td>
+              <q-select options-selected-class="text-blue" filled dense
                 rounded outlined
                 v-model="props.row.group_id"
                 @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
@@ -229,6 +229,24 @@
                 stack-label
                 emit-value
                 map-options
+              >
+              <template v-slot:append>
+                  <q-icon
+                    name="add"
+                    class="cursor-pointer"
+                    @click.stop="createValue()"
+                  />
+                </template>
+              </q-select>
+          </q-item>
+          <q-item class="column items-start" key="group_id2" :props="props">
+             <div class="label-expand">Opciones en el grupo
+               <q-icon name="add" @click="addopt = !addopt" />
+             </div>
+              <itemcomp
+                :comp="[props.row]"
+                :value="value"
+                :readOnly="true"
               />
           </q-item>
               <q-item class="column items-start" v-show="props.expand" :props="props">
@@ -255,7 +273,7 @@
               <q-item class="column items-start" v-show="props.expand" :props="props">
                 <q-td><label class="col label-expand">Tipo</label></q-td>
               <q-td key="type" :props="props">
-              <q-select filled dense
+              <q-select options-selected-class="text-blue" filled dense
                 rounded outlined
                 v-model="props.row.type"
                 @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
@@ -299,12 +317,13 @@
           </q-td>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
-                <q-td><label class="col label-expand">Vista previa (solo disponible)</label></q-td>
+                <q-td><label class="col label-expand">Vista previa (solo disponible luego de llenar los datos)</label></q-td>
             <q-card style="max-width: 400px" class="text-left">
               <q-card-section>
                 <itemcomp
                 :comp="[props.row]"
                 :value="value"
+                :readOnly="false"
               />
               </q-card-section>
               </q-card>
@@ -327,10 +346,16 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm" reveal>
-    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+    <q-dialog
+     v-model="addopt"
+      full-width
+      >
+      <AddOpt :isDiag="true"  />
+    </q-dialog>
+    <q-footer class="bg-primary" v-if="$q.screen.lt.sm && !isDiag" reveal>
+    <q-tabs mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
-        <q-tab flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
+        <q-tab flat color="white" push no-capsicon="delete_outline" @click="delrow"/>
    </q-tabs>
    </q-footer>
   </div>
@@ -353,7 +378,14 @@ const columns = [
 import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
-    'itemcomp': () => import('../../components/itemComp.vue')
+    'itemcomp': () => import('../../components/itemComp.vue'),
+    AddOpt: () => import('./options')
+  },
+  props: {
+    isDiag: {
+      type: Boolean,
+      default: () => false
+    }
   },
   computed: {
     ...mapGetters('menu', ['item', 'itemGroup', 'groupComp'])
@@ -361,6 +393,7 @@ export default {
   data () {
     return {
       grid: false,
+      addopt: false,
       value: [],
       typeOpts: [{ name: 'Seleccion Múltiple CheckBox', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple Slider', value: 2 }, { name: 'Seleccion Múltiple Inputs', value: 3 }],
       typeFree: [{ name: 'Si', value: 1 }, { name: 'No', value: 0 }],
@@ -429,7 +462,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue2', 'bindItem', 'newAddRow', 'bindItemGroup', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue2', 'setValue', 'bindItem', 'addRow', 'newAddRow', 'bindItemGroup', 'bindGroupComp']),
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true
@@ -462,6 +495,26 @@ export default {
         this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
       }
       console.log(this.temp1)
+    },
+    createValue () {
+      this.$q.dialog({
+        title: 'Prompt',
+        message: '¿Qué nombre desea para el nuevo grupo?',
+        prompt: {
+          model: '',
+          type: 'text' // optional
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(val => {
+        // console.log('>>>> OK, received', data)
+        if (val.length > 0) {
+          if (!this.itemGroup.includes(val)) {
+            this.addRow({ collection: 'itemGroup' })
+              .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }) })
+          }
+        }
+      })
     },
     addrow () {
       const rand = Math.random().toString(16).substr(2, 8)

@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Widgets Chat
             <q-btn flat color="white" push @click="explain = true" icon="help" />
 
@@ -30,7 +30,7 @@
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Key default chat']"/>
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-option-group color="blue" inline filled v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-option-group color="blue" inline filled v-model="status" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Estatus" />
         </div>
          <div class='filled'></div>

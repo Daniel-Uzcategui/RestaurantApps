@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHr lpR ffr">
 
-    <q-header reveal class="bg-primary text-white">
+    <q-header reveal class="bg-primary ">
     </q-header>
     <q-page-container>
       <div class="bg-bottom-header">

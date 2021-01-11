@@ -4,7 +4,7 @@
      <div class="flex-break"></div>
      <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
-       <q-card-section  class="q-cardtop text-white" >
+       <q-card-section  class="q-cardtop " >
         <div class="text-h5"></div>
       </q-card-section>
       </q-card>

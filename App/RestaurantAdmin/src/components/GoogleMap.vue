@@ -11,7 +11,7 @@
                                       v-on:attrs="slotProps.attrs">
                         </q-input>
                     </template>
-        </gmap-autocomplete>  <div class="column items-center q-pa-md"><q-btn v-if="!readOnly" @click="geolocalize" color="white" text-color="black" no-caps rounded label="Localizarme" /></div>
+        </gmap-autocomplete>  <div class="column items-center q-pa-md"><q-btn v-if="!readOnly" @click="geolocalize" color="primary" no-caps rounded label="Localizarme" /></div>
     <gmap-map
       :center="centerClone"
       :zoom="12"

@@ -14,20 +14,19 @@
       flat
       rounded
       ref="table"
-      class="text-white"
-      style="min-width: 320px; border-radius: 28px;"
+      style="border-radius: 28px;"
       :selected.sync="selected"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
     >
-    <template v-if="$q.screen.gt.xs" v-slot:top>
+    <template v-if="$q.screen.gt.xs || isDiag" v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
       Categorías
       </p>
       <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >
-          <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
+          <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
+          <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
         </q-btn-group>
       </template>
       <!-- <template v-slot:body="props">
@@ -205,7 +204,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm" reveal>
+    <q-footer v-if="$q.screen.lt.sm && !isDiag" reveal>
    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
      <q-tab flat  push no-caps icon="add" @click="addrow"/>
       <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
@@ -227,6 +226,12 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters('menu', ['categorias'])
+  },
+  props: {
+    isDiag: {
+      type: Boolean,
+      default: () => false
+    }
   },
   data () {
     return {

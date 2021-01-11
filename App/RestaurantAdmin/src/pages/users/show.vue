@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Editar Usuario</div>
           <div>
             <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/users/index')"/>
@@ -31,7 +31,7 @@
         </div>
         <div class="row header-container">
           <div class="header-cell col-6" >
-           <q-select filled :value="user.rol" @input="(e) => saved(e, this.$route.query.user_Id, 'rol')" standout="bg-teal text-white"
+           <q-select options-selected-class="text-blue" filled :value="user.rol" @input="(e) => saved(e, this.$route.query.user_Id, 'rol')" standout="bg-teal "
             :options="userRolOptions" label="Rol" />
           </div>
        </div>

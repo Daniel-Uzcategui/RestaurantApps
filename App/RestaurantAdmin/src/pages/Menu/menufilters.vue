@@ -73,7 +73,7 @@
               />
           </q-td>
           <q-td key="cats" :props="props">
-              <q-select filled
+              <q-select options-selected-class="text-blue" filled
                 :value="props.row.cats"
                 @input="(e) => saved(e, props.row.cats, props.row.id, 'cats')"
                 use-input
@@ -148,7 +148,7 @@
           </q-item>
            <q-item class="column items-start" key="group" :props="props">
              <q-td><label class="label-expand">Categorías</label></q-td>
-              <q-select filled
+              <q-select options-selected-class="text-blue" filled
                 rounded
                 outlined
                 v-model="props.row.cats"

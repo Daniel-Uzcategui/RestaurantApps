@@ -23,7 +23,7 @@
       </div>
 
   <div v-if="!readOnly">
-    <div :class=" $q.dark.isActive ? 'bg-dark text-white' : 'bg-white text-black'">
+    <div :class=" $q.dark.isActive ? 'bg-dark ' : 'bg-white text-black'">
     <q-btn-group rounded spread class="full-width">
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'visual'; setDialog()" icon="search" />
       <q-btn no-caps color="secondary" @click="dialog = true; dialogType = 'new'; newAddDialog()" icon="add" />

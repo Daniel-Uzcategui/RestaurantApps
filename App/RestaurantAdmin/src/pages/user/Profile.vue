@@ -1,7 +1,7 @@
 <template>
     <q-page v-if="currentUser">
         <q-card class="q-my-md">
-            <q-card-section class="bg-primary text-h5 text-white justify-center col">
+            <q-card-section class="bg-primary text-h5  justify-center col">
                 <q-item>
                     <q-item-section avatar>
                         <q-avatar v-if="showDefaultPhoto()" size="100px" round="round" color="blue-grey-8" icon="person" text-color="white"></q-avatar>

@@ -9,11 +9,12 @@
     <q-item-section
       v-if="icon"
       side
+      style="color: inherit"
     >
-      <q-icon :name="icon" color="white"/>
+      <q-icon :name="icon"/>
     </q-item-section>
     <q-item-section>
-      <q-item-label class="text-white">{{ title }}</q-item-label>
+      <q-item-label>{{ title }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>

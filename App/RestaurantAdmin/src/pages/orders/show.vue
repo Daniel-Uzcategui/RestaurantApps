@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Orden</div>
           <div class="absolute-bottom-right q-pa-md">
             <q-btn flat color="white"  icon="arrow_back" @click="$router.replace('/Orders/index')"/>
@@ -66,17 +66,17 @@
         </div>
         <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
-          <q-select filled rounded :value="order.status"
+          <q-select options-selected-class="text-blue" filled rounded :value="order.status"
             @input="(e) => { checkOrder(e)
             }"
             map-options
             emit-value
-            standout="bg-teal text-white"
+            standout="bg-teal "
             :options="estatus_options"
             label="Estatus" />
         </div>
         <div class="header-cell q-ma-sm col-3">
-          <q-select filled rounded :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal text-white"
+          <q-select options-selected-class="text-blue" filled rounded :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal "
             :options="typePayment_options" map-options emit-value label="Tipo de Pago" />
         </div>
         <div class="header-cell q-ma-sm col-3">
@@ -242,7 +242,7 @@
       <q-card-section class="text-center text-h1 q-pa-none">
         ------------------
       </q-card-section>
-      <q-card-section class="text-center text-h4 q-pa-none bg-black text-white">
+      <q-card-section class="text-center text-h4 q-pa-none bg-black ">
         ** {{this.getLocalization (order.sede)}} **
       </q-card-section>
       <!-- <q-card-section class="text-center text-h6">

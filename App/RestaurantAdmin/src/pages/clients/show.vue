@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Editar Clientes</div>
           <div>
             <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/clients/index')"/>
@@ -31,7 +31,7 @@
             @input="(e) => saved(e, this.$route.query.client_Id, 'phone')"
             type="text" float-label="Float Label" placeholder="Telefono" />
           <label>Estatus</label>
-          <q-select filled map-options emit-value standout="bg-teal text-white"
+          <q-select options-selected-class="text-blue" filled map-options emit-value standout="bg-teal "
             :value="client.status"
             @input="(e) => saved(e, this.$route.query.client_Id, 'status')"
             :options="estatus_client" />

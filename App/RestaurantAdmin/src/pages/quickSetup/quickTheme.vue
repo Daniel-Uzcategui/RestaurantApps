@@ -19,7 +19,7 @@
         :control-color="['payserv', 'addsede', 'addcat', 'addprod', 'theme'].includes(slide) ? 'grey' : 'white'"
         arrows
         height="100%"
-        class="q-fullscreen-glassMorph text-white shadow-1 rounded-borders"
+        class="q-fullscreen-glassMorph  shadow-1 rounded-borders"
       >
         <q-carousel-slide name="style" class="column no-wrap flex-center" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
           <q-img width="128px" src="icons/iconwhite.png" />
@@ -27,7 +27,7 @@
             {{ lorem }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="themesel" class="q-pa-none text-white row justify-between">
+        <q-carousel-slide name="themesel" class="q-pa-none  row justify-between">
           <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FClassicLight352387?alt=media&token=3550abec-af61-422b-88e0-8cf0a140bdc8" />
           <q-radio v-model="theme" val="ClassicLight" :size="$q.screen.name" color="white" label="Classic Light" />
@@ -51,7 +51,7 @@
             {{ lorem2 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="theme" class="q-pa-none text-white row justify-between">
+        <q-carousel-slide name="theme" class="q-pa-none  row justify-between">
           <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FHorizontal312833?alt=media&token=dbf36c60-d2fb-439f-848a-922bf6d6390a" />
           <q-radio v-model="displayType" :val="1" :size="$q.screen.name" color="white" label="Horizontal" />
@@ -71,7 +71,7 @@
             {{ lorem3 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="themes" class="q-pa-none text-white row justify-between">
+        <q-carousel-slide name="themes" class="q-pa-none  row justify-between">
           <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fcomputer2515215?alt=media&token=5af2a290-beca-4ea8-af1f-03dc8fef5050" />
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fmobile252217?alt=media&token=e3c98a81-79e6-4710-bb0d-d23931756a22" />
@@ -83,7 +83,7 @@
           <q-radio v-model="mobile" :val="false" :size="$q.screen.name" color="white" label="Minimalista" />
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="themes2" class="q-pa-none text-white row justify-between">
+        <q-carousel-slide name="themes2" class="q-pa-none  row justify-between">
           <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
             <q-img style="max-width: 200px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture19294?alt=media&token=605a2fb5-5090-4e00-8bd1-956e741b7f30" />
           <q-radio v-model="mobile2" :val="true" :size="$q.screen.name" color="white" label="Con Iconos" />
@@ -94,7 +94,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="themefin" class="column no-wrap flex-center">
-          <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem4 }}
           </div>
            <q-btn color="white" rounded text-color="black" no-caps @click="diag=false; $router.push({ path: '/home/' })" label="Finalizar" />

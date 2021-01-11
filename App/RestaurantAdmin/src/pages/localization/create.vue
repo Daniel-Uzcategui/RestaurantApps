@@ -2,11 +2,11 @@
   <div style="min-width: 320px" :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Agregar Sedes</div>
           <div>
-            <q-btn v-if="!quickAdded" class="header-btn" flat color="white" push no-caps label="Guardar" @click="agregar" icon="save"/>
-            <q-btn v-if="quick" class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/localization/index')"/>
+            <q-btn v-if="!quickAdded" class="header-btn" flat push no-caps label="Guardar" @click="agregar" icon="save"/>
+            <q-btn v-if="quick" class="header-btn-back" flat push  icon="arrow_back" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>
@@ -22,7 +22,7 @@
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Nombre de la Sede']"/>
         </div>
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-6 col-lg-6">
-          <q-select filled rounded v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-select options-selected-class="text-blue" filled rounded v-model="status" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Estatus" />
         </div>
         <div class="flex-break q-py-md "></div>
@@ -59,7 +59,7 @@
        <diV class='filled'></diV>
      </q-card>
      <q-card class="q-cardGlass" v-if="Delivery">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Zonas de delivery (Opcional)</div>
        </q-card-section>
        <q-card-section class="column items-center">

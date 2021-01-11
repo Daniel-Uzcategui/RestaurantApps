@@ -16,9 +16,9 @@
       :selected.sync="selected"
       >
       <template v-if="$q.screen.gt.xs" v-slot:top-right>
-        <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="$router.replace('/localization/create')"/>
-        <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
-        <q-btn flat color="white" push no-caps label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn flat push no-caps label="Agregar" icon="add" @click="$router.replace('/localization/create')"/>
+        <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
+        <q-btn flat push no-caps label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:header="props">
         <q-tr :props="props">
@@ -88,7 +88,7 @@
                 <q-item-section>
                   <q-item-label>{{props.row.name}}</q-item-label>
                 </q-item-section>
-                <q-item-section class="text-caption text-grey">
+                <q-item-section>
                   <q-item-label>{{props.row.status ? 'activo' : 'inactivo'}}</q-item-label>
                 </q-item-section>
                 <q-item-section side>

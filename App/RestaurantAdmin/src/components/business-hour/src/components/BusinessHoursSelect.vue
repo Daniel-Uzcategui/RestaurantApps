@@ -18,7 +18,7 @@
       localization.midnight
     }}</option>
   </select> -->
-  <q-select filled rounded outlined
+  <q-select options-selected-class="text-blue" filled rounded outlined
   @input="inputEventHandler"
   style="min-width: 120px"
    v-model="selected"

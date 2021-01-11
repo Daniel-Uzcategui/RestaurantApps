@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
      <div class="q-gutter-md">
       <q-card >
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Agregar Ordenes</div>
           <div>
             <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="add"/>
@@ -19,7 +19,7 @@
           <q-input filled v-model="paid"  type="text" float-label="Float Label" placeholder="Monto" />
         </div>
         <div class="header-cell col-4">
-          <q-select filled v-model="status" standout="bg-teal text-white"  :options="estatus_options" label="Estatus" />
+          <q-select options-selected-class="text-blue" filled v-model="status" standout="bg-teal "  :options="estatus_options" label="Estatus" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-4">
@@ -29,7 +29,7 @@
           <q-input filled v-model="sede"  type="text" float-label="Float Label" placeholder="Sede de la Orden" />
         </div>
         <div class="header-cell col-4">
-          <q-select filled v-model="typePayment" standout="bg-teal text-white"  :options="typePayment_options" label="Tipo de Pago" />
+          <q-select options-selected-class="text-blue" filled v-model="typePayment" standout="bg-teal "  :options="typePayment_options" label="Tipo de Pago" />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell col-5">

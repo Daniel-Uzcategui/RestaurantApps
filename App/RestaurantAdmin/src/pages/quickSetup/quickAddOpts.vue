@@ -19,7 +19,7 @@
         :control-color="['payserv', 'addsede', 'addcat', 'addprod'].includes(slide) ? 'grey' : 'white'"
         arrows
         height="100%"
-        class="q-fullscreen-glassMorph text-white shadow-1 rounded-borders"
+        class="q-fullscreen-glassMorph  shadow-1 rounded-borders"
       >
         <q-carousel-slide name="style" class="column no-wrap flex-center" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
           <q-img width="128px" src="icons/iconwhite.png" />
@@ -28,17 +28,17 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="layers" class="column no-wrap flex-center">
-          <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem2 }}
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="layers2" class="column no-wrap flex-center">
-          <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem3 }}
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="layers3" class="column no-wrap flex-center">
-          <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem4 }}
           </div>
         </q-carousel-slide>
@@ -46,7 +46,7 @@
           <AddOpts class="full-width" @done="slide = 'addsedelorem'" :quick="false" style="height: 100%;"/>
         </q-carousel-slide>
         <q-carousel-slide name="addsedelorem" class="column no-wrap flex-center">
-          <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem5 }}
           </div>
         </q-carousel-slide>
@@ -54,7 +54,7 @@
           <AddCfgOpts style="height: 100%;"/>
         </q-carousel-slide>
         <q-carousel-slide name="addprodlorem" class="column no-wrap flex-center">
-          <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem6 }}
           </div>
           <q-btn color="white" rounded text-color="black" no-caps @click="diag=false; $router.push({ path: '/home/' })" label="Finalizar" />

@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Editar Sedes</div>
           <div>
             <q-btn class="header-btn" flat color="white" push  icon="arrow_back" @click="back"/>
@@ -18,7 +18,7 @@
           />
         </div>
         <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded outlined map-options emit-value standout="bg-teal text-white"
+          <q-select options-selected-class="text-blue" filled rounded outlined map-options emit-value standout="bg-teal "
           :value="localization.status"
           @input="(e) => saved(e, this.$route.query.Localization_Id, 'status')"
           :options="estatus_options" />
@@ -71,7 +71,7 @@
      </q-card-section>
      </q-card>
      <q-card class="q-cardGlass" v-if="config && config.statusDelivery && localization.Delivery">
-       <q-card-section  class="q-cardtop text-white header" >
+       <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Zonas de delivery (Opcional)</div>
        </q-card-section>
        <q-card-section class="column items-center">

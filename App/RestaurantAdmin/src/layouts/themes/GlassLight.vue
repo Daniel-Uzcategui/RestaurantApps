@@ -1,13 +1,16 @@
 <template>
 <div>
-<slot></slot>
+<slot ></slot>
 </div>
 </template>
 
 <script>
+// import { colors } from 'quasar'
 export default {
-  mounted () {
+  created () {
     this.$q.dark.set(false)
+    // colors.setBrand('primary', colors.getBrand('blue'))
+    // colors.setBrand('secondary', colors.getBrand('light-blue'))
   }
 }
 </script>
@@ -22,7 +25,6 @@ export default {
 .q-fullscreen-glassMorph
   @extends .q-diag-glassMorph
   border-radius 0px !important
-  height 100%
 
 .backgroundImage
   background: url('https://i.pinimg.com/originals/13/4f/27/134f271f8d0710edb376f2b7f2b82916.jpg') no-repeat center center fixed;
@@ -36,8 +38,7 @@ export default {
 
 .q-select__dialog
   @extends .q-diag-glassMorph
-.q-drawer
-  border-top-right-radius: 100px;
+
 .q-drawer
   background rgba( 255, 255, 255 0.40 )
   backdrop-filter blur( 8.0px )
@@ -46,22 +47,14 @@ export default {
 .q-table__container
   @extends .q-drawer
   font-weight: 800
+  color inherit
 .q-table__top
   @extends .q-drawer
   background-color rgba($secondary, 0.25)
-
-.background-color
-  margin 40px auto
-  border-radius 20px
-  width 90% !important
-  height 60%
-  background-color rgba( 255, 255, 255 0.40 ) !important
-  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
-  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
+  color inherit
 .q-cardtop
   @extends .q-table__top
-.itemcompback
-  background-color rgba( 0, 0, 0 0.40 )
+
 .q-cardGlass
   @extends .q-diag-glassMorph
 
