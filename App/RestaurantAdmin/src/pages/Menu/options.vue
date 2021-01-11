@@ -19,7 +19,7 @@
       </p>
       <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >
-          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click.stop="addrow"/>
+          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow()"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
@@ -317,7 +317,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue2', 'setValue', 'addRow', 'bindItem', 'bindItemGroup']),
+    ...mapActions('menu', ['setValue2', 'setValue', 'addRow', 'newAddRow', 'bindItem', 'bindItemGroup']),
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true
@@ -363,12 +363,13 @@ export default {
       if (typeof this.temp1[collection] === 'undefined') {
         this.temp1[collection] = {}
       }
-      this.temp1[collection][rand] = { id: rand, isNew: true, descripcion: '', ...data }
+      this.temp1[collection][rand] = { id: rand, isNew: true, descripcion: '', price: 0, ...data }
       if (collection === 'item') {
-        this.elitem.unshift({ id: rand, descripcion: '', ...data })
+        this.elitem.unshift({ id: rand, descripcion: '', price: 0, ...data })
       } else {
         this.elitemGroup.unshift({ id: rand, descripcion: '', ...data })
       }
+      console.log({ elitem: this.elitem, temp: this.temp1 })
       this.$forceUpdate()
     },
     filterFn (val, update) {

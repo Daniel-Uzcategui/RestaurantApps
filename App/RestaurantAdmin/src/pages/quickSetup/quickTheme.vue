@@ -83,6 +83,16 @@
           <q-radio v-model="mobile" :val="false" :size="$q.screen.name" color="white" label="Minimalista" />
           </div>
         </q-carousel-slide>
+        <q-carousel-slide name="themes2" class="q-pa-none text-white row justify-between">
+          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+            <q-img style="max-width: 200px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture19294?alt=media&token=605a2fb5-5090-4e00-8bd1-956e741b7f30" />
+          <q-radio v-model="mobile2" :val="true" :size="$q.screen.name" color="white" label="Con Iconos" />
+          </div>
+          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+            <q-img style="max-width: 200px" @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture27555?alt=media&token=ae998ffd-2970-4271-8719-5a489aeae8e0" />
+          <q-radio v-model="mobile2" :val="false" :size="$q.screen.name" color="white" label="Sin Iconos" />
+          </div>
+        </q-carousel-slide>
         <q-carousel-slide name="themefin" class="column no-wrap flex-center">
           <div class="q-mt-xl text-white text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem4 }}
@@ -115,6 +125,18 @@ export default {
       },
       set (e) {
         this.saved3(e, this.displayType, 'menu', 'displayType')
+      }
+    },
+    mobile2: {
+      get () {
+        let men = this.configs.find(e => e.id === 'menu')
+        if (men && typeof men.iconsactive !== 'undefined') {
+          return men.iconsactive
+        }
+        return true
+      },
+      set (e) {
+        this.saved3(e, this.mobile2, 'menu', 'iconsactive')
       }
     },
     theme: {

@@ -1,9 +1,9 @@
 <template>
-  <div style="min-width: 320px;" :class="$q.screen.gt.xs ? 'q-ma-lg' : ''" >
+  <div style="min-width: 320px;" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
        <q-card-section  class="q-cardtop text-white header" >
-          <div class="text-h5">Ajustes de Medios de Pagos y Tipos de Servicios</div>
+          <div class="text-h5">Ajustes de Medios de Pagos</div>
           <div>
            <div v-if="config">
               <q-btn class="header-btn" flat color="white" push  @click="validator" icon="fas fa-save"/>
@@ -16,97 +16,61 @@
          </q-card-section>
 
         <q-card-section>
-        <div class="row header-container">
-         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tipo de Servicios</div>
-       </div>
-       <div class="flex-break q-py-md "></div>
-        <div class="row header-container">
-         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusDelivery" map-options emit-value standout="bg-teal text-white"
-          outlined :options="estatus_options" label="Delivery" />
-        </div>
-        <div class="flex-break q-py-md "></div>
-      </div>
-       <div class="row header-container">
-         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusPickup" map-options emit-value standout="bg-teal text-white"
-          outlined :options="estatus_options" label="Pick Up" />
-        </div>
-        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusInlocal" map-options emit-value standout="bg-teal text-white"
-          outlined :options="estatus_options" label="In Local" />
-        </div>
-        <div class="flex-break q-py-md "></div>
-      </div>
-      <div class="row header-container">
-         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Recompensas</div>
-       </div>
        <div class="flex-break q-py-md "></div>
         <div class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusRewards" map-options emit-value standout="bg-teal text-white"
-          outlined :options="estatus_options" label="Activar Recompensas" />
-        </div>
-        <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded
-          label="Cantidad Necesitada"
-          type="number"
-          float-label="Float Label"
-          outlined
-          v-model="rewards"
-          :rules="[ val => val && val > 0 || '*Requerido el campo Precio y mayor a 0']"/>
-        </div>
-        </div>
-        <div class="flex-break q-py-md "></div>
-        <div class="row header-container">
-         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Medios de Pagos</div>
-       </div>
-       <div class="flex-break q-py-md "></div>
-        <div class="row header-container">
-         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusPto" map-options emit-value standout="bg-teal text-white"
+          <p>Punto de Venta</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusPto" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Punto de Venta" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
+          <p>Zelle</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusZelle" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Zelle" />
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
+          <p>Venmo</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusVenmo" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Venmo" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusCash" map-options emit-value standout="bg-teal text-white"
+          <p>Efectivo</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusCash" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Efectivo" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
+          <p>Paypal</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusPaypal" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Paypal" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal text-white"
+          <p>CreditCorp</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="CreditCorp" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal text-white"
+          <p>Pago Móvil</p>
+<q-option-group color="blue" inline  filled rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Pago Móvil" />
         </div>
         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statustransfer" map-options emit-value standout="bg-teal text-white"
+          <p>Transferencia Bancaria</p>
+<q-option-group color="blue" inline  filled rounded v-model="statustransfer" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Transferencia Bancaria" />
         </div>
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="statusMercantil" map-options emit-value standout="bg-teal text-white"
+          <p>Mercantil</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusMercantil" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Mercantil" />
         </div>
         </div>
@@ -136,8 +100,9 @@
        </div>
        <div v-if="statusMercantil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal text-white"
-          outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Desarrollo'}]" label="Ambiente" />
+          <p>Ambiente</p>
+<q-option-group color="blue" inline  filled rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal text-white"
+          outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input filled rounded v-model="Mercantil.xibm" standout="bg-teal text-white"
@@ -319,27 +284,7 @@ export default {
     },
     save () {
       let value, id, key
-      value = this.statusDelivery
       id = this.config.id
-      key = 'statusDelivery'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPickup
-      id = this.config.id
-      key = 'statusPickup'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusInlocal
-      id = this.config.id
-      key = 'statusInlocal'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPto
-      key = 'statusPto'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusRewards
-      key = 'statusRewards'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.rewards
-      key = 'rewards'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusZelle
       key = 'statusZelle'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))

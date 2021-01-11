@@ -207,7 +207,9 @@ export default {
         })
         console.log(menu)
       }
-      if ((this.menucfg && this.menucfg.menuactive) || (typeof this.menucfg === 'undefined' || this.menucfg === null)) {
+      if ((this.menucfg && this.menucfg.menuactive) || (typeof this.menucfg === 'undefined' || this.menucfg === null ||
+      (this.menucfg && typeof this.menucfg.menuactive === 'undefined'))) {
+        console.log('Menu ACCCC')
         if (this.menucfg && this.menucfg.dispName) {
           let inter = [{
             title: this.menucfg.dispName,
@@ -246,7 +248,7 @@ export default {
           menu = [ ...menu, ...inter ]
         }
       }
-      mapping = [...mapping2, ...mapping]
+      mapping = [...menu, ...mapping2, ...mapping]
       if (this.paymentServ && this.paymentServ.statusRewards) {
         mapping = [...mapping,
           {
@@ -313,7 +315,7 @@ export default {
       var mapping = []
       var mapping2 = []
       var filtro = this.filters.filter(x => x.show === true)
-      if (filtro.length) {
+      if (this.filters.length) {
         mapping = filtro.map(x => {
           return {
             title: x.name,
@@ -334,7 +336,8 @@ export default {
         })
         console.log({ mapping })
       }
-      if (this.menucfg && this.menucfg.menuactive) {
+      if ((this.menucfg && this.menucfg.menuactive) || (typeof this.menucfg === 'undefined' || this.menucfg === null ||
+      (this.menucfg && typeof this.menucfg.menuactive === 'undefined'))) {
         if (this.menucfg && this.menucfg.dispName) {
           mapping2 = [{
             title: this.menucfg.dispName,
@@ -510,6 +513,7 @@ export default {
       customClass: 'loader'
     })
     this.bindMenuCfg()
+    this.bindThemeCfg()
     this.bindPaymentServ().then(() => {
       this.PaypalServe(this.paymentServ)
     }).catch(e => console.error('error fetching data firebase', { e }))
@@ -635,7 +639,7 @@ export default {
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindthemecfg']),
+    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
     appendFile () {

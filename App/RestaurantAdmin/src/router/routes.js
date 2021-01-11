@@ -355,7 +355,16 @@ const routes = [
         component: () => import('pages/settings/paymentServ.vue'),
         meta: {
           requiresAuth: true,
-          nombre: 'Pagos y Servicios'
+          nombre: 'Servicios de Pagos'
+        }
+      },
+      {
+        path: 'services',
+        name: 'services',
+        component: () => import('pages/settings/Services.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Servicios'
         }
       },
       {

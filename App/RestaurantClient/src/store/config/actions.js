@@ -5,9 +5,13 @@ export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configurations', firestore().collection('config'), { reset: false, serialize: serialize, wait: true })
 })
-export const bindMenuCfg = firestoreAction(({ bindFirestoreRef }) => {
+export const bindThemeCfg = firestoreAction(({ bindFirestoreRef }) => {
   console.log('themecfg')
   return bindFirestoreRef('themecfg', firestore().collection('config').doc('theme'), { reset: false, serialize: serialize, wait: true })
+})
+export const bindMenuCfg = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('menucfg')
+  return bindFirestoreRef('menucfg', firestore().collection('config').doc('menu'), { reset: false, serialize: serialize, wait: true })
 })
 const serialize = (snapshot) => {
   // snapshot.data() DOES NOT contain the `id` of the document. By

@@ -30,7 +30,7 @@
           :rules="[ val => val && val.length > 0 || '*Requerido el campo Key default chat']"/>
         </div>
         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-select filled v-model="status" map-options emit-value standout="bg-teal text-white"
+          <q-option-group color="blue" inline filled v-model="status" map-options emit-value standout="bg-teal text-white"
           outlined :options="estatus_options" label="Estatus" />
         </div>
          <div class='filled'></div>
@@ -43,7 +43,7 @@
 
     <p class="text-h6 text-bold"> Para configurar el chat dirigirse a </p>
     <q-btn :href="'//' + 'tawk.to'" type="a" target="_blank" label="Tawk.to" rounded color="primary"/>
-    <p class="text-h6 text-bold q-ma-md"> Crear una cuenta al iniciar sesión abajo a la izquierda entras a la configuración, en visión general buscar el campo PropiedadId, copiar los datos de ese campo</p>
+    <p class="text-h6 text-bold q-ma-md"> Crear una cuenta, al iniciar sesión abajo a la izquierda entras a la configuración, en visión general buscar el campo PropiedadId, copiar los datos de ese campo</p>
     <q-img width="200px" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture3290?alt=media&token=d8e76081-26ba-496b-b4df-f8a49d489385"/>
       </q-card-section>
     </q-card>

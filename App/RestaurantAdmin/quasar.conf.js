@@ -123,6 +123,7 @@ module.exports = function (ctx) {
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
       extendWebpack (cfg) {
         cfg.module.rules.push({
+          maximumFileSizeToCacheInBytes: 5000000,
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
