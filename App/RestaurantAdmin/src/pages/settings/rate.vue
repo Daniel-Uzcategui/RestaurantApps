@@ -84,12 +84,20 @@ export default {
     },
     addrow () {
       console.log(this.currentUser)
-      let rateValue = ''
-      let dateIn = new Date()
-      let currency = 'Bs'
-      let userId = this.currentUser.id
-      this.add = true
-      this.addRate({ rateValue, dateIn, currency, userId })// .then(e => { this.$q.loading.hide(); this.$router.replace('/home') })
+      this.$q.dialog({
+        title: 'Agregar tasa de cambio',
+        message: '¿Desea agregar una tasa de cambio ?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        let rateValue = 0
+        let dateIn = new Date()
+        let currency = 'Bs'
+        let userId = this.currentUser.id
+        this.add = true
+        this.addRate({ rateValue, dateIn, currency, userId })
+      }).onCancel(() => {
+      })
     },
     afterBindigRate () {
       // console.log('afterBindigRate')
