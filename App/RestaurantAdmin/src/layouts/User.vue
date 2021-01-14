@@ -256,6 +256,14 @@ export default {
 
             },
             {
+              label: 'Grupos de Opciones',
+              caption: '',
+              icon: 'menu_book',
+              handler: () => this.$router.push({ path: '/menu/GroupOptions' })
+              // separator: true,
+
+            },
+            {
               label: 'Config Grupos de Opciones',
               caption: '',
               icon: 'menu_book',

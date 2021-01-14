@@ -190,7 +190,7 @@
           <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
-            <q-td><label class="label-expand">Nombre de la Configuración</label></q-td>
+            <q-td><label class="label-expand">Nombre de la Configuración (Este es el título que verá el cliente para las opciones)</label></q-td>
               <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
               v-model="props.row.name"
@@ -234,14 +234,14 @@
                   <q-icon
                     name="add"
                     class="cursor-pointer"
-                    @click.stop="createValue()"
+                    @click.stop="opcionesGroup = true"
                   />
                 </template>
               </q-select>
           </q-item>
           <q-item class="column items-start" key="group_id2" :props="props">
              <div class="label-expand">Opciones en el grupo
-               <q-icon name="add" @click="addopt = !addopt" />
+               <!-- <q-icon name="add" @click="addopt = !addopt" /> -->
              </div>
               <itemcomp
                 :comp="[props.row]"
@@ -317,7 +317,7 @@
           </q-td>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
-                <q-td><label class="col label-expand">Vista previa (solo disponible luego de llenar los datos)</label></q-td>
+                <q-td><label class="col label-expand">Vista previa (solo disponible luego de asociar un grupo)</label></q-td>
             <q-card style="max-width: 400px" class="text-left">
               <q-card-section>
                 <itemcomp
@@ -333,6 +333,9 @@
         </div>
       </template>
     </q-table>
+    <q-dialog full-width v-model="opcionesGroup">
+      <opcionesGroup :isDiag="true"/>
+    </q-dialog>
     <q-dialog v-model="noSelect">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
@@ -379,7 +382,8 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
     'itemcomp': () => import('../../components/itemComp.vue'),
-    AddOpt: () => import('./options')
+    AddOpt: () => import('./options'),
+    opcionesGroup: () => import('./gruposOpt')
   },
   props: {
     isDiag: {
@@ -392,6 +396,7 @@ export default {
   },
   data () {
     return {
+      opcionesGroup: false,
       grid: false,
       addopt: false,
       value: [],

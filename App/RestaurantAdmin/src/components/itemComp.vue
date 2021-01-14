@@ -138,7 +138,7 @@ export default {
       var group = []
       console.log(this.comp)
       this.comp.forEach(element => {
-        var items = this.item.filter(x => x.group_id.includes(element.group_id))
+        var items = this.item.filter(x => x && x.group_id && x.group_id.includes(element.group_id))
         group.push({ ...element, items })
       })
       return group.sort((a, b) => a.priority - b.priority)

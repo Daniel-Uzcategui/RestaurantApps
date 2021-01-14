@@ -45,8 +45,8 @@ export const addRow = firestoreAction(async (state, payload) => {
   }
   if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {
     data = {
-      ...data,
-      price: 0
+      price: 0,
+      ...data
     }
   }
   return firestore()
@@ -67,8 +67,8 @@ export const newAddRow = firestoreAction(async (state, payload) => {
   }
   if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {
     data = {
-      ...data,
-      price: 0
+      price: 0,
+      ...data
     }
   }
   return firestore()

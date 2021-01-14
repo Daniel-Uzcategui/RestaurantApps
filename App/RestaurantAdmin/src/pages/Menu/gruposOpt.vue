@@ -1,9 +1,8 @@
 <template>
   <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
    <q-table
-      v-if="!isDiagEasy"
       style="border-radius: 28px"
-      :data="elitem"
+      :data="elitemGroup"
       :columns="columns"
       title="Opciones"
       :rows-per-page-options="[20, 30, 0]"
@@ -16,11 +15,11 @@
     >
     <template v-if="$q.screen.gt.xs || isDiag" v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
-      Opciones
+      Grupos de Opciones
       </p>
       <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >
-          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow()"/>
+          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="createValue()"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
@@ -94,7 +93,7 @@
                 <q-item-section>
                   <q-item-label>{{props.row.name ? props.row.name: 'Nueva Opción'}}</q-item-label>
                 </q-item-section>
-                <q-item-section class="text-caption text-grey">
+                <!-- <q-item-section class="text-caption text-grey">
                   <q-icon
                     @click.stop="(e) => {saved(
                         typeof props.row.estatus === 'undefined' ? true : !props.row.estatus,
@@ -104,44 +103,64 @@
                         }"
                       :color="props.row.estatus ? 'blue' : 'red'"
                    style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? 'toggle_on' : 'toggle_off'" />
-                </q-item-section>
-                <q-item-section>
+                </q-item-section> -->
+                <!-- <q-item-section>
                   <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" lines="3" caption> {{(props.row.price).toFixed(2)}}
                   </q-item-label>
-                </q-item-section>
+                </q-item-section> -->
                 <q-item-section side>
                 <q-icon name="edit" @click.stop="props.expand = !props.expand" />
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
+              <!-- <q-item>
+                <div class="row full-width">
+                <q-btn class="col-4 q-ma-xs" flat dense rounded no-caps color="blue" :label="item.name" v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
+                </q-btn>
+                </div>
+              </q-item> -->
         </q-list>
           <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled
-              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              @input="(e) => saved(e, props.row.name, props.row.id, 'name', 'itemGroup')"
               v-model="props.row.name"
               rounded
               outlined />
           </q-item>
-          <q-item class="column items-start" key="estatus" :props="props">
-             <q-td><label class="label-expand">Estatus</label></q-td>
-              <q-toggle
-                @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
-                :value="props.row.estatus ? true : false"
-                color="blue"
-              />
-          </q-item>
-           <q-item v-if="!isDiag" class="column items-start" key="groupComp" :props="props">
-             <q-td><label class="label-expand">Grupos</label></q-td>
-              <q-select options-selected-class="text-blue" filled
+           <q-item class="column items-start" key="groupComp" :props="props">
+             <div class="label-expand full-width row justify-between">
+               <div class="text-h6">Opciones</div>
+               <q-btn
+               rounded
+               dense
+                    icon="add"
+                    label="Añadir"
+                    color="blue"
+                    no-caps
+                    class="cursor-pointer"
+                    @click.stop="opciones = true; propspass = props"
+                  />
+             </div>
+             <q-list>
+               <q-item v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
+                 <div>
+                    <q-chip removable @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green" text-color="white" icon="filter_frames">
+                       {{item.name}}
+                    </q-chip>
+                 </div>
+               </q-item>
+             </q-list>
+              <!-- <q-select options-selected-class="text-blue" filled
               bottom-slots
                 rounded
                 outlined
-                v-model="props.row.group_id"
-                @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
+                :value="findItemsonGroup(props.row.id)"
+                @input="(e) => saved2(e, findItemsonGroup(props.row.id), props.row.id, 'group_id')"
                 use-input
+                hide-dropdown-icon
                 use-chips
                 multiple
                 input-debounce="0"
@@ -151,111 +170,24 @@
                 @filter="filterFn"
                 style="width: 250px"
                 stack-label
-                emit-value
                 map-options
               >
                 <template v-slot:append>
                   <q-icon
                     name="add"
                     class="cursor-pointer"
-                    @click="createValue()"
+                    @click.stop="opciones = true; propspass = props"
                   />
                 </template>
-              </q-select>
+              </q-select> -->
           </q-item>
-              <q-item class="column items-start" v-show="props.expand" :props="props">
-                <q-td><label class="col label-expand">Descripción</label></q-td>
-                <q-td class="col-12" key="descripcion" :props="props">
-                    <q-editor content-class="bg-blue-6"
-                      @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                      v-model="props.row.descripcion"
-                      min-height="5rem"
-                    />
-                </q-td>
-              </q-item>
-              <q-item class="row justify-center" v-show="props.expand" :props="props">
-                <div class="col-6 q-pa-xs">
-                <p class="text-bold">Precio</p>
-                  <q-decimal filled
-                  :rules="[validate]"
-                  rounded
-                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                  v-model="props.row.price"
-                  input-style="text-align: right">
-                  </q-decimal>
-                </div>
-                <div class="col-6 q-pa-xs">
-                  <p class="text-bold">Prioridad</p>
-                  <q-input filled
-                  rounded
-                  outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
-                  v-model="props.row.priority"
-                  min="1" max="999"
-                  type="number">
-                  </q-input>
-                </div>
-              </q-item>
             </q-list>
           </q-dialog>
         </div>
       </template>
     </q-table>
-    <q-dialog v-model="addopt">
-      <q-list v-if="addopt" class="q-diag-glassMorph">
-          <q-item class="column items-start" key="desc" >
-            <q-td><label class="label-expand">Nombre</label></q-td>
-              <q-input filled
-              @input="(e) => saved(e, temp1.item[tempid].name, temp1.item[tempid].id, 'name')"
-              v-model="temp1.item[tempid].name"
-              rounded
-              outlined />
-          </q-item>
-          <q-item class="column items-start" key="estatus" >
-             <q-td><label class="label-expand">Estatus</label></q-td>
-              <q-toggle
-                @input="(e) => {temp1.item[tempid].estatus=!temp1.item[tempid].estatus; saved(e, temp1.item[tempid].estatus, temp1.item[tempid].id, 'estatus')}"
-                v-model="temp1.item[tempid].estatus"
-                color="blue"
-              />
-          </q-item>
-              <q-item class="column items-start"  >
-                <q-td><label class="col label-expand">Descripción</label></q-td>
-                <q-td class="col-12" key="descripcion" >
-                    <q-editor content-class="bg-blue-6"
-                      @input="(e) => saved(e, temp1.item[tempid].descripcion, temp1.item[tempid].id, 'descripcion')"
-                      v-model="temp1.item[tempid].descripcion"
-                      min-height="5rem"
-                    />
-                </q-td>
-              </q-item>
-              <q-item class="row justify-center"  >
-                <div class="col-6 q-pa-xs">
-                <p class="text-bold">Precio</p>
-                  <q-decimal filled
-                  :rules="[validate]"
-                  rounded
-                  outlined @input="(e) => saved(e, parseFloat(temp1.item[tempid].price), temp1.item[tempid].id, 'price')"
-                  v-model="temp1.item[tempid].price"
-                  input-style="text-align: right">
-                  </q-decimal>
-                </div>
-                <div class="col-6 q-pa-xs">
-                  <p class="text-bold">Prioridad</p>
-                  <q-input filled
-                  rounded
-                  outlined @input="(e) => saved(e, parseInt(temp1.item[tempid].priority), temp1.item[tempid].id, 'priority')"
-                  v-model="temp1.item[tempid].priority"
-                  min="1" max="999"
-                  type="number">
-                  </q-input>
-                </div>
-              </q-item>
-              <q-item>
-                <div class="full-width column items-center">
-                  <q-btn @click="addopt = false; executeSave()" label="Guardar" color="blue" rounded no-caps icon="save" />
-                </div>
-              </q-item>
-            </q-list>
+    <q-dialog full-width v-model="opciones">
+      <opciones :isDiagEasy="true" @updateOpt="(e) => {opciones = false; tempid = {id:e}}" />
     </q-dialog>
     <q-dialog v-model="noSelect">
       <q-card>
@@ -293,21 +225,22 @@ export default {
   computed: {
     ...mapGetters('menu', ['itemPlain', 'itemGroup'])
   },
+  components: {
+    opciones: () => import('./options')
+  },
   props: {
     isDiag: {
-      type: Boolean,
-      default: () => false
-    },
-    isDiagEasy: {
       type: Boolean,
       default: () => false
     }
   },
   data () {
     return {
+      propspass: null,
+      opciones: false,
       addopt: false,
-      elitem: [],
       tempid: null,
+      elitem: [],
       elitemGroup: [],
       columns,
       selected: [],
@@ -318,9 +251,14 @@ export default {
     }
   },
   watch: {
-    itemGroup (e) {
-      console.log({ e })
+    itemPlain (e) {
+      this.elitem = JSON.parse(JSON.stringify(e))
       this.filterOptions = JSON.parse(JSON.stringify(e))
+      if (this.propspass !== null && this.tempid !== null) {
+        this.saved2([...this.findItemsonGroup(this.propspass.row.id), this.tempid], this.findItemsonGroup(this.propspass.row.id), this.propspass.row.id, 'group_id')
+        this.propspass = null
+        this.tempid = null
+      }
     }
   },
   created () {
@@ -332,16 +270,6 @@ export default {
       this.filterOptions = JSON.parse(JSON.stringify(e))
     })
     console.log({ it: this.elitemGroup })
-  },
-  mounted () {
-    if (this.isDiagEasy) {
-      const id = this.addrow()
-      this.tempid = id
-      this.temp1.item[id].name = ''
-      this.temp1.item[id].estatus = true
-      console.log(this.temp1)
-      this.addopt = true
-    }
   },
   methods: {
     validate (value) {
@@ -356,6 +284,18 @@ export default {
     //     done(val, 'toggle')
     //   }
     // },
+    findItemsonGroup (groupId) {
+      let items = this.elitem.filter((x) =>
+        x && x.group_id && x.group_id.includes(groupId)
+      )
+      if (items) {
+        return items.map(x => {
+          return { name: x.name, id: x.id, group_id: x.group_id }
+        })
+      } else {
+        return []
+      }
+    },
     createValue () {
       this.$q.dialog({
         title: 'Prompt',
@@ -371,7 +311,7 @@ export default {
         if (val.length > 0) {
           if (!this.itemGroup.includes(val)) {
             this.addRow({ collection: 'itemGroup' })
-              .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }) })
+              .then(x => { console.log(x); this.setValue({ payload: { value: val, id: x, key: 'name', estatus: 0 }, collection: 'itemGroup' }).then(x => console.log(x, 'Escrito salida!')) })
           }
         }
       })
@@ -379,10 +319,77 @@ export default {
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
-    saved (value, initialValue, id, key) {
+    saved (value, initialValue, id, key, collection) {
+      if (typeof collection === 'undefined') {
+        collection = 'item'
+      }
       console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
-      this.saveTemp({ payload: { value, id, key }, collection: 'item' })
+      this.saveTemp({ payload: { value, id, key }, collection })
+    },
+    saved2 (value, initialValue, id, key) {
+      // let items = this.findItemsonGroup(id)
+      // initialValue = JSON.parse(JSON.stringify(initialValue))
+      // value = JSON.parse(JSON.stringify(value))
+      console.log(value, 'Elvalue', initialValue, 'Initial', id)
+      let toAdd = value.filter(x => {
+        let ss = initialValue.find(j => j.id === x.id)
+        if (ss) {
+          return false
+        } else {
+          return true
+        }
+      })
+      let toRemove = initialValue.filter(x => {
+        let ss = value.find(j => j.id === x.id)
+        if (ss) {
+          return false
+        } else {
+          return true
+        }
+      })
+      console.log(toAdd, 'toAdd')
+      console.log(toRemove, 'toRemove')
+      // let checker = (arr, target) => arr.includes(target)
+      if (toAdd.length) {
+        if (toAdd[0].group_id) {
+          var val = [...toAdd[0].group_id, id]
+        } else {
+          val = [id]
+        }
+        this.saveTemp({ payload: { value: val, id: toAdd[0].id, key }, collection: 'item' })
+        let elit = this.elitem.find(x => x.id === toAdd[0].id)
+        elit.group_id = val
+      }
+      if (toRemove.length) {
+        const index = toRemove[0].group_id.indexOf(id)
+        if (index > -1) {
+          toRemove[0].group_id.splice(index, 1)
+        }
+        let gg = toRemove[0].group_id
+        toRemove[0].group_id = gg
+        this.saveTemp({ payload: { value: toRemove[0].group_id, id: toRemove[0].id, key }, collection: 'item' })
+        this.$forceUpdate()
+      }
+      // for (let item of items) {
+      //   this.saveTemp({ payload: { value, id: item.id, key }, collection: 'item' })
+      // }
+    },
+    saved3 (value, initialValue, id, key) {
+      // let items = this.findItemsonGroup(id)
+      // initialValue = JSON.parse(JSON.stringify(initialValue))
+      // value = JSON.parse(JSON.stringify(value))
+      console.log(value, 'Elvalue', initialValue, 'Initial', id)
+      const index = value.group_id.indexOf(id)
+      if (index > -1) {
+        value.group_id.splice(index, 1)
+      }
+      this.saveTemp({ payload: { value: value.group_id, id: value.id, key }, collection: 'item' })
+      // let gg = toRemove[0].group_id
+      // toRemove[0].group_id = gg
       this.$forceUpdate()
+      // for (let item of items) {
+      //   this.saveTemp({ payload: { value, id: item.id, key }, collection: 'item' })
+      // }
     },
     executeSave () {
       for (let collection in this.temp1) {
@@ -391,10 +398,7 @@ export default {
             let data = this.temp1[collection][document]
             delete data.isNew
             delete data.id
-            this.newAddRow({ collection, data }).then(e => {
-              this.$emit('updateOpt', e)
-              console.log('EMIIIT', e)
-            })
+            this.newAddRow({ collection, data })
           } else {
             for (let key in this.temp1[collection][document]) {
               var value = this.temp1[collection][document][key]
@@ -404,10 +408,7 @@ export default {
           }
         }
       }
-      if (!this.isDiagEasy) {
-        this.temp1 = {}
-      }
-      console.log(this.temp1, 'temp11111')
+      this.temp1 = {}
       this.$q.notify({ message: 'Cambios Guardados' })
     },
     saveTemp (temp) {
@@ -419,10 +420,6 @@ export default {
       }
       this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
       this.$forceUpdate()
-    },
-    saved2 (value, initialValue, id, key) {
-      if (key === 'price') { value = isNaN(parseInt(value)) ? 0 : parseInt(value) }
-      this.saveTemp({ payload: { value, id, key }, collection: 'item' })
     },
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
@@ -481,18 +478,17 @@ export default {
       }
       console.log({ elitem: this.elitem, temp: this.temp1 })
       this.$forceUpdate()
-      return rand
     },
     filterFn (val, update) {
       update(() => {
         console.log({ val })
         if (val === '' || typeof val === 'undefined') {
-          console.log({ val, it: this.itemGroup })
-          this.filterOptions = Array.from(this.itemGroup)
+          console.log({ val, it: this.item })
+          this.filterOptions = Array.from(this.itemPlain)
         } else {
           console.log({ val })
           const needle = val.toLowerCase()
-          this.filterOptions = this.itemGroup.filter(
+          this.filterOptions = this.itemPlain.filter(
             v => v.name.toLowerCase().indexOf(needle) > -1
           )
         }

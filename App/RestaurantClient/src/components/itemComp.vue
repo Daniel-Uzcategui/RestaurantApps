@@ -168,7 +168,7 @@ export default {
       comp.forEach(element => {
         var grp = groupComp.find(x => x.id === element)
         if (typeof groupComp !== 'undefined' && typeof grp !== 'undefined') {
-          var items = this.item.filter(x => x.group_id.includes(grp.group_id))
+          var items = this.item.filter(x => x && x.group_id && x.group_id.includes(grp.group_id))
           items = items.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
           group.push({ ...grp, id: element, items })
         }

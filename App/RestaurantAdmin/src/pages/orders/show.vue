@@ -84,6 +84,10 @@
           <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
+         <div v-if="phone" class="q-pa-sm ">
+            <q-input filled rounded outlined label="Número de Teléfono" :value="phone" placeholder="Número de Teléfono"  disabled/>
+         </div>
+         <div class="flex-break q-pa-md"></div>
          <div v-if="puntoRef" class="header-cell2 q-pa-sm col-6">
             <q-input filled rounded outlined label="punto de Referencia" :value="puntoRef"  type="textarea" placeholder="Punto de referencia"  disabled/>
          </div>
@@ -307,6 +311,7 @@ export default {
   },
   data () {
     return {
+      phone: null,
       photoDiag: false,
       estatus_options: [
         { label: 'Por Confirmar', value: 0 },
@@ -495,6 +500,7 @@ export default {
       this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
       if (typeof objaddress !== 'undefined') {
         let tempString = ''
+        this.phone = objaddress.phone
         console.log(objaddress)
         for (let i of Object.keys(objaddress.address)) {
           tempString = tempString + objaddress.address[i] + ' '
