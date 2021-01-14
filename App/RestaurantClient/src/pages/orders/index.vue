@@ -133,7 +133,7 @@
                      <p v-if="carrito.length == 0" class="text-h4 text-center">No hay productos en esta orden</p>
                      <div v-if="carrito.length" >
                         <div class="text-h7 text-left">
-                           <div class="row" v-if="getTotalCarrito()[1] > 0">
+                           <div class="row" >
                               <p class="col-6"> Subtotal </p>
                               <p class="text-right col-6">$ {{getTotalCarrito()[0].toFixed(2)}}</p>
                            </div>
@@ -152,6 +152,10 @@
                            <div class="row">
                               <p class="col-6">Total</p>
                               <p class="text-right col-6">$ {{getTotalCarrito()[2].toFixed(2)}}</p>
+                           </div>
+                           <div class="row" v-if="ordenDet.typePayment==8 || ordenDet.typePayment == 0">
+                              <p class="col-6">Total</p>
+                              <p class="text-right col-6">Bs {{getRates(getTotalCarrito()[2].toFixed(2)).toFixed(2)}}</p>
                            </div>
                         </div>
                      </div>
@@ -254,6 +258,7 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('editor', ['page']),
+    ...mapGetters('config', ['rates']),
     orderSort () {
       var ord = this.orders.map(x => {
         return {
@@ -315,6 +320,17 @@ export default {
     }
   },
   methods: {
+    getRates (mto) {
+      let mtoTotal = 0
+      let rate = ''
+      rate = this.rates.find(obj => {
+        return obj.currency === 'Bs'
+      })
+      if (mto !== 'undefined') {
+        mtoTotal = rate.rateValue * mto
+      }
+      return mtoTotal
+    },
     getcolor (e) {
       if (this.page && this.page.knob && this.page.knob['knob' + e]) {
         return 'color: ' + this.page.knob['knob' + e]
@@ -341,6 +357,7 @@ export default {
     ...mapActions('order', ['bindOrders', 'saveOrder']),
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'bindPromos', 'bindGroupComp']),
     ...mapActions('editor', ['bindPage']),
+    ...mapActions('config', ['bindRates']),
     formatDate (e) {
       return date.formatDate(e.seconds * 1000, 'DD-MM')
     },
@@ -416,6 +433,8 @@ export default {
     this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
     //  this.bindPage()
     this.bindAddress(this.currentUser.id)
+    this.bindRates()
+    console.log(this.rates)
     //  this.bindMenu()
     //  this.bindCategorias()
     //  this.bindPromos()

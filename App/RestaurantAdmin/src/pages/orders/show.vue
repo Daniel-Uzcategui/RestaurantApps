@@ -12,10 +12,10 @@
         <q-card-section>
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
-         <div class="header-cell q-ma-sm col-3">
+         <div class="header-cell q-ma-sm col-2">
           <q-input filled rounded outlined label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disable/>
         </div>
-        <div class="header-cell q-ma-sm col-3">
+        <div class="header-cell q-ma-sm col-1">
           <q-input filled rounded outlined label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable />
         </div>
         <div class="header-cell q-ma-sm col-2">
@@ -25,7 +25,10 @@
           <q-input filled rounded outlined label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable />
         </div>
         <div class="header-cell q-ma-sm col-2">
-          <q-input filled rounded outlined label="Total" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+          <q-input filled rounded outlined label="Total $" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+        </div>
+        <div v-if="order.typePayment==8 || order.typePayment == 0" class="header-cell q-ma-sm col-2">
+          <q-input filled rounded outlined label="Total Bs" :value="this.getRates(order.paid + order.delivery).toFixed(2)"   type="text" float-label="Float Label" disable />
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
@@ -353,6 +356,7 @@ export default {
     ...mapGetters('client', ['clients']),
     ...mapGetters('address', ['address']),
     ...mapGetters('localization', ['localizations']),
+    ...mapGetters('config', ['rates']),
     order () {
       return this.orders.find(obj => {
         return obj.id === this.$route.query.Order_Id
@@ -389,6 +393,8 @@ export default {
     this.bindAddress().then(e => this.getAddress(this.order.address))
     this.bindLocalizations()
     this.bindPromos()
+    this.bindRates()
+    console.log(this.rates)
   },
   methods: {
     ...mapActions('order', ['saveOrder']),
@@ -396,6 +402,7 @@ export default {
     ...mapActions('client', ['bindClients']),
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
+    ...mapActions('config', ['bindRates']),
     download () {
       // eslint-disable-next-line new-cap
       const doc = new jsPDF()
@@ -412,6 +419,17 @@ export default {
         return null
       }
       return tip.label
+    },
+    getRates (mto) {
+      let mtoTotal = 0
+      let rate = ''
+      rate = this.rates.find(obj => {
+        return obj.currency === 'Bs'
+      })
+      if (mto !== 'undefined') {
+        mtoTotal = rate.rateValue * mto
+      }
+      return mtoTotal
     },
     downloadWithCSS () {
       /** WITH CSS */
