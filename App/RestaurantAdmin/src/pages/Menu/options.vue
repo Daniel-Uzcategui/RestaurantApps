@@ -301,6 +301,14 @@ export default {
     isDiagEasy: {
       type: Boolean,
       default: () => false
+    },
+    isDiagView: {
+      type: Boolean,
+      default: () => false
+    },
+    itemsDiag: {
+      type: Object,
+      default: () => {}
     }
   },
   data () {
@@ -324,21 +332,34 @@ export default {
     }
   },
   created () {
-    this.bindItem().then((e) => {
-      this.elitem = JSON.parse(JSON.stringify(e))
-    })
-    this.bindItemGroup().then((e) => {
-      this.elitemGroup = JSON.parse(JSON.stringify(e))
-      this.filterOptions = JSON.parse(JSON.stringify(e))
-    })
+    if (!this.isDiagEasy) {
+      this.bindItem().then((e) => {
+        this.elitem = JSON.parse(JSON.stringify(e))
+      })
+      this.bindItemGroup().then((e) => {
+        this.elitemGroup = JSON.parse(JSON.stringify(e))
+        this.filterOptions = JSON.parse(JSON.stringify(e))
+      })
+    } else {
+      this.elitem = JSON.parse(JSON.stringify(this.itemPlain))
+      this.elitemGroup = JSON.parse(JSON.stringify(this.itemGroup))
+      this.filterOptions = JSON.parse(JSON.stringify(this.itemGroup))
+    }
     console.log({ it: this.elitemGroup })
   },
   mounted () {
-    if (this.isDiagEasy) {
+    if (this.isDiagEasy && !this.isDiagView) {
       const id = this.addrow()
       this.tempid = id
       this.temp1.item[id].name = ''
       this.temp1.item[id].estatus = true
+      console.log(this.temp1)
+      this.addopt = true
+    }
+    if (this.isDiagView) {
+      this.tempid = this.itemsDiag.id
+      this.temp1.item = {}
+      this.temp1.item[this.tempid] = { ...this.itemsDiag }
       console.log(this.temp1)
       this.addopt = true
     }
@@ -393,7 +414,6 @@ export default {
             delete data.id
             this.newAddRow({ collection, data }).then(e => {
               this.$emit('updateOpt', e)
-              console.log('EMIIIT', e)
             })
           } else {
             for (let key in this.temp1[collection][document]) {

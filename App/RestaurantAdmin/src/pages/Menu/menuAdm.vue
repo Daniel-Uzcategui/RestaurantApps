@@ -48,6 +48,7 @@
         </q-input>
         <q-select options-selected-class="text-blue" filled rounded dense
           v-model="category"
+          clearable
           :options="categorias"
           style="width: 250px"
           :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
@@ -438,7 +439,7 @@
               outlined />
           </q-item>
           <q-item class="column items-start" key="categoria" :props="props">
-            <q-td><label class="label-expand">Categorias</label></q-td>
+            <q-td><label class="label-expand">Categorías</label></q-td>
               <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="props.row.categoria"
                 @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
@@ -456,7 +457,7 @@
           <q-icon
             name="add"
             class="cursor-pointer"
-            @click.stop="addcat = !addcat"
+            @click.stop.prevent="addcat = !addcat"
           />
         </template>
               </q-select>
@@ -482,7 +483,7 @@
           <q-icon
             name="add"
             class="cursor-pointer"
-            @click.stop="addopt = !addopt"
+            @click.stop.prevent="addopt = !addopt"
           />
         </template>
               </q-select>
@@ -653,7 +654,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
     ClientMenu,
     AddCat: () => import('./Categorias'),
-    AddOpt: () => import('./optionsConf')
+    AddOpt: () => import('./gruposOpt')
   },
   props: {
     quick: {
@@ -683,10 +684,14 @@ export default {
           var filteredMenu = sorted.filter(x => {
             return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
           })
-          return filteredMenu
-        } else {
-          return sorted
+          sorted = filteredMenu
         }
+        if (this.category !== null) {
+          return sorted.filter(x => {
+            return x && x.categoria && x.categoria.includes(this.category)
+          })
+        }
+        return sorted
       },
       set (e) {
         this.menuTemp = e
@@ -920,17 +925,17 @@ export default {
     }
   },
   watch: {
-    category (e) {
-      console.log(e)
-      if (typeof e === 'undefined' || e === null) {
-        this.filteredMenu = this.origMenu.filter(x => {
-          return x.categoria.includes(e)
-        })
-      } else {
-        this.filteredMenu = this.origMenu
-      }
-      console.log(this.filteredMenu)
-    }
+    // category (e) {
+    //   console.log(e, 'jjjj')
+    //   if (typeof e === 'undefined' || e === null) {
+    //     this.elmenu = this.filteredMenu = this.origMenu.filter(x => {
+    //       return x && x.categoria && x.categoria.includes(e)
+    //     })
+    //   } else {
+    //     this.elmenu = this.filteredMenu = this.origMenu
+    //   }
+    //   console.log(this.filteredMenu, 'kkk')
+    // }
   }
 }
 </script>

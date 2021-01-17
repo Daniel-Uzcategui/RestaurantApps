@@ -15,7 +15,7 @@
     >
     <template v-if="$q.screen.gt.xs" v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
-      Filtros
+      Multi Catálogo
       </p>
       <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
         <q-btn-group flat push >

@@ -3,6 +3,7 @@
    <q-table
    style="border-radius: 28px;"
       dense
+      v-if="!isDiagEasy"
       grid
       :data="elGroup"
       :columns="columns"
@@ -317,7 +318,7 @@
           </q-td>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
-                <q-td><label class="col label-expand">Vista previa (solo disponible luego de asociar un grupo)</label></q-td>
+                <q-td><label class="col label-expand">Vista previa (solo disponible luego de asociar un grupo y seleccionar el tipo)</label></q-td>
             <q-card style="max-width: 400px" class="text-left">
               <q-card-section>
                 <itemcomp
@@ -355,6 +356,117 @@
       >
       <AddOpt :isDiag="true"  />
     </q-dialog>
+    <q-dialog class="bg-transparent" v-model="opcionesConf">
+            <q-list v-if="isDiagEasy && opcionesConf" class="q-diag-glassMorph">
+          <q-item class="column items-start" key="desc" >
+            <q-td><label class="label-expand">Nombre de la Configuración (Este es el título que verá el cliente para las opciones)</label></q-td>
+              <q-input filled dense
+              @input="(e) => saved(e, temp1.groupComp[tempid].name, temp1.groupComp[tempid].id, 'name')"
+              v-model="temp1.groupComp[tempid].name"
+              rounded
+              outlined />
+          </q-item>
+          <q-item class="column items-start" key="estatus" >
+             <q-td><label class="label-expand">Estatus {{temp1.groupComp[tempid].estatus}}</label></q-td>
+              <q-toggle
+                @input="(e) => {temp1.groupComp[tempid].estatus=!temp1.groupComp[tempid].estatus; saved(e, temp1.groupComp[tempid].estatus, temp1.groupComp[tempid].id, 'estatus')}"
+                v-model="temp1.groupComp[tempid].estatus"
+                color="blue"
+              />
+          </q-item>
+          <q-item class="column items-start" key="required" >
+             <q-td><label class="label-expand">Requerido</label></q-td>
+             <div class="row">
+              <q-radio color="blue" @input="$forceUpdate()" v-model="temp1.groupComp[tempid].required" :val="1" label="Si" />
+              <q-radio color="blue" @input="$forceUpdate()" v-model="temp1.groupComp[tempid].required" :val="0" label="No" />
+             </div>
+          </q-item>
+              <q-item class="column items-start"  >
+                <q-td><label class="col label-expand">Descripción</label></q-td>
+                <q-td class="col-12" key="descripcion" >
+                    <q-editor content-class="bg-blue-6"
+                      @input="(e) => saved(e, temp1.groupComp[tempid].descripcion, temp1.groupComp[tempid].id, 'descripcion')"
+                      v-model="temp1.groupComp[tempid].descripcion"
+                    />
+                </q-td>
+              </q-item>
+              <q-item class="row justify-center"  >
+                <div class="col q-pa-xs">
+                  <p class="text-bold">Prioridad (menor número hará que esta configuración se muestre de primero)</p>
+                  <q-input filled dense
+                  rounded
+                  outlined @input="(e) => saved(e, parseInt(temp1.groupComp[tempid].priority), temp1.groupComp[tempid].id, 'priority')"
+                  v-model="temp1.groupComp[tempid].priority"
+                  min="1" max="999"
+                  type="number">
+                  </q-input>
+                </div>
+              </q-item>
+              <q-item class="column items-start"  >
+                <q-td><label class="col label-expand">Tipo</label></q-td>
+              <q-td key="type" >
+              <q-select options-selected-class="text-blue" filled dense
+                rounded outlined
+                v-model="temp1.groupComp[tempid].type"
+                @input="(e) => saved2(e, temp1.groupComp[tempid].type, temp1.groupComp[tempid].id, 'type')"
+                use-input
+                input-debounce="0"
+                :options="typeOpts === '' ? [] : typeOpts"
+                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
+                style="width: 250px"
+                stack-label
+                emit-value
+                map-options
+              />
+          </q-td>
+          </q-item>
+          <q-item class="column items-start"  >
+                <q-td><label class="col label-expand">Gratis</label></q-td>
+          <q-td key="free" >
+            <div class="row">
+              <q-radio color="blue" @input="$forceUpdate()" v-model="temp1.groupComp[tempid].free" :val="1" label="Si" />
+              <q-radio color="blue" @input="$forceUpdate()" v-model="temp1.groupComp[tempid].free" :val="0" label="No" />
+             </div>
+          </q-td>
+          </q-item>
+          <q-item v-if="temp1.groupComp[tempid].type !== 1" class="column items-start"  >
+                <q-td><label class="col label-expand">Min</label></q-td>
+          <q-td key="min" >
+            <q-input filled rounded outlined @input="(e) => saved2(e, temp1.groupComp[tempid].min, temp1.groupComp[tempid].id, 'min')" type="number" v-model="temp1.groupComp[tempid].min" dense  />
+          </q-td>
+          </q-item>
+          <q-item class="column items-start" v-if="temp1.groupComp[tempid].type !== 1"  >
+                <q-td><label class="col label-expand">Max</label></q-td>
+          <q-td key="max" >
+            <q-input type="number" filled rounded outlined @input="(e) => saved2(e, temp1.groupComp[tempid].max, temp1.groupComp[tempid].id, 'max')" v-model="temp1.groupComp[tempid].max" dense  />
+          </q-td>
+          </q-item>
+          <q-item class="column items-start" v-if="temp1.groupComp[tempid].type == 2"  >
+                <q-td><label class="col label-expand">Max Unidades</label></q-td>
+          <q-td key="maxUnit" >
+            <q-input filled rounded outlined @input="(e) => saved2(e, temp1.groupComp[tempid].maxUnit, temp1.groupComp[tempid].id, 'maxUnit')" v-model="temp1.groupComp[tempid].maxUnit" dense  />
+          </q-td>
+          </q-item>
+          <q-item class="column items-start"  >
+                <q-td><label class="col label-expand">Vista previa (solo disponible luego de seleccionar el tipo)</label></q-td>
+            <q-card style="max-width: 320px" class="text-left q-cardGlass">
+              <q-card-section>
+                <itemcomp
+                :comp="[temp1.groupComp[tempid]]"
+                :value="value"
+                :readOnly="false"
+              />
+              </q-card-section>
+              </q-card>
+              </q-item>
+              <q-item>
+                <div class="full-width column items-center">
+                  <q-btn @click="addopt = false; executeSave()" label="Guardar" color="blue" rounded no-caps icon="save" />
+                </div>
+              </q-item>
+            </q-list>
+          </q-dialog>
     <q-footer class="bg-primary" v-if="$q.screen.lt.sm && !isDiag" reveal>
     <q-tabs mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
@@ -389,6 +501,18 @@ export default {
     isDiag: {
       type: Boolean,
       default: () => false
+    },
+    isDiagEasy: {
+      type: Boolean,
+      default: () => false
+    },
+    isDiagView: {
+      type: Boolean,
+      default: () => false
+    },
+    itemsDiag: {
+      type: Object,
+      default: () => {}
     }
   },
   computed: {
@@ -397,8 +521,10 @@ export default {
   data () {
     return {
       opcionesGroup: false,
+      opcionesConf: false,
       grid: false,
       addopt: false,
+      tempid: null,
       value: [],
       typeOpts: [{ name: 'Seleccion Múltiple CheckBox', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple Slider', value: 2 }, { name: 'Seleccion Múltiple Inputs', value: 3 }],
       typeFree: [{ name: 'Si', value: 1 }, { name: 'No', value: 0 }],
@@ -416,13 +542,38 @@ export default {
       this.filterOptions = Array.from(this.itemGroup)
     }
   },
-  mounted () {
-    this.bindItem()
-    this.bindItemGroup()
-    this.bindGroupComp().then(e => {
-      this.elGroup = JSON.parse(JSON.stringify(e))
-    })
+  created () {
+    if (!this.isDiagEasy) {
+      this.bindItem()
+      this.bindItemGroup()
+      this.bindGroupComp().then(e => {
+        this.elGroup = JSON.parse(JSON.stringify(e))
+      })
+    } else {
+      this.elGroup = JSON.parse(JSON.stringify(this.groupComp))
+    }
     this.filterOptions = Array.from(this.itemGroup)
+  },
+  mounted () {
+    if (this.isDiagEasy && !this.isDiagView) {
+      console.log('Wtf')
+      const id = this.addrow()
+      this.tempid = id
+      this.temp1.groupComp[id].name = ''
+      this.temp1.groupComp[id].estatus = true
+      this.temp1.groupComp[id].group_id = this.itemsDiag.id
+      console.log(this.temp1)
+      this.opcionesConf = true
+      this.$forceUpdate()
+    }
+    if (this.isDiagView) {
+      console.log('Wtf2')
+      this.tempid = this.itemsDiag.id
+      this.temp1.groupComp = {}
+      this.temp1.groupComp[this.tempid] = { ...this.itemsDiag }
+      console.log(this.temp1)
+      this.opcionesConf = true
+    }
   },
   methods: {
     saveTemp (temp) {
@@ -442,7 +593,9 @@ export default {
             let data = this.temp1[collection][document]
             delete data.isNew
             delete data.id
-            this.newAddRow({ collection, data })
+            this.newAddRow({ collection, data }).then(e => {
+              this.$emit('updateOpt', e)
+            })
           } else {
             for (let key in this.temp1[collection][document]) {
               var value = this.temp1[collection][document][key]
@@ -452,7 +605,9 @@ export default {
           }
         }
       }
-      this.temp1 = {}
+      if (!this.isDiagEasy) {
+        this.temp1 = {}
+      }
       this.$q.notify({ message: 'Cambios Guardados' })
     },
     showPopup (row, col) {
@@ -526,9 +681,10 @@ export default {
       if (typeof this.temp1.groupComp === 'undefined') {
         this.temp1.groupComp = {}
       }
-      this.temp1.groupComp[rand] = { id: rand, isNew: true, price: 0, descripcion: '' }
-      this.elGroup.unshift({ id: rand, descripcion: '', price: 0 })
+      this.temp1.groupComp[rand] = { id: rand, isNew: true, price: 0, descripcion: '', estatus: true }
+      this.elGroup.unshift({ id: rand, descripcion: '', price: 0, estatus: true })
       this.$forceUpdate()
+      return rand
     },
     filterFn (val, update) {
       update(() => {

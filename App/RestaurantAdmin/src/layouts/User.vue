@@ -240,7 +240,7 @@ export default {
 
             },
             {
-              label: 'Filtros de Productos',
+              label: 'Multi Catálogo',
               caption: '',
               icon: 'fas fa-filter',
               handler: () => this.$router.push({ path: '/menu/menufilters' })
