@@ -185,6 +185,15 @@ const routes = [
         }
       },
       {
+        path: 'groupoptions',
+        name: 'GroupOptions',
+        component: () => import('pages/menu/gruposOpt.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'GroupOptions'
+        }
+      },
+      {
         path: 'menufilters',
         name: 'menu_filters',
         component: () => import('pages/menu/menufilters.vue'),

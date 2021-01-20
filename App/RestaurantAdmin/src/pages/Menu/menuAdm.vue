@@ -19,7 +19,7 @@
       <p class="text-h5 text-bold q-ma-md">
       {{menucfg.dispName ? menucfg.dispName : 'Productos'}}
       </p>
-      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
+      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
       <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
                 :value="menucfg.iconsactive ? true : false" label="Activar iconos" left-label />
       <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
@@ -46,6 +46,17 @@
           <q-icon name="fas fa-search"/>
         </template>
         </q-input>
+        <q-select options-selected-class="text-blue" filled rounded dense
+          v-model="category"
+          :options="categorias"
+          style="width: 250px"
+          :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+          :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
+          emit-value
+          map-options
+          stack-label
+          label="Filtrar por Categoría"
+         />
       </template>
       <!-- <template v-slot:body="props">
         <q-tr v-if="sede !== null" :props="props">
@@ -451,7 +462,7 @@
               </q-select>
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
-             <q-td><label class="label-expand">Opciones</label></q-td>
+             <q-td><label class="label-expand">Configuración de Opciones</label></q-td>
               <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
@@ -709,6 +720,7 @@ export default {
   },
   data () {
     return {
+      category: null,
       addopt: false,
       addcat: false,
       preview: false,
@@ -905,6 +917,19 @@ export default {
         message: `Successfully uploaded your photo: ${fileNames}`,
         color: 'positive'
       })
+    }
+  },
+  watch: {
+    category (e) {
+      console.log(e)
+      if (typeof e === 'undefined' || e === null) {
+        this.filteredMenu = this.origMenu.filter(x => {
+          return x.categoria.includes(e)
+        })
+      } else {
+        this.filteredMenu = this.origMenu
+      }
+      console.log(this.filteredMenu)
     }
   }
 }

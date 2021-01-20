@@ -1,5 +1,5 @@
 <template>
-<div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
+<div v-if="!isDiag" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
    <div>
    <q-table
       grid
@@ -248,10 +248,31 @@ export default {
       this.elcat = JSON.parse(JSON.stringify(e))
     })
     console.log(this.$router)
+    if (this.isDiag) {
+      this.showprompt()
+    }
   },
   methods: {
     showPopup (row, col) {
       this.popupEditData = row[col]
+    },
+    showprompt () {
+      this.$q.dialog({
+        title: '',
+        message: '¿Qué Nombre desea para la nueva Categoría?',
+        prompt: {
+          model: '',
+          type: 'text' // optional
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(data => {
+        // console.log('>>>> OK, received', data)
+        if (data.length > 0) {
+          this.addrow({ name: data, estatus: true, softDelete: 0 })
+          this.executeSave()
+        }
+      })
     },
     // saved (value, initialValue, id, key) {
     //   console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
@@ -330,13 +351,16 @@ export default {
       let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.categorias.length}`
       return objSelectedString
     },
-    addrow () {
+    addrow (data) {
+      if (typeof data === 'undefined') {
+        data = {}
+      }
       const rand = Math.random().toString(16).substr(2, 8)
       if (typeof this.temp1.categorias === 'undefined') {
         this.temp1.categorias = {}
       }
-      this.temp1.categorias[rand] = { id: rand, isNew: true, descripcion: '' }
-      this.elcat.unshift({ id: rand, descripcion: '' })
+      this.temp1.categorias[rand] = { id: rand, isNew: true, descripcion: '', ...data }
+      this.elcat.unshift({ id: rand, descripcion: '', ...data })
       this.$forceUpdate()
     }
   }
