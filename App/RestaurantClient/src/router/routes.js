@@ -26,7 +26,7 @@ const routes = [
       {
         path: 'debit',
         name: 'debit',
-        component: () => import('components/payment/debitPayments.vue')
+        component: () => import('components/payment/debit.vue')
       }
     ]
   },

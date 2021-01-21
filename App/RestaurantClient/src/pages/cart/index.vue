@@ -281,6 +281,14 @@
                       @payment-done='payment' />
                      </div>
                     </div>
+                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 9">
+                    <div>
+                     <creditPayment
+                      :ordersId=currentUser.cedula
+                      :amount=totalPrice
+                      @payment-done='paymentTDC' />
+                     </div>
+                    </div>
                     <div class="q-pt-md col-12 column items-center">
                       <div>
                       <div v-if="tipEnvio === '1'">
@@ -288,13 +296,13 @@
                         <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
                       </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
-                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8" >Total: Bs
-                          {{ getRates(totalPrice + deliveryPrice)}}
+                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8 ||  pagoSel == 9" >Total: Bs
+                          {{ (getRates(totalPrice + deliveryPrice)).toFixed(2)}}
                         </div>
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
-                        <div v-if="pagoSel ==0">
+                        <div v-if="pagoSel ==0 || CheckTDC ===true ">
                         <q-btn @click="confirm = true" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
                         <q-btn rounded no-caps key="Atras" flat @click="step = 1" color="primary" label="Volver" class="q-ml-sm" />
@@ -332,7 +340,8 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import Addresses from '../../components/addresses.vue'
 import payCreditCorp from '../../components/payCreditCorp.vue'
-import debitPayment from '../../components/payment/debitPayments'
+import debitPayment from '../../components/payment/debit'
+import creditPayment from '../../components/payment/credit'
 import { QUploaderBase } from 'quasar'
 export default {
   mixins: [ QUploaderBase ],
@@ -342,7 +351,8 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader20.vue'),
     payCreditCorp: payCreditCorp,
     Addresses,
-    debitPayment
+    debitPayment,
+    creditPayment
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -379,9 +389,10 @@ export default {
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Venezolana', value: 6, color: 'blue' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Debito Venezolana', value: 6, color: 'blue' }) }
       if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
       if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito Venezolana', value: 9, color: 'blue' }) }
       return tip
     },
     promoData () {
@@ -425,6 +436,7 @@ export default {
       deliveryPrice: 0,
       CheckAv: 1,
       CheckTDD: false,
+      CheckTDC: false,
       confirm: false,
       tipEnvio: null,
       lbDelivery: 'Deli',
@@ -736,6 +748,26 @@ export default {
           delay: 400
         })
         this.makeOrder(status)
+      }
+    },
+    paymentTDC (respuesta) {
+      // let that = this
+      let responseHeader = respuesta.HEADER_PAGO_RESPONSE
+      let responseBody = respuesta.BODY_PAGO_RESPONSE
+      if (responseBody.CODIGO_RETORNO === '200') {
+        console.log(responseBody.CODIGO_RETORNO)
+        this.$q.dialog({
+          title: 'Transacción procesada',
+          message: 'Transacción  procesarse codigo de confirmacion :' + responseBody.NUMERO_CONFIRMACION
+        })
+        this.CheckTDC = true
+      } else {
+        console.log(responseHeader.CODIGO_MENSAJE_USUARIO)
+        this.$q.dialog({
+          title: 'Error',
+          message: 'Error transacción no pudo procesarse, intente más tarde'
+        })
+        this.CheckTDC = false
       }
     },
     showPhotoUpload () {

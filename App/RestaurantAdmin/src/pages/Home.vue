@@ -42,6 +42,22 @@
             <q-card flat  class="notifCard q-cardGlass  q-ma-sm" horizontal>
               <q-card-section  class="notifCardSection q-cardtop row justify-center">
               <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
+              <div class="col-3">{{totalOrders(3)}}</div>
+              </div>
+              <div class="text-subtitle2 self-center text-bold">Entregadas</div>
+             </q-card-section>
+           <q-card-section class="bg-primary q-pa-none">
+            <q-card-actions class="q-pt-md" vertical>
+              <q-btn color="white" no-caps flat icon-right="fa fa-arrow-alt-circle-right"
+              @click.native="$router.push({ path: '/orders/index', query: { status: 3} })" />
+            </q-card-actions>
+           </q-card-section>
+          </q-card>
+      </div>
+      <div :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+            <q-card flat  class="notifCard q-cardGlass  q-ma-sm" horizontal>
+              <q-card-section  class="notifCardSection q-cardtop row justify-center">
+              <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
               <div class="col-3">{{totalOrders(4)}}</div>
               </div>
               <div class="text-subtitle2 self-center text-bold">Anuladas</div>
@@ -49,7 +65,7 @@
            <q-card-section class="bg-primary q-pa-none">
             <q-card-actions class="q-pt-md" vertical>
               <q-btn color="white" no-caps flat icon-right="fa fa-arrow-alt-circle-right"
-              @click.native="$router.push({ path: '/orders/index', query: { status: 4 } })" />
+              @click.native="$router.push({ path: '/orders/index', query: { status: 4} })" />
             </q-card-actions>
            </q-card-section>
           </q-card>
