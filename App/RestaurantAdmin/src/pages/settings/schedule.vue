@@ -42,8 +42,21 @@
             :localization="localization"
           ></business-hours>
       </q-card-section>
-    </q-card>
-    </div>
+    <q-card-section class="column items-center" v-if="sede && !destroy">
+        <div class="row header-container" >
+         <div class="header-cell q-pa-sm  text-h6">Permitir pagos fuera de horario</div>
+       </div>
+        <div class="row header-container">
+            <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
+              <q-option-group dense inline color="blue"
+              v-model="statusCierre"
+              filled rounded  map-options emit-value standout="bg-teal "
+              outlined :options="estatus_options" label="Permite pagos" />
+            </div>
+        </div>
+      </q-card-section>
+     </q-card>
+     </div>
     <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
       <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
         <q-tab no-caps flat push icon="arrow_back" @click="$router.replace('/home')"/>
@@ -88,6 +101,7 @@ export default {
         const payload = {
           days: this.days,
           sede: this.sede,
+          status: this.statusCierre,
           source: 'schedule'
         }
         this.addConfig2({ payload, doc: `sede${this.sede}` })
@@ -116,6 +130,8 @@ export default {
           objSunday = JSON.parse(JSON.stringify(this.config.days.sunday))
           this.days = { monday: objMonday, tuesday: objTuesday, wednesday: objWednesday, thursday: objThursday, friday: objFriday, saturday: objSaturday, sunday: objSunday }
           this.cache = 1
+          this.statusCierre = this.config.status
+          console.log('status', this.status)
         } else {
           this.days = this.default
         }
@@ -127,6 +143,10 @@ export default {
       value = this.days
       id = this.config.id
       key = 'days'
+      this.saveConfig({ value, id, key })
+      value = this.statusCierre
+      id = this.config.id
+      key = 'status'
       this.saveConfig({ value, id, key })
       this.$q.dialog({
         title: '',
@@ -144,8 +164,13 @@ export default {
     return {
       sede: null,
       destroy: false,
+      statusCierre: 0,
       days: [],
       cache: 0,
+      estatus_options: [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
+      ],
       default: {
         'monday': [
           {
