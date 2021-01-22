@@ -1,5 +1,5 @@
 <template>
-  <div class="q-cardGlass">
+  <div>
     <div v-if="readOnly && Group.length">
       <div  v-for="(component, index) in Group" :key="index">
       <div>
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="row justify-center" v-if="!readOnly && Group.length">
-    <div :class="mode == 1 ? 'bg-primary q-ma-md q-pa-lg  col-5' : ''" :style="mode == 1 ? 'border-radius: 28px;' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
+    <div :class="mode == 1 ? 'q-ma-md q-pa-lg  col-5' : ''" style="min-width: 300px" v-for="(component, index) in Group" :key="index">
       <div v-if="component.type === 1">
         <div class="text-h6">{{component.name}} <div class="text-caption" v-if="component.required">campo obligatorio*</div> </div>
         <p class="text-caption" v-html="component.descripcion"></p>

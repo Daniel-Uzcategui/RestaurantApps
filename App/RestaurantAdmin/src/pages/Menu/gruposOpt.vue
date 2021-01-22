@@ -17,7 +17,7 @@
       <p class="text-h5 text-bold q-ma-md">
       Grupos de Opciones
       </p>
-      <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
+      <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
         <q-btn-group flat push >
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="createValue()"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
@@ -135,8 +135,6 @@
                <div class="text-h6">Opciones</div>
                <q-btn
                rounded
-               dense
-                    icon="add"
                     label="Añadir"
                     color="blue"
                     no-caps
@@ -147,39 +145,34 @@
              <q-list>
                <q-item v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
                  <div>
-                    <q-chip removable @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green" text-color="white" icon="filter_frames">
+                    <q-chip removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green" text-color="white" icon="filter_frames">
                        {{item.name}}
                     </q-chip>
                  </div>
                </q-item>
              </q-list>
-              <!-- <q-select options-selected-class="text-blue" filled
-              bottom-slots
-                rounded
-                outlined
-                :value="findItemsonGroup(props.row.id)"
-                @input="(e) => saved2(e, findItemsonGroup(props.row.id), props.row.id, 'group_id')"
-                use-input
-                hide-dropdown-icon
-                use-chips
-                multiple
-                input-debounce="0"
-                :options="filterOptions"
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.id"
-                @filter="filterFn"
-                style="width: 250px"
-                stack-label
-                map-options
-              >
-                <template v-slot:append>
-                  <q-icon
-                    name="add"
+          </q-item>
+          <q-item v-if="findItemsonGroup(props.row.id).length" class="column items-start">
+             <div class="label-expand full-width row justify-between">
+             <div class="text-h6">Configuración de Opciones</div>
+               <q-btn
+               rounded
+                    label="Añadir"
+                    color="blue"
+                    no-caps
                     class="cursor-pointer"
-                    @click.stop="opciones = true; propspass = props"
+                    @click.stop="opcionesconf = true; propspass = props.row"
                   />
-                </template>
-              </q-select> -->
+             </div>
+                <q-list>
+               <q-item v-for="(item, index) in findConfsonGroup(props.row.id)" :key="index">
+                 <div>
+                    <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red" text-color="white" icon="tune">
+                       {{item.name}}
+                    </q-chip>
+                 </div>
+               </q-item>
+             </q-list>
           </q-item>
             </q-list>
           </q-dialog>
@@ -187,7 +180,16 @@
       </template>
     </q-table>
     <q-dialog full-width v-model="opciones">
-      <opciones :isDiagEasy="true" @updateOpt="(e) => {opciones = false; tempid = {id:e}}" />
+      <opciones v-if="opciones" :isDiagEasy="true" @updateOpt="(e) => {opciones = false; tempid = {id:e}}" />
+    </q-dialog>
+    <q-dialog full-width v-model="opcionesView">
+      <opciones v-if="opcionesView" :isDiagEasy="true" :isDiagView="true" :itemsDiag="propspass" @updateOpt="(e) => {opcionesView = false}" />
+    </q-dialog>
+    <q-dialog full-width v-model="opcionesconf">
+      <opcionesconf v-if="opcionesconf" :itemsDiag="propspass" :isDiagEasy="true" @updateOpt="(e) => {opcionesconf = false}" />
+    </q-dialog>
+    <q-dialog full-width v-model="opcionesconfView">
+      <opcionesconf v-if="opcionesconfView" :isDiagEasy="true" :isDiagView="true" :itemsDiag="propspass" @updateOpt="(e) => {opcionesconfView = false}" />
     </q-dialog>
     <q-dialog v-model="noSelect">
       <q-card>
@@ -223,10 +225,11 @@ const columns = [
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('menu', ['itemPlain', 'itemGroup'])
+    ...mapGetters('menu', ['itemPlain', 'itemGroup', 'groupComp'])
   },
   components: {
-    opciones: () => import('./options')
+    opciones: () => import('./options'),
+    opcionesconf: () => import('./optionsConf')
   },
   props: {
     isDiag: {
@@ -236,9 +239,13 @@ export default {
   },
   data () {
     return {
+      opcionesconf: false,
+      opcionesconfView: false,
+      opcionesView: false,
       propspass: null,
       opciones: false,
       addopt: false,
+      elGroup: [],
       tempid: null,
       elitem: [],
       elitemGroup: [],
@@ -259,6 +266,9 @@ export default {
         this.propspass = null
         this.tempid = null
       }
+    },
+    groupComp (e) {
+      this.elGroup = JSON.parse(JSON.stringify(e))
     }
   },
   created () {
@@ -268,6 +278,9 @@ export default {
     this.bindItemGroup().then((e) => {
       this.elitemGroup = JSON.parse(JSON.stringify(e))
       this.filterOptions = JSON.parse(JSON.stringify(e))
+    })
+    this.bindGroupComp().then(e => {
+      this.elGroup = JSON.parse(JSON.stringify(e))
     })
     console.log({ it: this.elitemGroup })
   },
@@ -290,7 +303,19 @@ export default {
       )
       if (items) {
         return items.map(x => {
-          return { name: x.name, id: x.id, group_id: x.group_id }
+          return x
+        })
+      } else {
+        return []
+      }
+    },
+    findConfsonGroup (groupId) {
+      let items = this.elGroup.filter((x) =>
+        x && x.group_id && x.group_id.includes(groupId)
+      )
+      if (items) {
+        return items.map(x => {
+          return x
         })
       } else {
         return []
@@ -374,7 +399,10 @@ export default {
       //   this.saveTemp({ payload: { value, id: item.id, key }, collection: 'item' })
       // }
     },
-    saved3 (value, initialValue, id, key) {
+    saved3 (value, initialValue, id, key, collection) {
+      if (typeof collection === 'undefined') {
+        collection = 'item'
+      }
       // let items = this.findItemsonGroup(id)
       // initialValue = JSON.parse(JSON.stringify(initialValue))
       // value = JSON.parse(JSON.stringify(value))
@@ -383,7 +411,7 @@ export default {
       if (index > -1) {
         value.group_id.splice(index, 1)
       }
-      this.saveTemp({ payload: { value: value.group_id, id: value.id, key }, collection: 'item' })
+      this.saveTemp({ payload: { value: value.group_id, id: value.id, key }, collection: collection })
       // let gg = toRemove[0].group_id
       // toRemove[0].group_id = gg
       this.$forceUpdate()
@@ -424,7 +452,7 @@ export default {
     canceled (val, initialValue) {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue2', 'setValue', 'addRow', 'newAddRow', 'bindItem', 'bindItemGroup']),
+    ...mapActions('menu', ['setValue2', 'setValue', 'addRow', 'newAddRow', 'bindItem', 'bindItemGroup', 'bindGroupComp']),
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true
@@ -436,29 +464,29 @@ export default {
           cancel: true,
           persistent: true
         }).onOk(() => {
-          this.delrows({ payload: this.selected, collection: 'item' })
+          this.delrows({ payload: this.selected, collection: 'itemGroup' })
         }).onCancel(() => {
         })
       }
     },
     delrows (payload) {
       this.$refs.table.clearSelection()
-      console.log(payload, this.elitem)
+      console.log(payload, this.elitemGroup)
       for (let i in payload.payload) {
-        let index = this.elitem.findIndex(x => x.id === payload.payload[i].id)
+        let index = this.elitemGroup.findIndex(x => x.id === payload.payload[i].id)
         console.log(index)
-        this.elitem.splice(index, 1)
+        this.elitemGroup.splice(index, 1)
         if (typeof this.temp1[payload.collection] === 'undefined') {
           this.temp1[payload.collection] = {}
         }
         this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
       }
       this.$forceUpdate()
-      console.log(this.elitem)
+      console.log(this.elitemGroup)
     },
     getSelectedString () {
       let literal = this.selected.length > 1 ? 's' : ''
-      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.elitem.length}`
+      let objSelectedString = this.selected.length === 0 ? '' : `${this.selected.length} registro` + literal + ` seleccionado` + literal + ` de ${this.elitemGroup.length}`
       return objSelectedString
     },
     addrow (collection, data) {
