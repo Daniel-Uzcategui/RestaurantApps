@@ -114,12 +114,12 @@ export default {
       diag: true,
       sedeAdded: false,
       slide: 'style',
-      lorem: 'Hola 😉!! si estas aquí te debes estar preguntando, ¿Cómo agrego Opciones a mis productos? es Facilito, siguiendo esta guía verás que sencillo es 😄.',
-      lorem2: 'Primero agreguemos Opciones, luego crearemos Grupos de Opciones 😊, las Opciones en Chopzi pueden ser cualquier cosa 😋, por ejemplo el tamaño, salsas, temperatura, lo que tu quieras!',
-      lorem3: 'Si una de las opciones que quieres crear es una Salsa puedes asociarle un costo, luego en el grupo de Opciones puedes seleccionar si ese grupo es gratis o no 🤔, es decir, no hace falta agregarlo múltiples veces si en un grupo esa opción es Gratis 😲, también puedes desactivar alguna opción en cualquier momento no afectando al grupo',
-      lorem4: 'Listo ya vamos a la ventana🧐, llenarás los datos de la opción y la agregas a un grupo o grupos, para agregar grupos le das click a el listado grupos escribes el nombre y le das a intro, así de facil! puedes agregar cuantos quieras 🤩',
-      lorem5: 'Buenísimo 😄, ahora a configurar el grupo de opciones que ya creaste, si es requerido, es gratis, es de selección simple, etc. Si es de selección múltiple CheckBox, tienes que agregar el min y max. Y si es de selección múltiple inputs o slider, es Necesario el min, max y el máximo de unidades',
-      lorem6: 'Listo ahora puedes ir al Catálogo y asignarle grupos de opciones a tus productos 😁'
+      lorem: 'Hola 😉!! si estas aquí te debes estar preguntando, ¿Cómo agrego "Opciones" a mis productos? es facilito, siguiendo esta guía verás que sencillo es 😄.',
+      lorem2: 'Primero agreguemos "Opciones", luego crearemos "Grupos de Opciones" 😊, las "Opciones" en Chopzi pueden ser cualquier cosa 😋, por ejemplo el tamaño, salsas, temperatura, lo que tú quieras!',
+      lorem3: 'Si una de las "Opciones" que quieres crear es una salsa puedes asociarle un costo, luego en el "Grupo de Opciones" puedes seleccionar si ese grupo es gratis o no 🤔, es decir, no hace falta agregarlo múltiples veces si en un grupo esa opción es gratis 😲, también puedes desactivar alguna opción en cualquier momento no afectando al grupo',
+      lorem4: 'Listo ya vamos a la ventana🧐, llenarás los datos de la opción y la agregas a un grupo o grupos, para agregar grupos le das click a el listado grupos escribes el nombre y le das a intro, así de fácil! puedes agregar cuantos quieras 🤩',
+      lorem5: 'Buenísimo 😄, ahora a configurar el "Grupo de Opciones" que ya creaste, si es requerido, es gratis, es de selección simple, etc. Si es de Selección Múltiple CheckBox, tienes que agregar el mín y máx. Y si es de Selección Múltiple Inputs o Slider, es necesario el mín, máx y el máximo de unidades',
+      lorem6: 'Listo ahora puedes ir al Catálogo y asignarle "Grupos de Opciones" a tus productos 😁'
 
     }
   }

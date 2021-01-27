@@ -68,7 +68,7 @@
           <q-input filled rounded outlined label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell q-ma-sm col-4">
+         <div class="header-cell q-ma-sm col-4" v-if="order.status < 3">
           <q-select options-selected-class="text-blue" filled rounded :value="order.status"
             @input="(e) => { checkOrder(e)
             }"
@@ -77,6 +77,13 @@
             standout="bg-teal "
             :options="estatus_options"
             label="Estatus" />
+        </div>
+        <div class="header-cell q-ma-sm col-4" v-if="order.status > 2">
+          <q-select options-selected-class="text-blue" filled rounded :value="order.status"
+            map-options
+            standout="bg-teal "
+            :options="estatus_options"
+            label="Estatus" disable/>
         </div>
         <div class="header-cell q-ma-sm col-3">
           <q-select options-selected-class="text-blue" filled rounded :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal "

@@ -2,7 +2,7 @@
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
       <q-table class="table"
-      title="Transactiones por medios de pago"
+      title="Transacciones por medios de pago"
       color="primary"
       :data="OrderClient"
       :columns="columns"

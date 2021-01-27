@@ -61,7 +61,7 @@ export default {
     OrderClient () {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago
-      let fullname, tableOrder, typeService
+      let fullname, tableOrder, typeService, status
       for (i = 0; i < this.orders.length; i++) {
         obj = this.orders[i]
         clientforOrder = this.clientOrders(obj.customer_id)
@@ -69,11 +69,12 @@ export default {
         tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
         typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
         tipoPago = this.tipo_pago[obj.typePayment]['label']
+        status = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : 'No disponible'
         OrderClient.push({
           'id': obj.id,
           'nombre': fullname,
           'typePayment': tipoPago,
-          'status': this.estatus_options[obj.status]['label'],
+          'status': status,
           'paid': obj.paid,
           'factura': obj.factura,
           'table': tableOrder,
