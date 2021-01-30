@@ -25,7 +25,7 @@ export default {
   height 100%
 
 .backgroundImage
-  background: url('https://i.pinimg.com/originals/13/4f/27/134f271f8d0710edb376f2b7f2b82916.jpg') no-repeat center center fixed;
+  background: url('https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fdownload2213538?alt=media&token=3e4088dd-ecdd-4a8d-93c5-4f2c71143c7a') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

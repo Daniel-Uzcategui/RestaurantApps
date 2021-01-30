@@ -59,7 +59,7 @@
           <div class="col-12 row justify-center">
             <div class="q-pa-md" v-for="(zone, index) in zones" :key="index" >
               <q-input filled class="q-pb-md" :value="zone.alias" @input="(e) => zone.alias = e" ref="zonealias" rounded outlined :label="'Zona ' + index + ' Alias'" />
-              <q-input filled rounded outlined :value="zone.price" @input="(e) => zone.price = parseInt(e)" type="number" :label="'Zona ' + index + ' Costo delivery'" />
+              <q-input filled rounded outlined :value="zone.price" @input="(e) => zone.price = parseFloat(e)" type="number" :label="'Zona ' + index + ' Costo delivery'" />
             </div>
           </div>
       </div>

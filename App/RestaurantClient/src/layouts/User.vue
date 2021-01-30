@@ -16,10 +16,10 @@
       <q-tabs dense shrink stretch>
                 <q-tab v-show="nav2[1].length === 1" no-caps v-for="(link, index) in nav2[1]"
                :key="index + 'i'"
-                @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title" />
-                <q-btn-dropdown no-caps auto-close stretch flat label="Catálogos">
+                @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title + 1" />
+                <q-btn-dropdown v-show="nav2[1].length > 1" no-caps auto-close stretch flat label="Catálogos">
                   <q-list>
-                  <q-item clickable v-show="nav2[1].length > 1" no-caps v-for="(link, index) in nav2[1]"
+                  <q-item clickable no-caps v-for="(link, index) in nav2[1]"
                     :key="index + 'j'"
                     >
                     <q-btn no-caps @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :icon="link.icon" :label="link.title" flat />
@@ -248,7 +248,7 @@ export default {
           menu = [ ...menu, ...inter ]
         }
       }
-      mapping = [...menu, ...mapping2, ...mapping]
+      mapping = [...mapping2, ...mapping]
       if (this.paymentServ && this.paymentServ.statusRewards) {
         mapping = [...mapping,
           {

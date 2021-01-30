@@ -18,7 +18,7 @@
         </section>
         <div class="row justify-between q-my-lg q-px-md ">
             <q-btn rounded no-caps color="primary" label="Cancelar" style="min-width:6em;" @click="setEditUserDialog(false)"></q-btn>
-            <q-btn rounded no-caps color="primary" label="Guardar" type="submit"  style="min-width:6em;"></q-btn>
+            <q-btn rounded no-caps color="blue" label="Guardar" type="submit"  style="min-width:6em;"></q-btn>
         </div>
     </q-form>
 </div>

@@ -530,7 +530,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           let request = req.body
           delete request.bank
           let defaultcode = cfg.claveSecreta
-          request.transaction.cvv = encryptar(defaultcode, '772').toString()
+          request.transaction.cvv = encryptar(defaultcode, request.transaction.cvv.toString()).toString()
           request.transaction.twofactor_auth = encryptar(defaultcode, request.transaction.twofactor_auth).toString()
           let invoicenumber = Math.random().toString(16).substr(2, 10)
           request.merchant_identify = {
@@ -541,7 +541,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           if (cfg.ambiente) {
             var url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/pay'
           } else {
-            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/pay'
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/v1/payment/pay'
           }
           request.transaction.invoice_number = invoicenumber
           let options2 = { method: 'post',
@@ -630,7 +630,7 @@ exports.GetAuth = functions.https.onRequest(async (req, res) => {
   if (cfg.ambiente) {
     var url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth'
   } else {
-    url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth'
+    url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/v1/payment/getauth'
   }
   let options = { method: 'post',
     url: url,

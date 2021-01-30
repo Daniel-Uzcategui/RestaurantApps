@@ -1,6 +1,6 @@
 <template>
    <q-page>
-      <q-card flat class="bg-dark text-white q-cardGlass">
+      <q-card flat class="bg-dark text-white q-cardGlass" :class="$q.screen.lt.md ? 'q-mt-lg q-mb-lg' : ''">
          <q-card-section class="q-pa-xl text-h5 text-bold" :class="$q.screen.lt.md ? 'text-center' : ''">
             <div class="q-pt-xl">
                Status de
@@ -13,7 +13,7 @@
             <div class="row justify-center">
                <q-spinner v-if="loading" size="lg" color="primary" />
                <p v-if="orderSort.length === 0 && !loading" class="text-h4 text-center">No existen pasadas ordenes</p>
-               <q-list style="min-width: 320px" :class="'q-pa-' + $q.screen.name" class="col-6 q-pb-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
+               <q-list style="min-width: 300px" :class="'q-pa-' + $q.screen.name" class="col-6 q-pb-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
                   <q-item @click="carritoDialog(items)" clickable v-ripple>
                      <q-item-section>
                         <q-icon name="fas fa-dot-circle" class="absolute-top" size="50px" :style="getcolor(items.status)" v-if="items.status == 4"/>
@@ -389,10 +389,10 @@ export default {
     getProdValById (id, val, type) {
       if (!type) {
         var obj = this.menu.find(e => { return e.id === id })
-        return obj[val]
+        return obj && obj[val] ? obj[val] : null
       } else {
         obj = this.promos.find(e => { return e.id === id })
-        return obj[val]
+        return obj && obj[val] ? obj[val] : null
       }
     },
     getTotalCarrito () {

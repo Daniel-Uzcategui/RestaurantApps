@@ -19,7 +19,7 @@
            <p class="text-h5 text-bold q-ma-md">
       Promociones
       </p>
-      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="secondary" icon="save"></q-btn>
+      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
             <q-btn-group flat push >
           <q-btn flat color="white" push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>

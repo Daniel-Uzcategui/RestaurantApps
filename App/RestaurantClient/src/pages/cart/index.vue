@@ -277,7 +277,7 @@
                     <div>
                      <debitPayment
                       :ordersId=currentUser.cedula
-                      :amount=totalPrice
+                      :amount="getRates(totalPrice + deliveryPrice)"
                       @payment-done='payment' />
                      </div>
                     </div>
@@ -741,13 +741,13 @@ export default {
     payment (status) {
       let that = this
       console.log(status)
-      if (status && status.trx && status.trx.trx_status === 'approved') {
+      if (status && status.data && status.data.trx && status.data.trx.trx_status === 'approved') {
         this.CheckTDD = true
         console.log('CheckTDD : ', this.CheckTDD)
         that.$q.loading.show({
           delay: 400
         })
-        this.makeOrder(status)
+        this.makeOrder(status.data)
       }
     },
     paymentTDC (respuesta) {

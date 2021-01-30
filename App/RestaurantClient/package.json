@@ -10,6 +10,7 @@
     "dev-prod": "cross-env QENV=dev-prod quasar dev",
     "dev-bar": "cross-env QENV=bar quasar dev",
     "dev-pwa": "cross-env QENV=development quasar dev -m pwa",
+    "dev-qa": "cross-env QENV=qa quasar dev",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
     "build": "cross-env QENV=production quasar build",
@@ -58,14 +59,6 @@
     "yarn": ">= 1.6.0"
   },
   "browserslist": [
-    "last 10 Chrome versions",
-    "last 10 Firefox versions",
-    "last 4 Edge versions",
-    "last 7 Safari versions",
-    "last 8 Android versions",
-    "last 8 ChromeAndroid versions",
-    "last 8 FirefoxAndroid versions",
-    "last 10 iOS versions",
-    "last 5 Opera versions"
+    "cover 95%"
   ]
 }
