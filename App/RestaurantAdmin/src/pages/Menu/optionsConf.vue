@@ -245,6 +245,7 @@
                <!-- <q-icon name="add" @click="addopt = !addopt" /> -->
              </div>
               <itemcomp
+              :elitempass="elitempass"
                 :comp="[props.row]"
                 :value="value"
                 :readOnly="true"
@@ -318,10 +319,11 @@
           </q-td>
           </q-item>
           <q-item class="column items-start" v-show="props.expand" :props="props">
-                <q-td><label class="col label-expand">Vista previa (solo disponible luego de asociar un grupo y seleccionar el tipo)</label></q-td>
+                <q-td><label class="col label-expand">Vista previa (disponible luego de seleccionar el tipo)</label></q-td>
             <q-card style="max-width: 400px" class="text-left">
               <q-card-section>
                 <itemcomp
+                :elitempass="elitempass"
                 :comp="[props.row]"
                 :value="value"
                 :readOnly="false"
@@ -356,10 +358,10 @@
       >
       <AddOpt :isDiag="true"  />
     </q-dialog>
-    <q-dialog class="bg-transparent" v-model="opcionesConf">
-            <q-list v-if="isDiagEasy && opcionesConf" class="q-diag-glassMorph">
+    <div class="bg-transparent" v-if="opcionesConf">
+            <q-list v-if="isDiagEasy && opcionesConf">
           <q-item class="column items-start" key="desc" >
-            <q-td><label class="label-expand">Nombre de la Configuración (Este es el título que verá el cliente para las opciones)</label></q-td>
+            <q-td><label class="label-expand">Nombre (Este es el título que verá el cliente para las opciones)</label></q-td>
               <q-input filled dense
               @input="(e) => saved(e, temp1.groupComp[tempid].name, temp1.groupComp[tempid].id, 'name')"
               v-model="temp1.groupComp[tempid].name"
@@ -367,7 +369,7 @@
               outlined />
           </q-item>
           <q-item class="column items-start" key="estatus" >
-             <q-td><label class="label-expand">Estatus {{temp1.groupComp[tempid].estatus}}</label></q-td>
+             <q-td><label class="label-expand">Estatus</label></q-td>
               <q-toggle
                 @input="(e) => {temp1.groupComp[tempid].estatus=!temp1.groupComp[tempid].estatus; saved(e, temp1.groupComp[tempid].estatus, temp1.groupComp[tempid].id, 'estatus')}"
                 v-model="temp1.groupComp[tempid].estatus"
@@ -448,11 +450,12 @@
             <q-input filled rounded outlined @input="(e) => saved2(e, temp1.groupComp[tempid].maxUnit, temp1.groupComp[tempid].id, 'maxUnit')" v-model="temp1.groupComp[tempid].maxUnit" dense  />
           </q-td>
           </q-item>
-          <q-item class="column items-start"  >
-                <q-td><label class="col label-expand">Vista previa (solo disponible luego de seleccionar el tipo)</label></q-td>
+          <q-item class="column items-start">
+                <q-td><label class="col label-expand">Vista previa (disponible luego de seleccionar el tipo)</label></q-td>
             <q-card style="max-width: 320px" class="text-left q-cardGlass">
               <q-card-section>
                 <itemcomp
+                :elitempass="elitempass"
                 :comp="[temp1.groupComp[tempid]]"
                 :value="value"
                 :readOnly="false"
@@ -461,13 +464,14 @@
               </q-card>
               </q-item>
               <q-item>
-                <div class="full-width column items-center">
-                  <q-btn @click="addopt = false; executeSave()" label="Guardar" color="blue" rounded no-caps icon="save" />
+                <div class="full-width row justify-between">
+                  <q-btn @click="addopt = false; $emit('Cancel')" label="Cancelar" color="green" rounded no-caps />
+                  <q-btn @click="addopt = false; executeSave(); $emit('executedSave')" label="Guardar" color="blue" rounded no-caps icon="save" />
                 </div>
               </q-item>
             </q-list>
-          </q-dialog>
-    <q-footer class="bg-primary" v-if="$q.screen.lt.sm && !isDiag" reveal>
+          </div>
+    <q-footer class="bg-primary" v-if="$q.screen.lt.sm && !isDiag && !opcionesConf" reveal>
     <q-tabs mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
         <q-tab flat color="white" push no-capsicon="delete_outline" @click="delrow"/>
@@ -498,6 +502,10 @@ export default {
     opcionesGroup: () => import('./gruposOpt')
   },
   props: {
+    elitempass: {
+      type: Object,
+      default: () => {}
+    },
     isDiag: {
       type: Boolean,
       default: () => false
@@ -556,7 +564,6 @@ export default {
   },
   mounted () {
     if (this.isDiagEasy && !this.isDiagView) {
-      console.log('Wtf')
       const id = this.addrow()
       this.tempid = id
       this.temp1.groupComp[id].name = ''
@@ -567,7 +574,6 @@ export default {
       this.$forceUpdate()
     }
     if (this.isDiagView) {
-      console.log('Wtf2')
       this.tempid = this.itemsDiag.id
       this.temp1.groupComp = {}
       this.temp1.groupComp[this.tempid] = { ...this.itemsDiag }

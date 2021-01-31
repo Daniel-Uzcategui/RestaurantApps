@@ -16,6 +16,17 @@ export const setValue = firestoreAction((state, payload) => {
     .update({ [payload.payload.key]: payload.payload.value })
     .then(() => {
       console.log(`${payload.collection} updated!`)
+      return payload.payload.id
+    })
+})
+export const setMultiValue = firestoreAction((state, payload) => {
+  return firestore()
+    .collection(payload.collection)
+    .doc(payload.payload.id)
+    .set({ ...payload.payload }, { merge: true })
+    .then(() => {
+      console.log(`${payload.collection} updated!`)
+      return payload.payload.id
     })
 })
 export const setValue2 = firestoreAction((state, payload) => {
@@ -65,7 +76,7 @@ export const newAddRow = firestoreAction(async (state, payload) => {
     ...payload.data,
     DateIn: firebase.firestore.FieldValue.serverTimestamp()
   }
-  if (!(payload.collection === 'optionsConf' || payload.collection === 'categorias')) {
+  if (!(payload.collection === 'optionsConf' || payload.collection === 'groupComp' || payload.collection === 'categorias')) {
     data = {
       price: 0,
       ...data

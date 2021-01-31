@@ -263,14 +263,14 @@ export default {
               // separator: true,
 
             },
-            {
-              label: 'Config Grupos de Opciones',
-              caption: '',
-              icon: 'menu_book',
-              handler: () => this.$router.push({ path: '/menu/optionsconf' })
-              // separator: true,
+            // {
+            //   label: 'Config Grupos de Opciones',
+            //   caption: '',
+            //   icon: 'menu_book',
+            //   handler: () => this.$router.push({ path: '/menu/optionsconf' })
+            //   // separator: true,
 
-            },
+            // },
             {
               label: 'Promociones',
               caption: '',

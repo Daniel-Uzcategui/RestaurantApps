@@ -463,8 +463,18 @@
               </q-select>
           </q-item>
            <q-item class="column items-start" key="groupComp" :props="props">
-             <q-td><label class="label-expand">Configuración de Opciones</label></q-td>
-              <q-select options-selected-class="text-blue" filled rounded dense
+             <div class="label-expand full-width row justify-between">
+               <div class="text-h6">Grupos de Opciones</div>
+               <q-btn
+               rounded
+                    label="Añadir"
+                    color="blue"
+                    no-caps
+                    class="cursor-pointer"
+                    @click="addopt = !addopt; propass = props"
+                  />
+             </div>
+              <!-- <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="props.row.groupComp"
                 @input="(e) => saved(e, props.row.groupComp, props.row.id, 'groupComp')"
                 use-input
@@ -486,7 +496,16 @@
             @click.stop.prevent="addopt = !addopt"
           />
         </template>
-              </q-select>
+              </q-select> -->
+              <q-list>
+               <q-item v-for="(item, index) in props.row.groupComp" :key="index">
+                 <div>
+                    <q-chip class="glossy" removable clickable @click="addoptView = true; viewId = getCompVal(item, 'group_id')" @remove="(e) => saved(delCompVal(props.row.groupComp, item), props.row.groupComp, props.row.id, 'groupComp')" color="green" text-color="white" icon="filter_frames">
+                       {{getCompVal(item, 'name')}}
+                    </q-chip>
+                 </div>
+               </q-item>
+             </q-list>
           </q-item>
               <q-item class="column items-start"  :props="props">
                 <q-td><label class="col label-expand">Descripción</label></q-td>
@@ -577,10 +596,32 @@
     </q-dialog>
     <q-dialog
      v-model="addopt"
-     full-width
       >
-      <AddOpt :isDiag="true" class="q-diag-glassMorph" />
+      <div class="column items-start q-cardGlass q-ma-lg q-pa-lg" v-if="addopt">
+        <div class="text-h6 q-mb-md">Grupos Existentes</div>
+      <q-select options-selected-class="text-blue" filled rounded dense
+                v-model="tempOpt"
+                class="full-width q-ma-md"
+                :options="groupCompFilter()"
+                multiple
+                :option-label="(item) => item === null ? null : item.name"
+                :option-value="(item) => item === null ? null : item.id"
+                map-options
+                emit-value
+                stack-label
+              />
+      <div class="row justify-between full-width q-mt-md">
+      <q-btn rounded label="Crear Nuevo" class="q-mr-md" @click="addopt = false; addopt2 = true" color="green" no-caps></q-btn>
+      <q-btn rounded label="Agregar" color="blue" @click="tempOpt ? (addNewOpts(), addopt = false) : null" no-caps></q-btn>
+      </div>
+      </div>
     </q-dialog>
+    <q-dialog full-width v-model="addopt2">
+      <AddOpt v-if="addopt2" :isDiag="true" @saved="(e) => {tempOpt = e; addNewOpts(); addopt = false}" class="q-diag-glassMorph" />
+      </q-dialog>
+    <q-dialog full-width v-model="addoptView">
+      <AddOpt :isDiagView="true" :viewId="viewId" class="q-diag-glassMorph" />
+      </q-dialog>
     <q-dialog
       v-model="preview"
       maximized
@@ -725,8 +766,13 @@ export default {
   },
   data () {
     return {
+      viewId: null,
+      addoptView: false,
+      propass: null,
       category: null,
       addopt: false,
+      addopt2: false,
+      tempOpt: null,
       addcat: false,
       preview: false,
       searchBar: '',
@@ -755,6 +801,35 @@ export default {
   methods: {
     validate (value) {
       return value >= 0 || 'error'
+    },
+    groupCompFilter () {
+      if (this.propass.row.groupComp) {
+        return this.groupComp.filter(x => {
+          return !this.propass.row.groupComp.includes(x.id)
+        })
+      } else {
+        return this.groupComp
+      }
+    },
+    addNewOpts () {
+      let props = this.propass
+      props.row.groupComp = props.row.groupComp ? [...props.row.groupComp, ...this.tempOpt] : this.tempOpt
+      this.saved(props.row.groupComp, props.row.groupComp, props.row.id, 'groupComp')
+      this.tempOpt = null
+    },
+    getCompVal (id, val) {
+      let group = this.groupComp.find(x => x.id === id)
+      if (typeof group === 'undefined') {
+        return 'Valor no encontrado'
+      } else {
+        let value = group[val]
+        return value
+      }
+    },
+    delCompVal (oldval, delval) {
+      let index = oldval.findIndex(x => x === delval)
+      oldval.splice(index, 1)
+      return oldval
     },
     promptNombre () {
       this.$q.dialog({

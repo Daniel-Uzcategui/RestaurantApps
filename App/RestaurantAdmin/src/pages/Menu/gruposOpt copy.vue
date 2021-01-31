@@ -1,10 +1,8 @@
 <template>
   <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
-    <!-- <q-btn flat color="white" no-caps push label="added" icon="add" @click="$refs.table.setExpanded(['1ohh2feMPZf8EBop34Jz'])"/> -->
    <q-table
       style="border-radius: 28px"
       :data="elitemGroup"
-      v-show="!(isDiag || isDiagView)"
       :columns="columns"
       title="Opciones"
       :rows-per-page-options="[20, 30, 0]"
@@ -19,7 +17,7 @@
       <p class="text-h5 text-bold q-ma-md">
       Grupos de Opciones
       </p>
-      <!-- <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save" /> -->
+      <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
         <q-btn-group flat push >
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="createValue()"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
@@ -122,17 +120,17 @@
                 </div>
               </q-item> -->
         </q-list>
-          <q-dialog class="bg-transparent" :persistent="temp1 && Object.keys(temp1).length > 0" v-model="props.expand">
+          <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
           <q-item class="column items-start" key="desc" :props="props">
-            <q-td><label class="label-expand">Alias (para uso interno, puede ser el mismo que el nombre)</label></q-td>
+            <q-td><label class="label-expand">Nombre</label></q-td>
               <q-input filled
               @input="(e) => saved(e, props.row.name, props.row.id, 'name', 'itemGroup')"
               v-model="props.row.name"
               rounded
               outlined />
           </q-item>
-           <q-item style="min-height: 100px" class="column items-start" key="groupComp" :props="props">
+           <q-item class="column items-start" key="groupComp" :props="props">
              <div class="label-expand full-width row justify-between">
                <div class="text-h6">Opciones</div>
                <q-btn
@@ -147,71 +145,51 @@
              <q-list>
                <q-item v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
                  <div>
-                    <q-chip class="glossy" removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green" text-color="white" icon="filter_frames">
+                    <q-chip removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green" text-color="white" icon="filter_frames">
                        {{item.name}}
                     </q-chip>
                  </div>
                </q-item>
              </q-list>
           </q-item>
-          <q-item class="column items-start q-pa-none q-ma-none">
+          <q-item v-if="findItemsonGroup(props.row.id).length" class="column items-start">
              <div class="label-expand full-width row justify-between">
-             <div class="text-h6 q-ml-md">Configuración</div>
-               <!-- <q-btn
+             <div class="text-h6">Configuración de Opciones</div>
+               <q-btn
                rounded
                     label="Añadir"
                     color="blue"
                     no-caps
                     class="cursor-pointer"
                     @click.stop="opcionesconf = true; propspass = props.row"
-                  /> -->
+                  />
              </div>
-               <div v-for="(item, index) in findConfsonGroup(props.row.id)" :key="index">
-                    <!-- <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red" text-color="white" icon="tune">
+                <q-list>
+               <q-item v-for="(item, index) in findConfsonGroup(props.row.id)" :key="index">
+                 <div>
+                    <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red" text-color="white" icon="tune">
                        {{item.name}}
-                    </q-chip> -->
-                    <opcionesconf :elitempass="elitem" class="q-pa-none q-ma-none" :isDiagEasy="true" :isDiagView="true" :itemsDiag="item" @executedSave="executeSave(); props.expand = false" @Cancel="props.expand = false; temp1 = {}; init()" @updateOpt="(e) => {opcionesconfView = false}" />
-               </div>
+                    </q-chip>
+                 </div>
+               </q-item>
+             </q-list>
           </q-item>
-
             </q-list>
           </q-dialog>
         </div>
       </template>
     </q-table>
-    <q-dialog
-     v-model="opciones"
-      >
-      <div v-if="opciones" class="column items-start q-cardGlass q-ma-lg q-pa-lg">
-        <div class="text-h6 q-mb-md">Opciones Existentes</div>
-      <q-select options-selected-class="text-blue" filled rounded dense
-                v-model="tempOpt"
-                class="full-width q-ma-md"
-                :options="elitemFilter()"
-                multiple
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.id"
-                map-options
-                emit-value
-                stack-label
-              />
-      <div class="row justify-between full-width q-mt-md">
-      <q-btn rounded label="Crear Nuevo" class="q-mr-md" @click="opciones = false; opciones2 = true" color="green" no-caps></q-btn>
-      <q-btn rounded label="Agregar" color="blue" @click="addNewOpts(); opciones = false" no-caps></q-btn>
-      </div>
-      </div>
-    </q-dialog>
-    <q-dialog full-width v-model="opciones2">
-      <opciones v-if="opciones2" :isDiagEasy="true" @updateOpt="(e) => {opciones2 = false; tempid = {id:e}}" />
+    <q-dialog full-width v-model="opciones">
+      <opciones v-if="opciones" :isDiagEasy="true" @updateOpt="(e) => {opciones = false; tempid = {id:e}}" />
     </q-dialog>
     <q-dialog full-width v-model="opcionesView">
       <opciones v-if="opcionesView" :isDiagEasy="true" :isDiagView="true" :itemsDiag="propspass" @updateOpt="(e) => {opcionesView = false}" />
     </q-dialog>
     <q-dialog full-width v-model="opcionesconf">
-      <opcionesconf :elitempass="elitem" v-if="opcionesconf" :itemsDiag="propspass" :isDiagEasy="true" @updateOpt="(e) => {opcionesconf = false}" />
+      <opcionesconf v-if="opcionesconf" :itemsDiag="propspass" :isDiagEasy="true" @updateOpt="(e) => {opcionesconf = false}" />
     </q-dialog>
     <q-dialog full-width v-model="opcionesconfView">
-      <opcionesconf :elitempass="elitem" v-if="opcionesconfView" :isDiagEasy="true" :isDiagView="true" :itemsDiag="propspass" @updateOpt="(e) => {opcionesconfView = false}" />
+      <opcionesconf v-if="opcionesconfView" :isDiagEasy="true" :isDiagView="true" :itemsDiag="propspass" @updateOpt="(e) => {opcionesconfView = false}" />
     </q-dialog>
     <q-dialog v-model="noSelect">
       <q-card>
@@ -226,7 +204,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm && !(isDiag || isDiagView)" reveal>
+    <q-footer v-if="$q.screen.lt.sm && !isDiag" reveal>
     <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
       <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
           <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
@@ -261,10 +239,6 @@ export default {
     isDiagView: {
       type: Boolean,
       default: () => false
-    },
-    viewId: {
-      type: String,
-      default: ''
     }
   },
   data () {
@@ -274,8 +248,6 @@ export default {
       opcionesView: false,
       propspass: null,
       opciones: false,
-      tempOpt: null,
-      opciones2: false,
       addopt: false,
       elGroup: [],
       tempid: null,
@@ -291,22 +263,12 @@ export default {
   },
   watch: {
     itemPlain (e) {
+      this.elitem = JSON.parse(JSON.stringify(e))
+      this.filterOptions = JSON.parse(JSON.stringify(e))
       if (this.propspass !== null && this.tempid !== null) {
         this.saved2([...this.findItemsonGroup(this.propspass.row.id), this.tempid], this.findItemsonGroup(this.propspass.row.id), this.propspass.row.id, 'group_id')
         this.propspass = null
         this.tempid = null
-        this.elitem = JSON.parse(JSON.stringify(e))
-        this.filterOptions = JSON.parse(JSON.stringify(e))
-        if (this.temp1.item) {
-          for (let document in this.temp1.item) {
-            let grp = this.temp1.item[document].group_id
-            let item = this.elitem.find(x => x.id === document)
-            item.group_id = grp
-          }
-        }
-      } else {
-        this.elitem = JSON.parse(JSON.stringify(e))
-        this.filterOptions = JSON.parse(JSON.stringify(e))
       }
     },
     groupComp (e) {
@@ -314,55 +276,28 @@ export default {
     }
   },
   created () {
-    this.init()
+    this.bindItem().then((e) => {
+      this.elitem = JSON.parse(JSON.stringify(e))
+    })
+    this.bindItemGroup().then((e) => {
+      this.elitemGroup = JSON.parse(JSON.stringify(e))
+      this.filterOptions = JSON.parse(JSON.stringify(e))
+    })
+    this.bindGroupComp().then(e => {
+      this.elGroup = JSON.parse(JSON.stringify(e))
+    })
+    console.log({ it: this.elitemGroup })
   },
   mounted () {
-    if (this.isDiag) {
-      this.createValue()
-    }
-    console.log('Yeah')
-    if (this.isDiagView && this.viewId !== '') {
-      console.log('Yeah', this.viewId)
-      this.$refs.table.setExpanded([this.viewId])
+    if (this.isDiagView) {
+      this.tempid = this.itemsDiag.id
+      this.temp1.item = {}
+      this.temp1.item[this.tempid] = { ...this.itemsDiag }
+      console.log(this.temp1)
+      this.addopt = true
     }
   },
   methods: {
-    addNewOpts () {
-      // this.tempid = this.tempOpt.map(x => {
-      //   return {
-      //     id: x
-      //   }
-      // })
-      console.log(this.tempid)
-      for (let id of this.tempOpt) {
-        this.saved2([...this.findItemsonGroup(this.propspass.row.id), { id }], this.findItemsonGroup(this.propspass.row.id), this.propspass.row.id, 'group_id')
-      }
-      this.propspass = null
-      this.tempid = null
-      this.elitem = JSON.parse(JSON.stringify(this.itemPlain))
-      this.filterOptions = JSON.parse(JSON.stringify(this.itemPlain))
-      if (this.temp1.item) {
-        for (let document in this.temp1.item) {
-          let grp = this.temp1.item[document].group_id
-          let item = this.elitem.find(x => x.id === document)
-          item.group_id = grp
-        }
-      }
-      this.tempOpt = null
-    },
-    init () {
-      this.bindItem().then((e) => {
-        this.elitem = JSON.parse(JSON.stringify(e))
-      })
-      this.bindItemGroup().then((e) => {
-        this.elitemGroup = JSON.parse(JSON.stringify(e))
-        this.filterOptions = JSON.parse(JSON.stringify(e))
-      })
-      this.bindGroupComp().then(e => {
-        this.elGroup = JSON.parse(JSON.stringify(e))
-      })
-      console.log({ it: this.elitemGroup })
-    },
     validate (value) {
       return value >= 0 || 'error'
     },
@@ -421,8 +356,6 @@ export default {
               if (groupId && groupCompId) {
                 this.elGroup = JSON.parse(JSON.stringify(this.groupComp))
                 this.elitemGroup = JSON.parse(JSON.stringify(this.itemGroup))
-                this.$refs.table.setExpanded([groupId])
-                this.$emit('saved', [groupCompId])
               }
             }
           }
@@ -479,7 +412,7 @@ export default {
         }
         this.saveTemp({ payload: { value: val, id: toAdd[0].id, key }, collection: 'item' })
         let elit = this.elitem.find(x => x.id === toAdd[0].id)
-        elit.group_id = elit.group_id ? [...elit.group_id, ...val] : val
+        elit.group_id = val
       }
       if (toRemove.length) {
         const index = toRemove[0].group_id.indexOf(id)
@@ -549,18 +482,6 @@ export default {
       console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
     ...mapActions('menu', ['setValue2', 'setValue', 'setMultiValue', 'addRow', 'newAddRow', 'bindItem', 'bindItemGroup', 'bindGroupComp']),
-    elitemFilter () {
-      let items = this.elitem.filter((x) =>
-        x && x.group_id && !x.group_id.includes(this.propspass.row.id)
-      )
-      if (items) {
-        return items.map(x => {
-          return x
-        })
-      } else {
-        return []
-      }
-    },
     delrow () {
       if (this.selected.length === 0) {
         this.noSelect = true

@@ -154,13 +154,13 @@
                 emit-value
                 map-options
               >
-                <template v-slot:append>
+                <!-- <template v-slot:append>
                   <q-icon
                     name="add"
                     class="cursor-pointer"
                     @click="createValue()"
                   />
-                </template>
+                </template> -->
               </q-select>
           </q-item>
               <q-item class="column items-start" v-show="props.expand" :props="props">
