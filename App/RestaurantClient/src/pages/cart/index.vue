@@ -98,10 +98,15 @@
               style="width: 60%" v-model="cupon" :loading="loadingState" @input="setLoadingState()" />
             </div>
           </q-card-section>
-          <q-card-actions class="q-pa-md column items-center">
-            <q-btn name="cart" no-caps class="q-pr-xl q-pl-xl text-weight-thin" rounded color="primary" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true">
-            Siguiente
-            </q-btn>
+          <q-card-actions class="q-pa-md column items-center" >
+            <div v-if='allowBuy'>
+              <q-btn name="cart" no-caps class="q-pr-xl q-pl-xl text-weight-thin" rounded color="primary" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true">
+              Siguiente
+              </q-btn>
+            </div>
+            <div class="q-pt-lg" vertical v-if='!allowBuy'>
+                <p> En estos momentos estamos cerrados vuelve pronto</p>
+            </div>
           </q-card-actions>
          </q-card>
          </div>
@@ -342,7 +347,7 @@ import Addresses from '../../components/addresses.vue'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
-import { QUploaderBase } from 'quasar'
+import { QUploaderBase, date } from 'quasar'
 export default {
   mixins: [ QUploaderBase ],
   components: {
@@ -376,6 +381,10 @@ export default {
     },
     configDates () {
       let cfg = this.configurations.find(e => e.id === 'sede' + this.sede)
+      console.log('rutina configDates')
+      console.log('cfg')
+      console.log(this.sede)
+      console.log(cfg)
       return cfg
     },
     config () {
@@ -452,16 +461,18 @@ export default {
       photoType: '',
       photoUpload: false,
       photoMessage: true,
-      photoSRC: ''
+      photoSRC: '',
+      allowBuy: true
     }
   },
   created () {
+    console.log('created page')
     // this.bindLocalizations()
     this.bindPaymentServ().then(() => {
     }).catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.cart)
     console.log(this.$refs)
-    this.bindConfigs()
+    this.bindConfigs().then(e => this.getDays())
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
     this.bindRates()
@@ -591,6 +602,40 @@ export default {
         mtoTotal = rate.rateValue * mto
       }
       return mtoTotal
+    },
+    getDays () {
+      let timeStamp = Date.now()
+      let today = date.formatDate(timeStamp, 'dddd').toLowerCase()
+      let sedecfg = this.configDates
+      console.log('getDays')
+      console.log(this.configDates)
+      console.log(this.configurations)
+      console.log('sedecfg', sedecfg)
+      console.log(today)
+      console.log(this.sede)
+      if (sedecfg !== 'undefined') {
+        let hr = sedecfg.days[today][0].close.substr(0, 2)
+        let min = sedecfg.days[today][0].close.substr(2, 2)
+        console.log('status', sedecfg.status)
+        console.log('esta abierto', sedecfg.days[today][0].isOpen)
+        console.log('hora de cierre', sedecfg.days[today][0].close.substr(0, 2))
+        console.log('min de cierre', sedecfg.days[today][0].close.substr(2, 2))
+        console.log('hourOptions', this.optionsFnTime(hr, min))
+        if (sedecfg.status === 1) {
+          this.allowBuy = true
+        } else {
+          if (!sedecfg.days[today][0].isOpen) {
+            this.allowBuy = false
+          } else {
+            if (this.optionsFnTime(hr, min)) {
+              this.allowBuy = false
+            } else {
+              this.allowBuy = true
+            }
+          }
+        }
+        console.log(this.allowBuy)
+      }
     },
     getTransactions () {
       return this.transactions.find(obj => {

@@ -87,14 +87,11 @@
                         <q-item-label v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
                      </div>
                      <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
-                       <div v-if='allowBuy'>
+                       <div >
                         <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                         <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito 1</q-btn>
                        </div>
-                       <div class="q-pt-lg" vertical v-if='!allowBuy'>
-                          <p> En estos momentos estamos cerrados vuelve pronto</p>
-                        </div>
-                     </q-card-actions>
+                    </q-card-actions>
                   </div>
                   <itemcomp
                      v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1"
@@ -128,12 +125,9 @@
                   </q-badge>
                 </q-btn>
               </div>
-              <div v-if='allowBuy'>
+              <div >
               <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
               <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
-              </div>
-              <div class="q-pt-lg" vertical v-if='!allowBuy'>
-                 <p> En estos momentos estamos cerrados vuelve pronto</p>
               </div>
             </q-card-section>
             <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 1">
@@ -158,12 +152,9 @@
                            </div>
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
-                        <div class="q-pt-lg" vertical v-if='allowBuy'>
+                        <div class="q-pt-lg" >
                            <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                            <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
-                        </div>
-                        <div class="q-pt-lg" vertical v-if='!allowBuy'>
-                          <p> En estos momentos estamos cerrados vuelve pronto</p>
                         </div>
                      </div>
                   </div>
@@ -210,12 +201,9 @@
                            </div>
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
-                        <div class="q-pt-lg" vertical v-if='allowBuy'>
+                        <div class="q-pt-lg" vertical >
                            <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
                            <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
-                        </div>
-                        <div class="q-pt-lg" vertical v-if='!allowBuy'>
-                          <p> En estos momentos estamos cerrados vuelve pronto</p>
                         </div>
                      </div>
                   </div>
@@ -231,7 +219,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { copyToClipboard, date } from 'quasar'
+import { copyToClipboard } from 'quasar'
 export default {
   props: {
     dgbg: {
@@ -411,8 +399,7 @@ export default {
       current: 0,
       numProducts: 7,
       displayProducts: true,
-      slide: 1,
-      allowBuy: true
+      slide: 1
     }
   },
   // watch: {
@@ -434,12 +421,8 @@ export default {
       this.setSede(this.Sede)
     }
   },
-  created () {
-    this.bindConfigs().then(e => this.getDays())
-  },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
-    ...mapActions('config', ['bindConfigs']),
     click () {
       this.$emit('click-edit', {
         block_info: {
@@ -473,34 +456,6 @@ export default {
           { label: 'X', color: 'white' }
         ]
       })
-    },
-    getDays () {
-      let timeStamp = Date.now()
-      let today = date.formatDate(timeStamp, 'dddd').toLowerCase()
-      let hour = date.formatDate(timeStamp, 'hhss').toLowerCase()
-      let sedecfg = this.configDates
-      console.log('getDays')
-      console.log(this.configurations)
-      console.log(sedecfg)
-      console.log(today)
-      console.log(hour)
-      console.log('status', sedecfg.status)
-      console.log('esta abierto', sedecfg.days[today][0].isOpen)
-      console.log('hora de cierre', sedecfg.days[today][0].close)
-      if (sedecfg.status === 1) {
-        this.allowBuy = true
-      } else {
-        if (!sedecfg.days[today][0].isOpen) {
-          this.allowBuy = false
-        } else {
-          if (hour > sedecfg.days[today][0].close) {
-            this.allowBuy = false
-          } else {
-            this.allowBuy = true
-          }
-        }
-      }
-      console.log(this.allowBuy)
     },
     addToCart (rew) {
       if (this.displayVal.prodType === 0) {
