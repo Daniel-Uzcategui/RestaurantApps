@@ -478,6 +478,9 @@ export default {
     this.bindRates()
     console.log(this.rates)
   },
+  mounted () {
+    this.getDays()
+  },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
     ...mapActions('order', ['bindOrders', 'addOrder']),
