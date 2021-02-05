@@ -207,9 +207,9 @@ export default {
                { label: 'Intro',
                  link: 'intro',
                  handler: (node) => this.onClickGuide('intro') },
-               { label: 'Agregar opciones a Productos',
-                 link: 'addopts',
-                 handler: (node) => this.onClickGuide('addopts') },
+               //  { label: 'Agregar opciones a Productos',
+               //    link: 'addopts',
+               //    handler: (node) => this.onClickGuide('addopts') },
                { label: 'Cambiar Tema de Cliente',
                  link: 'quicktheme',
                  handler: (node) => this.onClickGuide('quicktheme') }

@@ -157,8 +157,8 @@ export default {
           url: 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/api-pagos-b2c/REALIZAR_PAGO_CREDITO',
           headers:
           { accept: 'application/json',
-            'content-type': 'application/json',
-            'x-ibm-client-id': '81188330-c768-46fe-a378-ff3ac9e88824' },
+            'content-type': 'application/json'
+          },
           data:
           {
             'HEADER_PAGO_REQUEST': {

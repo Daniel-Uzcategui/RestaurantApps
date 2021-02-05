@@ -588,6 +588,152 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           }
         }
         break
+      case reqBank === 'PagoMovil':
+        try {
+          cfg = pre.Mercantil
+          let integratorId = cfg.integratorId
+          let merchantId = cfg.merchantId
+          let terminalId = cfg.terminalId
+          let request = req.body
+          delete request.bank
+          let defaultcode = cfg.claveSecreta
+          request.transaction_c2p.destination_mobile_number = encryptar(defaultcode, request.transaction_c2p.destination_mobile_number.toString()).toString()
+          // request.transaction_c2p.payment_reference = encryptar(defaultcode, request.transaction_c2p.payment_reference).toString()
+          request.transaction_c2p.payment_reference = ''
+          request.transaction_c2p.origin_mobile_number = encryptar(defaultcode, request.transaction_c2p.origin_mobile_number.toString()).toString()
+          request.transaction_c2p.twofactor_auth = encryptar(defaultcode, request.transaction_c2p.twofactor_auth).toString()
+          let invoicenumber = Math.random().toString(16).substr(2, 10)
+          request.merchant_identify = {
+            'integratorId': parseInt(integratorId),
+            'merchantId': parseInt(merchantId),
+            'terminalId': terminalId
+          }
+          if (cfg.ambiente) {
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/pay'
+          } else {
+            // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/c2p'
+            // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/c2p'
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/v1/payment/c2p'
+          }
+          request.transaction_c2p.invoice_number = invoicenumber
+          let options2 = { method: 'post',
+            url: url,
+            headers:
+            { accept: 'application/json',
+              'content-type': 'application/json',
+              'x-ibm-client-id': cfg.xibm },
+            data: request
+            // json: true
+          }
+          // console.log(options2)
+          let respuesta = await axios(options2)
+          // const payload = {
+          //   cardNumberFirst: request.transaction.card_number.substr(0, 4),
+          //   cardNumberLast: request.transaction.card_number.substr(request.transaction.card_number.length - 4),
+          //   cardCVC: request.transaction.cvv,
+          //   orderId: 0,
+          //   paidAmount: request.transaction.amount,
+          //   paidAmountCurrency: respuesta.data.transaction_response.currency,
+          //   rateId: 0,
+          //   txnBankId: 1,
+          //   trxType: 'Mercantil',
+          //   trxProcesingDate: respuesta.data.transaction_response.processing_date,
+          //   paymentStatus: respuesta.data.transaction_response.trx_status,
+          //   payment_method: respuesta.data.transaction_response.payment_method,
+          //   DateIn: new Date()
+          // }
+          // const res2 = await db.collection('transactions').add(payload)
+          res.send({ trx: respuesta })
+          // res.send({ options2 })
+          // res.send({ trx: respuesta.data.transaction_response, id: res2.id })
+        } catch (err) {
+          res.status(400)
+          console.log({ ...err.response })
+          if (err.response && err.response.data && err.response.data.error_list) {
+            // console.log(error.response.data);
+            console.log(err.response.data.error_list[0].description)
+            // console.log(error.response.headers);
+            res.send({
+              title: 'Error',
+              message: err.response.data.error_list[0].description })
+          } else {
+            res.send({
+              title: 'Error',
+              message: 'Error inesperado, intente más tarde',
+              error: err })
+          }
+        }
+        break
+      case reqBank === 'MercantilTDC':
+        try {
+          cfg = pre.Mercantil
+          let integratorId = cfg.integratorId
+          let merchantId = cfg.merchantId
+          let terminalId = cfg.terminalId
+          let request = req.body
+          delete request.bank
+          let invoicenumber = Math.floor(Math.random() * 999999999) + 1
+          request.merchant_identify = {
+            'integratorId': parseInt(integratorId),
+            'merchantId': parseInt(merchantId),
+            'terminalId': terminalId
+          }
+          if (cfg.ambiente) {
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/api-pagos-b2c/REALIZAR_PAGO_CREDITO'
+          } else {
+            // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/c2p'
+            // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/c2p'
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/api-pagos-b2c/REALIZAR_PAGO_CREDITO'
+          }
+          request.BODY_PAGO_REQUEST.NUMERO_FACTURA = invoicenumber
+          let options2 = { method: 'post',
+            url: url,
+            headers:
+              { accept: 'application/json',
+                'content-type': 'application/json',
+                'x-ibm-client-id': cfg.xibm },
+            data: request
+            // json: true
+          }
+          // console.log(options2)
+          let respuesta = await axios(options2)
+          // const payload = {
+          //   cardNumberFirst: request.transaction.card_number.substr(0, 4),
+          //   cardNumberLast: request.transaction.card_number.substr(request.transaction.card_number.length - 4),
+          //   cardCVC: request.transaction.cvv,
+          //   orderId: 0,
+          //   paidAmount: request.transaction.amount,
+          //   paidAmountCurrency: respuesta.data.transaction_response.currency,
+          //   rateId: 0,
+          //   txnBankId: 1,
+          //   trxType: 'Mercantil',
+          //   trxProcesingDate: respuesta.data.transaction_response.processing_date,
+          //   paymentStatus: respuesta.data.transaction_response.trx_status,
+          //   payment_method: respuesta.data.transaction_response.payment_method,
+          //   DateIn: new Date()
+          // }
+          // const res2 = await db.collection('transactions').add(payload)
+          res.send({ ...respuesta })
+          // res.send({ options2 })
+          // res.send({ trx: respuesta.data.transaction_response, id: res2.id })
+        } catch (err) {
+          res.status(400)
+          console.log({ ...err.response })
+          if (err.response && err.response.data && err.response.data.error_list) {
+            // console.log(error.response.data);
+            console.log(err.response.data.error_list[0].description)
+            // console.log(error.response.headers);
+            res.send({
+              title: 'Error',
+              message: err.response.data.error_list[0].description })
+          } else {
+            res.send({
+              title: 'Error',
+              message: 'Error inesperado, intente más tarde',
+              error: err })
+          }
+        }
+        break
       default:
         res.send({
           title: 'Error',

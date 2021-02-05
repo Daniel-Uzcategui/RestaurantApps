@@ -18,3 +18,4 @@ App/RestaurantAdmin/.firebase/hosting.ZGlzdFxzcGE.cache
 *.cache
 App/RestaurantAdmin/yarn.lock
 *.lock
+App/RestaurantAdmin/src/pages/editor/components/client
