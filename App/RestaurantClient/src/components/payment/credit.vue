@@ -154,7 +154,7 @@ export default {
         let cvv = this.valueFields.cvv
         let amount = this.amount
         let options = { method: 'post',
-          url: 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/api-pagos-b2c/REALIZAR_PAGO_CREDITO',
+          url: window.location.origin + '/transact',
           headers:
           { accept: 'application/json',
             'content-type': 'application/json'
