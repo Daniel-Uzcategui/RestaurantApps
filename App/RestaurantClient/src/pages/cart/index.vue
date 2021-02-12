@@ -619,11 +619,6 @@ export default {
       if (sedecfg !== 'undefined') {
         let hr = sedecfg.days[today][0].close.substr(0, 2)
         let min = sedecfg.days[today][0].close.substr(2, 2)
-        console.log('status', sedecfg.status)
-        console.log('esta abierto', sedecfg.days[today][0].isOpen)
-        console.log('hora de cierre', sedecfg.days[today][0].close.substr(0, 2))
-        console.log('min de cierre', sedecfg.days[today][0].close.substr(2, 2))
-        console.log('hourOptions', this.optionsFnTime(hr, min))
         if (sedecfg.status === 1) {
           this.allowBuy = true
         } else {
