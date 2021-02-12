@@ -290,8 +290,9 @@
                     <div>
                      <creditPayment
                       :ordersId=currentUser.cedula
-                      :amount=totalPrice
-                      @payment-done='paymentTDC' />
+                      :credit="true"
+                      :amount="getRates(totalPrice + deliveryPrice)"
+                      @payment-done='payment' />
                      </div>
                     </div>
                     <div class="q-pt-md col-12 column items-center">
@@ -398,7 +399,7 @@ export default {
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Debito Venezolana', value: 6, color: 'blue' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Venezolana', value: 6, color: 'blue' }) }
       if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
       if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito Venezolana', value: 9, color: 'blue' }) }

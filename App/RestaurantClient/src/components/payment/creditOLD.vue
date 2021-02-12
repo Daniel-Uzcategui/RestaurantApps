@@ -1,14 +1,12 @@
 <template>
 <div class="column items-center">
     <VuePaycard
-    class="q-pa-none q-ma-none full-width"
-    :value-fields="valueFields"
-    :labels="labels"
-    :hasRandomBackgrounds=false
-    :backgroundImage=25
-    card='Mercantil'
+      class='q-pa-none q-ma-none'
+      :value-fields='valueFields'
+      :labels='labels'
+      :hasRandomBackgrounds='true'
     />
-     <div class="q-gutter-md q-gutter-lg">
+ <div class="q-gutter-md q-gutter-lg">
  <div class="row header-container">
  <q-item-section>
    {{responseBank}}
@@ -22,10 +20,10 @@
       <q-select filled class="col-3" rounded outlined v-model="valueFields.customerIdV" :options="['V','E']" />
       <q-input filled type="number" class="col-9" rounded outlined v-model="valueFields.customerId" title="v-card-name" data-card-field="" autocomplete="off"/>
     </div>
-    <div class="row justify-start"><label class="col-12" for="cardName" >Tipo de Cuenta</label>
-      <q-select filled class="col-12" rounded outlined v-model="valueFields.account_type" emit-value map-options :options="[ { label: 'Cuenta Corriente', value: 'CC' }, { label: 'Cuenta de Ahorros', value: 'CA' } ]" />
+    <div class="row justify-start"><label class="col-12" for="cardName" >Nombre Completo</label>
+      <q-input filled type="text" class="col-9" rounded outlined v-model="valueFields.cardName" title="v-card-fulname" data-card-field="" autocomplete="off"/>
     </div>
-    <div class="row">
+     <div class="row">
         <div class="col-12">
             <div class="card-input">
                     <label for="cardMonth" aria-label="Expiration Date" >Fecha de Expiración</label>
@@ -44,7 +42,7 @@
       </div>
         <div >
             <div class="card-input"><label for="cardCvv" aria-label="Card CVV" >CVV</label>
-                <q-input filled rounded outlined type="tel" v-model="valueFields.cardCvv"  title="CVV" maxlength="4" data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="tel" v-model="valueFields.cardCvv"  title="CVV" maxlength="3" data-card-field="" autocomplete="off"/>
             </div>
         </div>
     <div class="column items-center">
@@ -61,8 +59,10 @@
  </div>
 </template>
 <script>
-import { VuePaycard } from '../vue-paycard'
-import { mapActions } from 'vuex'
+
+import { VuePaycard } from 'vue-paycard'
+import { mapActions, mapGetters } from 'vuex'
+import { date } from 'quasar'
 export default {
   components: {
     VuePaycard
@@ -72,6 +72,13 @@ export default {
       type: Number,
       default: 0
     }
+  },
+  mounted () {
+    this.firstname = this.currentUser.nombre
+    this.lastname = this.currentUser.apellido
+  },
+  computed: {
+    ...mapGetters('user', ['currentUser'])
   },
   data () {
     return {
@@ -110,8 +117,6 @@ export default {
 
       ],
       year_options: [
-        { label: '2019', value: 2019 },
-        { label: '2020', value: 2020 },
         { label: '2021', value: 2021 },
         { label: '2022', value: 2022 },
         { label: '2023', value: 2023 },
@@ -126,142 +131,67 @@ export default {
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
-
     async payment () {
       // eslint-disable-next-line no-unused-vars
       let typePasswordBank = ''
       // eslint-disable-next-line no-unused-vars
       let encodedEncryptedData = ''
-      let respuestaAuth = await this.authbank()
-      if (respuestaAuth) {
+      let respuestaPay = await this.paymentbank()
+      console.log({ respuestaPay })
+      this.$emit('payment-done', respuestaPay)
+      if (respuestaPay) {
         this.$q.loading.hide()
       }
-      if (respuestaAuth.status !== 200) {
-        return console.error('error in request')
-      }
-      console.log('respuestaBank:', respuestaAuth)
-      console.log('respuestaBank:', respuestaAuth.data.auth)
-      typePasswordBank = respuestaAuth.data.auth
-      if (typePasswordBank === 'clavetelefonica') {
-        this.$q.dialog({
-          title: 'Seguridad',
-          message: '¿Cuál es su Clave telefónica?',
-          prompt: {
-            model: 0,
-            type: 'text' // optional
-          },
-          cancel: true,
-          persistent: true
-        }).onOk(async data => {
-          let respuestaPay = await this.paymentbank(data)
-          console.log(respuestaPay)
-          this.$emit('payment-done', respuestaPay)
-          if (respuestaPay) {
-            this.$q.loading.hide()
-          }
-        })
-      }
     },
-    async paymentbank (data) {
+    async paymentbank () {
       try {
         this.$q.loading.show()
         let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
-        let browserAgent = this.getBrowserInfo()
-        let trxType = 'compra'
-        let paymentMethod = 'TDD'
         let cardNumber = this.valueFields.cardNumber.replace(/\s+/g, '') // this.valueFields.cardNumber
+        let cardName = this.valueFields.cardName // this.valueFields.cardName
         let customerId = this.valueFields.customerIdV + this.valueFields.customerId
-        let accountType = this.valueFields.account_type
-        let cvv = this.valueFields.cardCvv
-        // 'PFyDJwOukJXFEtC0s0t6Mg=='
-        let currency = 'ves'
+        let exdate = this.valueFields.cardMonth + '/' + this.valueFields.cardYear
+        let cvv = this.valueFields.cvv
         let amount = this.amount
         let options = { method: 'post',
-          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
           // url: window.location.origin + '/transact',
+          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
+          headers:
+          { accept: 'application/json',
+            'content-type': 'application/json'
+          },
           data:
           {
-            'bank': 'Mercantil',
-            'client_identify': {
-              'ipaddress': ipaddress,
-              'browser_agent': browserAgent,
-              'mobile': {
-                'manufacturer': 'Samsung',
-                'model': 'S9',
-                'os_version': 'Oreo 9.1',
-                'location': {
-                  'lat': 37.4224764,
-                  'lng': -122.0842499
-                }
-              }
+            bank: 'MercantilTDC',
+            'HEADER_PAGO_REQUEST': {
+              'IDENTIFICADOR_UNICO_GLOBAL': '900',
+              'IDENTIFICACION_CANAL': '06',
+              'SIGLA_APLICACION': 'CHOPZY',
+              'IDENTIFICACION_USUARIO': '200273',
+              'DIRECCION_IP_CONSUMIDOR': ipaddress,
+              'DIRECCION_IP_CLIENTE': ipaddress,
+              'FECHA_ENVIO_MENSAJE': date.formatDate(Date.now(), 'YYYY-MM-DD'),
+              'HORA_ENVIO_MENSAJE': date.formatDate(Date.now(), 'HH:mm:ss'),
+              'CANTIDAD_REGISTROS': 1
             },
-            'transaction': {
-              'trx_type': trxType,
-              'payment_method': paymentMethod,
-              'card_number': cardNumber,
-              'customer_id': customerId,
-              'account_type': accountType,
-              'twofactor_auth': data,
-              'cvv': cvv,
-              'currency': currency,
-              'amount': amount
-            }
-          } }
-        console.log(options)
-        let respuesta = await this.$axios(options)
-        return respuesta
-      } catch (err) {
-        this.$q.loading.hide()
-        console.error({ err })
-        if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
-          return this.$q.dialog({
-            title: 'Error',
-            message: 'Error inesperado, intente más tarde'
-          })
-        }
-      }
-    },
-    async authbank () {
-      try {
-        this.$q.loading.show()
-        let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
-        let browserAgent = this.getBrowserInfo()
-        let trxType = 'solaut'
-        let paymentMethod = 'TDD'
-        let cardNumber = this.valueFields.cardNumber.replace(/\s+/g, '') // this.valueFields.cardNumber
-        let customerId = this.valueFields.customerIdV + this.valueFields.customerId // temp
-        let options = { method: 'post',
-          // url: 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth',
-          // url: window.location.origin + '/getauth',
-          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/GetAuth',
-          data:
-          {
-            'client_identify': {
-              'ipaddress': ipaddress,
-              'browser_agent': browserAgent,
-              'mobile': {
-                'manufacturer': 'Samsung',
-                'model': 'S9',
-                'os_version': 'Oreo 9.1',
-                'location': {
-                  'lat': 37.4224764,
-                  'lng': -122.0842499
-                }
-              }
-            },
-            'transaction_authInfo': {
-              'trx_type': trxType,
-              'payment_method': paymentMethod,
-              'card_number': cardNumber,
-              'customer_id': customerId
+            'BODY_PAGO_REQUEST': {
+              'IDENTIFICADOR_COMERCIO': 57896786,
+              'TIPO_TRANSACCION': 'TDC',
+              'MONTO_TRANSACCION': amount,
+              'NUMERO_FACTURA': 0,
+              'IDENTIFICACION_TARJETAHABIENTE': customerId,
+              'NOMBRE_TARJETAHABIENTE': cardName,
+              'NUMERO_TARJETA': cardNumber,
+              'FECHA_VENCIMIENTO_TARJETA': exdate,
+              'CODIGO_SEGURIDAD_TARJETA': cvv,
+              'NUMERO_LOTE': '1'
             }
           }
         }
         console.log(options)
         let respuesta = await this.$axios(options)
-        return respuesta
+        let responseBody = respuesta.data
+        return responseBody
       } catch (err) {
         this.$q.loading.hide()
         console.error({ err })

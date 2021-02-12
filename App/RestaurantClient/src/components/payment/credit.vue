@@ -4,9 +4,10 @@
       class='q-pa-none q-ma-none'
       :value-fields='valueFields'
       :labels='labels'
-      :hasRandomBackgrounds='true'
+      :hasRandomBackgrounds='false'
+      :backgroundImage='10'
     />
- <div class="q-gutter-md q-gutter-lg">
+     <div class="q-gutter-md q-gutter-lg">
  <div class="row header-container">
  <q-item-section>
    {{responseBank}}
@@ -14,16 +15,24 @@
     <div class="row filled">
     <div class="col-12">
     <div class="card-input"><label for="cardNumber" >Numero de tarjeta</label>
-      <q-input filled mask="###### #### ########" type="tel" rounded outlined v-model="valueFields.cardNumber" title="Number" data-card-field="" autocomplete="off" maxlength="21" class=""/>
+      <q-input filled
+      rounded
+                    type='tel'
+                    v-model='valueFields.cardNumber'
+                    @input="(e) => changeNumber(e)"
+                    :maxlength="cardNumberMaxLength"
+                    title='Number'
+                    data-card-field=''
+                    autocomplete='off'
+                    class=''
+                    outlined
+                  />
     </div>
     <div class="row justify-start"><label class="col-12" for="cardName" >Cédula</label>
       <q-select filled class="col-3" rounded outlined v-model="valueFields.customerIdV" :options="['V','E']" />
       <q-input filled type="number" class="col-9" rounded outlined v-model="valueFields.customerId" title="v-card-name" data-card-field="" autocomplete="off"/>
     </div>
-    <div class="row justify-start"><label class="col-12" for="cardName" >Nombre Completo</label>
-      <q-input filled type="text" class="col-9" rounded outlined v-model="valueFields.cardName" title="v-card-fulname" data-card-field="" autocomplete="off"/>
-    </div>
-     <div class="row">
+    <div class="row">
         <div class="col-12">
             <div class="card-input">
                     <label for="cardMonth" aria-label="Expiration Date" >Fecha de Expiración</label>
@@ -42,7 +51,7 @@
       </div>
         <div >
             <div class="card-input"><label for="cardCvv" aria-label="Card CVV" >CVV</label>
-                <q-input filled rounded outlined type="tel" v-model="valueFields.cardCvv"  title="CVV" maxlength="3" data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="tel" v-model="valueFields.cardCvv"  title="CVV" maxlength="4" data-card-field="" autocomplete="off"/>
             </div>
         </div>
     <div class="column items-center">
@@ -59,10 +68,8 @@
  </div>
 </template>
 <script>
-
 import { VuePaycard } from 'vue-paycard'
-import { mapActions, mapGetters } from 'vuex'
-import { date } from 'quasar'
+import { mapActions } from 'vuex'
 export default {
   components: {
     VuePaycard
@@ -71,20 +78,18 @@ export default {
     amount: {
       type: Number,
       default: 0
+    },
+    credit: {
+      type: Boolean,
+      default: () => false
     }
-  },
-  mounted () {
-    this.firstname = this.currentUser.nombre
-    this.lastname = this.currentUser.apellido
-  },
-  computed: {
-    ...mapGetters('user', ['currentUser'])
   },
   data () {
     return {
       keybankhash: '',
       phonePassword: '',
       responseBank: '',
+      cardNumberMaxLength: 19,
       valueFields: {
         account_type: 'CC',
         cardName: ' ',
@@ -102,18 +107,18 @@ export default {
         cardCvv: 'CVV'
       },
       month_options: [
-        { label: '01', value: 1 },
-        { label: '02', value: 2 },
-        { label: '03', value: 3 },
-        { label: '04', value: 4 },
-        { label: '05', value: 5 },
-        { label: '06', value: 6 },
-        { label: '07', value: 7 },
-        { label: '08', value: 8 },
-        { label: '09', value: 9 },
-        { label: '10', value: 10 },
-        { label: '11', value: 11 },
-        { label: '12', value: 12 }
+        { label: '01', value: '01' },
+        { label: '02', value: '02' },
+        { label: '03', value: '03' },
+        { label: '04', value: '04' },
+        { label: '05', value: '05' },
+        { label: '06', value: '06' },
+        { label: '07', value: '07' },
+        { label: '08', value: '08' },
+        { label: '09', value: '09' },
+        { label: '10', value: '10' },
+        { label: '11', value: '11' },
+        { label: '12', value: '12' }
 
       ],
       year_options: [
@@ -125,71 +130,102 @@ export default {
         { label: '2026', value: 2026 },
         { label: '2027', value: 2027 },
         { label: '2028', value: 2028 },
-        { label: '2029', value: 2029 }
+        { label: '2029', value: 2029 },
+        { label: '2029', value: 2030 },
+        { label: '2029', value: 2031 }
       ]
     }
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
+
     async payment () {
-      // eslint-disable-next-line no-unused-vars
-      let typePasswordBank = ''
-      // eslint-disable-next-line no-unused-vars
-      let encodedEncryptedData = ''
       let respuestaPay = await this.paymentbank()
       console.log(respuestaPay)
       this.$emit('payment-done', respuestaPay)
       if (respuestaPay) {
         this.$q.loading.hide()
       }
+      // eslint-disable-next-line no-unused-vars
+      // let typePasswordBank = ''
+      // // eslint-disable-next-line no-unused-vars
+      // let encodedEncryptedData = ''
+      // let respuestaAuth = await this.authbank()
+      // if (respuestaAuth) {
+      //   this.$q.loading.hide()
+      // }
+      // if (respuestaAuth.status !== 200) {
+      //   return console.error('error in request')
+      // }
+      // console.log('respuestaBank:', respuestaAuth)
+      // console.log('respuestaBank:', respuestaAuth.data.auth)
+      // typePasswordBank = respuestaAuth.data.auth
+      // if (typePasswordBank === 'clavetelefonica') {
+      //   this.$q.dialog({
+      //     title: 'Seguridad',
+      //     message: '¿Cuál es su Clave telefónica?',
+      //     prompt: {
+      //       model: 0,
+      //       type: 'text' // optional
+      //     },
+      //     cancel: true,
+      //     persistent: true
+      //   }).onOk(async data => {
+      //     let respuestaPay = await this.paymentbank(data)
+      //     console.log(respuestaPay)
+      //     this.$emit('payment-done', respuestaPay)
+      //     if (respuestaPay) {
+      //       this.$q.loading.hide()
+      //     }
+      //   })
+      // }
     },
     async paymentbank () {
       try {
         this.$q.loading.show()
         let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
+        let browserAgent = this.getBrowserInfo()
+        let trxType = 'compra'
+        let paymentMethod = 'TDC'
         let cardNumber = this.valueFields.cardNumber.replace(/\s+/g, '') // this.valueFields.cardNumber
-        let cardName = this.valueFields.cardName // this.valueFields.cardName
         let customerId = this.valueFields.customerIdV + this.valueFields.customerId
-        let exdate = this.valueFields.cardMonth + '/' + this.valueFields.cardYear
-        let cvv = this.valueFields.cvv
+        // let accountType = this.valueFields.account_type
+        let cvv = this.valueFields.cardCvv
+        let currency = 'ves'
         let amount = this.amount
         let options = { method: 'post',
-          url: window.location.origin + '/transact',
-          headers:
-          { accept: 'application/json',
-            'content-type': 'application/json'
-          },
+          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
+          // url: window.location.origin + '/transact',
           data:
           {
-            'HEADER_PAGO_REQUEST': {
-              'IDENTIFICADOR_UNICO_GLOBAL': '900',
-              'IDENTIFICACION_CANAL': '06',
-              'SIGLA_APLICACION': 'CHOPZY',
-              'IDENTIFICACION_USUARIO': '200273',
-              'DIRECCION_IP_CONSUMIDOR': ipaddress,
-              'DIRECCION_IP_CLIENTE': ipaddress,
-              'FECHA_ENVIO_MENSAJE': date.formatDate(Date.now(), 'YYYY-MM-DD'),
-              'HORA_ENVIO_MENSAJE': date.formatDate(Date.now(), 'HH:mm:ss'),
-              'CANTIDAD_REGISTROS': 1
+            'bank': 'Mercantil',
+            'client_identify': {
+              'ipaddress': ipaddress,
+              'browser_agent': browserAgent,
+              'mobile': {
+                'manufacturer': 'Samsung',
+                'model': 'S9',
+                'os_version': 'Oreo 9.1',
+                'location': {
+                  'lat': 37.4224764,
+                  'lng': -122.0842499
+                }
+              }
             },
-            'BODY_PAGO_REQUEST': {
-              'IDENTIFICADOR_COMERCIO': 57896786,
-              'TIPO_TRANSACCION': 'TDC',
-              'MONTO_TRANSACCION': amount,
-              'NUMERO_FACTURA': 0,
-              'IDENTIFICACION_TARJETAHABIENTE': customerId,
-              'NOMBRE_TARJETAHABIENTE': cardName,
-              'NUMERO_TARJETA': cardNumber,
-              'FECHA_VENCIMIENTO_TARJETA': exdate,
-              'CODIGO_SEGURIDAD_TARJETA': cvv,
-              'NUMERO_LOTE': '1'
+            'transaction': {
+              'trx_type': trxType,
+              'payment_method': paymentMethod,
+              'card_number': cardNumber,
+              'customer_id': customerId,
+              'expiration_date': this.valueFields.cardYear + '/' + this.valueFields.cardMonth,
+              'cvv': cvv,
+              'currency': currency,
+              'amount': amount
             }
-          }
-        }
+          } }
         console.log(options)
         let respuesta = await this.$axios(options)
-        let responseBody = respuesta.data
-        return responseBody
+        return respuesta
       } catch (err) {
         this.$q.loading.hide()
         console.error({ err })
@@ -203,6 +239,83 @@ export default {
         }
       }
     },
+    changeNumber (e) {
+      this.valueFields.cardNumber = e
+      const value = this.valueFields.cardNumber.replace(/\D/g, '')
+      // american express, 15 digits
+      if ((/^3[47]\d{0,13}$/).test(value)) {
+        this.valueFields.cardNumber = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{6})/, '$1 $2 ')
+        this.cardNumberMaxLength = 17
+      } else if ((/^3(?:0[0-5]|[68]\d)\d{0,11}$/).test(value)) { // diner's club, 14 digits
+        this.valueFields.cardNumber = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{6})/, '$1 $2 ')
+        this.cardNumberMaxLength = 16
+      } else if (/^62[0-9]\d*/.test(value)) {
+        this.valueFields.cardNumber = value.replace(/(\d{6})/, '$1 ').replace(/(\d{6}) (\d{7})/, '$1 $2 ').replace(/(\d{6}) (\d{7}) (\d{6})/, '$1 $2 $3 ').replace(/(\d{5}) (\d{5}) (\d{5}) (\d{4})/, '$1 $2 $3 $4')
+        this.cardNumberMaxLength = 21
+      } else if ((/^\d{0,16}$/).test(value)) { // regular cc number, 16 digits
+        this.valueFields.cardNumber = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{4})/, '$1 $2 ').replace(/(\d{4}) (\d{4}) (\d{4})/, '$1 $2 $3 ')
+        this.cardNumberMaxLength = 19
+      }
+      // eslint-disable-next-line
+      if (e.inputType == 'deleteContentBackward') {
+        const lastChar = this.valueFields.cardNumber.substring(this.valueFields.cardNumber.length, this.valueFields.cardNumber.length - 1)
+        // eslint-disable-next-line
+        if (lastChar == ' ') { this.valueFields.cardNumber = this.valueFields.cardNumber.substring(0, this.valueFields.cardNumber.length - 1) }
+      }
+      this.$emit('input-card-number', this.valueFields.cardNumber)
+    },
+    // async authbank () {
+    //   try {
+    //     this.$q.loading.show()
+    //     let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
+    //     let browserAgent = this.getBrowserInfo()
+    //     let trxType = 'solaut'
+    //     let paymentMethod = 'TDD'
+    //     let cardNumber = this.valueFields.cardNumber.replace(/\s+/g, '') // this.valueFields.cardNumber
+    //     let customerId = this.valueFields.customerIdV + this.valueFields.customerId // temp
+    //     let options = { method: 'post',
+    //       // url: 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth',
+    //       url: window.location.origin + '/getauth',
+    //       // url: 'http://localhost:5001/restaurant-testnet/us-central1/GetAuth',
+    //       data:
+    //       {
+    //         'client_identify': {
+    //           'ipaddress': ipaddress,
+    //           'browser_agent': browserAgent,
+    //           'mobile': {
+    //             'manufacturer': 'Samsung',
+    //             'model': 'S9',
+    //             'os_version': 'Oreo 9.1',
+    //             'location': {
+    //               'lat': 37.4224764,
+    //               'lng': -122.0842499
+    //             }
+    //           }
+    //         },
+    //         'transaction_authInfo': {
+    //           'trx_type': trxType,
+    //           'payment_method': paymentMethod,
+    //           'card_number': cardNumber,
+    //           'customer_id': customerId
+    //         }
+    //       }
+    //     }
+    //     console.log(options)
+    //     let respuesta = await this.$axios(options)
+    //     return respuesta
+    //   } catch (err) {
+    //     this.$q.loading.hide()
+    //     console.error({ err })
+    //     if (err.response) {
+    //       return this.$q.dialog(err.response.data)
+    //     } else {
+    //       return this.$q.dialog({
+    //         title: 'Error',
+    //         message: 'Error inesperado, intente más tarde'
+    //       })
+    //     }
+    //   }
+    // },
     getBrowserInfo () {
       var ua = navigator.userAgent, tem,
         M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []

@@ -33,11 +33,11 @@
                      <q-item-section class="text-h6 text-left">
                         <q-item-label lines="2" >{{formatDate(items.dateIn)}}</q-item-label>
                         <q-item-label lines="2" >{{estatus_options[items.status]['label']}}</q-item-label>
-                        <q-item-label lines="2"  v-if="typeof items.factura !== 'undefined'">Nro. Pedido: {{items.factura}}</q-item-label>
                         <q-item-label lines="2"  v-if="typeof items.factura === 'undefined'">
                            Nro. Pedido:
                            <q-spinner color="primary" />
                         </q-item-label>
+                        <q-item-label lines="2"  v-else>Nro. Pedido: {{items.factura}}</q-item-label>
                         <q-item-label lines="2" caption class="text-grey">Ver detalles</q-item-label>
                      </q-item-section>
                   </q-item>
@@ -301,9 +301,10 @@ export default {
         { label: 'Tarjeta o Paypal', value: 3 },
         { label: 'Venmo', value: 4 },
         { label: 'Tarjeta de Crédito', value: 5 },
-        { label: 'Tarjeta Venezolana', value: 6 },
+        { label: 'Tarjeta Débito Venezolana', value: 6 },
         { label: 'Transferencia Bancaria', value: 7 },
-        { label: 'Pago móvil', value: 8 }
+        { label: 'Pago móvil', value: 8 },
+        { label: 'Tarjeta Crédito Venezolana', value: 9 }
       ].find(e => e.value === this.ordenDet.typePayment)
       return f.label
     },

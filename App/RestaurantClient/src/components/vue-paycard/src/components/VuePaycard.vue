@@ -21,6 +21,7 @@
       </div>
       <div class="card-item__wrapper">
         <div class="card-item__top">
+          <img v-if="credit" src="../assets/images/chip.png" class="card-item__chip" alt="Card chip image" />
           <div class="card-item__type">
             <transition name="slide-fade-up">
               <img
@@ -128,6 +129,10 @@ export default {
       type: Object,
       required: true
     },
+    credit: {
+      type: Boolean,
+      default: () => false
+    },
     inputFields: {
       type: Object,
       default: () => ({
@@ -169,8 +174,8 @@ export default {
     isCardFlipped: false,
     amexCardPlaceholder: '#### ###### #####',
     dinersCardPlaceholder: '#### ###### ####',
-    defaultCardPlaceholder: '###### #### ########',
-    currentPlaceholder: '###### #### ########'
+    defaultCardPlaceholder: '#### #### #### ####',
+    currentPlaceholder: '#### #### #### ####'
   }),
   watch: {
     currentFocus () {
@@ -186,6 +191,10 @@ export default {
   },
   mounted () {
     this.init()
+    if (this.credit) {
+      this.defaultCardPlaceholder = '#### #### #### ####'
+      this.currentPlaceholder = '#### #### #### ####'
+    }
   },
   beforeDestroy () {
     this.destroy()
