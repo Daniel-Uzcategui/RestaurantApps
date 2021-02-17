@@ -13,6 +13,7 @@ export default {
     'index': 0,
     'no': true
   }],
+  newsletter: [],
   users: [
     {
       id: 0,

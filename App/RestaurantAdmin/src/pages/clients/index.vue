@@ -1,7 +1,17 @@
  <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+    <q-tabs
+        v-model="tab"
+        inline-label
+        :breakpoint="0"
+        align="justify"
+        class="bg-primary"
+      >
+        <q-tab name="Registrados" no-caps label="Registrados" />
+        <q-tab name="Suscritos" no-caps label="Suscritos al boletin" />
+      </q-tabs>
     <div>
-     <q-card >
+     <q-card v-show="tab ==='Registrados'">
      <q-table class="headerClients"
       title="Clientes"
       :data="clients"
@@ -14,8 +24,8 @@
       :selected.sync="selected"
       >
      <template v-slot:top-right>
-        <q-btn flat color="white" push label="Eliminar" icon="delete_outline" @click="deleted"/>
-        <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn flat color="white" push label="Eliminar" no-caps icon="delete_outline" @click="deleted"/>
+        <q-btn flat color="white" push label="Exportar a csv" no-caps icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/clients/show', query: { client_Id: props.row.id } })">
@@ -37,6 +47,34 @@
           </q-td>
           <q-td key="phone" :props="props">
             <q-input filled :value="props.row.phone" type="text" float-label="Float Label"  disabled/>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    </q-card>
+    <q-card v-show="tab ==='Suscritos'">
+     <q-table class="headerClients"
+      title="Clientes"
+      :data="newsletter"
+      :columns="columns2"
+      :dense="$q.screen.lt.md"
+      row-key="id"
+      no-data-label="No se encontraron registros"
+      :selected-rows-label="getSelectedString"
+      selection="multiple"
+      :selected.sync="selected"
+      >
+     <template v-slot:top-right>
+        <!-- <q-btn flat color="white" push label="Eliminar" icon="delete_outline" @click="deleted"/> -->
+        <q-btn flat color="white" push label="Exportar a csv" no-caps icon="archive" @click="exportTable2"/>
+      </template>
+       <template v-slot:body="props">
+          <q-tr :props="props" class="cursor-pointer">
+            <q-td  auto-width>
+            <q-checkbox v-model="props.selected" />
+           </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
           </q-td>
         </q-tr>
       </template>
@@ -85,10 +123,12 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('client', ['clients'])
+    ...mapGetters('client', ['clients']),
+    ...mapGetters('user', ['newsletter'])
   },
   mounted () {
     this.bindOnlyClients()
+    this.bindNewsLetter()
     console.log(this.clients)
   },
   methods: {
@@ -117,10 +157,36 @@ export default {
         })
       }
     },
+    exportTable2 () {
+      // naive encoding to csv format
+      const content = [ this.columns2.map(col => wrapCsvValue(col.label)) ].concat(
+        this.newsletter.map(row => this.columns2.map(col => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format
+        )).join(','))
+      ).join('\r\n')
+
+      const status = exportFile(
+        'SuscritosBoletin.csv',
+        content,
+        'text/csv'
+      )
+
+      if (status !== true) {
+        this.$q.notify({
+          message: 'Navegador no permitió la descarga del Archivo...',
+          color: 'negative',
+          icon: 'warning'
+        })
+      }
+    },
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.clients.length}`
     },
     ...mapActions('client', ['deleteClient', 'bindOnlyClients']),
+    ...mapActions('user', ['bindNewsLetter']),
     deleted () {
       if (this.selected.length > 0) {
         this.$q.dialog({
@@ -143,6 +209,7 @@ export default {
 
   data () {
     return {
+      tab: 'Registrados',
       selected: [],
       noSelect: false,
       columns: [
@@ -150,6 +217,9 @@ export default {
         { name: 'email', align: 'left', label: 'Correo Electrónico', field: 'email', sortable: true },
         { name: 'status', label: 'Estatus', field: 'status', align: 'left', sortable: true },
         { name: 'phone', label: 'Telefono', field: 'phone', align: 'center', style: 'min-width: 180px; width: 220px', sortable: true }
+      ],
+      columns2: [
+        { name: 'email', align: 'left', label: 'Correo Electrónico', field: 'email', sortable: true }
       ]
     }
   }

@@ -58,7 +58,10 @@ export const bindusers = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindusers')
   return bindFirestoreRef('users', firestore().collection('users'))
 })
-
+export const bindNewsLetter = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindNewsLetter')
+  return bindFirestoreRef('newsletter', firestore().collection('newsletter'))
+})
 export const deleteUsers = firestoreAction((context, payload) => {
   console.log(payload)
   for (const i in payload) {

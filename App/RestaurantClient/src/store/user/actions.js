@@ -40,3 +40,14 @@ export const setValue = firestoreAction((state, payload) => {
       console.log(`${payload.collection} updated!`)
     })
 })
+export const newsletterAdd = firestoreAction((state, payload) => {
+  console.log({ payload })
+  return firestore()
+    .collection('newsletter')
+    .add({
+      email: payload
+    })
+    .then(() => {
+      console.log(`${payload} agregado!`)
+    })
+})

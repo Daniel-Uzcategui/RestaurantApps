@@ -12,6 +12,42 @@
   <q-inner-loading :showing="visible">
     <q-spinner size="100px" color="primary" />
   </q-inner-loading>
+  <q-dialog v-model="newsletter">
+
+    <q-card flat bordered class="my-card">
+      <q-card-section>
+        <div class="text-h6">Suscribete a nuestro Boletin</div>
+        <div class="text-subtitle2">{{infonews}}</div>
+      </q-card-section>
+      <q-card-section>
+        <q-form
+          @submit="addEmail"
+          class="q-gutter-md"
+        >
+          <div class="q-gutter-y-sm">
+            <q-input
+              class="full-width"
+              filled
+              type="email"
+              v-model="emailNews"
+              label="Email"
+              square
+              lazy-rules
+              :rules="[val => !!val || 'Email is missing', isValidEmail]"
+            >
+              <template v-slot:prepend>
+                <q-icon name="mail" />
+              </template>
+            </q-input>
+            <div class="row">
+              <q-btn class="col-6" flat v-close-popup>Cerrar</q-btn>
+              <q-btn class="col-6" flat type="submit">Enviar</q-btn>
+            </div>
+          </div>
+        </q-form>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </div>
 </template>
 <script>
@@ -21,6 +57,7 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   computed: {
+    ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('editor', ['blocks']),
     blocks2 () {
       let obj = this.blocks
@@ -52,6 +89,9 @@ export default {
   },
   data () {
     return {
+      newsletter: false,
+      emailNews: null,
+      infonews: 'Participa para ganar premios y mantente informado',
       visible: true,
       admin: false,
       widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus'],
@@ -63,7 +103,8 @@ export default {
   },
   mounted () {
     this.visible = false
-    console.log('mounted')
+    console.log('home mounted')
+    this.isAnonymous ? this.newsletter = true : this.newsletter = false
   },
   watch: {
     blocks (e) {
@@ -76,7 +117,26 @@ export default {
     }
   },
   methods: {
-    ...mapActions('editor', ['bindBlocks'])
+    ...mapActions('editor', ['bindBlocks']),
+    ...mapActions('user', ['newsletterAdd']),
+    addEmail () {
+      try {
+        this.newsletterAdd(this.emailNews).then(this.newsletter = false)
+      } catch (error) {
+        this.$q.notify({
+          message: 'Se presentó un error, porfavor intente más tarde'
+        })
+      }
+    },
+    isValidEmail (val) {
+      const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/
+      return emailPattern.test(val) || 'Invalid email'
+    }
   }
 }
 </script>
+<style>
+  .bg-bl {
+    background-color: #4C2D8D;
+  }
+</style>
