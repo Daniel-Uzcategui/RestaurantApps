@@ -1,12 +1,12 @@
  <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
-      <q-table class="table"
+      <q-table class="table" flat square
+      style="border-radius: 28px"
       title="Transacciones por medios de pago"
-      color="primary"
       :data="OrderClient"
       :columns="columns"
-      :dense="$q.screen.lt.md"
+      :grid="$q.screen.lt.md"
       row-key="id"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
@@ -61,40 +61,37 @@ export default {
     ...mapGetters('payment', ['transactions']),
     OrderClient () {
       let OrderClient = []
-      let i, order, clientforOrder, tipoPago, transactionforOrders
-      let fullname, typeService
-      let cardNumber, cardExpDate, responseMessage, trxType
-      for (i = 0; i < this.orders.length; i++) {
-        order = this.orders[i]
-        if (order.id) {
-          clientforOrder = this.clientOrders(order.customer_id)
-          transactionforOrders = this.transactionOrders(order.id)
-          console.log('Orders_id', order.id)
-          console.log('transactionforOrders', transactionforOrders)
+      let i, tipoPago, transactionforOrders
+      // let fullname
+      let cardNumber, trxProcesingDate, responseMessage, trxType
+      for (i = 0; i < this.transactions.length; i++) {
+        transactionforOrders = this.transactions[i]
+        if (transactionforOrders.id) {
           if (transactionforOrders) {
             cardNumber = transactionforOrders.cardNumberFirst + '****' + transactionforOrders.cardNumberLast
-            cardExpDate = transactionforOrders.cardExpDate
-            responseMessage = transactionforOrders.responseMessage
+            trxProcesingDate = transactionforOrders.trxProcesingDate
+            responseMessage = transactionforOrders.paymentStatus !== 'approved' ? transactionforOrders.paymentStatus : 'Aprobado'
             trxType = transactionforOrders.trxType
-            fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
-            typeService = typeof order.tipEnvio !== 'undefined' ? this.tipo_servicio[order.tipEnvio]['label'] : 'No disponible'
-            tipoPago = this.tipo_pago[order.typePayment]['label']
+            // fullname = '' // typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+            if (typeof transactionforOrders.payment_method !== 'undefined') {
+              // console.log(transactionforOrders)
+              // console.log(transactionforOrders)
+              tipoPago = transactionforOrders.payment_method === 'TDD' ? this.tipo_pago[0]['label'] : this.tipo_pago[1]['label']
+            }
             OrderClient.push({
-              'id': order.id,
-              'nombre': fullname,
+              'id': transactionforOrders.id,
+              // 'nombre': fullname,
               'typePayment': tipoPago,
-              'status': this.estatus_options[order.status]['label'],
-              'paid': order.paid,
-              'factura': order.factura,
+              'paid': transactionforOrders.paidAmount,
+              'factura': transactionforOrders.factura,
               'cardNumber': cardNumber,
-              'cardExpDate': cardExpDate,
+              'trxProcesingDate': trxProcesingDate,
               'responseMessage': responseMessage,
-              'trxType': trxType,
-              'typeService': typeService
+              'trxType': trxType
             })
           } else {
             cardNumber = ''
-            cardExpDate = ''
+            trxProcesingDate = ''
             responseMessage = ''
             trxType = ''
           }
@@ -108,16 +105,13 @@ export default {
     this.bindClients()
     this.bindtransactions()
   },
+  mounted () {
+    this.bindtransactions()
+  },
   methods: {
     clientOrders (value) {
       return this.clients.find(obj => {
         return obj.id === value
-      })
-    },
-    transactionOrders (value) {
-      console.log('En transactionOrders', value)
-      return this.transactions.find(obj => {
-        return obj.orderId === value
       })
     },
     exportTable () {
@@ -153,12 +147,9 @@ export default {
     return {
       selected: [],
       columns: [
-        { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
-        { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre', sortable: true },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
-        { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
         { name: 'cardNumber', align: 'center', label: 'Numero de Trajeta', field: 'cardNumber', sortable: true },
-        { name: 'cardExpDate', align: 'center', label: 'Fecha de Vencimiento', field: 'cardExpDate', sortable: true },
+        { name: 'trxProcesingDate', label: 'Fecha de transacción', field: 'trxProcesingDate', sortable: true },
         { name: 'responseMessage', align: 'center', label: 'Mensaje', field: 'responseMessage', sortable: true },
         { name: 'trxType', align: 'center', label: 'Autorizador', field: 'trxType', sortable: true },
         { name: 'paid', label: 'Monto', field: 'paid', sortable: true }
@@ -171,15 +162,8 @@ export default {
         { label: 'Anulada', value: 4 }
       ],
       tipo_pago: [
-        { label: 'Punto de venta', value: 0 },
-        { label: 'Efectivo', value: 1 },
-        { label: 'Zelle', value: 2 },
-        { label: 'Tarjeta o Paypal', value: 3 },
-        { label: 'Venmo', value: 4 },
-        { label: 'Débito o Crédito', value: 5 },
-        { label: 'Tarjeta Venezolana', value: 6 },
-        { label: 'Transferencia Bancaria', value: 7 },
-        { label: 'Pago móvil', value: 8 }
+        { label: 'Tarjeta Debito', value: 'TDD' },
+        { label: 'Tarjeta Credito', value: 'TDC' }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },

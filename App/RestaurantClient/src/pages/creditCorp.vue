@@ -310,7 +310,7 @@ export default {
         cardCVC: this.valueFields.cardCvv,
         cardExpDate:
           this.valueFields.cardMonth + '/' + this.valueFields.cardYear,
-        orderId: 0,
+        orderId: this.currentUser.cedula,
         paidAmount: payAmount,
         paidAmountCurrency: 'ves',
         rateId: 0,
