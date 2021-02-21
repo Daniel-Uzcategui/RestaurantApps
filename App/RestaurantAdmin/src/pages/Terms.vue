@@ -11,7 +11,7 @@
       <p class="detail">
         Este sitio web es operado por
         <strong
-          >INVERSIONES POKE212CA. que en la adelante se denominará
+          >{{companyName}}. que en la adelante se denominará
           Cliente</strong
         >
         solo le da derecho de uso bajo los términos y condiciones de uso del
@@ -493,6 +493,33 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+export default {
+  created () {
+    this.bindConfigs().then(() => this.afterBindigGeneral())
+  },
+  computed: {
+    ...mapGetters('config', ['configs']),
+    config () {
+      return this.configs.find(e => e.id === 'general')
+    }
+  },
+  methods: {
+    ...mapActions('config', ['bindConfigs']),
+    afterBindigGeneral () {
+      if (typeof this.config !== 'undefined') {
+        this.companyName = this.config.companyName
+        this.companyComercialName = this.config.companyComercialName
+      }
+    }
+  },
+  data () {
+    return {
+      companyName: 'Nombre (no disponible)',
+      companyComercialName: 'Nombre (no disponible)'
+    }
+  }
+}
 </script>
 
 <style lang="stylus">
