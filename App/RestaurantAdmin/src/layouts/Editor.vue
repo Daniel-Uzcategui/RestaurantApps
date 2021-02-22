@@ -13,6 +13,9 @@
 <script>
 export default {
   name: 'BasicLayout',
+  mounted () {
+    this.$q.dark.set(false)
+  },
   computed: {
     productName () {
       return window.sessionStorage.productName

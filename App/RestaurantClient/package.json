@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "cross-env QENV=development quasar dev",
     "dev-prod": "cross-env QENV=dev-prod quasar dev",
+    "dev-chopzi": "cross-env QENV=chopzi quasar dev",
     "dev-bar": "cross-env QENV=bar quasar dev",
     "dev-pwa": "cross-env QENV=development quasar dev -m pwa",
     "dev-qa": "cross-env QENV=qa quasar dev",

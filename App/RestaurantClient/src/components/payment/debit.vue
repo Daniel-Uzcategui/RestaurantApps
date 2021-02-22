@@ -177,8 +177,8 @@ export default {
         let currency = 'ves'
         let amount = this.amount
         let options = { method: 'post',
-          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          // url: window.location.origin + '/transact',
+          // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'Mercantil',
@@ -234,8 +234,8 @@ export default {
         let customerId = this.valueFields.customerIdV + this.valueFields.customerId // temp
         let options = { method: 'post',
           // url: 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/getauth',
-          // url: window.location.origin + '/getauth',
-          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/GetAuth',
+          url: window.location.origin + '/getauth',
+          // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/GetAuth',
           data:
           {
             'client_identify': {

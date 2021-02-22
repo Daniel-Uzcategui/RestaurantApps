@@ -168,7 +168,7 @@ export default {
   },
   name: 'Auth',
   computed: {
-    ...mapGetters('user', ['users']),
+    ...mapGetters('user', ['users', 'currentUser']),
     getAuthType () {
       return this.isRegistration ? 'Registro' : 'Iniciar Sesión'
     },
@@ -245,9 +245,13 @@ export default {
               customClass: 'loader'
             })
             try {
+              let newuser = false
               if (this.isRegistration) {
                 if (this.checkTerms) {
-                  await this.createNewUser({ email, password, nombre, apellido, cedula, phone, sexo, fecnac })
+                  await this.createNewUser({ email, password, nombre, apellido, cedula, phone, sexo, fecnac }).then(() => {
+                    console.log('Hola usuario creado', this.currentUser)
+                    newuser = true
+                  })
                 } else {
                   this.validationError = true
                   return
@@ -257,7 +261,12 @@ export default {
               }
               this.validarUsers = this.getUser
               if (this.validarUsers) {
-                this.$router.push({ path: '/home' })
+                console.log('Hola usuario valido', this.getUser)
+                if (newuser) {
+                  this.$router.push({ path: '/dashboard' })
+                } else {
+                  this.$router.push({ path: '/home' })
+                }
               } else {
                 this.$q.notify({
                   message: `Acceso no permitido`,

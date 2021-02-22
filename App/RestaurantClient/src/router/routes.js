@@ -19,6 +19,14 @@ const routes = [
         component: () => import('pages/home.vue')
       },
       {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('pages/user/dashboard.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: 'findus',
         name: 'findUs',
         component: () => import('pages/findus.vue')

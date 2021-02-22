@@ -123,7 +123,7 @@ exports.CheckCart = functions.firestore
   })
 exports.FirstUser = functions.firestore
   .document('users/{userId}')
-  .onCreate(async (change) => {
+  .onCreate(async (user) => {
     const userRef = db.collection('config').doc('firstUser')
     const snapshot = await userRef.get()
     if (!snapshot.exists) {
@@ -131,11 +131,19 @@ exports.FirstUser = functions.firestore
         user: 'created'
       }
       const res = await db.collection('config').doc('firstUser').set(data)
-      const res2 = change.ref.set({
+      const res2 = user.ref.set({
         rol: ['Admin'],
         firstAccess: true
       }, { merge: true })
       return [res, res2]
+    } else {
+      const data = snapshot.data()
+      if (data.chopzi) {
+        const res = await axios.post('https://us-central1-ecr7xo3y.cloudfunctions.net/addUser', { id: user.id }, { headers: {
+          'content-type': 'application/json'
+        } }).catch(e => console.error(e))
+        return res
+      }
     }
   })
 exports.facturasSequence = functions.firestore
