@@ -328,7 +328,11 @@ export default {
           icon: 'fa fa-cog',
           // separator: true,
           tree: [
-
+            {
+              label: 'General',
+              link: 'general',
+              handler: (node) => this.onClickOption('general')
+            },
             {
               label: 'Sedes',
               handler: () => this.$router.push({ path: '/localization/index' })

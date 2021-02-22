@@ -8,12 +8,12 @@
     <q-card-section>
       <div class="text-h6">INFORMACIÓN GENERAL</div>
       <p class="detail">
-        Este sitio web es operado por INVERSIONES POKE212CA y solo da derecho a
+        Este sitio web es operado por {{config.companyName}} y solo da derecho a
         uso de la licencia de la herramienta.
       </p>
       <p class="detail">
         En todo el sitio, los términos “nosotros”, “nos” y “nuestro” se refieren
-        a POKE212. POKE212ofrece este sitio web, incluyendo toda la información,
+        a {{config.companyComercialName}}. {{config.companyComercialName}} ofrece este sitio web, incluyendo toda la información,
         herramientas y servicios disponibles para usteden este sitio, el
         usuario, está condicionado a la aceptación de todos los términos,
         condiciones, políticas y notificaciones aquí establecidos. Al visitar
@@ -482,6 +482,33 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+export default {
+  created () {
+    this.bindConfigs().then(() => this.afterBindigGeneral())
+  },
+  computed: {
+    ...mapGetters('config', ['configurations']),
+    config () {
+      return this.configurations.find(e => e.id === 'general')
+    }
+  },
+  methods: {
+    ...mapActions('config', ['bindConfigs']),
+    afterBindigGeneral () {
+      if (typeof this.config !== 'undefined') {
+        this.companyName = this.config.companyName
+        this.companyComercialName = this.config.companyComercialName
+      }
+    }
+  },
+  data () {
+    return {
+      companyName: 'Nombre (no disponible)',
+      companyComercialName: 'Nombre (no disponible)'
+    }
+  }
+}
 </script>
 
 <style lang="stylus">

@@ -350,6 +350,15 @@ const routes = [
     component: () => import('layouts/User.vue'),
     children: [
       {
+        path: 'general',
+        name: 'general',
+        component: () => import('pages/settings/general.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Configuración General'
+        }
+      },
+      {
         path: 'schedule',
         name: 'schedule',
         component: () => import('pages/settings/schedule.vue'),
