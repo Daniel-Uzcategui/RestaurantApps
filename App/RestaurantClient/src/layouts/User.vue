@@ -133,6 +133,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
 import firebase from 'firebase/app'
 import '@firebase/messaging'
+// import Axios from 'axios'
 export default {
   name: 'UserLayout',
   components: {
@@ -275,7 +276,7 @@ export default {
       let navig = [
         ...mapping,
         {
-          title: 'Facturas',
+          title: 'Tus Ordenes',
           caption: '',
           icon: 'room_service',
           link: '#/orders/index',
@@ -644,27 +645,45 @@ export default {
       // is available before the page renders
       this.$q.loading.hide()
     }
-    function iOS () {
-      return [
-        'iPad Simulator',
-        'iPhone Simulator',
-        'iPod Simulator',
-        'iPad',
-        'iPhone',
-        'iPod'
-      ].includes(navigator.platform) ||
-  // iPad on iOS 13 detection
-  (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
-    }
+    //   function iOS () {
+    //     return [
+    //       'iPad Simulator',
+    //       'iPhone Simulator',
+    //       'iPod Simulator',
+    //       'iPad',
+    //       'iPhone',
+    //       'iPod'
+    //     ].includes(navigator.platform) ||
+    // // iPad on iOS 13 detection
+    // (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+    //   }
     // eslint-disable-next-line no-undef
-    let messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging : firebase.messaging
-    let fb = typeof firebase.default === 'undefined' ? firebase : firebase.default
-    if (messaging.isSupported() && !iOS()) {
-      if (!fb.apps.length) {
+    // let messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging : firebase.messaging
+    // let fb = typeof firebase.default === 'undefined' ? firebase : firebase.default
+    // if (messaging.isSupported() && !iOS()) {
+    //   if (!fb.apps.length) {
+    //     Axios.get('/__/firebase/init.json').then(async response => {
+    //       fb.initializeApp(await response.json())
+    //       this.setupNotif()
+    //     }).catch(e => console.error('error fetching cfg firebase', { e }))
+    //     // fetch('/__/firebase/init.json').then(async response => {
+    //     //   fb.initializeApp(await response.json())
+    //     //   this.setupNotif()
+    //     // }).catch(e => console.error('error fetching cfg firebase', { e }))
+    //   } else {
+    //     this.setupNotif()
+    //   }
+    // }
+    if (firebase && firebase.messaging && firebase.messaging.isSupported()) {
+      if (!(firebase && firebase.apps & firebase.apps.length)) {
         fetch('/__/firebase/init.json').then(async response => {
-          fb.initializeApp(await response.json())
+          try {
+            firebase.initializeApp(await response.json())
+          } catch (error) {
+            console.log(error)
+          }
           this.setupNotif()
-        }).catch(e => console.error('error fetching cfg firebase', { e }))
+        })
       } else {
         this.setupNotif()
       }

@@ -2,12 +2,16 @@ import Axios from 'axios'
 import firebaseService from '../services/firebase'
 
 export default ({ router, store, Vue }) => {
-  if (process.env.MODE === 'pwa') {
+  if (process && process.env && process.env.MODE === 'pwa') {
     console.log = function () {}
     Axios.get('/__/firebase/init.json').then(async response => {
       const cfg = await response.data
-      if (!firebaseService.appslength()) {
-        firebaseService.fBInit(cfg)
+      if (!(firebaseService && firebaseService.appslength())) {
+        try {
+          firebaseService.fBInit(cfg)
+        } catch (e) {
+          console.log(e)
+        }
       }
       firebaseService.auth().onAuthStateChanged((currentUser) => {
         firebaseService.handleOnAuthStateChanged(store, currentUser)

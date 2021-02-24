@@ -603,7 +603,7 @@ export default {
       rate = this.rates.find(obj => {
         return obj.currency === 'Bs'
       })
-      if (mto !== 'undefined') {
+      if (mto !== 'undefined' && rate && rate.rateValue) {
         mtoTotal = rate.rateValue * mto
       }
       return mtoTotal

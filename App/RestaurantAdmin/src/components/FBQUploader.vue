@@ -139,18 +139,21 @@ export default {
               this.queuedFiles = []
               this.filesUploading = []
               // // console.log(111)
-              let cry = await this.files.reduce(async (x, y) => {
+              let cry = await this.files.reduce(async (y, x) => {
                 this.updateComponent(index, 0, 'uploaded')
                 // console.log(index)
                 let link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
                 if (!this.links.includes(link)) {
-                  this.links.push(link)
-                  this.uploadedFl.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
-                  x.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                  try {
+                    this.links.push(link)
+                    this.uploadedFl.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                    y.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                  } catch (error) {
+                    console.error('tpush err')
+                  }
                 // // console.log(profileImageStorageRef.snapshot, 'snap')
-                } else {
-                  return x
                 }
+                return y
 
               // if (index === 1) {
               //   this.uploadedFl.push({ files: [ file.name ], link })
