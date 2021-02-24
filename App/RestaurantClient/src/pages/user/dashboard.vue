@@ -37,9 +37,9 @@
          <div>{{addDays(currentUser.trialDate.toDate(), 30)}}</div>
       </q-card-section>
       <q-card-section v-if="currentUser.adminDomain">
-         <div>Url Administrativo: </div>
+         <div>Url Administrativo: (entrar al administrativo primero y crear una cuenta, la primera cuenta será el administrador del sistema) </div>
          <q-btn flat type="a" target="__blank" :href="'https://' + currentUser.adminDomain + '.web.app'" :label="'https:// ' + currentUser.adminDomain + '.web.app'" />
-        <div>Url Cliente: </div>
+        <div>Url Cliente: (Todos los cambios realizados en el administrativo, se verá reflejado en la página del cliente, este es el url que le enviarás a tus clientes.)</div>
          <q-btn flat type="a" target="__blank" :href="'https://' + currentUser.clientDomain + '.web.app'" :label="'https:// ' + currentUser.clientDomain + '.web.app'" />
       </q-card-section>
       <q-card-section v-if="currentUser.activeService">

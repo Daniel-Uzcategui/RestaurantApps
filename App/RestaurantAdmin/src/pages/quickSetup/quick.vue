@@ -41,7 +41,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="addsede" class="column no-wrap flex-center">
-          <AddSede v-show="!sedeAdded && !localizations.length" @done="slide = 'addcatlorem'; sedeAdded = true" :quick="false" style="height: 100%;"/>
+          <AddSede v-show="!sedeAdded && !localizations.length" @done="slide = 'themefin'; sedeAdded = true" :quick="false" style="height: 100%;"/>
           <div v-if="sedeAdded || localizations.length" class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem4 }}
           </div>

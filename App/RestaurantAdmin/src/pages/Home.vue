@@ -115,7 +115,7 @@ export default {
         fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
         tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
         typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-        tipoPago = this.tipo_pago[obj.typePayment]['label']
+        tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
         OrderClient.push({
           'id': obj.id,
           'nombre': fullname,

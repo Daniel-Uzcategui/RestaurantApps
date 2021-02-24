@@ -143,7 +143,7 @@ export default {
         obj = this.orders[i]
         if (obj.customer_id === value) {
           typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-          tipoPago = this.tipo_pago[obj.typePayment]['label']
+          tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
           OrderClient.push({

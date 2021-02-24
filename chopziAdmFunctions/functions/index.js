@@ -81,8 +81,8 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
       admin.firestore().collection('mail').add({
         to: 'danieluzca2@gmail.com',
         message: {
-          subject: 'Hola desde Chopzi!',
-          text: JSON.stringify(e),
+          subject: 'El usuario esta en lista de espera!',
+          text: requestUID,
           html: '',
         },
       })
@@ -113,6 +113,22 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
               html: '',
             },
           })
+          admin.firestore().collection('mail').add({
+            to: 'daniel.uzcategui@chopzi.com',
+            message: {
+              subject: 'Se Registró un usuario ',
+              text: requestUID + ' Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain + ' ' + JSON.stringify(chopziUser),
+              html: '',
+            },
+          })
+          admin.firestore().collection('mail').add({
+            to: 'chopzi.info@chopzi.com',
+            message: {
+              subject: 'Se Registró un usuario ',
+              text: requestUID + ' Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain + ' ' + JSON.stringify(chopziUser),
+              html: '',
+            },
+          })
           return res.send(chopziUser.email)
         } else {
           let e = { error: 9002, message: 'Error al escribir documento'}
@@ -123,14 +139,22 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
       } catch (e) {
         res.status(400)
         console.log('errorrrrrr', e)
-        // admin.firestore().collection('mail').add({
-        //   to: 'danieluzca2@gmail.com',
-        //   message: {
-        //     subject: 'Hola desde Chopzi!',
-        //     text: JSON.stringify(e),
-        //     html: '',
-        //   },
-        // })
+        admin.firestore().collection('mail').add({
+          to: 'daniel.uzcategui@chopzi.com',
+          message: {
+            subject: 'Error con algun usuario ' + requestUID + ' ' + JSON.stringify(chopziUser),
+            text: JSON.stringify(e),
+            html: '',
+          },
+        })
+        admin.firestore().collection('mail').add({
+          to: 'chopzi.info@chopzi.com',
+          message: {
+            subject: 'Error con algun usuario ' + requestUID + ' ' + JSON.stringify(chopziUser),
+            text: JSON.stringify(e),
+            html: '',
+          },
+        })
         return res.send(e)
       }
     })

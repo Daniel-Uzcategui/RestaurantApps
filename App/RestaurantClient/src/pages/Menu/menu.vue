@@ -100,7 +100,7 @@
                      <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                         <div class="menuitem row">
                            <div class="menuphotocont col">
-                              <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src=item.photo color="primary" text-color="white" class="rounded-borders" />
+                              <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
                            </div>
                            <div class="menutext col column justify-center">
                               <div class="col-auto">
@@ -209,7 +209,7 @@
                   navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
                   navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-                  <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
+                  <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item && item.categoria && item.categoria.includes(r))" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                         <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                            <div class="container-photo">
@@ -253,11 +253,11 @@
                   :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'}]"
                   @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
                   v-for="(item, key) in filteredMenu" :key="key"
-                  v-show="pointsCat && Object.keys(pointsCat).some(r=> item.categoria.includes(r))" >
+                  v-show="pointsCat && Object.keys(pointsCat).some(r=> item && item.categoria && item.categoria.includes(r))" >
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''"  class="menuitemcont">
                      <div class="menuitem row">
                         <div class="menuphotocont col">
-                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src=item.photo color="primary" text-color="white" class="rounded-borders" />
+                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
                         </div>
                         <div class="menutext col column justify-center">
                            <div class="col-auto">
@@ -325,7 +325,7 @@
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                      <div class="menuitem row">
                         <div class="menuphotocont col">
-                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src=item.photo color="primary" text-color="white" class="rounded-borders" />
+                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
                         </div>
                         <div class="menutext col column justify-center">
                            <div class="col-auto">
@@ -446,6 +446,7 @@ export default {
               descripcion: x.descripcion,
               name: x.name,
               photo: x.photo,
+              photosmall: x.photosmall,
               price: x.price,
               id: x.id,
               stock: x.stock,
@@ -549,13 +550,13 @@ export default {
     // }
     // this.bindCategorias().then(() => {
     //   // if (!this.displayType) {
-    //   //   this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+    //   //   this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
     //   //   this.selectedCat = this.filtercat[0]
     //   // }
     // }).catch(e => {
     //   console.error(e)
     //   // if (!this.displayType) {
-    //   //   this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+    //   //   this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
     //   //   this.selectedCat = this.filtercat[0]
     //   // }
     // })
@@ -590,7 +591,7 @@ export default {
     },
     categorias () {
       if (!this.displayType) {
-        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
         this.selectedCat = this.filtercat[0]
       }
     },
@@ -599,7 +600,7 @@ export default {
     },
     filtercat () {
       if (this.displayType === 0) {
-        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
         this.selectedCat = this.filtercat[0]
       }
     },
@@ -632,7 +633,7 @@ export default {
       }
       // cat
       if (!this.displayType) {
-        this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
         this.selectedCat = this.filtercat[0]
       }
       // promo
@@ -689,13 +690,13 @@ export default {
       if (typeof this.filterop[index + 1] === 'undefined') {
         this.setFilter(this.filterop[0])
         if (!this.displayType) {
-          this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+          this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
           this.selectedCat = this.filtercat[0]
         }
       } else {
         this.setFilter(this.filterop[index + 1])
         if (!this.displayType) {
-          this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat[0]['id']))
+          this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
           this.selectedCat = this.filtercat[0]
         }
       }
@@ -712,14 +713,14 @@ export default {
     search () {
       if (this.selectedCat !== null) {
         this.filteredMenu = this.origMenu.filter(x => {
-          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+          return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
         })
         this.filteredMenu = this.filteredMenu.filter(x => {
-          return x.categoria.includes(this.selectedCat.id)
+          return x && x.categoria && x.categoria.includes(this.selectedCat.id)
         })
       } else {
         this.filteredMenu = this.origMenu.filter(x => {
-          return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+          return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
         })
       }
     },
@@ -738,7 +739,7 @@ export default {
       quant = quant + counter - 1
       var categories = item.categoria
       var rewardCategories = typeof this.pointsCat === 'undefined' ? [] : Object.keys(this.pointsCat)
-      var intersection = categories.filter(x => rewardCategories.includes(x))
+      var intersection = categories ? categories.filter(x => rewardCategories && rewardCategories.includes(x)) : []
       for (var cat of intersection) {
         var points = this.pointsCat[cat]
         if ((points - (quant * 10)) >= 0) {

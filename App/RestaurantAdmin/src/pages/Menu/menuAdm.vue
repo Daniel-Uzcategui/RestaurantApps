@@ -38,7 +38,8 @@
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
           <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
-          <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" />
+          <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
+          <q-btn flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app'" no-caps label="Vista en Cliente" target="_blank" />
           <q-btn flat icon="label" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
@@ -384,7 +385,7 @@
                       <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="38px" size="50px" text-color="white"></q-avatar></div>
                   <div class="column items-start" v-else>
                       <q-avatar round class="q-mb-sm shadow-5" size="50px" @click.stop="showPhotoUpload(props.row.id, props.row)">
-                          <q-img :src="props.row.photo"></q-img>
+                          <q-img :src="props.row.photosmall ? props.row.photosmall : props.row.photo"></q-img>
                       </q-avatar></div>
                       </div>
                   <q-item-label class="col-5 self-center">{{props.row.name ? props.row.name: 'Nuevo Producto'}}</q-item-label>
@@ -622,7 +623,7 @@
     <q-dialog full-width v-model="addoptView">
       <AddOpt :isDiagView="true" :viewId="viewId" class="q-diag-glassMorph" />
       </q-dialog>
-    <q-dialog
+    <!-- <q-dialog
       v-model="preview"
       maximized
       @show="$q.dark.set(false)"
@@ -637,17 +638,69 @@
             <ClientMenu v-if="sede !== null" :Sede="sede" :dark="false"/>
       </q-card-section>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
     <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
-        <fbq-uploader
-          class="q-my-lg"
-          label="Please Upload a Photo"
-          :meta="meta"
-          :prefixPath="prefixPath"
-          @uploaded="(e) => {uploadComplete(e); saveTemp({ payload: { value: e.link, id: photoProp.id, key: 'photo' }, collection: 'menu' }); photoProp.photo = e.link }"
-          :onlyLink="true"
-          document='menu'
+      <q-card class="q-cardGlass">
+        <q-card-section>
+          <p>Formatos recomendados: <span class="text-bold">jpg y png</span></p>
+          <p>Las imágenes son comprimidas antes de la carga, si su imagen es muy grande puede tardar unos segundos.</p>
+          <p>Chopzi soporta imagenes con fondos transparentes, primero recortemos la imagen</p>
+          <p v-if="$q.platform.is.mobile">Puedes mover la foto con el táctil y pinchar con dos dedos para acercar o alejar </p>
+          <p v-else>Utilice el mouse y click para mover la imagen y la ruedita del mouse o los botones para hacer zoom</p>
+        </q-card-section>
+        <q-card-section class="column items-center relative-position">
+          <div>
+        <croppa class="col" v-model="myCroppa"
+          :width="300"
+          :height="300"
+          placeholder="click aqui"
+          placeholder-color="#FFF"
+          :placeholder-font-size="16"
+          canvas-color="transparent"
+          :show-remove-button="true"
+          remove-button-color="black"
+          show-loading
+          :quality="4"
+          :loading-size="50"
+          :loading-color="'#606060'"
+          ref="croppa"
         />
+          </div>
+        <div class="col column items-center">
+         <q-btn-group class="col q-ma-sm" push>
+        <q-btn @click="$refs.croppa.zoomIn()" color="blue" no-caps>Acercar</q-btn>
+        <q-btn @click="$refs.croppa.zoomOut()" color="blue" no-caps>Alejar</q-btn>
+        <q-btn @click="$refs.croppa.rotate()" color="blue" no-caps>Rotar 90deg</q-btn>
+        <q-btn @click="$refs.croppa.rotate(2)" color="blue" no-caps>Rotar 180deg</q-btn>
+         </q-btn-group>
+         <q-btn-group class="col q-ma-sm" push>
+        <q-btn @click="$refs.croppa.rotate(-1)" color="green" no-caps>Rotar -90deg</q-btn>
+        <q-btn @click="$refs.croppa.flipX()" color="green" no-caps>Espejo horizontal</q-btn>
+        <q-btn @click="$refs.croppa.flipY()" color="green" no-caps>Espejo vertical</q-btn>
+         </q-btn-group>
+        <q-btn rounded class="col q-ma-sm" @click="croppaPic()" color="blue" no-caps>Subir Foto</q-btn>
+
+        </div>
+        <fbq-uploader
+          v-show="showUploader"
+          ref="fbq"
+          @failed="(e) => conss(e, 'failed')"
+          @finish="(e) => conss(e, 'Finish')"
+          multiple
+          noThumbnails
+          onlyLink
+          menuPic
+          autoUpload
+          class="q-my-lg absolute-center"
+          label=""
+          :meta="meta"
+          @uploaded="(e) => {uploadComplete(e)}"
+          document='menu'
+          prefixPath="/Products/Photos/"
+          myPath="something"
+        />
+        </q-card-section>
+      </q-card>
     </q-dialog>
     <q-dialog v-model="noSelect">
       <q-card>
@@ -688,12 +741,17 @@ const columns = [
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
-import ClientMenu from '../editor/components/client/pages/Menu/menu'
+import Croppa from 'vue-croppa'
+import imageCompression from 'browser-image-compression'
+import 'vue-croppa/dist/vue-croppa.css'
+
+// import ClientMenu from '../editor/components/client/pages/Menu/menu'
 export default {
   mixins: [ QUploaderBase ],
   components: {
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
-    ClientMenu,
+    // ClientMenu,
+    'croppa': Croppa.component,
     AddCat: () => import('./Categorias'),
     AddOpt: () => import('./gruposOpt')
   },
@@ -707,7 +765,7 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
-    ...mapGetters('config', ['configs']),
+    ...mapGetters('config', ['configs', 'version']),
     menucfg () {
       let men = this.configs.find(e => e.id === 'menu')
       if (typeof men === 'undefined') {
@@ -757,15 +815,17 @@ export default {
         id: this.currentUser.id,
         photoType: this.photoType
       }
-    },
-    prefixPath () {
-      const id = this.currentUser && this.currentUser.id ? this.currentUser.id : '',
-        path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
-      return path
     }
+    // prefixPath () {
+    //   const id = this.currentUser && this.currentUser.id ? this.currentUser.id : '',
+    //     path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
+    //   return path
+    // }
   },
   data () {
     return {
+      showUploader: false,
+      myCroppa: {},
       viewId: null,
       addoptView: false,
       propass: null,
@@ -796,9 +856,63 @@ export default {
     this.bindLocalizations()
     this.bindGroupComp()
     this.bindConfigs()
-    console.log({ cat: this.categorias, gr: this.groupComp })
+    // console.log({ cat: this.categorias, gr: this.groupComp })
   },
   methods: {
+    conss (e, y) {
+      console.log(e, y)
+    },
+    async croppaPic () {
+      let file = this.$refs.croppa.getChosenFile()
+      let blob = await this.$refs.croppa.promisedBlob(file.type)
+      // console.log(file)
+      let imageFile = blob
+      // // console.log('originalFile instanceof Blob', imageFile instanceof Blob) // true
+      // // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`)
+
+      var options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 250,
+        useWebWorker: true
+      }
+      var options2 = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 95,
+        useWebWorker: true
+      }
+      try {
+        let compressedFile = await imageCompression(imageFile, options)
+        let compressedFile2 = await imageCompression(imageFile, options2)
+        // // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob) // true
+        // // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`) // smaller than maxSizeMB
+        compressedFile.lastModifiedDate = new Date()
+        compressedFile.name = this.photoType
+        compressedFile2.lastModifiedDate = new Date()
+        compressedFile2.name = 'small_' + this.photoType
+        compressedFile = new File([compressedFile], this.photoType)
+        compressedFile2 = new File([compressedFile2], 'small_' + this.photoType)
+        // console.log([compressedFile, compressedFile2], 'tha files')
+        this.$refs.fbq.addFiles([compressedFile, compressedFile2]) // write your own logic
+      } catch (error) {
+        // console.log(error)
+      }
+      this.showUploader = true
+
+      // this.$refs.croppa.generateBlob((blob) => {
+      //   // console.log()
+      //   blob.lastModifiedDate = new Date()
+      //   blob.name = 'fileName'
+      //   this.showUploader = true
+      //   this.$refs.fbq.addFiles([blob])
+      //   var url = URL.createObjectURL(blob)
+      //   // console.log(url)
+      //   var a = document.createElement('a')
+      //   a.download = 'filename'
+      //   a.href = url
+      //   a.click()
+      //   URL.revokeObjectURL(url)
+      // }, file.type, compressionRate)
+    },
     validate (value) {
       return value >= 0 || 'error'
     },
@@ -868,7 +982,7 @@ export default {
           values.splice(i, 1)
         }
       }
-      console.log({ values })
+      // console.log({ values })
       return values
     },
     resetPhotoType () {
@@ -878,11 +992,11 @@ export default {
       this.popupinsert_photoData = row[col]
     },
     saved (value, initialValue, id, key) {
-      console.log(this.temp1)
-      console.log({ key })
+      // console.log(this.temp1)
+      // console.log({ key })
       if (key === 'discount') { value = isNaN(parseInt(value)) ? 0 : parseInt(value) } else if (key === 'price') { value = parseFloat(value) }
       // else if (key.includes('stock')) { value = parseInt(value) }
-      console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
+      // console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveTemp({ payload: { value, id, key }, collection: 'menu' })
       // this.setValue({ payload: { value, id, key }, collection: 'menu' })
     },
@@ -897,13 +1011,13 @@ export default {
       this.$forceUpdate()
     },
     saved3 (value, initialValue, id, key) {
-      console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
+      // console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveTemp({ payload: { value, id, key }, collection: 'config' })
     },
     saved2 (value, initialValue, id, key) {
-      console.log({ key })
+      // console.log({ key })
       if (value) { value = 1 } else { value = 0 }
-      console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
+      // console.log(`original value = ${initialValue}, new value = ${value}, row = ${id}, name  = ${key}`)
       this.saveTemp({ payload: { value, id, key }, collection: 'menu' })
     },
     executeSave () {
@@ -917,7 +1031,7 @@ export default {
           } else {
             for (let key in this.temp1[collection][document]) {
               var value = this.temp1[collection][document][key]
-              console.log({ payload: { value, document, key }, collection: collection })
+              // console.log({ payload: { value, document, key }, collection: collection })
               this.setValue2({ payload: { value, id: document, key }, collection: collection })
             }
           }
@@ -927,7 +1041,7 @@ export default {
       this.$q.notify({ message: 'Cambios Guardados' })
     },
     canceled (val, initialValue) {
-      console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
+      // console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
     ...mapActions('menu', ['setValue', 'setValue2', 'newAddRow', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
@@ -961,7 +1075,7 @@ export default {
         }
         this.temp1[payload.collection][payload.payload[i].id] = { softDelete: 1, estatus: false }
       }
-      console.log(this.temp1)
+      // console.log(this.temp1)
     },
     getSelectedString () {
       let literal = this.selected.length > 1 ? 's' : ''
@@ -988,20 +1102,38 @@ export default {
         e === undefined
     },
     uploadComplete (info) {
-      console.log(this.prefixPath)
-      console.log(this.currentUser)
-      let fileNames = []
-      info.files.forEach(file => fileNames.push(file))
-      this.photoUpload = false
-      this.$q.notify({
-        message: `Successfully uploaded your photo: ${fileNames}`,
-        color: 'positive'
-      })
+      // console.log({ info })
+      try {
+        for (let i of info) {
+          if (i.file.startsWith('small_')) {
+            this.photoProp.photosmall = i.link
+            this.saveTemp({ payload: { value: i.link, id: this.photoProp.id, key: 'photosmall' }, collection: 'menu' })
+          } else {
+            this.photoProp.photo = i.link
+            this.saveTemp({ payload: { value: i.link, id: this.photoProp.id, key: 'photo' }, collection: 'menu' })
+          }
+        }
+        let fileNames = []
+        info.forEach(file => fileNames.push(file.file))
+        this.photoUpload = false
+        this.$q.notify({
+          message: `Foto cargada exitosamente, recuerde guardar los cambios`,
+          color: 'positive'
+        })
+        this.showUploader = false
+      } catch (error) {
+        this.showUploader = false
+        console.error(error)
+        this.$q.notify({
+          message: `Oops hubo un error subiendo el archivo`,
+          color: 'red'
+        })
+      }
     }
   },
   watch: {
     // category (e) {
-    //   console.log(e, 'jjjj')
+    //   // console.log(e, 'jjjj')
     //   if (typeof e === 'undefined' || e === null) {
     //     this.elmenu = this.filteredMenu = this.origMenu.filter(x => {
     //       return x && x.categoria && x.categoria.includes(e)
@@ -1009,7 +1141,7 @@ export default {
     //   } else {
     //     this.elmenu = this.filteredMenu = this.origMenu
     //   }
-    //   console.log(this.filteredMenu, 'kkk')
+    //   // console.log(this.filteredMenu, 'kkk')
     // }
   }
 }
@@ -1018,4 +1150,12 @@ export default {
 <style lang="stylus">
   .label-expand
     font-weight: bold
+  .croppa-container
+    background-color: transparent
+    border: 2px solid grey
+    border-radius: 8px
+ .croppa-container:hover
+    opacity: 1
+    background-color: #8ac9ef
+
 </style>

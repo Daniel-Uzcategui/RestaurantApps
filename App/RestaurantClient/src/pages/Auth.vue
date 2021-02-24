@@ -262,7 +262,7 @@ export default {
               this.validarUsers = this.getUser
               if (this.validarUsers) {
                 console.log('Hola usuario valido', this.getUser)
-                if (newuser) {
+                if (newuser && window.location.hostname === 'chopzi.com') {
                   this.$router.push({ path: '/dashboard' })
                 } else {
                   this.$router.push({ path: '/home' })

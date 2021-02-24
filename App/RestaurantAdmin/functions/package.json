@@ -12,6 +12,7 @@
     "node": "12"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.8.0",
     "aes-js": "^3.1.2",
     "atob": "^2.1.2",
     "axios": "^0.21.0",
@@ -22,6 +23,7 @@
     "firebase-functions": "^3.11.0",
     "hasha": "^5.2.2",
     "querystring": "^0.2.0",
+    "tinify": "^1.6.0-beta.2",
     "utf8": "^3.0.0",
     "xmlhttprequest": "^1.8.0"
   },
