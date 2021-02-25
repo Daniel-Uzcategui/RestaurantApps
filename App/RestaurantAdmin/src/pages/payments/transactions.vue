@@ -62,8 +62,8 @@ export default {
     OrderClient () {
       let OrderClient = []
       let i, tipoPago, transactionforOrders
-      // let fullname
       let cardNumber, trxProcesingDate, responseMessage, trxType
+      console.log(this.transactions.length)
       for (i = 0; i < this.transactions.length; i++) {
         transactionforOrders = this.transactions[i]
         if (transactionforOrders.id) {
@@ -74,8 +74,6 @@ export default {
             trxType = transactionforOrders.trxType
             // fullname = '' // typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
             if (typeof transactionforOrders.payment_method !== 'undefined') {
-              // console.log(transactionforOrders)
-              // console.log(transactionforOrders)
               tipoPago = transactionforOrders.payment_method === 'TDD' ? this.tipo_pago[0]['label'] : this.tipo_pago[1]['label']
             }
             OrderClient.push({
@@ -105,15 +103,7 @@ export default {
     this.bindClients()
     this.bindtransactions()
   },
-  mounted () {
-    this.bindtransactions()
-  },
   methods: {
-    clientOrders (value) {
-      return this.clients.find(obj => {
-        return obj.id === value
-      })
-    },
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -147,7 +137,7 @@ export default {
     return {
       selected: [],
       columns: [
-        { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
+        { name: 'typePayment', align: 'center', label: 'Tipo de Pagos', field: 'typePayment', sortable: true },
         { name: 'cardNumber', align: 'center', label: 'Numero de Trajeta', field: 'cardNumber', sortable: true },
         { name: 'trxProcesingDate', label: 'Fecha de transacción', field: 'trxProcesingDate', sortable: true },
         { name: 'responseMessage', align: 'center', label: 'Mensaje', field: 'responseMessage', sortable: true },

@@ -558,7 +558,8 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             cardNumberFirst: request.transaction.card_number.substr(0, 4),
             cardNumberLast: request.transaction.card_number.substr(request.transaction.card_number.length - 4),
             cardCVC: request.transaction.cvv,
-            orderId: 0,
+            cardExpDate: request.transaction.expiration_date === 'undefined' ? '' : request.transaction.expiration_date,
+            customerId: request.transaction.customerId === 'undefined' ? '' : request.transaction.customerId,
             paidAmount: request.transaction.amount,
             paidAmountCurrency: respuesta.data.transaction_response.currency,
             rateId: 0,
@@ -712,6 +713,8 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             orderId: 0,
             paidAmount: request.transaction.amount,
             paidAmountCurrency: respuesta.data.transaction_response.currency,
+            cardExpDate: request.transaction.expiration_date === 'undefined' ? '' : request.transaction.expiration_date,
+            customerId: request.transaction.customerId === 'undefined' ? '' : request.transaction.customerId,
             rateId: 0,
             txnBankId: 1,
             trxType: 'Mercantil',
@@ -721,6 +724,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             invoice_number: invoicenumber,
             DateIn: new Date()
           }
+          console.log(payload)
           const res2 = await db.collection('transactions').add(payload)
           res.send({ trx: respuesta.data.transaction_response, id: res2.id })
         } catch (err) {
