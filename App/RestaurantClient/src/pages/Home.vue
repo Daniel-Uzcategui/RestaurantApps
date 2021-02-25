@@ -15,8 +15,11 @@
   <q-dialog v-model="newsletter">
 
     <q-card flat bordered class="my-card">
+      <q-card-section class="">
+        <q-icon name="close" size="md" flat v-close-popup color="grey" class="absolute-right" />
+      </q-card-section>
       <q-card-section>
-        <div class="text-h6">Suscribete a nuestro Boletin</div>
+        <div class="text-h6">Suscríbete a nuestro Boletin</div>
         <div class="text-subtitle2">{{infonews}}</div>
       </q-card-section>
       <q-card-section>

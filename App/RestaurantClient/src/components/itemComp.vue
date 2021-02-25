@@ -18,7 +18,7 @@
       </div>
     <div class="row justify-center" v-if="!readOnly">
       <q-spinner
-        v-if="!groupComp.length"
+        v-if="!groupComp.length && comp.length"
         :size="$q.screen.name"
         color="primary"
       />
@@ -165,6 +165,9 @@ export default {
       var group = []
       var comp = Array.from(this.comp)
       var groupComp = Array.from(this.groupComp)
+      if (!comp.length) {
+        return []
+      }
       comp.forEach(element => {
         var grp = groupComp.find(x => x.id === element)
         if (typeof groupComp !== 'undefined' && typeof grp !== 'undefined') {

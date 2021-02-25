@@ -5,7 +5,6 @@
           <q-avatar>
             <img src="favicon.ico">
           </q-avatar>
-
           <q-toolbar-title>{{ManiName}}</q-toolbar-title>
           <q-btn @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
             <q-badge color="red" floating>{{getCartQ}}</q-badge>
@@ -16,7 +15,7 @@
       <q-tabs dense shrink stretch>
                 <q-tab v-show="nav2[1].length === 1" no-caps v-for="(link, index) in nav2[1]"
                :key="index + 'i'"
-                @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title + 1" />
+                @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title" />
                 <q-btn-dropdown v-show="nav2[1].length > 1" no-caps auto-close stretch flat label="Catálogos">
                   <q-list>
                   <q-item clickable no-caps v-for="(link, index) in nav2[1]"
@@ -134,6 +133,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
 import firebase from 'firebase/app'
 import '@firebase/messaging'
+// import Axios from 'axios'
 export default {
   name: 'UserLayout',
   components: {
@@ -312,6 +312,70 @@ export default {
     },
     nav () {
       // return this.navigateFill()
+      if (this.isChopzi) {
+        let nvv = [
+          {
+            title: 'Inicio',
+            caption: '',
+            icon: 'fa fa-home',
+            link: '#/home',
+            click: () => {
+              this.leftDrawerOpen = false
+            }
+          },
+          {
+            title: 'Servicios Activos',
+            caption: '',
+            icon: 'fa fa-home',
+            link: '#/dashboard',
+            click: () => {
+              this.leftDrawerOpen = false
+            }
+          },
+          {
+            title: 'Catálogo',
+            caption: '',
+            icon: 'menu_book',
+            // link: '#/menu/index',
+            click: () => {
+              this.setFilter('')
+              this.leftDrawerOpen = false
+              if (this.localizations.length === 1) {
+                this.setSede(this.localizations[0].id)
+                this.$router.push({ path: '/menu/menu' })
+              } else {
+                this.$router.push({ path: '/menu/index' })
+              }
+            }
+          },
+          {
+            title: 'Tus Ordenes',
+            caption: '',
+            icon: 'room_service',
+            link: '#/orders/index',
+            click: () => {
+              this.leftDrawerOpen = false
+            }
+          },
+          {
+            title: 'Perfil',
+            caption: '',
+            icon: 'fas fa-user',
+            link: '#',
+            click: () => { this.isAnonymous ? (() => {})() : (() => { this.setEditUserDialog(true); this.setBlur() })() }
+          },
+          {
+            title: this.isAnonymous ? 'Login/Register' : 'Cerrar Sesión',
+            caption: '',
+            icon: 'fas fa-sign-out-alt',
+            link: '#',
+            click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
+          }]
+        if (this.menucfg && !this.menucfg.iconsactive) {
+          nvv = nvv.map(x => { return { ...x, icon: '' } })
+        }
+        return nvv
+      }
       var mapping = []
       var mapping2 = []
       var filtro = this.filters.filter(x => x.show === true)
@@ -581,27 +645,45 @@ export default {
       // is available before the page renders
       this.$q.loading.hide()
     }
-    function iOS () {
-      return [
-        'iPad Simulator',
-        'iPhone Simulator',
-        'iPod Simulator',
-        'iPad',
-        'iPhone',
-        'iPod'
-      ].includes(navigator.platform) ||
-  // iPad on iOS 13 detection
-  (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
-    }
+    //   function iOS () {
+    //     return [
+    //       'iPad Simulator',
+    //       'iPhone Simulator',
+    //       'iPod Simulator',
+    //       'iPad',
+    //       'iPhone',
+    //       'iPod'
+    //     ].includes(navigator.platform) ||
+    // // iPad on iOS 13 detection
+    // (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+    //   }
     // eslint-disable-next-line no-undef
-    let messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging : firebase.messaging
-    let fb = typeof firebase.default === 'undefined' ? firebase : firebase.default
-    if (messaging.isSupported() && !iOS()) {
-      if (!fb.apps.length) {
+    // let messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging : firebase.messaging
+    // let fb = typeof firebase.default === 'undefined' ? firebase : firebase.default
+    // if (messaging.isSupported() && !iOS()) {
+    //   if (!fb.apps.length) {
+    //     Axios.get('/__/firebase/init.json').then(async response => {
+    //       fb.initializeApp(await response.json())
+    //       this.setupNotif()
+    //     }).catch(e => console.error('error fetching cfg firebase', { e }))
+    //     // fetch('/__/firebase/init.json').then(async response => {
+    //     //   fb.initializeApp(await response.json())
+    //     //   this.setupNotif()
+    //     // }).catch(e => console.error('error fetching cfg firebase', { e }))
+    //   } else {
+    //     this.setupNotif()
+    //   }
+    // }
+    if (firebase && firebase.messaging && firebase.messaging.isSupported()) {
+      if (!(firebase && firebase.apps & firebase.apps.length)) {
         fetch('/__/firebase/init.json').then(async response => {
-          fb.initializeApp(await response.json())
+          try {
+            firebase.initializeApp(await response.json())
+          } catch (error) {
+            console.log(error)
+          }
           this.setupNotif()
-        }).catch(e => console.error('error fetching cfg firebase', { e }))
+        })
       } else {
         this.setupNotif()
       }
@@ -627,6 +709,7 @@ export default {
   },
   data () {
     return {
+      isChopzi: window.location.hostname === 'chopzi.com',
       fullPath: '',
       Tawk_API: null,
       notifications: 0,

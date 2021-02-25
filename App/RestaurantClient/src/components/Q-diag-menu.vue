@@ -89,7 +89,7 @@
                      <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
                        <div >
                         <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                        <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito 1</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
                        </div>
                     </q-card-actions>
                   </div>

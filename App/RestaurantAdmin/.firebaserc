@@ -3,7 +3,9 @@
     "default": "restaurant-testnet",
     "QA": "qa-restaurant-testnet",
     "ecr": "ecrhwei8",
-    "staging": "chopzip6kds"
+    "staging": "chopzip6kds",
+    "chopzi": "chopzidjkb8",
+    "casacomadre": "chopziy3yk6"
   },
   "targets": {
     "restaurant-testnet": {

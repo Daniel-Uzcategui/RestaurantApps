@@ -647,6 +647,7 @@ export default {
     }
   },
   mounted () {
+    this.$q.dark.set(false)
     console.log('Heeelllooo')
     this.bindEnv()
     this.bindManifest().then(e => {

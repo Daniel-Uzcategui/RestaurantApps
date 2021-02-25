@@ -122,6 +122,8 @@ export default {
 
       ],
       year_options: [
+        { label: '2019', value: 2019 },
+        { label: '2020', value: 2020 },
         { label: '2021', value: 2021 },
         { label: '2022', value: 2022 },
         { label: '2023', value: 2023 },
@@ -194,11 +196,11 @@ export default {
         let currency = 'ves'
         let amount = this.amount
         let options = { method: 'post',
-          url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          // url: window.location.origin + '/transact',
+          // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
+          url: window.location.origin + '/transact',
           data:
           {
-            'bank': 'Mercantil',
+            'bank': 'MercantilTDC',
             'client_identify': {
               'ipaddress': ipaddress,
               'browser_agent': browserAgent,

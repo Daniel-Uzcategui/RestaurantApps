@@ -147,7 +147,7 @@
                             <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery`"/>
                           </q-item>
                           <q-item>
-                            <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                            <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 :label="isChopzi ? 'Pago en línea' : 'Pick-up'" />
                           </q-item>
                           <q-item>
                             <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
@@ -399,10 +399,10 @@ export default {
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Venezolana', value: 6, color: 'blue' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Mercantil', value: 6, color: 'blue' }) }
       if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
       if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito Venezolana', value: 9, color: 'blue' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
       return tip
     },
     promoData () {
@@ -438,21 +438,22 @@ export default {
   },
   data () {
     return {
+      isChopzi: window.location.hostname === 'chopzi.com',
       cupon: '',
       loadingState: false,
       orderDate: null,
-      orderWhen: null,
+      orderWhen: window.location.hostname === 'chopzi.com' ? '0' : null,
       paypal: window.paypal,
       deliveryPrice: 0,
       CheckAv: 1,
       CheckTDD: false,
       CheckTDC: false,
       confirm: false,
-      tipEnvio: null,
+      tipEnvio: window.location.hostname === 'chopzi.com' ? '0' : null,
       lbDelivery: 'Deli',
       addId: null,
       validAddress: true,
-      step: 1,
+      step: window.location.hostname === 'chopzi.com' ? 2 : 1,
       maximizedToggle: true,
       ordenar: false,
       notifications: 0,
@@ -602,7 +603,7 @@ export default {
       rate = this.rates.find(obj => {
         return obj.currency === 'Bs'
       })
-      if (mto !== 'undefined') {
+      if (mto !== 'undefined' && rate && rate.rateValue) {
         mtoTotal = rate.rateValue * mto
       }
       return mtoTotal

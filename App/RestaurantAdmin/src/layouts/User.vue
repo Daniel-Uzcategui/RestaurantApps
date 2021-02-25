@@ -149,7 +149,7 @@ export default {
       // is available before the page renders
       // console.log(this.currentUser)
       this.$q.loading.hide()
-      if (currentUser.firstAccess) {
+      if (currentUser && currentUser.firstAccess) {
         this.$router.push({ path: '/guide/intro' })
         try {
           this.updateUserData({
@@ -161,10 +161,14 @@ export default {
         }
       }
     }
-    if (firebase.messaging.isSupported()) {
-      if (!firebase.apps.length) {
+    if (firebase && firebase.messaging && firebase.messaging.isSupported()) {
+      if (!(firebase && firebase.apps & firebase.apps.length)) {
         fetch('/__/firebase/init.json').then(async response => {
-          firebase.initializeApp(await response.json())
+          try {
+            firebase.initializeApp(await response.json())
+          } catch (e) {
+            console.log(e)
+          }
           this.setupNotif()
         })
       } else {
@@ -406,7 +410,7 @@ export default {
         console.log('Push messaging isn\'t supported.')
         return
       }
-      if (Notification.permission === 'denied') {
+      if (Notification && Notification.permission === 'denied') {
         console.log('The user has blocked notifications.')
         return
       }

@@ -7,7 +7,11 @@ export default ({ router, store, Vue }) => {
     Axios.get('/__/firebase/init.json').then(async response => {
       const cfg = await response.data
       if (!firebaseService.appslength()) {
-        firebaseService.fBInit(cfg)
+        try {
+          firebaseService.fBInit(cfg)
+        } catch (e) {
+          console.log(e)
+        }
       }
       firebaseService.auth().onAuthStateChanged((currentUser) => {
         firebaseService.handleOnAuthStateChanged(store, currentUser)

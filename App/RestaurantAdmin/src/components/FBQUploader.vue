@@ -8,6 +8,10 @@ export default {
     meta: {
       type: Object
     },
+    menuPic: {
+      type: Boolean,
+      default: () => false
+    },
     onlyLink: {
       type: Boolean,
       default: () => false
@@ -42,7 +46,9 @@ export default {
   data () {
     return {
       uploading: false,
-      filesUploading: []
+      filesUploading: [],
+      uploadedFl: [],
+      links: []
     }
   },
 
@@ -65,13 +71,31 @@ export default {
       }
 
       this.uploading = true
-      this.queuedFiles.forEach(file => {
-        this.filesUploading.push(this.uploadFileToFirestore(file))
+      // console.log('ques', this.queuedFiles)
+      let upl = this.queuedFiles.map(async file => {
+        // // console.log('qued', file)
+        let ff = await this.uploadFileToFirestore(file)
+        return ff
       })
 
-      Promise.all(this.filesUploading)
+      Promise.all(upl)
         .then(() => {
           this.uploading = false
+          // const { meta } = this
+          // const { userRef } = this.$fb
+          // for (let i of this.uploadedFl) {
+          //   if (i.name.startsWith('small_')) {
+          //     // eslint-disable-next-line no-undef
+          //     userRef(this.document, meta.photoType).set({ photosmall: i.link }, { merge: true })
+          //   } else {
+          //     userRef(this.document, meta.photoType).set({ photo: i.link }, { merge: true })
+          //   }
+          // }
+          // console.log(JSON.stringify(this.uploadedFl), 'otrfsd', upl)
+          // if (this.menuPic) {
+          this.$emit('uploaded', this.uploadedFl)
+          // }
+          // // console.log('quetapasando', this.uploadedFiles)
         })
         .catch(err => {
           this.$q.notify({
@@ -81,22 +105,25 @@ export default {
         })
     },
 
-    uploadFileToFirestore (file) {
+    async uploadFileToFirestore (file) {
+      // // console.log(file)
+      // eslint-disable-next-line no-unused-vars
       const { meta } = this,
-        { userRef, storageRef } = this.$fb,
+        { storageRef } = this.$fb,
         index = this.filesUploading.length,
         fileSuffix = file.type.split('/')[1],
-        filePreffix = file.name.split('.')[0] + file.size,
+        filePreffix = file.name.split('.')[0],
         uploadImageStorageRef = this.myPath === 'none' ? storageRef(`${this.prefixPath}${fileSuffix}`) : storageRef(`${this.prefixPath}${filePreffix}`),
         profileImageStorageRef = uploadImageStorageRef.put(file),
         STATE_CHANGED = this.$fb.self().storage.TaskEvent.STATE_CHANGED
-      console.log({ file })
+      // // console.log({ file })
       return new Promise((resolve, reject) => {
         // Firebase UploadTask Event
         profileImageStorageRef.on(
           STATE_CHANGED,
           (snapshot) => {
             this.updateComponent(index, snapshot)
+            // console.log(index, snapshot, 'iluminame')
           },
           (err) => {
             this.$q.notify({
@@ -106,26 +133,54 @@ export default {
             this.updateComponent(index, 0, 'failed')
             reject()
           },
-          () => {
-            this.uploadedFiles = this.uploadedFiles.concat(this.files)
-            this.queuedFiles = []
-            this.filesUploading = []
-            this.files.forEach(async file => {
-              this.updateComponent(index, 0, 'uploaded')
-              const link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
-              console.log({ doc: this.document, meta: meta.photoType, link })
-              if (!this.onlyLink) {
-                if (this.myPath === 'none') {
-                  userRef(this.document, meta.photoType).update({ [`photo`]: link })
-                } else {
-                  userRef(this.document, 'photo').set({ [filePreffix]: link }, { merge: true })
+          async () => {
+            try {
+              this.uploadedFiles = this.uploadedFiles.concat(this.files)
+              this.queuedFiles = []
+              this.filesUploading = []
+              // // console.log(111)
+              let cry = await this.files.reduce(async (y, x) => {
+                this.updateComponent(index, 0, 'uploaded')
+                // console.log(index)
+                let link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
+                if (!this.links.includes(link)) {
+                  try {
+                    this.links.push(link)
+                    this.uploadedFl.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                    y.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                  } catch (error) {
+                    console.error('tpush err')
+                  }
+                // // console.log(profileImageStorageRef.snapshot, 'snap')
                 }
-                this.$emit('uploaded', { files: [ file.name ] })
-              } else {
-                this.$emit('uploaded', { files: [ file.name ], link })
-              }
-            })
-            resolve()
+                return y
+
+              // if (index === 1) {
+              //   this.uploadedFl.push({ files: [ file.name ], link })
+              //   // console.log('upl', this.uploadedFl)
+              // }
+              // // console.log({ doc: this.document, meta: meta.photoType, link })
+              // if (!this.onlyLink) {
+              //   if (this.myPath === 'none') {
+              //     userRef(this.document, meta.photoType).update({ [`photo`]: link })
+              //   } else {
+              //     userRef(this.document, 'photo').set({ [filePreffix]: link }, { merge: true })
+              //   }
+              //   this.$emit('uploaded', { files: [ file.name ] })
+              // } else {
+              //   if (!this.menuPic) {
+              //     this.$emit('uploaded', { files: [ file.name ], link })
+              //   } else if (index === 1) {
+              //     // this.uploadedFl.push({ files: [ file.name ], link })
+              //     // // console.log('upl', this.uploadedFl)
+              //   }
+              // }
+              }, [])
+              resolve(cry)
+            } catch (err) {
+              console.error(err)
+              throw err
+            }
           }
         )
       })

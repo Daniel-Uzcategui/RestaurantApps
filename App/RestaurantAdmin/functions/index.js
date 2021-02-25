@@ -7,6 +7,7 @@ const axios = require('axios')
 const aesjs = require('aes-js')
 const hasha = require('hasha')
 const atob = require('atob')
+
 exports.CheckCart = functions.firestore
   .document('orders/{ordersId}')
   .onCreate(async (change) => {
@@ -123,7 +124,7 @@ exports.CheckCart = functions.firestore
   })
 exports.FirstUser = functions.firestore
   .document('users/{userId}')
-  .onCreate(async (change) => {
+  .onCreate(async (user) => {
     const userRef = db.collection('config').doc('firstUser')
     const snapshot = await userRef.get()
     if (!snapshot.exists) {
@@ -131,11 +132,19 @@ exports.FirstUser = functions.firestore
         user: 'created'
       }
       const res = await db.collection('config').doc('firstUser').set(data)
-      const res2 = change.ref.set({
+      const res2 = user.ref.set({
         rol: ['Admin'],
         firstAccess: true
       }, { merge: true })
       return [res, res2]
+    } else {
+      const data = snapshot.data()
+      if (data.chopzi) {
+        const res = await axios.post('https://us-central1-ecr7xo3y.cloudfunctions.net/addUser', { id: user.id }, { headers: {
+          'content-type': 'application/json'
+        } }).catch(e => console.error(e))
+        return res
+      }
     }
   })
 exports.facturasSequence = functions.firestore
@@ -598,7 +607,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           let request = req.body
           delete request.bank
           let defaultcode = cfg.claveSecreta
-          defaultcode = 'A9279120481620090701AA30'
+          // defaultcode = 'A9279120481620090701AA30'
           request.transaction_c2p.destination_mobile_number = encryptar(defaultcode, request.transaction_c2p.destination_mobile_number.toString()).toString()
           request.transaction_c2p.destination_id = encryptar(defaultcode, request.transaction_c2p.destination_id.toString()).toString()
           // request.transaction_c2p.payment_reference = encryptar(defaultcode, request.transaction_c2p.payment_reference).toString()
@@ -616,9 +625,9 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           if (cfg.ambiente) {
             url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/c2p'
           } else {
-            // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/c2p'
+            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/prod/v1/payment/c2p'
             // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/c2p'
-            url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/c2p'
+            // url = 'https://apimbu.mercantilbanco.com/mercantil-banco/sandbox/v1/payment/c2p'
           }
           request.transaction_c2p.invoice_number = invoicenumber
           let options2 = { method: 'post',
@@ -626,8 +635,8 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             headers:
             { accept: 'application/json',
               'content-type': 'application/json',
-              'x-ibm-client-id': '81188330-c768-46fe-a378-ff3ac9e88824'
-              // cfg.xibm
+              // 'x-ibm-client-id': '81188330-c768-46fe-a378-ff3ac9e88824'
+              'x-ibm-client-id': cfg.xibm
             },
             data: request
             // json: true
