@@ -865,20 +865,24 @@ export default {
     async croppaPic () {
       let file = this.$refs.croppa.getChosenFile()
       let blob = await this.$refs.croppa.promisedBlob(file.type)
-      // console.log(file)
+      console.log(file, 'FILEEEEEE')
       let imageFile = blob
+      var re = /(?:\.([^.]+))?$/
+      var ext = re.exec(file.name)[1]
       // // console.log('originalFile instanceof Blob', imageFile instanceof Blob) // true
       // // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`)
 
       var options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 250,
-        useWebWorker: true
+        useWebWorker: true,
+        fileType: file.type
       }
       var options2 = {
         maxSizeMB: 1,
         maxWidthOrHeight: 95,
-        useWebWorker: true
+        useWebWorker: true,
+        fileType: file.type
       }
       try {
         let compressedFile = await imageCompression(imageFile, options)
@@ -886,15 +890,22 @@ export default {
         // // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob) // true
         // // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`) // smaller than maxSizeMB
         compressedFile.lastModifiedDate = new Date()
+        let filename = compressedFile.lastModifiedDate.getTime()
         compressedFile.name = this.photoType
-        compressedFile2.lastModifiedDate = new Date()
+        compressedFile2.lastModifiedDate = compressedFile.lastModifiedDate
         compressedFile2.name = 'small_' + this.photoType
-        compressedFile = new File([compressedFile], this.photoType)
-        compressedFile2 = new File([compressedFile2], 'small_' + this.photoType)
-        // console.log([compressedFile, compressedFile2], 'tha files')
+        compressedFile = new File([compressedFile], filename + '.' + ext, {
+          type: file.type
+        })
+        compressedFile2 = new File([compressedFile2], 'small_' + filename + '.' + ext, {
+          type: file.type
+        })
+        console.log([compressedFile, compressedFile2], 'tha files')
         this.$refs.fbq.addFiles([compressedFile, compressedFile2]) // write your own logic
       } catch (error) {
-        // console.log(error)
+        console.log(error)
+        this.$q.notify({ message: 'Error en el archivo' })
+        return
       }
       this.showUploader = true
 
