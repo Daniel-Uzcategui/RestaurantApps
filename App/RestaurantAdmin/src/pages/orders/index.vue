@@ -117,7 +117,7 @@ export default {
           fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
           nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
           typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-          if (obj.typePayment !== 'undefined') {
+          if (typeof obj.typePayment !== 'undefined') {
             tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
           } else { tipoPago = '' }
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
