@@ -34,6 +34,32 @@ export const docGet = (doc) => {
       console.log('Error getting documents', err)
     })
 }
+export const docGetWhere = (doc, x, y, z) => {
+  console.log('getting ' + doc)
+  return firestore().collection(doc).where(x, y, z).get()
+    .catch(err => {
+      console.log('Error getting documents', err)
+    })
+}
+export const setDoc = (doc, payload) => {
+  console.log('getting ' + doc)
+  return firestore().collection(doc).add({
+    DateIn: new Date(),
+    ...payload
+  })
+    .catch(err => {
+      console.log('Error getting documents', err)
+    })
+}
+export const setDocOne = (collection, doc, payload) => {
+  console.log('getting ' + doc)
+  return firestore().collection(collection).doc(doc).set({
+    ...payload
+  }, { merge: true })
+    .catch(err => {
+      console.log('Error getting documents', err)
+    })
+}
 /**
  * @param  {String} storageLocation - Location on Firebase Storage
  */

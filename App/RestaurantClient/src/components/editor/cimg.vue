@@ -5,15 +5,30 @@
           :src="valImg"
         />
     <div :class="title_container_class" :style="title_container_style">
-      <div v-html="title" :class="title_class" :style="title_style"></div>
+      <div v-html="title" :class="title_class" class="text-center" :style="title_style"></div>
     </div>
+  <q-dialog v-model="dialog">
+    <q-card>
+      <q-card-section>
+        <p class="text-bold">Título</p>
+      <q-editor :toolbar="toolbar" v-model="value.title" label="titulo" />
+      <uploader v-model="value.img" :height=200 :width=200 />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </div>
 </template>
 <script>
-/* eslint-disable camelcase */
 export default {
   name: 'my-card',
+  components: {
+    'uploader': () => import('./uploader.vue'),
+  },
   props: {
+    value: {
+      type: Object,
+      default: () => {}
+    },
     isAdmin: {
       type: Boolean,
       default: () => false
@@ -72,6 +87,20 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      dialog: false,
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{
+          label: this.$q.lang.editor.formatting,
+          icon: this.$q.iconSet.editor.formatting,
+          list: 'no-icons',
+          options: ['p', 'h3', 'h4', 'h5', 'h6', 'code']
+        }]
+      ]
+    }
+  },
   computed: {
     valStyle () {
       const { global_styles } = this
@@ -101,6 +130,7 @@ export default {
     click () {
       if (this.isAdmin) {
         console.log('Aloha')
+        this.dialog = true
       }
       let props = this._props
       delete props.isAdmin

@@ -35,6 +35,10 @@
 export default {
   name: 'my-card',
   props: {
+    isAdmin: {
+      type: Boolean,
+      default: () => false
+    },
     styles: {
       type: String,
       default: 'max-width: 350px;'
@@ -230,6 +234,9 @@ export default {
   },
   methods: {
     click () {
+      if (this.isAdmin) {
+        console.log('Aloha')
+      }
       this.$emit('click-edit', {
         block_info: {
           block_index: this.block_index, child_index: this.child_index

@@ -87,6 +87,7 @@ export default {
     'customJS': () => import('../components/editor/customJS'),
     'findus': () => import('../components/editor/findus'),
     'qimg': () => import('../components/editor/qimg'),
+    'cimg': () => import('../components/editor/cimg'),
     'menucomp': () => import('../pages/Menu/menu')
 
   },
