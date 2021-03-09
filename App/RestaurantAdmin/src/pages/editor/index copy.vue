@@ -1,20 +1,17 @@
 <template>
    <div @contextmenu.prevent>
-      <q-drawer dark v-if="admin" show-if-above v-model="left" side="left" bordered>
+      <q-drawer v-if="admin" show-if-above v-model="left" side="left" bordered>
          <q-bar class="bg-primary text-white rounded-borders">
             <div class="cursor-pointer non-selectable">
                Options
                <q-menu>
-                  <q-list dense class="text-white" style="min-width: 100px">
+                  <q-list dense style="min-width: 100px">
                      <q-item clickable v-close-popup>
                         <q-item-section @click="page_options = !page_options"><span>Page Options <q-icon name="fas fa-check" v-if="page_options"/></span>
                         </q-item-section>
                      </q-item>
                      <q-item clickable v-close-popup>
                         <q-item-section @click="app_options = !app_options"><span>{{app_options ? 'Page Builder' : 'App Builder'}}</span></q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="newProject()"><span>Nuevo Projecto</span></q-item-section>
                      </q-item>
                      <q-item clickable v-close-popup>
                         <q-item-section @click="photoGallery = true"><span>Open image bucket</span></q-item-section>
@@ -313,20 +310,12 @@
                      </q-input>
        </q-card-section>
        </q-card>
-         <q-card :dark="false"
-         v-if="!app_options &&
-            selectedBLock.block_index != null
-            && typeof blocks[selectedBLock.block_index] !== 'undefined'
-            "
-         class="text-black">
+         <q-card v-if="!app_options && selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'" class="my-card">
             <q-card-section>
                <q-input filled readonly v-model="selectedBLock.block_index" label="Selected Block" />
                <q-input filled readonly v-model="selectedBLock.child_index" label="Selected Child" />
             </q-card-section>
-            <q-card-section v-if="
-               selectedBLock.block_index != null
-               && typeof blocks[selectedBLock.block_index] !== 'undefined'
-               ">
+            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index] !== 'undefined'">
                Block Options
                <q-input filled v-model="blocks[selectedBLock.block_index].class" label="Class" />
                <q-input filled v-model="blocks[selectedBLock.block_index].style" label="Style" />
@@ -336,18 +325,13 @@
                   <q-btn class="col" color="primary" label="Copy Block" @click="copyBlock()"/>
                </div>
             </q-card-section>
-            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'
-            ">
+            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'">
                Child Options
-               <q-select filled :options="widgets" emit-value map-options v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props.is" label="Widget" />
+               <q-select filled :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props.is" label="Widget" />
                <q-btn color="primary" label="Remove Child" @click="removeChild({block: selectedBLock.block_index, child: selectedBLock.child_index})"/>
                <q-btn color="primary" label="Copy Child" @click="copyChild()"/>
             </q-card-section>
-            <!-- <q-input filled
-                         :placeholder="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props['title']" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props['title']" label="titulo"
-                        /> -->
-            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'
-            ">
+            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'">
                <div v-for="(prop, index) in selectedBLockProps" :key="index">
                   <q-input filled v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index === 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" >
                      <template v-slot:append>
@@ -355,8 +339,7 @@
                      </template>
                   </q-input>
                   <q-input filled
-                        v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'
-                        " :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index"
+                        v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index"
                         >
                      <template v-slot:append>
                         <q-icon name="edit">
@@ -401,7 +384,7 @@
                      <q-btn v-if="hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
                      <q-card flat square>
                      <draggable :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
-                        <q-card v-ripple :is="''" v-model="chld.props" class="handle2" :class="chld.classes" :isAdmin="true" :style="chld.styles" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
+                        <q-card v-ripple :is="''" class="handle2" :class="chld.classes" :style="chld.styles" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
                      </draggable>
                      </q-card>
                   </div>
@@ -602,7 +585,6 @@ export default {
     'customJS': () => import('./components/client/components/editor/customJS'),
     'findus': () => import('./components/client/components/editor/findus'),
     'qimg': () => import('./components/client/components/editor/qimg'),
-    'cimg': () => import('./components/client/components/editor/cimg'),
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
     PrismEditor,
     draggable
@@ -633,7 +615,7 @@ export default {
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: [{ label: 'Imagen con Titulo', value: 'cimg' }],
+      widgets: ['my-card', 'place-holder', 'qheader', 'qcarousel', 'qparallax', 'customHtml', 'customJS', 'qTextBlock', 'qimg', 'qfooter', 'findus', 'menudisplay', 'carouselmenu', 'qtabs', 'qbtn'],
       blocks: [],
       insertCss: '',
       selectedBLock: { block_index: null, child_index: null },
@@ -665,6 +647,7 @@ export default {
     }
   },
   mounted () {
+    this.$q.dark.set(false)
     console.log('Heeelllooo')
     this.bindEnv()
     this.bindManifest().then(e => {
@@ -683,7 +666,6 @@ export default {
       }
     })
     this.bindBlocks().then((e) => {
-      this.$q.dark.set(false)
       let obj = e.find(e => e.id === 'blocks')
       let pageobj = e.find(e => e.id === 'page')
       let routes = e.find(e => e.id === 'routes')
@@ -730,9 +712,6 @@ export default {
     }
   },
   methods: {
-    newProject () {
-      this.blocks = []
-    },
     ...mapActions('editor', ['saveBlocks', 'saveBlocks2', 'savePage', 'bindBlocks', 'saveCss', 'saveScCss', 'saveVer', 'saveRoutes']),
     ...mapActions('config', ['bindEnv', 'bindManifest', 'saveManifest']),
     consoleame (e) {

@@ -97,10 +97,11 @@ export default {
   computed: {
     ...mapGetters('order', ['orders']),
     ...mapGetters('client', ['clients']),
+    ...mapGetters('localization', ['localizations']),
     OrderClient () {
       let OrderClient = []
-      let i, obj, clientforOrder, tipoPago
-      let fullname, statusOrder, typeService
+      let i, obj, clientforOrder, tipoPago, sedeforOrder
+      let fullname, statusOrder, typeService, nameSede
       for (i = 0; i < this.orders.length; i++) {
         obj = null
         if (typeof this.$route.query.status !== 'undefined') {
@@ -112,10 +113,13 @@ export default {
         }
         if (obj !== null) {
           clientforOrder = this.clientOrders(obj.customer_id)
+          sedeforOrder = this.sedeOrders(obj.sede)
           fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+          nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
           typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-          tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
-          statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
+          if (typeof obj.typePayment !== 'undefined') {
+            tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
+          } else { tipoPago = '' }
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           // tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
           let mtoTotal = obj.paid + obj.delivery
@@ -123,6 +127,7 @@ export default {
             'id': obj.id,
             'nombre': fullname,
             'typePayment': tipoPago,
+            'nameSede': nameSede,
             'status': statusOrder,
             'paid': mtoTotal,
             'dateIn': obj.dateIn,
@@ -139,10 +144,16 @@ export default {
   created () {
     this.bindOrders()
     this.bindClients()
+    this.bindLocalizations()
   },
   methods: {
     clientOrders (value) {
       return this.clients.find(obj => {
+        return obj.id === value
+      })
+    },
+    sedeOrders (value) {
+      return this.localizations.find(obj => {
         return obj.id === value
       })
     },
@@ -175,6 +186,7 @@ export default {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.orders.length}`
     },
     ...mapActions('order', ['deleteOrder', 'bindOrders']),
+    ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('client', ['bindClients']),
     deleted () {
       this.deleteOrder(this.selected)
@@ -184,6 +196,7 @@ export default {
     return {
       selected: [],
       columns: [
+        { name: 'nameSede', required: true, label: 'Sede', align: 'left', field: 'nameSede', sortable: true },
         { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
         { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre', sortable: true },
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },

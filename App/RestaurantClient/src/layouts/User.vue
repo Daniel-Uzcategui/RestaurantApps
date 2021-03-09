@@ -709,7 +709,7 @@ export default {
   },
   data () {
     return {
-      isChopzi: window.location.hostname === 'chopzi.com',
+      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       fullPath: '',
       Tawk_API: null,
       notifications: 0,

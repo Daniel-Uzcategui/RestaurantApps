@@ -1,6 +1,54 @@
 /// ////// Localization Action ////////
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
+import firebaseService from '../../services/firebase'
+// Query
+const docGetWhere = firebaseService.docGetWhere
+const setDoc = firebaseService.setDoc
+const setDocOne = firebaseService.setDocOne
+export const getAvailableUrls = ({ commit }, payload) => {
+  return docGetWhere('subdomains', 'subdomain', '==', payload)
+    .then(querySnapshot => {
+      if (querySnapshot.empty) {
+        console.log('No matching documents.')
+        return [true, true]
+      } else {
+        return [false, true]
+      }
+    }).catch(() => { return [false, false] })
+}
+export const getActiveUrl = ({ commit }, payload) => {
+  return docGetWhere('subdomains', 'userId', '==', payload)
+    .then(querySnapshot => {
+      console.log(querySnapshot, 'query', querySnapshot.empty)
+      if (querySnapshot.empty) {
+        console.log('No matching documents.')
+        return false
+      } else {
+        let quer = []
+        querySnapshot.forEach(doc => {
+          let data = doc.data()
+          if (data.status === 0 || data.status === 1) {
+            quer.push({ ...doc.data(), id: doc.id })
+          }
+        })
+        return quer[0]
+      }
+    }).catch(() => { return false })
+}
+export const setUrlSub = ({ commit }, payload) => {
+  return setDoc('subdomains', payload)
+    .then(e => {
+      return true
+    }).catch(() => { return false })
+}
+export const delUrlSub = ({ commit }, payload) => {
+  return setDocOne('subdomains', payload.id, payload)
+    .then(e => {
+      return true
+    }).catch(() => { return false })
+}
+//
 export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configurations', firestore().collection('config'), { reset: false, serialize: serialize, wait: true })

@@ -438,7 +438,7 @@ export default {
   },
   data () {
     return {
-      isChopzi: window.location.hostname === 'chopzi.com',
+      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       cupon: '',
       loadingState: false,
       orderDate: null,
