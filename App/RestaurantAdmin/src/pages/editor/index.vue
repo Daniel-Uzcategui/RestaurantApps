@@ -1,6 +1,6 @@
 <template>
    <div @contextmenu.prevent>
-      <q-drawer dark v-if="admin" show-if-above v-model="left" side="left" bordered>
+      <q-drawer v-if="admin" show-if-above v-model="left" side="left" bordered>
          <q-bar class="bg-primary text-white rounded-borders">
             <div class="cursor-pointer non-selectable">
                Options
@@ -592,6 +592,7 @@ export default {
     'qtabs': () => import('./components/client/components/editor/qTabs'),
     'qbtn': () => import('./components/client/components/editor/qbtn'),
     'my-card': () => import('./components/client/components/editor/mycard'),
+    'cmy-card': () => import('./components/client/components/editor/cmycard'),
     'place-holder': () => import('./components/client/components/editor/placeHolder'),
     'qheader': () => import('./components/client/components/editor/qheader'),
     'qfooter': () => import('./components/client/components/editor/qfooter'),
@@ -633,7 +634,7 @@ export default {
       admin: true,
       left: true,
       Vue: Vue,
-      widgets: [{ label: 'Imagen con Titulo', value: 'cimg' }],
+      widgets: [{ label: 'Imagen con Titulo', value: 'cimg' }, { label: 'Imagen con Titulo y Texto', value: 'cmy-card' }],
       blocks: [],
       insertCss: '',
       selectedBLock: { block_index: null, child_index: null },
@@ -665,7 +666,6 @@ export default {
     }
   },
   mounted () {
-    console.log('Heeelllooo')
     this.bindEnv()
     this.bindManifest().then(e => {
       console.log({ manifest: e }, 'Manifest')
@@ -683,7 +683,6 @@ export default {
       }
     })
     this.bindBlocks().then((e) => {
-      this.$q.dark.set(false)
       let obj = e.find(e => e.id === 'blocks')
       let pageobj = e.find(e => e.id === 'page')
       let routes = e.find(e => e.id === 'routes')
@@ -695,7 +694,7 @@ export default {
       }
       if (routes) { this.pagesNode = [JSON.parse(JSON.stringify(routes))] }
       if (obj && obj.addedPages) {
-        this.blocks = obj.addedPages['Home']
+        this.blocks = JSON.parse(JSON.stringify(obj.addedPages['Home']))
         for (let key of Object.keys(obj.addedPages)) {
           if (key) {
             Vue.set(this.addedPages, key, JSON.parse(JSON.stringify(obj.addedPages[key])))
@@ -1019,6 +1018,9 @@ export default {
     background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
     background-repeat: no-repeat;
     background-size: cover;
+  }
+  .q-drawer {
+     border-top-right-radius: 0px
   }
   .my-editor {
     background: #2d2d2d;

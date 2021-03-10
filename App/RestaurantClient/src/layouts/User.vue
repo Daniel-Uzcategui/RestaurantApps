@@ -1006,6 +1006,9 @@ export default {
   @font-face
     font-family: customfont;
     src: url(https://fonts.googleapis.com/css?family=Karla);
+  .q-page-container {
+    overflow: hidden;
+  }
   .my-font
     font-family: 'customfont';
   .main

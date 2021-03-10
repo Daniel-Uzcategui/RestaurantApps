@@ -1,10 +1,17 @@
 <template>
+<div>
+  <div class="q-ma-md column items-center">
+    <q-img :src="value ? value : 'https://cdn.quasar.dev/img/parallax2.jpg'" @click="dialogUpl = true"  style="max-width: 200px" />
+    <p> Click en la foto para editar</p>
+  </div>
+  <q-dialog v-model="dialogUpl">
+
   <q-card class="q-cardGlass">
-    <q-img :src="value" />
         <q-card-section>
           <p>Formatos recomendados: <span class="text-bold">jpg y png</span></p>
+          <p>{{more}}</p>
           <p>Las imágenes son comprimidas antes de la carga, si su imagen es muy grande puede tardar unos segundos.</p>
-          <p>Chopzi soporta imagenes con fondos transparentes, primero recortemos la imagen</p>
+          <p>Chopzi soporta imagenes con fondos transparentes</p>
           <p v-if="$q.platform.is.mobile">Puedes mover la foto con el táctil y pinchar con dos dedos para acercar o alejar </p>
           <p v-else>Utilice el mouse y click para mover la imagen y la ruedita del mouse o los botones para hacer zoom</p>
         </q-card-section>
@@ -14,13 +21,13 @@
           :width="width"
           :height="height"
           placeholder="click aqui"
-          placeholder-color="#FFF"
+          placeholder-color="#000"
           :placeholder-font-size="16"
           canvas-color="transparent"
           :show-remove-button="true"
           remove-button-color="black"
           show-loading
-          :quality="4"
+          :quality="quality"
           :loading-size="50"
           :loading-color="'#606060'"
           ref="croppa"
@@ -61,6 +68,8 @@
         />
         </q-card-section>
       </q-card>
+  </q-dialog>
+</div>
 </template>
 <script>
 import Croppa from 'vue-croppa'
@@ -69,7 +78,7 @@ import imageCompression from 'browser-image-compression'
 import 'vue-croppa/dist/vue-croppa.css'
 export default {
   mixins: [ QUploaderBase ],
-  props: ['value', 'height', 'width'],
+  props: ['value', 'height', 'width', 'quality', 'background', 'more'],
   components: {
     'fbq-uploader': () => import('./FBQUploader.vue'),
     'croppa': Croppa.component
@@ -78,9 +87,10 @@ export default {
     return {
       meta: { id: '123', photoType: '123' },
       showUploader: false,
-      myCroppa: {}
+      myCroppa: {},
+      dialogUpl: false
     }
-   },
+  },
   methods: {
     conss (e, y) {
       console.log(e, y)
@@ -88,12 +98,21 @@ export default {
     uploadComplete (info) {
       console.log({ info })
       try {
+        if (info.length > 1) {
+          this.$emit('input', info)
+          this.$q.notify({
+            message: `Foto cargada exitosamente, recuerde guardar los cambios`,
+            color: 'positive'
+          })
+          this.showUploader = false
+          return
+        }
         for (let i of info) {
           this.$emit('input', i.link)
-        this.$q.notify({
-          message: `Foto cargada exitosamente, recuerde guardar los cambios`,
-          color: 'positive'
-        })
+          this.$q.notify({
+            message: `Foto cargada exitosamente, recuerde guardar los cambios`,
+            color: 'positive'
+          })
         }
         this.showUploader = false
       } catch (error) {
@@ -108,37 +127,53 @@ export default {
     async croppaPic () {
       let file = this.$refs.croppa.getChosenFile()
       let blob = await this.$refs.croppa.promisedBlob(file.type)
-      // console.log(file)
+      console.log(file, 'FILEEEEEE')
       let imageFile = blob
+      var re = /(?:\.([^.]+))?$/
+      var ext = re.exec(file.name)[1]
       // // console.log('originalFile instanceof Blob', imageFile instanceof Blob) // true
       // // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`)
 
       var options = {
         maxSizeMB: 1,
-        maxWidthOrHeight: 250,
-        useWebWorker: true
+        maxWidthOrHeight: this.width * 5,
+        useWebWorker: true,
+        fileType: file.type
       }
       var options2 = {
         maxSizeMB: 1,
-        maxWidthOrHeight: 95,
-        useWebWorker: true
+        maxWidthOrHeight: this.width * 2,
+        useWebWorker: true,
+        fileType: file.type
       }
       try {
+        let files
         let compressedFile = await imageCompression(imageFile, options)
-        // // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob) // true
-        // // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`) // smaller than maxSizeMB
         compressedFile.lastModifiedDate = new Date()
+        let filename = compressedFile.lastModifiedDate.getTime()
         compressedFile.name = file.name
-        console.log('filename', file.name)
-        compressedFile = new File([compressedFile], file.name)
-        // console.log([compressedFile, compressedFile2], 'tha files')
-        this.$refs.fbq.addFiles([compressedFile]) // write your own logic
+        compressedFile = new File([compressedFile], filename + '.' + ext, {
+          type: file.type
+        })
+        if (this.background) {
+          let compressedFile2 = await imageCompression(imageFile, options2)
+          compressedFile2.lastModifiedDate = new Date()
+          compressedFile2.name = 'small_' + file.name
+          compressedFile2 = new File([compressedFile2], 'small_' + filename + '.' + ext, {
+            type: file.type
+          })
+          files = [compressedFile, compressedFile2]
+        } else {
+          files = [compressedFile]
+        }
+        this.$refs.fbq.addFiles(files) // write your own logic
       } catch (error) {
         console.log(error)
+        this.$q.notify({ message: 'Error en el archivo' })
+        return
       }
       this.showUploader = true
-
-    },
+    }
   }
 }
 </script>

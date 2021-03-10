@@ -876,6 +876,8 @@ export default {
 }
 </script>
 <style lang="stylus">
+  .q-page-container
+    overflow hidden
   .menuTop
     height 50px
     margin-left 10%

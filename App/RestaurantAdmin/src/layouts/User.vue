@@ -34,6 +34,7 @@
          </q-toolbar>
       </q-header>
       <q-drawer
+      style="border-top-right-radius 100px"
          on-layout="hide"
          v-if="$router.history.current.path !== '/editor/index'"
          v-model="leftDrawerOpen"
@@ -82,6 +83,7 @@ export default {
     'ClassicLight': () => import('./themes/ClassicLight')
   },
   computed: {
+    themeUser () { return this.$route.fullPath === '/editor/index' ? 'GlassLight' : 'GlassDark' },
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('order', ['orders']),
     productName () {
@@ -178,7 +180,6 @@ export default {
   },
   data () {
     return {
-      themeUser: 'GlassDark',
       audio: {
         sources: [
           {
@@ -507,7 +508,6 @@ export default {
     &.blur-layout
       filter blur(5px)
   .q-drawer
-    border-top-right-radius 100px
     overflow hidden
   .q-toolbar
     background-repeat no-repeat
