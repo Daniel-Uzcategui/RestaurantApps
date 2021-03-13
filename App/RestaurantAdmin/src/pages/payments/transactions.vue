@@ -63,9 +63,9 @@ export default {
       let OrderClient = []
       let i, tipoPago, transactionforOrders
       let cardNumber, trxProcesingDate, responseMessage, trxType
-      console.log(this.transactions.length)
-      for (i = 0; i < this.transactions.length; i++) {
-        transactionforOrders = this.transactions[i]
+      console.log(this.transactionsTable.length)
+      for (i = 0; i < this.transactionsTable.length; i++) {
+        transactionforOrders = this.transactionsTable[i]
         if (transactionforOrders.id) {
           if (transactionforOrders) {
             cardNumber = transactionforOrders.cardNumberFirst + '****' + transactionforOrders.cardNumberLast
@@ -101,7 +101,7 @@ export default {
   created () {
     this.bindOrders()
     this.bindClients()
-    this.bindtransactions()
+    this.bindtransactions().then(() => this.afterBindig())
   },
   methods: {
     exportTable () {
@@ -129,6 +129,9 @@ export default {
         })
       }
     },
+    afterBindig () {
+      this.transactionsTable = this.transactions
+    },
     ...mapActions('order', ['bindOrders']),
     ...mapActions('client', ['bindClients']),
     ...mapActions('payment', ['bindtransactions'])
@@ -136,6 +139,7 @@ export default {
   data () {
     return {
       selected: [],
+      transactionsTable: [],
       columns: [
         { name: 'typePayment', align: 'center', label: 'Tipo de Pagos', field: 'typePayment', sortable: true },
         { name: 'cardNumber', align: 'center', label: 'Numero de Trajeta', field: 'cardNumber', sortable: true },
