@@ -2,7 +2,7 @@
   <q-page padding="padding">
     <q-form class="authentication q-gutter-y-md" ref="forgotPasswordForm" @submit="onSubmit">
       <router-link to="/">
-          <img alt="pfcevolution" src="~assets/logo.png" class="imglogo">
+           <img alt="chopZI" src="~assets/chopzi-01.png" class="imglogo">
       </router-link>
       <h4 class="q-mb-none">Olvido de contraseña</h4>
       <div class="inst q-mb-lg">Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.</div>
