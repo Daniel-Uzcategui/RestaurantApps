@@ -467,7 +467,8 @@
                      </q-bar>
                      <q-card flat square>
                      <div :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start=" drag=false" @end="drag=false">
-                        <q-card :is="''" v-model="chld.props" :class="chld.props.classes" :style="chld.props.styles" @classDelete="(e) => {delete chld.classes; chld.styles=e; $forceUpdate()}" class="handle2" :blockQty="blockQty" :isAdmin="true" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
+                        <q-card :is="''" v-model="chld.props" :class="chld.props.classes" :style="chld.props.styles"
+                          @classDelete="(e) => { chld.styles= chld.styles + e ; $forceUpdate()}" class="handle2 overflow-hidden" :blockQty="blockQty" :isAdmin="true" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
                      </div>
                      </q-card>
                   </div>

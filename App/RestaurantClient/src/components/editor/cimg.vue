@@ -1,5 +1,5 @@
 <template>
-<div @contextmenu="click" style="margin-bottom: 0px; position: relative; overflow: hidden"
+<div @contextmenu="click" style="margin-bottom: -4px; position: relative; overflow: hidden"
 >
     <!-- <VueDragResize :is="resizeChild ? 'VueDragResize' : 'div'" :parentLimitation="false" class="" :isActive="true"
       v-bind="{
@@ -13,7 +13,7 @@
       ` : ''"
       @resizing="resizeChildf" @dragging="resizeChildf"
     > -->
-    <VueDragResize :is="resizeChild ? 'VueDragResize' : 'div'" :parentLimitation="false" class="" :isActive="true"
+    <VueDragResize :is="resizeChild ? 'VueDragResize' : 'div'" :parentLimitation="false" class="overflow-hidden" :isActive="true"
       v-bind="{
         w: viewportToPixels(childDimentions.width),
         h: viewportToPixels(childDimentions.height),
@@ -35,7 +35,6 @@
       }"
         :src="valImg"
         :class="'full-width full-height relative-position'"
-        :position=" `${imagePositionX}% ${imagePositionY}%`"
       >
       </q-img>
       <effect :position="{top: imagePositionY + '%',
@@ -62,9 +61,11 @@
     <typer-wrapper :class="`${typeWriterPosition} text-center`" v-if="typeWriter && typeWriterActive" v-model="typeWriter" :titleColor="title_color" />
     <qTabs :tabs="blockTabsGen" flat :classes="`bg-transparent ${blockTabPosition}`" v-if="blockTabActive" :block_index="block_index" :child_index="child_index" />
     <findus v-if="findus" :block_index="block_index" :child_index="child_index" />
+     <q-btn v-show="btnActive" v-for="(btn, index) in qbtns" :key="index" :color="btn.color" :class="btn.position" :text-color="btn.textColor" :label="btn.label" />
     </VueDragResize>
   <q-dialog transition-show="fade" transition-hide="slide-down" seamless :position="'left'" v-model="dialog" v-if="value">
-      <div class="q-cardGlass" v-draggable="{ handle: $refs.handleId }">
+      <div class="q-cardGlass" v-draggable>
+        <!-- <div class="q-cardGlass" v-draggable="{ handle: $refs.handleId }"> -->
       <q-bar ref="handleId">
       <q-btn v-close-popup dense flat round icon="lens" size="8.5px" color="red" />
       <q-btn dense flat round icon="lens" size="8.5px" color="yellow" />
@@ -82,18 +83,24 @@
       >
          <q-select :options="positionClasses" v-model="value.titlePosition" label="Posición del titulo" />
          <q-toggle v-model="value.titleActive" label="Activar" />
-        <q-editor :fonts="fonts" :definitions="definitions" :toolbar="toolbar" v-model="titleText" label="titulo" />
-        <p class="text-bold q-ma-md">Color del texto</p>
-        <q-color
-        v-model="value.titleActive"
-        default-view="palette"
-        format-model="rgba"
-        :palette="[
-          '#019A9D', '#D9B801', '#E8045A', '#B2028A',
-          '#2A0449', '#019A9D'
-        ]"
-        class="my-picker"
-      />
+        <q-editor :content-style="{color: value.title_color, 'text-shadow': '2px 2px 4px #000000'}" :fonts="fonts" :definitions="definitions" :toolbar="toolbar" v-model="titleText" label="titulo" />
+        <q-dialog v-model="colorText">
+          <q-card class="q-cardGlass">
+            <q-card-section>
+              <p class="text-bold q-ma-md">Color del texto</p>
+              <q-color
+              v-model="value.title_color"
+              default-view="palette"
+              format-model="rgba"
+              :palette="[
+                '#019A9D', '#D9B801', '#E8045A', '#B2028A',
+                '#2A0449', '#019A9D'
+              ]"
+              class="my-picker"
+            />
+            </q-card-section>
+          </q-card>
+        </q-dialog>
         </q-expansion-item>
     <q-expansion-item
         expand-separator
@@ -179,12 +186,12 @@
         icon="settings"
         label="Ajustes de bloque Hijo"
       >
-      <!-- <p>Ajustar el tamaño de Bloque Hijo</p>
-       <q-btn color="blue" rounded :label="resizeChild ? 'Listo' : 'Comenzar'" @click="resizeChild = !resizeChild" /> -->
        <child-flex v-model="value.classesObj"
           @inputClass="(e) => value.classes = e"
           @inputStyle="(e) => value.styles = e">
         </child-flex>
+        <p>Ajustar manual del tamaño de Bloque Hijo(Avanzado)</p>
+       <q-btn color="blue" rounded :label="resizeChild ? 'Listo' : 'Comenzar'" @click="resizeChild = !resizeChild" />
     </q-expansion-item>
       </q-card-section>
     </q-card>
@@ -218,6 +225,7 @@ export default {
   },
   data () {
     return {
+      colorText: false,
       resizeChild: false,
       width: 0,
       height: 0,
@@ -258,6 +266,12 @@ export default {
       typerbind: {},
       dialog: false,
       definitions: {
+        color: {
+          tip: 'Cambiar color de fuente',
+          icon: 'palette',
+          label: 'Color',
+          handler: () => this.colorText = true
+        },
         'tamaño': { cmd: 'color', param: 'red', icon: this.$q.iconSet.editor.size1 || this.$q.iconSet.editor.size, tip: this.$q.lang.editor.size1, htmlTip: `<font class="fontsize-42">${this.$q.lang.editor.size1}</font>` }
       },
       fonts: {
@@ -271,7 +285,7 @@ export default {
         verdana: 'Verdana'
       },
       toolbar: [
-        ['bold', 'italic', 'underline'],
+        ['bold', 'italic', 'underline', 'color'],
         [{
           label: this.$q.lang.editor.fontSize,
           icon: this.$q.iconSet.editor.fontSize,
@@ -598,7 +612,7 @@ export default {
     },
     imagePositionX: {
       type: Number,
-      default: 50
+      default: 0
     },
     imageActive: {
       type: Boolean,
@@ -610,7 +624,7 @@ export default {
     },
     imagePositionY: {
       type: Number,
-      default: 50
+      default: 0
     },
     parallaxSpeed: {
       type: Number,
