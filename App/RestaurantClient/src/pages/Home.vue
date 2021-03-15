@@ -4,7 +4,16 @@
       <div :id="'block' + index" v-for="(block, index) in blocks2" :key="block.id+index">
         <div v-if="block.child.length">
           <div  :class="block.class" :style="block.style">
-                <component :is="''" :class="chld.classes" :style="chld.styles" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="indx"  v-bind="{ ...chld.props, block_index: index, child_index: indx }" />
+                <!-- <component :is="''" :class="chld.classes + chld.props.classes" :style="chld.styles + chld.props.styles" v-ripple="admin" class="handle2" v-for="(chld, indx) in block.child" :key="indx"  v-bind="{ ...chld.props, block_index: index, child_index: indx }" /> -->
+                <q-card
+                  :is="''"
+                  :class="chld.classes + ' ' +chld.props.classes"
+                  :style="chld.styles + '; ' + chld.props.styles"
+                  class="handle2"
+                  v-for="(chld, indx) in block.child"
+                  :key="indx + '' + index"
+                  v-bind="{ ...chld.props, block_index: index, child_index: indx }"
+                    />
           </div>
         </div>
       </div>
@@ -77,6 +86,7 @@ export default {
     'carouselmenu': () => import('../components/carouselMenu'),
     'menudisplay': () => import('./Menu/menu'),
     'my-card': () => import('../components/editor/mycard'),
+    'cmy-card': () => import('../components/editor/cmycard'),
     'place-holder': () => import('../components/editor/placeHolder'),
     'qheader': () => import('../components/editor/qheader'),
     'qfooter': () => import('../components/editor/qfooter'),

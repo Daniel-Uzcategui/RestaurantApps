@@ -27,7 +27,7 @@ export default {
   border-radius 0px !important
 
 .backgroundImage
-  background: url('https://i.pinimg.com/originals/13/4f/27/134f271f8d0710edb376f2b7f2b82916.jpg') no-repeat center center fixed;
+  // background: url('https://i.pinimg.com/originals/13/4f/27/134f271f8d0710edb376f2b7f2b82916.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

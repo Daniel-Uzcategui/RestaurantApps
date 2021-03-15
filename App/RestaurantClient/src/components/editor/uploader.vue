@@ -16,8 +16,8 @@
           <p v-else>Utilice el mouse y click para mover la imagen y la ruedita del mouse o los botones para hacer zoom</p>
         </q-card-section>
         <q-card-section class="column items-center relative-position">
-          <div>
-        <croppa class="col" v-model="myCroppa"
+          <div class="column">
+        <croppa class="col-12" v-model="myCroppa"
           :width="width"
           :height="height"
           placeholder="click aqui"
@@ -31,6 +31,22 @@
           :loading-size="50"
           :loading-color="'#606060'"
           ref="croppa"
+        />
+        <q-checkbox class="col-12" label="Optimizar para movil? (recomendado)" v-model="optimizeMobile" />
+        <croppa v-show="optimizeMobile" class="col-12" v-model="myCroppa"
+          :width="widthMobile"
+          :height="heightMobile"
+          placeholder="cargar imagen para movil"
+          placeholder-color="#000"
+          :placeholder-font-size="16"
+          canvas-color="transparent"
+          :show-remove-button="true"
+          remove-button-color="black"
+          show-loading
+          :quality="qualityMobile"
+          :loading-size="50"
+          :loading-color="'#606060'"
+          ref="croppa2"
         />
           </div>
         <div class="col column items-center">
@@ -78,13 +94,14 @@ import imageCompression from 'browser-image-compression'
 import 'vue-croppa/dist/vue-croppa.css'
 export default {
   mixins: [ QUploaderBase ],
-  props: ['value', 'height', 'width', 'quality', 'background', 'more'],
+  props: ['value', 'height', 'width', 'quality', 'heightMobile', 'widthMobile', 'qualityMobile', 'background', 'more'],
   components: {
     'fbq-uploader': () => import('./FBQUploader.vue'),
     'croppa': Croppa.component
   },
   data () {
     return {
+      optimizeMobile: false,
       meta: { id: '123', photoType: '123' },
       showUploader: false,
       myCroppa: {},
@@ -127,7 +144,6 @@ export default {
     async croppaPic () {
       let file = this.$refs.croppa.getChosenFile()
       let blob = await this.$refs.croppa.promisedBlob(file.type)
-      console.log(file, 'FILEEEEEE')
       let imageFile = blob
       var re = /(?:\.([^.]+))?$/
       var ext = re.exec(file.name)[1]
@@ -136,13 +152,7 @@ export default {
 
       var options = {
         maxSizeMB: 1,
-        maxWidthOrHeight: this.width * 5,
-        useWebWorker: true,
-        fileType: file.type
-      }
-      var options2 = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: this.width * 2,
+        maxWidthOrHeight: this.width * this.quality,
         useWebWorker: true,
         fileType: file.type
       }
@@ -155,12 +165,24 @@ export default {
         compressedFile = new File([compressedFile], filename + '.' + ext, {
           type: file.type
         })
-        if (this.background) {
-          let compressedFile2 = await imageCompression(imageFile, options2)
+        if (this.background && this.optimizeMobile) {
+          let file2 = this.$refs.croppa2.getChosenFile()
+          var options2 = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: this.width * this.qualityMobile,
+            useWebWorker: true,
+            fileType: file2.type
+          }
+          let blob2 = await this.$refs.croppa2.promisedBlob(file2.type)
+          let imageFile2 = blob2
+          var re2 = /(?:\.([^.]+))?$/
+          var ext2 = re2.exec(file2.name)[1]
+          let compressedFile2 = await imageCompression(imageFile2, options2)
           compressedFile2.lastModifiedDate = new Date()
-          compressedFile2.name = 'small_' + file.name
-          compressedFile2 = new File([compressedFile2], 'small_' + filename + '.' + ext, {
-            type: file.type
+          let filename2 = compressedFile2.lastModifiedDate.getTime()
+          compressedFile2.name = 'small_' + file2.name
+          compressedFile2 = new File([compressedFile2], 'small_' + filename2 + '.' + ext2, {
+            type: file2.type
           })
           files = [compressedFile, compressedFile2]
         } else {

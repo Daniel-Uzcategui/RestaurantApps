@@ -35,16 +35,16 @@
       </q-card-section>
       <q-card-section v-if="textbtn !== ''" class="q-pt-none" :class="textbtn_class" :style="textbtn_style" v-html="textbtn">
       </q-card-section> -->
-  <q-dialog v-model="dialog">
+  <q-dialog v-model="dialog" v-if="value">
     <q-card class="q-cardGlass">
       <q-card-section>
         <p class="text-bold text-h5 text-center">Imagen con Texto y Título</p>
       <p class="text-bold text-h6">Título</p>
-      <q-editor :fonts="fonts" :definitions="definitions" :toolbar="toolbar" v-model="value.title" label="titulo" />
+      <q-editor :fonts="fonts" :toolbar="toolbar" v-model="value.title" label="titulo" />
       <p class="text-bold text-h6">Subtitulo</p>
-      <q-editor :fonts="fonts" :definitions="definitions" :toolbar="toolbar" v-model="value.caption" label="titulo" />
+      <q-editor :fonts="fonts" :toolbar="toolbar" v-model="value.caption" label="titulo" />
       <p class="text-bold text-h6">Texto</p>
-      <q-editor :fonts="fonts" :definitions="definitions" :toolbar="toolbar" v-model="value.text" label="titulo" />
+      <q-editor :fonts="fonts" :toolbar="toolbar" v-model="value.text" label="titulo" />
 
       <p class="text-bold q-ma-md">Color del texto</p>
       <q-color
@@ -73,7 +73,7 @@
 /* eslint-disable camelcase */
 export default {
   name: 'my-card',
-   components: {
+  components: {
     'uploader': () => import('./uploader.vue')
   },
   data () {
@@ -174,7 +174,7 @@ export default {
       })
     }
   },
-    props: {
+  props: {
     isAdmin: {
       type: Boolean,
       default: () => false

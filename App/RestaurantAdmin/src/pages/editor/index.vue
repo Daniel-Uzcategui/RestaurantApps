@@ -1,8 +1,8 @@
 <template>
    <div @contextmenu.prevent>
-      <q-drawer v-if="admin" show-if-above v-model="left" side="left" bordered>
-         <q-bar class="bg-primary text-white rounded-borders">
-            <div class="cursor-pointer non-selectable">
+      <q-drawer hidden overlay v-if="admin" show-if-above v-model="left" side="left" bordered>
+         <q-bar class="bg-primary text-white rounded-borders">contextmenu
+            <!-- <div class="cursor-pointer non-selectable">
                Options
                <q-menu>
                   <q-list dense class="text-white" style="min-width: 100px">
@@ -30,7 +30,7 @@
                      </q-item>
                   </q-list>
                </q-menu>
-            </div>
+            </div> -->
             <q-space/>
             <q-btn color="white" text-color="white" icon="fas fa-chevron-left" flat label="Exit" to="/home"/>
          </q-bar>
@@ -394,23 +394,89 @@
          </div>
       </q-drawer>
 
-      <div @contextmenu="(e) => consoleame(e)" :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
-         <draggable :is="admin ? 'draggable' : 'div'" v-if="!app_options" :list="blocks" @start="admin ? drag=true : drag=false" @end="drag=false" handle=".handle">
+      <div :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
+         <div :is="admin ? 'div' : 'div'" v-if="!app_options" :list="blocks" @start="drag=false" @end="drag=false" handle=".handle">
                <q-card square flat :id="'block' + index" v-for="(block, index) in blocks" :key="block.id + index">
-                  <div v-if="block.child.length" @mouseover=" admin ? (hover = true) : false" @mouseleave="admin ? hover = false : false">
-                     <q-btn v-if="hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
+                  <div v-if="block.child.length">
+                    <!-- <div v-if="block.child.length" @mouseover=" admin ? (hover['hover'+index] = true, $forceUpdate()) : false" @mouseleave="admin ? (hover['hover'+index] = false, $forceUpdate()) : false"> -->
+                     <!-- <q-btn v-if="hover['hover'+index]" @click="placeHoldClick({ block_info: { block_index: index, child_index: 0 } })" color="white" icon="fa fa-align-justify" style="height: 50px; z-index:9999999"  text-color="black" class="handle"/> -->
+                     <!-- <q-bar no-parent-event v-show="hover['hover'+index] || selectedBLock.block_index === index" @click="placeHoldClick({ block_info: { block_index: index, child_index: 0 } })" class="handle"> -->
+                     <q-bar style="z-index: 999999" no-parent-event v-show="selectedBLock.block_index === index" @click="placeHoldClick({ block_info: { block_index: index, child_index: 0 } })" class="handle">
+                        <q-btn dense flat round icon="lens" size="8.5px" color="red" />
+                        <q-btn dense flat round icon="lens" size="8.5px" color="yellow" />
+                        <q-btn dense flat round icon="lens" size="8.5px" color="green" />
+                        <div class="cursor-pointer non-selectable text-bold">
+                        Proyecto
+                        <q-menu>
+                        <q-list dense style="min-width: 100px">
+                           <!-- <q-item clickable v-close-popup>
+                              <q-item-section @click="page_options = !page_options"><span>Page Options <q-icon name="fas fa-check" v-if="page_options"/></span>
+                              </q-item-section>
+                           </q-item>
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="app_options = !app_options"><span>{{app_options ? 'Page Builder' : 'App Builder'}}</span></q-item-section>
+                           </q-item> -->
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="newProject()"><span>Nuevo Projecto</span></q-item-section>
+                           </q-item>
+                           <!-- <q-item clickable v-close-popup>
+                              <q-item-section @click="photoGallery = true"><span>Open image bucket</span></q-item-section>
+                           </q-item> -->
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="download()"><span>Export Project</span></q-item-section>
+                           </q-item>
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="importDialog = true"><span>Import Project</span></q-item-section>
+                           </q-item>
+                           <!-- <q-item clickable v-close-popup>
+                              <q-item-section @click="appProperties = true"><span>App Properties</span></q-item-section>
+                           </q-item> -->
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="SaveReq = true"><span>Guardar Proyecto</span></q-item-section>
+                           </q-item>
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="loadReq = true"><span>Abrir Proyecto</span></q-item-section>
+                           </q-item>
+                           <q-item clickable v-close-popup>
+                              <q-item-section>
+                                 <q-btn class="q-pa-none q-ma-none" no-caps flat label="Salir" to="/home"/>
+                              </q-item-section>
+                           </q-item>
+                        </q-list>
+                        </q-menu>
+                        </div>
+                        <div class="cursor-pointer non-selectable text-bold">
+                        Bloque Padre
+                        <q-menu>
+                        <q-list dense style="min-width: 100px">
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="removeBlock({block: selectedBLock.block_index})"><span>Eliminar Bloque</span></q-item-section>
+                           </q-item>
+                           <q-item clickable v-close-popup>
+                              <q-item-section @click="copyBlock()"><span>Copiar Bloque</span></q-item-section>
+                           </q-item>
+                           <q-item>
+                              <q-item-section @click="addChild({block: selectedBLock.block_index})"><span>Añadir Bloque Hijo</span></q-item-section>
+                           </q-item>
+                        </q-list>
+                        </q-menu>
+                        </div>
+                        <div v-if="$q.screen.gt.xs" class="col text-center text-weight-bold">
+                           Bloque {{index}} Proyecto activo: {{saveSelected === '' ? 'Producción' : saveSelected}}
+                        </div>
+                     </q-bar>
                      <q-card flat square>
-                     <draggable :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
-                        <q-card v-ripple :is="''" v-model="chld.props" class="handle2" :class="chld.classes" :isAdmin="true" :style="chld.styles" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
-                     </draggable>
+                     <div :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start=" drag=false" @end="drag=false">
+                        <q-card :is="''" v-model="chld.props" :class="chld.props.classes" :style="chld.props.styles" @classDelete="(e) => {delete chld.classes; chld.styles=e; $forceUpdate()}" class="handle2" :blockQty="blockQty" :isAdmin="true" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
+                     </div>
                      </q-card>
                   </div>
                </q-card>
-         </draggable>
+         </div>
          <iframe id="iframe1" :src="ifrHtml" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
       </div>
       <div v-if="!app_options" class="row justify-center q-pa-md">
-         <q-btn fab color="blue" @click="addBlock()" text-color="white" label="+" />
+         <q-btn fab color="blue" @click="addBlockDiag = true" text-color="white" label="+" />
       </div>
       <q-dialog @hide="imgsbi=null; imgsbc=null; imgsi=null; iconmodel=null" v-model="photoGallery" transition-hide="scale" transition-show="scale" >
          <q-card class="full-width q-pa-none">
@@ -455,32 +521,42 @@
          </q-card>
       </q-dialog>
       <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
-
+    </q-dialog>
+    <q-dialog v-model="addBlockDiag">
+      <q-card class="q-cardGlass full-width">
+        <q-card-section>
+          <q-input v-model.number="childsToAdd" type="number" label="Cantidad de columnas (min: 1, max: 12)"></q-input>
+          <q-select v-model="childsToAddJustif" :options="['justify-start', 'justify-end', 'justify-center', 'justify-between', 'justify-around', 'justify-evenly']" label="Justificado de columnas"></q-select>
+        </q-card-section>
+        <q-card-section class="column items-center">
+           <q-btn rounded color="blue" @click="addBlock()" v-close-popup no-caps label="Crear" />
+        </q-card-section>
+      </q-card>
     </q-dialog>
     <q-dialog v-model="SaveReq" transition-hide="scale" transition-show="scale">
        <q-card class="my-card">
        <q-card-section>
-       <q-select filled v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
-       <q-input filled v-model="newVerAlias" label="Add new prototype Version Alias">
+       <q-select filled v-model="saveSelect" :options="Object.keys(versions)" label="Seleccionar prototipo (Opcional)" />
+       <q-input filled v-model="newVerAlias" label="Añadir nuevo alias de Prototipo">
           <template v-slot:append>
             <q-btn @click="saveV()" round dense flat icon="add" />
          </template>
        </q-input>
        </q-card-section>
        <q-card-section class="row justify-between">
-          <q-btn color="primary" @click="saveSelect !== '' ? saveB(true) : null" label="Save to Prototype" />
-       <q-btn color="secondary" @click="saveB(false);" label="Save to Production" />
+          <q-btn color="primary" no-caps @click="saveSelect !== '' ? saveB(true) : null" label="Guardar al Prototipo Seleccionado" />
+       <q-btn color="secondary" @click="saveB(false);" no-caps label="Guardar a Producción" />
        </q-card-section>
        </q-card>
     </q-dialog>
     <q-dialog v-model="loadReq" transition-hide="scale" transition-show="scale">
        <q-card class="my-card">
        <q-card-section>
-       <q-select filled v-model="saveSelect" :options="Object.keys(versions)" label="Select prototype version" />
+       <q-select filled v-model="saveSelect" :options="Object.keys(versions)" label="Selecciona un prototipo (Opcional)" />
        </q-card-section>
        <q-card-section class="row justify-between">
-          <q-btn color="primary" @click="loadB(true);" label="Load Prototype" />
-       <q-btn color="secondary" @click="loadB(false);" label="Load Production" />
+          <q-btn color="primary" @click="loadB(true);" no-caps label="Cargar Prototipo selecionado" />
+       <q-btn color="secondary" @click="loadB(false);" no-caps label="Cargar Producción" />
        </q-card-section>
        </q-card>
     </q-dialog>
@@ -562,6 +638,9 @@ export default {
   computed: {
     ...mapGetters('editor', ['editor']),
     ...mapGetters('config', ['version']),
+    blockQty () {
+      return this.blocks.length
+    },
     meta () {
       return {
         id: '123',
@@ -610,6 +689,9 @@ export default {
   },
   data () {
     return {
+      childsToAddJustif: null,
+      addBlockDiag: false,
+      childsToAdd: null,
       scssSelect: '',
       newScss: '',
       containerSel: null,
@@ -647,7 +729,7 @@ export default {
       imgsbc: null,
       imgsi: null,
       verSel: null,
-      hover: false,
+      hover: {},
       SaveReq: false,
       loadReq: false,
       saveSelect: '',
@@ -854,8 +936,8 @@ export default {
       let preffix = ''
       if (e) { preffix = this.saveSelect }
       this.$q.dialog({
-        title: 'Confirm',
-        message: `Would you like to save to ${e ? preffix : 'Production'}?`,
+        title: 'Confirmar',
+        message: `¿Quiere guardar el proyecto ${e ? preffix : 'Producción'}?`,
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -872,8 +954,8 @@ export default {
       let preffix = ''
       if (i) { preffix = this.saveSelect }
       this.$q.dialog({
-        title: 'Confirm',
-        message: `Would you like to Load ${i ? preffix : 'Production'}?`,
+        title: 'Confirmar',
+        message: `¿Quiere cargar el proyecto ${i ? preffix : 'Producción'}? Los cambios no guardados se perderán`,
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -905,17 +987,26 @@ export default {
       // console.log(this, 'Child Mounted')
     },
     addBlock () {
-      Vue.set(this.blocks, this.blocks.length, {
-        class: 'full-width relative-position q-pb-xs',
-        id: Math.random().toString(36).substr(2, 9),
-        style: 'min-height: 0px;',
-        hover: false,
-        child: [{
+      let chld = []
+      let amntChildBlocks = this.childsToAdd
+      let colsize = parseInt(12 / amntChildBlocks)
+      for (let index = 0; index < amntChildBlocks; index++) {
+        chld.push({
           props: {
-            is: 'place-holder',
-            options: []
+            is: 'cimg',
+            classesObj: { widthGroup: `col-${colsize}`, 'min-height': '20vh' },
+            options: [],
+            styles: 'min-height: 20vh;',
+            classes: `col-${colsize}`
           }
-        }]
+        })
+      }
+      Vue.set(this.blocks, this.blocks.length, {
+        class: `full-width relative-position q-pb-xs row ${this.childsToAddJustif}`,
+        id: Math.random().toString(36).substr(2, 9),
+        style: 'min-height: 10px; overflow: hidden;',
+        hover: false,
+        child: chld
       })
     },
     addChild (e) {
@@ -923,8 +1014,11 @@ export default {
       Vue.set(this.blocks[e.block].child, indiceChild, {
         id: Math.random().toString(36).substr(2, 9),
         props: {
-          is: 'place-holder',
-          options: []
+          is: 'cimg',
+          classesObj: { widthGroup: `col-3`, 'min-height': '20vh' },
+          options: [],
+          styles: 'min-height: 20vh;',
+          classes: `col-3`
         },
         events: {
           'click-edit': (e) => { this.placeHoldClick(e) }
@@ -934,8 +1028,8 @@ export default {
     removeBlock (e) {
       var that = this
       this.$q.dialog({
-        title: 'Confirm',
-        message: 'Confirm to delete BLOCK',
+        title: 'Confirmar',
+        message: '¿Desea Eliminar el Bloque?',
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -959,8 +1053,11 @@ export default {
       this.blocks.splice(blk, 0, JSON.parse(JSON.stringify(this.blocks[blk])))
     },
     placeHoldClick (e) {
+      console.log(e, 'place')
       this.selectedBLock = e.block_info
-      Vue.set(this, 'selectedBLockProps', e.props_info)
+      if (e.props_info) {
+        Vue.set(this, 'selectedBLockProps', e.props_info)
+      }
       // console.log({ selectedBLockProps: this.selectedBLockProps, props: e.props_info })
       // console.log({ ...this.blocks })
       if (this.containerSel !== null) {
@@ -1006,14 +1103,14 @@ export default {
 
 <style lang="stylus" scoped>
    .handle2 :hover { border:1px dotted #CD1821 }             /* Solid Red */
-   .handle2 *:hover { border:2px solid #89A81E }                   /* Solid Green */
-   .handle2 * *:hover { border:2px solid #F34607 }                 /* Solid Orange */
-   .handle2 * * *:hover { border:2px solid #5984C3 }               /* Solid Blue */
-   .handle2 * * * *:hover { border:2px solid #CD1821 }             /* Solid Red */
-   .handle2 * * * * *:hover { border:2px dotted #89A81E }          /* Dotted Green */
-   .handle2 * * * * * *:hover { border:2px dotted #F34607 }        /* Dotted Orange */
-   .handle2 * * * * * * *:hover { border:2px dotted #5984C3 }      /* Dotted Blue */
-   .handle2 * * * * * * * *:hover { border:2px dotted #CD1821 }    /* Dotted Red */
+  //  .handle2 *:hover { border:2px solid #89A81E }                   /* Solid Green */
+  //  .handle2 * *:hover { border:2px solid #F34607 }                 /* Solid Orange */
+   // .handle2 * * *:hover { border:2px solid #5984C3 }               /* Solid Blue */
+   // .handle2 * * * *:hover { border:2px solid #CD1821 }             /* Solid Red */
+   // .handle2 * * * * *:hover { border:2px dotted #89A81E }          /* Dotted Green */
+   // .handle2 * * * * * *:hover { border:2px dotted #F34607 }        /* Dotted Orange */
+   // .handle2 * * * * * * *:hover { border:2px dotted #5984C3 }      /* Dotted Blue */
+   // .handle2 * * * * * * * *:hover { border:2px dotted #CD1821 }    /* Dotted Red */
   .default-bg-image {
     background-image: url(https://c1.wallpaperflare.com/preview/510/897/163/close-up-cuisine-delicious-dinner.jpg);
     background-repeat: no-repeat;

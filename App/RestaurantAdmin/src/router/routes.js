@@ -108,6 +108,15 @@ const routes = [
           requiresAuth: true,
           nombre: 'Editor Web'
         }
+      },
+      {
+        path: 'index2',
+        name: 'Editor',
+        component: () => import('pages/editor/components/client/components/editor/Flex/FlexPLayground.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Editor Web'
+        }
       }
     ]
   },

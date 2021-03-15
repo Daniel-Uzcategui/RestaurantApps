@@ -7,7 +7,7 @@
         inline-label
         class="bg-transparent text-white shadow-2"
       >
-        <q-tab  v-for="(tb, index) in tabs2" :key="index" :name="tb.label" @click="scrollToElement(tb.link)" :label="tb.label" />
+        <q-tab no-caps  v-for="(tb, index) in tabs2" :key="index" :name="tb.label" @click="scrollToElement(tb.link)" :label="tb.label" />
       </q-tabs>
   </q-card>
 </template>
@@ -23,7 +23,7 @@ export default {
   props: {
     styles: {
       type: String,
-      default: 'max-width: 350px;'
+      default: ''
     },
     classes: {
       type: String,
@@ -70,7 +70,7 @@ export default {
   computed: {
     valStyle () {
       const { styles } = this
-      if (styles === '') return 'max-width: 350px;'
+      if (styles === '') return ''
       return styles
     },
     tabs2 () {
