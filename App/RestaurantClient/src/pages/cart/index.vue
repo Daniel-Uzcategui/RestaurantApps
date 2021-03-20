@@ -474,13 +474,14 @@ export default {
     }).catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.cart)
     console.log(this.$refs)
-    this.bindConfigs().then(e => this.getDays())
+    this.bindConfigs() // .then(e => this.getDays())
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
     this.bindRates()
     console.log(this.rates)
   },
   mounted () {
+    console.log('mounted')
     this.getDays()
   },
   methods: {
