@@ -874,13 +874,13 @@ export default {
 
       var options = {
         maxSizeMB: 1,
-        maxWidthOrHeight: 250,
+        maxWidthOrHeight: 375,
         useWebWorker: true,
         fileType: file.type
       }
       var options2 = {
         maxSizeMB: 1,
-        maxWidthOrHeight: 95,
+        maxWidthOrHeight: 190,
         useWebWorker: true,
         fileType: file.type
       }

@@ -270,7 +270,7 @@ export default {
           tip: 'Cambiar color de fuente',
           icon: 'palette',
           label: 'Color',
-          handler: () => this.colorText = true
+          handler: () => { this.colorText = true }
         },
         'tamaño': { cmd: 'color', param: 'red', icon: this.$q.iconSet.editor.size1 || this.$q.iconSet.editor.size, tip: this.$q.lang.editor.size1, htmlTip: `<font class="fontsize-42">${this.$q.lang.editor.size1}</font>` }
       },
