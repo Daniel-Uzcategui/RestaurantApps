@@ -98,14 +98,14 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     if (window.sessionStorage.getItem('reloaded') !== 'yes') {
       this.logoutUser()
     }
     window.sessionStorage.setItem('reloaded', 'yes')
     // Check that our app has access to the user id
     // from Firebase before the page renders
-    this.bindOrders().then(x => { this.countOrder = this.orders.length })
+    // this.bindOrders().then(x => { this.countOrder = x.length; console.log('binded', x) })
     // console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
     const online = window.navigator.onLine
     this.$q.loading.show({
@@ -486,13 +486,18 @@ export default {
         }
       }
     },
-    orders () {
+    orders (e) {
+      if (e.length === 0) {
+        return
+      }
       if (this.initAudio === 0) {
         if (typeof this.$refs['mediapl'] !== 'undefined') {
           this.$refs['mediapl'].play()
         }
+        // console.log(this.orders.length, this.countOrder, 'COUNT2', e.length)
         this.initAudio = 1
       } else {
+        // console.log(this.orders.length, this.countOrder, 'COUNT')
         if (this.initAudio === 2 && this.orders.length > this.countOrder) {
           this.countOrder = this.orders.length
           this.showNotif()

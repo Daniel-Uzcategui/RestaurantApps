@@ -1,7 +1,26 @@
 <template>
-<div @click="click"
+<div @contextmenu="click" style="margin-bottom: -4px; position: relative; overflow: hidden"
 >
-    <div class=""
+    <!-- <VueDragResize :is="resizeChild ? 'VueDragResize' : 'div'" :parentLimitation="false" class="" :isActive="true"
+      v-bind="{
+        w: viewportToPixels(childDimentions.width),
+        h: viewportToPixels(childDimentions.height),
+        y: viewportToPixels(childDimentions.top),
+        x: viewportToPixels(childDimentions.left),
+      }"
+      :style="!resizeChild ? ` height: ${childDimentions.height}; width:${childDimentions.width};
+        top:${childDimentions.top}; left:${childDimentions.left};
+      ` : ''"
+      @resizing="resizeChildf" @dragging="resizeChildf"
+    > -->
+    <VueDragResize :is="resizeChild ? 'VueDragResize' : 'div'" :parentLimitation="false" class="overflow-hidden" :isActive="true"
+      v-bind="{
+        w: viewportToPixels(childDimentions.width),
+        h: viewportToPixels(childDimentions.height),
+        y: viewportToPixels(childDimentions.top),
+        x: viewportToPixels(childDimentions.left),
+      }"
+      @resizing="resizeChildf" @dragging="resizeChildf"
     >
     <div class="absolute-full">
 
@@ -42,8 +61,8 @@
     <typer-wrapper :class="`${typeWriterPosition} text-center`" v-if="typeWriter && typeWriterActive" v-model="typeWriter" :titleColor="title_color" />
     <qTabs :tabs="blockTabsGen" flat :classes="`bg-transparent ${blockTabPosition}`" v-if="blockTabActive" :block_index="block_index" :child_index="child_index" />
     <findus v-if="findus" :block_index="block_index" :child_index="child_index" />
-     <!-- <q-btn v-show="btnActive" v-for="(btn, index) in qbtns" :key="index" :color="btn.color" :class="btn.position" :text-color="btn.textColor" :label="btn.label" /> -->
-    </div>
+     <q-btn v-show="btnActive" v-for="(btn, index) in qbtns" :key="index" :color="btn.color" :class="btn.position" :text-color="btn.textColor" :label="btn.label" />
+    </VueDragResize>
   <q-dialog transition-show="fade" transition-hide="slide-down" seamless :position="'left'" v-model="dialog" v-if="value">
       <div class="q-cardGlass" v-draggable>
         <!-- <div class="q-cardGlass" v-draggable="{ handle: $refs.handleId }"> -->
@@ -186,6 +205,7 @@ import TyperWrapper from './typer/typerWrapper.vue'
 import { Draggable } from 'draggable-vue-directive'
 import Findus from './findus'
 import qTabs from './qTabs'
+import VueDragResize from 'vue-drag-resize'
 import childFlex from './Flex/FlexChild'
 import effect from './ImageEffects/FelxibleMultiPanel'
 export default {
@@ -200,6 +220,7 @@ export default {
     TyperWrapper,
     Findus,
     qTabs,
+    VueDragResize,
     effect
   },
   data () {
@@ -335,7 +356,7 @@ export default {
     },
     titleText: {
       get () {
-        return typeof this.value.title !== 'undefined' ? this.value.title : ''
+        return typeof this.value.title !== 'undefined' ? this.value.title : '<p>Bloque</p>'
       },
       set (e) {
         this.$emit('input', { ...this.value, title: e })
@@ -611,7 +632,7 @@ export default {
     },
     title: {
       type: String,
-      default: ''
+      default: '<p>Bloque</p>'
     },
     bgopacity: {
       type: Number,

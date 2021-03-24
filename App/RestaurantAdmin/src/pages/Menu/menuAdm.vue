@@ -39,7 +39,7 @@
           <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
-          <q-btn flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app'" no-caps label="Vista en Cliente" target="_blank" />
+          <q-btn flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
           <q-btn flat icon="label" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
@@ -48,6 +48,7 @@
         </template>
         </q-input>
         <q-select options-selected-class="text-blue" filled rounded dense
+         v-if="sede !== null"
           v-model="category"
           clearable
           :options="categorias"
@@ -407,6 +408,9 @@
         </q-list>
           <q-dialog class="bg-transparent" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
+              <q-item class="column items-center">
+                <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
+              </q-item>
           <q-item class="column items-center" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
@@ -522,7 +526,7 @@
               </q-item>
               <q-item class="row justify-center"  :props="props">
                   <div class="col-6 q-pa-xs">
-                    <p class="text-bold">Stock</p>
+                    <p class="text-bold">Stock <span class="text-caption">(Cantidad disponible para venta) </span></p>
                     <q-input filled dense
                       rounded
                       outlined
@@ -573,16 +577,13 @@
               </q-item>
               <q-item class="row justify-center"  :props="props">
                 <div class="col-6 q-pa-xs">
-                <p class="text-bold">Tipo de Display</p>
-                  <q-input filled dense
-                      rounded
-                      outlined
-                      @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)"
-                      v-model="props.row.disptype"
-                      min="1" max="99999"
-                      type="number"
-                    />
+                <p class="text-bold">Tipo de Display <span class="text-caption"> (Tenemos dos maneras de mostrar tu producto al cliente, activalos y mira como se ven en el cliente) </span></p>
+                  <q-radio color="blue" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="0" label="A" />
+                  <q-radio color="red" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="1" label="B" />
                 </div>
+              </q-item>
+              <q-item class="column items-center">
+                <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
               </q-item>
             </q-list>
           </q-dialog>

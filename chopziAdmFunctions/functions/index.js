@@ -64,8 +64,8 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
         html: '',
       },
     })
-    let ret = await db.collection('users').doc(requestUID).set({ requestDate: new Date(), awaitingTrial: true }, {merge: true});
-    let ret2 = await db3.collection('users').doc(requestUID).set({ requestDate: new Date(), awaitingTrial: true }, {merge: true});
+    let ret = await db.collection('users').doc(requestUID).set({...chopziUser, requestDate: new Date(), awaitingTrial: true }, {merge: true});
+    let ret2 = await db3.collection('users').doc(requestUID).set({...chopziUser, requestDate: new Date(), awaitingTrial: true }, {merge: true});
     console.error('No such document!')
     try {
       if (ret && ret2) {

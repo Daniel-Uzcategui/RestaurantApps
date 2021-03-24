@@ -40,10 +40,9 @@ export default {
   @extends .q-diag-glassMorph
 
 .q-drawer
-  background rgba( 255, 255, 255 0.40 )
+  background rgba( 204, 204, 204 0.40 )
   backdrop-filter blur( 8.0px )
   -webkit-backdrop-filter blur( 8.0px )
-  color white
 .q-table__container
   @extends .q-drawer
   font-weight: 800

@@ -1,407 +1,7 @@
 <template>
    <div @contextmenu.prevent>
-      <q-drawer hidden overlay v-if="admin" show-if-above v-model="left" side="left" bordered>
-         <q-bar class="bg-primary text-white rounded-borders">contextmenu
-            <!-- <div class="cursor-pointer non-selectable">
-               Options
-               <q-menu>
-                  <q-list dense class="text-white" style="min-width: 100px">
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="page_options = !page_options"><span>Page Options <q-icon name="fas fa-check" v-if="page_options"/></span>
-                        </q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="app_options = !app_options"><span>{{app_options ? 'Page Builder' : 'App Builder'}}</span></q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="newProject()"><span>Nuevo Projecto</span></q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="photoGallery = true"><span>Open image bucket</span></q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="download()"><span>Export Project</span></q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="importDialog = true"><span>Import Project</span></q-item-section>
-                     </q-item>
-                     <q-item clickable v-close-popup>
-                        <q-item-section @click="appProperties = true"><span>App Properties</span></q-item-section>
-                     </q-item>
-                  </q-list>
-               </q-menu>
-            </div> -->
-            <q-space/>
-            <q-btn color="white" text-color="white" icon="fas fa-chevron-left" flat label="Exit" to="/home"/>
-         </q-bar>
-         <div class="text-h5 q-pa-md">
-            {{ app_options ? 'App Builder ' : 'Page Builder '}} <span class="text-caption"> ({{saveSelected === '' ? 'Production' : saveSelected}})</span>
-         </div>
-         <div v-if="app_options" class="text-h6 q-pa-md">
-            Disclaimer: This option is in early stages, Custom css will only be applied to production. You can save and load protype values, but you will only be able to preview the changes by saving to production.
-         </div>
-         <div class="row justify-between">
-            <q-btn color="primary" @click="SaveReq = true" label="Save Project" />
-            <q-btn color="primary" @click="loadReq = true" label="Load" />
-         </div>
-         <orderwheel v-if="app_options" v-model="page" />
-         <div v-if="!app_options">
-         <div class="q-pa-md text-h7">
-            <div>Selected page:</div>
-            <div>{{selectedPage === null ? '/' : selectedPage}}</div>
-         </div>
-         <div>
-            <q-tree
-               :nodes="pagesNode"
-               default-expand-all
-               :selected.sync="selectedPage"
-               node-key="route"
-               labelKey="path"
-            />
-         </div>
-         <div v-if="containerSel === null" class="q-pl-sm q-pr-sm">
-            <q-input filled v-model="newPageName" label="Add child page to selected">
-               <template v-slot:append>
-                  <q-btn @click="addPage()" round dense flat icon="add" />
-               </template>
-            </q-input>
-         </div>
-         </div>
-         <div v-if="containerSel === null">
-         <q-card v-if="page_options" class="my-card">
-            <q-card-section>
-               <div class="text-h5">
-                  Page Options
-               </div>
-            </q-card-section>
-            <q-card-section>
-               <q-expansion-item class="text-h6" label="Page Global styles">
-                  <q-card-section class="">
-                    <div class="row">
-                      <q-input filled  v-model="page.class" placeholder="default-bg-image" label="Page Class"  class="col"/>
-                     </div>
-                     <q-input filled
-                        v-model="page.style"
-                        type="textarea"
-                        label="Page Style"
-                        >
-                     <template v-slot:append>
-                        <q-icon name="edit">
-                           <q-popup-edit persistent buttons v-model="page.style" content-class="text-white">
-                              <prism-editor @keyup.enter.stop class="my-editor" v-model="page.style" :highlight="highlighter" line-numbers></prism-editor>
-                           </q-popup-edit>
-                        </q-icon>
-                     </template>
-                     </q-input>
-                  </q-card-section>
-               </q-expansion-item>
-            </q-card-section>
-            <q-card-section>
-               <q-expansion-item class="text-h6" label="Light-Theme Colors">
-                  <q-card-section class="row justify-between">
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightPrimary"
-                        label="primary"
-                        :style="typeof page.lightPrimary === 'undefined' ? `background: ${colors.getBrand('primary')}` : `background: ${page.lightPrimary};`"
-                        >
-                        <q-popup-edit v-model="page.lightPrimary">
-                           <q-color v-model="page.lightPrimary" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightSecondary"
-                        label="secondary"
-                        :style="typeof page.lightSecondary === 'undefined' ? `background: ${colors.getBrand('secondary')}` : `background: ${page.lightSecondary};`"
-                        >
-                        <q-popup-edit v-model="page.lightSecondary">
-                           <q-color v-model="page.lightSecondary" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightaccent"
-                        label="accent"
-                        :style="typeof page.lightaccent === 'undefined' ? `background: ${colors.getBrand('accent')}` : `background: ${page.lightaccent};`"
-                        >
-                        <q-popup-edit v-model="page.lightaccent">
-                           <q-color v-model="page.lightaccent" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightdark"
-                        label="dark"
-                        :style="typeof page.lightdark === 'undefined' ? `background: ${colors.getBrand('dark')}` : `background: ${page.lightdark};`"
-                        >
-                        <q-popup-edit v-model="page.lightdark">
-                           <q-color v-model="page.lightdark" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightpositive"
-                        label="positive"
-                        :style="typeof page.lightpositive === 'undefined' ? `background: ${colors.getBrand('positive')}` : `background: ${page.lightpositive};`"
-                        >
-                        <q-popup-edit v-model="page.lightpositive">
-                           <q-color v-model="page.lightpositive" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightnegative"
-                        label="negative"
-                        :style="typeof page.lightnegative === 'undefined' ? `background: ${colors.getBrand('negative')}` : `background: ${page.lightnegative};`"
-                        >
-                        <q-popup-edit v-model="page.lightnegative">
-                           <q-color v-model="page.lightnegative" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightinfo"
-                        label="info"
-                        :style="typeof page.lightinfo === 'undefined' ? `background: ${colors.getBrand('info')}` : `background: ${page.lightinfo};`"
-                        >
-                        <q-popup-edit v-model="page.lightinfo">
-                           <q-color v-model="page.lightinfo" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.lightwarning"
-                        label="warning"
-                        :style="typeof page.lightwarning === 'undefined' ? `background: ${colors.getBrand('warning')}` : `background: ${page.lightwarning};`"
-                        >
-                        <q-popup-edit v-model="page.lightwarning">
-                           <q-color v-model="page.lightwarning" />
-                        </q-popup-edit>
-                     </q-btn>
-                  </q-card-section>
-               </q-expansion-item>
-            </q-card-section>
-            <q-card-section>
-               <q-expansion-item class="text-h6" label="Dark-Theme Colors">
-                  <q-card-section class="row justify-between">
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkPrimary"
-                        label="primary"
-                        :style="typeof page.darkPrimary === 'undefined' ? `background: ${colors.getBrand('primary')}` : `background: ${page.darkPrimary};`"
-                        >
-                        <q-popup-edit v-model="page.darkPrimary">
-                           <q-color v-model="page.darkPrimary" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkSecondary"
-                        label="secondary"
-                        :style="typeof page.darkSecondary === 'undefined' ? `background: ${colors.getBrand('secondary')}` : `background: ${page.darkSecondary};`"
-                        >
-                        <q-popup-edit v-model="page.darkSecondary">
-                           <q-color v-model="page.darkSecondary" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkaccent"
-                        label="accent"
-                        :style="typeof page.darkaccent === 'undefined' ? `background: ${colors.getBrand('accent')}` : `background: ${page.darkaccent};`"
-                        >
-                        <q-popup-edit v-model="page.darkaccent">
-                           <q-color v-model="page.darkaccent" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkdark"
-                        label="dark"
-                        :style="typeof page.darkdark === 'undefined' ? `background: ${colors.getBrand('dark')}` : `background: ${page.darkdark};`"
-                        >
-                        <q-popup-edit v-model="page.darkdark">
-                           <q-color v-model="page.darkdark" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkpositive"
-                        label="positive"
-                        :style="typeof page.darkpositive === 'undefined' ? `background: ${colors.getBrand('positive')}` : `background: ${page.darkpositive};`"
-                        >
-                        <q-popup-edit v-model="page.darkpositive">
-                           <q-color v-model="page.darkpositive" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darknegative"
-                        label="negative"
-                        :style="typeof page.darknegative === 'undefined' ? `background: ${colors.getBrand('negative')}` : `background: ${page.darknegative};`"
-                        >
-                        <q-popup-edit v-model="page.darknegative">
-                           <q-color v-model="page.darknegative" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkinfo"
-                        label="info"
-                        :style="typeof page.darkinfo === 'undefined' ? `background: ${colors.getBrand('info')}` : `background: ${page.darkinfo};`"
-                        >
-                        <q-popup-edit v-model="page.darkinfo">
-                           <q-color v-model="page.darkinfo" />
-                        </q-popup-edit>
-                     </q-btn>
-                     <q-btn
-                        filled
-                        class="text-white col-6"
-                        v-model="page.darkwarning"
-                        label="warning"
-                        :style="typeof page.darkwarning === 'undefined' ? `background: ${colors.getBrand('warning')}` : `background: ${page.darkwarning};`"
-                        >
-                        <q-popup-edit v-model="page.darkwarning">
-                           <q-color v-model="page.darkwarning" />
-                        </q-popup-edit>
-                     </q-btn>
-                  </q-card-section>
-               </q-expansion-item>
-            </q-card-section>
-         </q-card>
-         <q-input filled type="textarea" v-if="app_options" v-model="insertCss" label="Global CSS" >
-            <template v-slot:append>
-                        <q-icon name="edit">
-                           <q-popup-edit persistent buttons v-model="insertCss" content-class="text-white">
-                              <prism-editor @keyup.enter.stop class="my-editor" v-model="insertCss" :highlight="highlighter" line-numbers></prism-editor>
-                           </q-popup-edit>
-                        </q-icon>
-                     </template>
-                     </q-input>
-         <q-card v-if="app_options" class="my-card">
-       <q-card-section>
-       <q-select filled v-model="scssSelect" :options="scopedCss" :option-label="(item) => item === null ? null : item.route" emit-value  :option-value="(item) => item === null ? null : item.route" label="Select Page route" />
-       <q-input filled v-model="newScss" label="Add new page route">
-          <template v-slot:append>
-            <q-btn @click="saveScss()" round dense flat icon="add" />
-         </template>
-       </q-input>
-       <q-input filled type="textarea" v-if="app_options && typeof scopedCss.find(e => e.route === scssSelect) !== 'undefined'" :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" label="Scoped CSS" >
-            <template v-slot:append>
-                        <q-icon name="edit">
-                           <q-popup-edit persistent buttons :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" content-class="text-white">
-                              <prism-editor @keyup.enter.stop class="my-editor" :value="scopedCss.find(e => e.route === scssSelect)['css']" @input="(e) => {scopedCss[scopedCss.findIndex(x => x.route == scssSelect)].css = e}" :highlight="highlighter" line-numbers></prism-editor>
-                           </q-popup-edit>
-                        </q-icon>
-                     </template>
-                     </q-input>
-       </q-card-section>
-       </q-card>
-         <q-card :dark="false"
-         v-if="!app_options &&
-            selectedBLock.block_index != null
-            && typeof blocks[selectedBLock.block_index] !== 'undefined'
-            "
-         class="text-black">
-            <q-card-section>
-               <q-input filled readonly v-model="selectedBLock.block_index" label="Selected Block" />
-               <q-input filled readonly v-model="selectedBLock.child_index" label="Selected Child" />
-            </q-card-section>
-            <q-card-section v-if="
-               selectedBLock.block_index != null
-               && typeof blocks[selectedBLock.block_index] !== 'undefined'
-               ">
-               Block Options
-               <q-input filled v-model="blocks[selectedBLock.block_index].class" label="Class" />
-               <q-input filled v-model="blocks[selectedBLock.block_index].style" label="Style" />
-               <div class="row justify-center">
-                  <q-btn class="col" color="primary" label="Add Child" @click="addChild({block: selectedBLock.block_index})"/>
-                  <q-btn class="col" color="primary" label="Delete Block" @click="removeBlock({block: selectedBLock.block_index})"/>
-                  <q-btn class="col" color="primary" label="Copy Block" @click="copyBlock()"/>
-               </div>
-            </q-card-section>
-            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'
-            ">
-               Child Options
-               <q-select filled :options="widgets" emit-value map-options v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props.is" label="Widget" />
-               <q-btn color="primary" label="Remove Child" @click="removeChild({block: selectedBLock.block_index, child: selectedBLock.child_index})"/>
-               <q-btn color="primary" label="Copy Child" @click="copyChild()"/>
-            </q-card-section>
-            <!-- <q-input filled
-                         :placeholder="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props['title']" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props['title']" label="titulo"
-                        /> -->
-            <q-card-section v-if="selectedBLock.block_index != null && typeof blocks[selectedBLock.block_index].child[selectedBLock.child_index] !== 'undefined'
-            ">
-               <div v-for="(prop, index) in selectedBLockProps" :key="index">
-                  <q-input filled v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index === 'img'" :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" >
-                     <template v-slot:append>
-                        <q-btn @click="photoGallery = true; imgsbi = selectedBLock.block_index; imgsbc = selectedBLock.child_index; imgsi = index" round dense flat icon="add" />
-                     </template>
-                  </q-input>
-                  <q-input filled
-                        v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop !== 'boolean' && index !== 'img'
-                        " :placeholder="prop" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index"
-                        >
-                     <template v-slot:append>
-                        <q-icon name="edit">
-                           <q-popup-edit persistent buttons v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" content-class="text-white">
-                              <prism-editor @keyup.enter.stop class="my-editor" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :highlight="highlighter" line-numbers></prism-editor>
-                           </q-popup-edit>
-                        </q-icon>
-                     </template>
-                     </q-input>
-                  <q-toggle v-if="index !== 'block_index' && index !== 'child_index' && !Array.isArray(prop) && typeof prop === 'boolean'" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index]" :label="index" />
-                  <div v-if="index !== 'block_index' && index !== 'child_index' && Array.isArray(prop) && blocks[selectedBLock.block_index].child[selectedBLock.child_index].props.is == 'qcarousel' ">
-                     <div class="text-center" v-for="(prp, idx) in prop" :key="idx">
-                        Slide # {{idx}} {{blocks[selectedBLock.block_index].child[selectedBLock.child_index].props}}
-                         <q-btn v-if="prop.length > 1" class="q-ml-md" color="primary" label="Delete Slide" @click="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].splice(idx, 1)" />
-                        <q-select filled v-if="selectedBLockProps.type" :options="widgets" v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx]['is']" label="Widget" />
-                        <div v-for="(prp1, idx1) in prp" :key="idx1">
-                           <q-input filled v-if="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx] && idx1 !== 'is'"
-                              v-model="blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index][idx][idx1]"
-                              :placeholder="prp1" :label="idx1" />
-                        </div>
-                     </div>
-                     <q-btn color="primary" label="Add Slide"
-                        @click="Vue.set(blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index], blocks[selectedBLock.block_index].child[selectedBLock.child_index].props[index].length ,{});
-                        prop.push({})" />
-                  </div>
-               </div>
-            </q-card-section>
-         </q-card>
-         </div>
-         <div v-else>
-           Cssmenu
-           <cssmenu
-           v-model="containerSel.cont"
-           />
-         </div>
-      </q-drawer>
-
-      <div :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
-         <div :is="admin ? 'div' : 'div'" v-if="!app_options" :list="blocks" @start="drag=false" @end="drag=false" handle=".handle">
-               <q-card square flat :id="'block' + index" v-for="(block, index) in blocks" :key="block.id + index">
-                  <div v-if="block.child.length">
-                    <!-- <div v-if="block.child.length" @mouseover=" admin ? (hover['hover'+index] = true, $forceUpdate()) : false" @mouseleave="admin ? (hover['hover'+index] = false, $forceUpdate()) : false"> -->
-                     <!-- <q-btn v-if="hover['hover'+index]" @click="placeHoldClick({ block_info: { block_index: index, child_index: 0 } })" color="white" icon="fa fa-align-justify" style="height: 50px; z-index:9999999"  text-color="black" class="handle"/> -->
-                     <!-- <q-bar no-parent-event v-show="hover['hover'+index] || selectedBLock.block_index === index" @click="placeHoldClick({ block_info: { block_index: index, child_index: 0 } })" class="handle"> -->
-                     <q-bar style="z-index: 999999" no-parent-event v-show="selectedBLock.block_index === index" @click="placeHoldClick({ block_info: { block_index: index, child_index: 0 } })" class="handle">
+      <q-header elevated reveal>
+         <q-bar class="bg-blue-grey-3" style="z-index: 999999; color: black" no-parent-event>
                         <q-btn dense flat round icon="lens" size="8.5px" color="red" />
                         <q-btn dense flat round icon="lens" size="8.5px" color="yellow" />
                         <q-btn dense flat round icon="lens" size="8.5px" color="green" />
@@ -409,28 +9,15 @@
                         Proyecto
                         <q-menu>
                         <q-list dense style="min-width: 100px">
-                           <!-- <q-item clickable v-close-popup>
-                              <q-item-section @click="page_options = !page_options"><span>Page Options <q-icon name="fas fa-check" v-if="page_options"/></span>
-                              </q-item-section>
-                           </q-item>
-                           <q-item clickable v-close-popup>
-                              <q-item-section @click="app_options = !app_options"><span>{{app_options ? 'Page Builder' : 'App Builder'}}</span></q-item-section>
-                           </q-item> -->
                            <q-item clickable v-close-popup>
                               <q-item-section @click="newProject()"><span>Nuevo Projecto</span></q-item-section>
                            </q-item>
-                           <!-- <q-item clickable v-close-popup>
-                              <q-item-section @click="photoGallery = true"><span>Open image bucket</span></q-item-section>
-                           </q-item> -->
                            <q-item clickable v-close-popup>
                               <q-item-section @click="download()"><span>Export Project</span></q-item-section>
                            </q-item>
                            <q-item clickable v-close-popup>
                               <q-item-section @click="importDialog = true"><span>Import Project</span></q-item-section>
                            </q-item>
-                           <!-- <q-item clickable v-close-popup>
-                              <q-item-section @click="appProperties = true"><span>App Properties</span></q-item-section>
-                           </q-item> -->
                            <q-item clickable v-close-popup>
                               <q-item-section @click="SaveReq = true"><span>Guardar Proyecto</span></q-item-section>
                            </q-item>
@@ -462,16 +49,18 @@
                         </q-menu>
                         </div>
                         <div v-if="$q.screen.gt.xs" class="col text-center text-weight-bold">
-                           Bloque {{index}} Proyecto activo: {{saveSelected === '' ? 'Producción' : saveSelected}}
+                           Bloque {{selectedBLock.block_index}} Proyecto activo: {{saveSelected === '' ? 'Producción' : saveSelected}}
                         </div>
                      </q-bar>
-                     <q-card flat square>
-                     <div :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start=" drag=false" @end="drag=false">
-                        <q-card :is="''" v-model="chld.props" :class="chld.props.classes" :style="chld.props.styles"
-                          @classDelete="(e) => { chld.styles= chld.styles + e ; $forceUpdate()}" class="handle2 overflow-hidden" :blockQty="blockQty" :isAdmin="true" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
-                     </div>
-                     </q-card>
-                  </div>
+      </q-header>
+
+      <div :class="{ 'default-bg-image': typeof page.class === 'undefined' ? true : false, [page.class]: [page.class] }" :style="!$q.dark.isActive ? 'background-color: #efefef;' + page.style : '' + page.style" v-if="blocks.length">
+         <div class="row" :is="admin ? 'div' : 'div'" v-if="!app_options" :list="blocks" @start="drag=false" @end="drag=false" handle=".handle">
+               <q-card :class="block.class" class="bg-primary relative-position" :style="block.style" square flat :id="'block' + index" v-for="(block, index) in blocks" :key="block.id + index">
+
+                        <q-card v-ripple :is="''" v-model="chld.props"
+                          @classDelete="(e) => { chld.styles= chld.styles + e ; $forceUpdate()}" class="handle2 full-width full-height absolute-center" :blockQty="blockQty" :isAdmin="true" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
+
                </q-card>
          </div>
          <iframe id="iframe1" :src="ifrHtml" style="height: -webkit-fill-available; width: 100%;" v-if="app_options" frameborder="0"></iframe>
@@ -988,27 +577,61 @@ export default {
       // console.log(this, 'Child Mounted')
     },
     addBlock () {
-      let chld = []
+      // let chld = []
       let amntChildBlocks = this.childsToAdd
       let colsize = parseInt(12 / amntChildBlocks)
+      // for (let index = 0; index < amntChildBlocks; index++) {
+      //   chld.push({
+      //     props: {
+      //       is: 'cimg',
+      //       classesObj: { widthGroup: `col-${colsize}`, 'min-height': '20vh' },
+      //       options: [],
+      //       styles: 'min-height: 20vh;',
+      //       classes: `col-${colsize}`
+      //     }
+      //   })
+      // }
       for (let index = 0; index < amntChildBlocks; index++) {
-        chld.push({
-          props: {
-            is: 'cimg',
-            classesObj: { widthGroup: `col-${colsize}`, 'min-height': '20vh' },
-            options: [],
-            styles: 'min-height: 20vh;',
-            classes: `col-${colsize}`
-          }
+        if (index === 0) {
+          Vue.set(this.blocks, this.blocks.length, {
+            class: `flex-break`,
+            id: Math.random().toString(36).substr(2, 9),
+            hover: false,
+            child: [{
+              props: {
+                is: 'div',
+                classesObj: {},
+                options: [],
+                styles: '',
+                classes: ``
+              }
+            }]
+          })
+        }
+        Vue.set(this.blocks, this.blocks.length, {
+          class: `col-${colsize}`,
+          id: Math.random().toString(36).substr(2, 9),
+          style: 'min-height: 300px; min-width: 300px',
+          hover: false,
+          child: [{
+            props: {
+              is: 'cimg',
+              classesObj: {},
+              options: [],
+              styles: 'min-height: 20vh;',
+              classes: `col-${colsize}`
+            }
+          }]
         })
       }
-      Vue.set(this.blocks, this.blocks.length, {
-        class: `full-width relative-position q-pb-xs row ${this.childsToAddJustif}`,
-        id: Math.random().toString(36).substr(2, 9),
-        style: 'min-height: 10px; overflow: hidden;',
-        hover: false,
-        child: chld
-      })
+      console.log(this.blocks)
+      // Vue.set(this.blocks, this.blocks.length, {
+      //   class: `full-width relative-position q-pb-xs row ${this.childsToAddJustif}`,
+      //   id: Math.random().toString(36).substr(2, 9),
+      //   style: 'min-height: 10px; overflow: hidden;',
+      //   hover: false,
+      //   child: chld
+      // })
     },
     addChild (e) {
       var indiceChild = this.blocks[e.block].child.length
@@ -1016,7 +639,7 @@ export default {
         id: Math.random().toString(36).substr(2, 9),
         props: {
           is: 'cimg',
-          classesObj: { widthGroup: `col-3`, 'min-height': '20vh' },
+          classesObj: {},
           options: [],
           styles: 'min-height: 20vh;',
           classes: `col-3`
@@ -1103,7 +726,15 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-   .handle2 :hover { border:1px dotted #CD1821 }             /* Solid Red */
+  .flex-break
+    flex: 1 0 100% !important
+  .row
+    .flex-break
+      height: 0 !important
+  .column
+    .flex-break
+      width: 0 !important
+  .handle2 :hover { border:1px dotted #CD1821 }             /* Solid Red */
   //  .handle2 *:hover { border:2px solid #89A81E }                   /* Solid Green */
   //  .handle2 * *:hover { border:2px solid #F34607 }                 /* Solid Orange */
    // .handle2 * * *:hover { border:2px solid #5984C3 }               /* Solid Blue */
