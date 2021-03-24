@@ -10,6 +10,12 @@ import 'firebase/storage'
  * @return {Interface} returns Firestore
  */
 export const firestore = () => {
+  let local = localStorage.getItem('amb')
+  if (local !== null) {
+    return firebase.firestore().collection('ambiente').doc(local)
+  }
+}
+export const firestoreMain = () => {
   return firebase.firestore()
 }
 /**

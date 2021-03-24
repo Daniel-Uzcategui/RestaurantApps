@@ -120,7 +120,7 @@ export default {
     this.bindEnv().then(e => {
       // console.log({ environment: e })
       let ver = localStorage.getItem('envVer')
-      if (ver === null) {
+      if (ver === null && e && e.version) {
         localStorage.setItem('envVer', e.version)
       } else if (e && ver !== e.version) {
         this.$q.dialog({
@@ -146,6 +146,7 @@ export default {
     })
     // console.log({ rt: this.$router })
     const { currentUser } = this
+    console.log(currentUser, 'currentUser')
     if (currentUser) {
       // Hide the loading screen if currentUser
       // is available before the page renders
@@ -164,15 +165,19 @@ export default {
       }
     }
     if (firebase && firebase.messaging && firebase.messaging.isSupported()) {
-      if (!(firebase && firebase.apps & firebase.apps.length)) {
-        fetch('/__/firebase/init.json').then(async response => {
-          try {
-            firebase.initializeApp(await response.json())
-          } catch (e) {
-            console.log(e)
-          }
-          this.setupNotif()
-        })
+      if (!(firebase && firebase.apps && firebase.apps.length) && window.location.origin !== 'http://localhost:8080') {
+        try {
+          fetch('/__/firebase/init.json').then(async response => {
+            try {
+              firebase.initializeApp(await response.json())
+            } catch (e) {
+              console.log(e)
+            }
+            this.setupNotif()
+          })
+        } catch (error) {
+          console.error(error)
+        }
       } else {
         this.setupNotif()
       }
@@ -474,7 +479,11 @@ export default {
       this.$q.loading.hide()
       this.setupNotif()
       console.log('User Data available', { e })
-      if (e.firstAccess) {
+      if (!(e && e.rol)) {
+        this.$router.push({ path: '/auth/login' })
+        this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
+      }
+      if (e && e.firstAccess) {
         this.$router.push({ path: '/guide/intro' })
         try {
           this.updateUserData({

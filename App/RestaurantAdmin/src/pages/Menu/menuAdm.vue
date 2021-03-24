@@ -39,7 +39,7 @@
           <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
-          <q-btn flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
+          <q-btn v-if="version" flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
           <q-btn flat icon="label" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >

@@ -341,7 +341,7 @@ export default {
     this.bindEnv()
     this.bindManifest().then(e => {
       console.log({ manifest: e }, 'Manifest')
-      if (typeof e !== 'undefined') {
+      if (!(typeof e === 'undefined' || e === null)) {
         this.app_name = typeof e.name !== 'undefined' ? e.name : ''
         this.app_short_name = typeof e.short_name !== 'undefined' ? e.name : ''
         this.app_description = typeof e.description !== 'undefined' ? e.description : ''

@@ -108,7 +108,7 @@ export const routerBeforeEach = async (router, store) => {
       console.log({ getUsr: getUsr })
       if (getUsr !== null) {
         if (typeof to.meta.nombre !== 'undefined') {
-          if (getUsr.rol.includes('Admin') || (from.name !== 'Login' && getUsr.rol.includes(to.name))) {
+          if ((getUsr.rol && getUsr.rol.includes('Admin')) || (from.name !== 'Login' && getUsr.rol && getUsr.rol.includes(to.name))) {
             console.log('Tiene acceso')
           } else {
             next(from.path)
