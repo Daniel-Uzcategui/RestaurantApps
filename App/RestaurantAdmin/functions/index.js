@@ -9,10 +9,8 @@ const hasha = require('hasha')
 const atob = require('atob')
 
 exports.CheckCart = functions.firestore
-  .document('orders/{ordersId}')
-  .onCreate(async (change) => {
-    // Get an object representing the documen
-    // e.g. {'name': 'Marie', 'age': 66}
+  .document('/ambiente/{ambiente}/orders/{ordersId}')
+  .onCreate(async (change, context) => {
     const newValue = change.data()
     const sede = newValue.sede
     const cart = newValue.cart
@@ -21,7 +19,7 @@ exports.CheckCart = functions.firestore
     var cfgRew
     var cfgData
     if (newValue.tipEnvio === '1') {
-      const configRef = db.collection('config').doc('paymentServ')
+      const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
       const cfg = await configRef.get()
       cfgData = cfg.data()
       if (!cfg.exists) {
@@ -36,7 +34,7 @@ exports.CheckCart = functions.firestore
       }
     }
     if (typeof cfgData === 'undefined') {
-      const configRef = db.collection('config').doc('paymentServ')
+      const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
       const cfg = await configRef.get()
       cfgData = cfg.data()
       if (!cfg.exists) {
@@ -49,13 +47,13 @@ exports.CheckCart = functions.firestore
         }
       }
     }
-    var userRef = db.collection('users').doc(newValue.customer_id)
+    var userRef = db.collection('ambiente').doc(context.params.ambiente).collection('users').doc(newValue.customer_id)
     const doc = await userRef.get()
     const userData = doc.data()
     var pointsCat = userData.pointsCat
     for (let prod in cart) {
       if (cart[prod].prodType === 0) {
-        var reference = db.collection('menu').doc(cart[prod].prodId)
+        var reference = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(cart[prod].prodId)
         var decrement = admin.firestore.FieldValue.increment(-cart[prod].quantity)
         reference.update({
           [`stock.${sede}`]: decrement
@@ -99,14 +97,14 @@ exports.CheckCart = functions.firestore
           if (typeof items.quantity === 'undefined') {
             items.quantity = 1
           }
-          items.price = await getComponentPrice(items.component, items.item, items.quantity)
+          items.price = await getComponentPrice(items.component, items.item, items.quantity, context.params.ambiente)
           sumPaid = sumPaid + ((items.price * items.quantity) * cart[prod].quantity)
         }
       } else {
         let multiplier = prod.quantity
         let products = prod.prods
         products.forEach((e) => {
-          let reference = db.collection('menu').doc(e.id)
+          let reference = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(e.id)
           let amount = multiplier * e.quantity
           let decrement = admin.firestore.FieldValue.increment(-amount)
           reference.update({
@@ -123,15 +121,15 @@ exports.CheckCart = functions.firestore
     })
   })
 exports.FirstUser = functions.firestore
-  .document('users/{userId}')
-  .onCreate(async (user) => {
-    const userRef = db.collection('config').doc('firstUser')
+  .document('/ambiente/{ambiente}/users/{userId}')
+  .onCreate(async (user, context) => {
+    const userRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser')
     const snapshot = await userRef.get()
     if (!snapshot.exists) {
       const data = {
         user: 'created'
       }
-      const res = await db.collection('config').doc('firstUser').set(data)
+      const res = await db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser').set(data)
       const res2 = user.ref.set({
         rol: ['Admin'],
         firstAccess: true
@@ -148,11 +146,11 @@ exports.FirstUser = functions.firestore
     }
   })
 exports.facturasSequence = functions.firestore
-  .document('orders/{ordersId}')
-  .onCreate(async (change) => {
+  .document('/ambiente/{ambiente}/orders/{ordersId}')
+  .onCreate(async (change, context) => {
     // Get an object representing the document
     // e.g. {'name': 'Marie', 'age': 66}
-    var countRef = db.collection('counters').doc('orders')
+    var countRef = db.collection('ambiente').doc(context.params.ambiente).collection('counters').doc('orders')
     var docRef = await countRef.get()
     if (!docRef.exists) {
       console.log('No such document!')
@@ -169,7 +167,7 @@ exports.facturasSequence = functions.firestore
       countRef.update({
         factura: admin.firestore.FieldValue.increment(1)
       }).then(async () => {
-        var counter = await db.collection('counters').doc('orders').get()
+        var counter = await db.collection('ambiente').doc(context.params.ambiente).collection('counters').doc('orders').get()
         change.ref.set({
           factura: counter.data().factura
         }, {
@@ -178,13 +176,13 @@ exports.facturasSequence = functions.firestore
       })
     }
   })
-async function getComponentPrice (compId, itemId) {
+async function getComponentPrice (compId, itemId, ambiente) {
   var price = 0
-  var compRef = db.collection('groupComp').doc(compId)
+  var compRef = db.collection('ambiente').doc(ambiente).collection('groupComp').doc(compId)
   var comp = await compRef.get()
   var compDoc = comp.data()
   if (!compDoc.free) {
-    var itemRef = db.collection('item').doc(itemId)
+    var itemRef = db.collection('ambiente').doc(ambiente).collection('item').doc(itemId)
     var item = await itemRef.get()
     var itemDoc = item.data()
     price = price + (itemDoc.price)
@@ -346,12 +344,12 @@ exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
   }
 })
 exports.RewardsPoints = functions.firestore
-  .document('orders/{ordersId}')
-  .onUpdate(async (change) => {
+  .document('/ambiente/{ambiente}/orders/{ordersId}')
+  .onUpdate(async (change, context) => {
     const newValue = change.after.data()
     const previousValue = change.before.data()
     let user = previousValue.customer_id
-    let userRef = db.collection('users').doc(user)
+    let userRef = db.collection('ambiente').doc(context.params.ambiente).collection('users').doc(user)
     const doc = await userRef.get()
     if (!doc.exists) {
       console.log('No such document!')
@@ -396,7 +394,7 @@ exports.RewardsPoints = functions.firestore
         const cart = previousValue.cart
         for (let prod of cart) {
           if (prod.prodType === 0 && typeof prod.rewards === 'undefined') {
-            let menuRef = db.collection('menu').doc(prod.prodId)
+            let menuRef = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(prod.prodId)
             const docMenu = await menuRef.get()
             let increment = admin.firestore.FieldValue.increment(prod.quantity)
             if (!docMenu.exists) {
@@ -431,7 +429,7 @@ exports.RewardsPoints = functions.firestore
         const sede = previousValue.sede
         for (let prod of cart) {
           if (prod.prodType === 0) {
-            var menuRef = db.collection('menu').doc(prod.prodId)
+            var menuRef = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(prod.prodId)
             const docMenu = await menuRef.get()
             let increment = admin.firestore.FieldValue.increment(prod.quantity)
             if (!docMenu.exists) {
@@ -444,7 +442,7 @@ exports.RewardsPoints = functions.firestore
           }
           if (prod.prodType === 1) {
             for (let product of prod.prods) {
-              let menuRef = db.collection('menu').doc(product.id)
+              let menuRef = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(product.id)
               const docMenu = await menuRef.get()
               let increment = admin.firestore.FieldValue.increment(product.quantity)
               if (!docMenu.exists) {
@@ -470,12 +468,13 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
     return res.end()
   }
   const reqBank = req.body.bank
+  const ambiente = req.body.ambiente
   if (typeof reqBank === 'undefined') {
     return res.send({
       error: 'No Bank parameter set'
     })
   }
-  const reqRef = db.collection('config').doc('paymentServ')
+  const reqRef = db.collection('ambiente').doc(ambiente).collection('config').doc('paymentServ')
   const doc = await reqRef.get()
   if (!doc.exists) {
     console.error('No such document!')
@@ -495,6 +494,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           let obj = req.body
           obj.securityKey = pre.CreditCorp
           delete obj.bank
+          delete obj.ambiente
           let postData = { ...obj, security_key: pre.CreditCorp }
           console.log(postData)
           let postData2 = querystring.stringify(postData)
@@ -520,7 +520,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             paymentStatus: parseInt(response.response) === 1 ? 'approved' : response.responsetext,
             DateIn: new Date()
           }
-          const res2 = await db.collection('transactions').add(payload)
+          const res2 = await db.collection('ambiente').doc(ambiente).collection('transactions').add(payload)
           res.send({ trx: Message.data, id: res2.id, trx2: response })
         } catch (err) {
           res.status(400)
@@ -538,6 +538,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           let terminalId = cfg.terminalId
           let request = req.body
           delete request.bank
+          delete request.ambiente
           let defaultcode = cfg.claveSecreta
           request.transaction.cvv = encryptar(defaultcode, request.transaction.cvv.toString()).toString()
           request.transaction.twofactor_auth = encryptar(defaultcode, request.transaction.twofactor_auth).toString()
@@ -579,7 +580,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             payment_method: respuesta.data.transaction_response.payment_method,
             DateIn: new Date()
           }
-          const res2 = await db.collection('transactions').add(payload)
+          const res2 = await db.collection('ambiente').doc(ambiente).collection('transactions').add(payload)
           res.send({ trx: respuesta.data.transaction_response, id: res2.id })
         } catch (err) {
           res.status(400)
@@ -606,6 +607,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           let terminalId = cfg.terminalId
           let request = req.body
           delete request.bank
+          delete request.ambiente
           let defaultcode = cfg.claveSecreta
           // defaultcode = 'A9279120481620090701AA30'
           request.transaction_c2p.destination_mobile_number = encryptar(defaultcode, request.transaction_c2p.destination_mobile_number.toString()).toString()
@@ -690,6 +692,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           let terminalId = cfg.terminalId
           let request = req.body
           delete request.bank
+          delete request.ambiente
           let defaultcode = cfg.claveSecreta
           // request.transaction.cvv = encryptar(defaultcode, request.transaction.cvv.toString()).toString()
           request.transaction.twofactor_auth = encryptar(defaultcode, request.transaction.twofactor_auth).toString()
@@ -734,7 +737,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
             DateIn: new Date()
           }
           console.log(payload)
-          const res2 = await db.collection('transactions').add(payload)
+          const res2 = await db.collection('ambiente').doc(ambiente).collection('transactions').add(payload)
           res.send({ trx: respuesta.data.transaction_response, id: res2.id })
         } catch (err) {
           res.status(400)
@@ -769,7 +772,8 @@ exports.GetAuth = functions.https.onRequest(async (req, res) => {
   if (req.method === 'OPTIONS') {
     return res.end()
   }
-  const reqRef = db.collection('config').doc('paymentServ')
+  const ambiente = req.body.ambiente
+  const reqRef = db.collection('ambiente').doc(ambiente).collection('config').doc('paymentServ')
   const doc = await reqRef.get()
   if (!doc.exists) {
     console.error('No such document!')

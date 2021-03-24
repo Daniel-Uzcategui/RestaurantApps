@@ -201,6 +201,7 @@ export default {
           data:
           {
             'bank': 'MercantilTDC',
+            'ambiente': localStorage.getItem('amb'),
             'client_identify': {
               'ipaddress': ipaddress,
               'browser_agent': browserAgent,

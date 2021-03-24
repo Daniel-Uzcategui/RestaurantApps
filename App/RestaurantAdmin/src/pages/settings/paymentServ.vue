@@ -297,6 +297,9 @@ export default {
       value = this.statusCash
       key = 'statusCash'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.statusPto
+      key = 'statusPto'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statuspagomovil
       key = 'statuspagomovil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))

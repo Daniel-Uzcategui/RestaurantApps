@@ -53,7 +53,8 @@ export default class CreditCorp {
       'ccnumber': ccNum,
       'ccexp': ccExp,
       'cvv': cvv,
-      'bank': 'CrediCorp'
+      'bank': 'CrediCorp',
+      'ambiente': localStorage.getItem('amb')
     }
 
     // Merge together all request options into one object

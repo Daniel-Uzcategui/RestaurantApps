@@ -182,6 +182,7 @@ export default {
           data:
           {
             'bank': 'Mercantil',
+            'ambiente': localStorage.getItem('amb'),
             'client_identify': {
               'ipaddress': ipaddress,
               'browser_agent': browserAgent,
@@ -238,6 +239,7 @@ export default {
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/GetAuth',
           data:
           {
+            'ambiente': localStorage.getItem('amb'),
             'client_identify': {
               'ipaddress': ipaddress,
               'browser_agent': browserAgent,
