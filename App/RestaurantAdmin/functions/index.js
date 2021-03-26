@@ -863,3 +863,18 @@ function encryptar (keybanking, value) {
   let base64data = buff.toString('base64')
   return base64data
 }
+
+exports.getinitjs = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+  res.set('Access-Control-Allow-Headers', '*')
+  console.log(req.body)
+  const url = req.body.url
+  const getClientSub = await db.collection('ambienteList')
+    .where('domains', 'array-contains', url)
+    .get()
+  getClientSub.forEach((doc) => {
+    let data = doc.data()
+    return res.send({ ambiente: data.ambiente })
+  })
+})

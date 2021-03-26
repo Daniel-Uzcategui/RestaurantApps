@@ -24,6 +24,19 @@
     <div id="q-app"></div>
   </body>
   <script>
-    localStorage.setItem('amb', 'chopzi')
-  </script>
+    if (window.location.origin === 'http://localhost:8080' || window.location.origin === 'http://localhost:8081') {
+      localStorage.setItem('amb', 'chopzi')
+    } else {
+      fetch(`${window.location.origin}/getinitjs`, {
+          method: "POST",
+          body: JSON.stringify({
+              url: window.location.origin
+          }),
+          headers: {
+              "Content-type": "application/json; charset=UTF-8"
+          }
+      }).then(response => response.json())
+      .then(json => localStorage.setItem('amb', json.ambiente)).catch(err => alert('Conexion inestable, o no esta conectado a internet'));
+    }
+   </script>
 </html>

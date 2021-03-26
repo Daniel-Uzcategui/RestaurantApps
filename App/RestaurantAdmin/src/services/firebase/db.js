@@ -12,11 +12,11 @@ import 'firebase/storage'
 export const firestore = () => {
   let local = localStorage.getItem('amb')
   if (local !== null) {
-    return firebase.firestore().collection('ambiente').doc(local)
+    return firebase.firestore().doc(`ambiente/${local}`)
   }
 }
 export const firestoreMain = () => {
-  return firebase.firestore()
+  return firebase.firestore().doc('ambiente/chopzi')
 }
 export { firebase }
 const { Timestamp, GeoPoint } = firebase.firestore
@@ -27,6 +27,10 @@ export { Timestamp, GeoPoint }
  */
 export const userRef = (collectionName, id) => {
   return firestore().collection(collectionName).doc(id)
+}
+export const userRefMain = (collectionName, id) => {
+  console.log({ play: firestoreMain().collection(collectionName).doc(id) })
+  return firestoreMain().collection(collectionName).doc(id)
 }
 export const docGet = (doc) => {
   console.log('getting ' + doc)

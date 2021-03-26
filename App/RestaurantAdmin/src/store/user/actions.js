@@ -1,28 +1,33 @@
 import { firestoreAction } from 'vuexfire'
-import { userRef, docGet, firestore, firestoreMain } from '../../services/firebase/db.js'
+import { userRef, docGet, firestore, userRefMain } from '../../services/firebase/db.js'
 /** Get current user from the firestore collection user's
  * via firebase uid
  *
  * @param  {Ojbect} payload.id - Firebase currentUser id
  */
 export const getCurrentUser = firestoreAction(async ({ bindFirestoreRef }, id) => {
-  const user = await userRef('users', id)
+  const user = userRef('users', id)
   const query = await user.get()
   const exists = query.exists
   if (!exists) {
-    const getChopziUser = await firestoreMain()
-      .collection('users')
-      .where('id', '==', id)
-      .get()
-    if (getChopziUser.empty) {
-      console.log('No matching documents.')
-      return
+    console.log('No existe ', id)
+    const getChopziUser = userRefMain('users', id)
+    const chpziusr = await getChopziUser.get()
+    if (!chpziusr.exists) {
+      console.log('No such document!')
+      return bindFirestoreRef('currentUser', userRef('users', id))
+    } else {
+      var data = chpziusr.data()
+      delete data.rol
+      data.typeAccess = 'Admin'
+      const set = await userRef('users', id).set(data, { merge: true })
+      if (set) {
+        return bindFirestoreRef('currentUser', userRef('users', id))
+      }
     }
-    getChopziUser.forEach(doc => {
-      userRef('users', id).set(doc.data(), { merge: true })
-    })
+  } else {
+    return bindFirestoreRef('currentUser', userRef('users', id))
   }
-  return bindFirestoreRef('currentUser', userRef('users', id))
 })
 
 export const decsUser = firestoreAction(({ bindFirestoreRef }) => {

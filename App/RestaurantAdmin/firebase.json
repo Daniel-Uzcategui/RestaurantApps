@@ -1,16 +1,41 @@
 {
   "hosting": {
+    "headers": [
+      {
+        "source" : "index.html",
+        "headers" : [ {
+          "key" : "Access-Control-Allow-Origin",
+          "value" : "*"
+        } ]
+      },
+      { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
+      { "source":"/workbox-e170c028.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
+      { "source":"/firebase-messaging-sw.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
+      { "source":"/manifest.json", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+    ],
     "target": "admin",
     "public": "dist/pwa",
     "rewrites": [
       {
-        "source": "/getmanifest",
+        "source": "/getmanifest.json",
         "function": "GetManifest"
       },
       {
-        "source": "/getmanifestadm",
+        "source": "/transact",
+        "function": "MakePay"
+      },
+      {
+        "source": "/getinitjs",
+        "function": "getinitjs"
+      },
+      {
+        "source": "/getauth",
+        "function": "GetAuth"
+      },
+      {
+        "source": "/getmanifestadm.json",
         "function": "GetManifestAdmin"
-      } 
+      }
     ]
   }
 }

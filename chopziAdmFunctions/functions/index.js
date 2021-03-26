@@ -160,3 +160,88 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
     })
   }
 })
+
+
+exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+  res.set('Access-Control-Allow-Headers', '*')
+  console.log(req.hostname)
+  res.send({ body: req.body, hostname: req.baseUrl, host: req.url, original: req.originalUrl})
+  return
+  const reqRef = db.collection('environment').doc('manifest')
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    res.send({
+      'name': 'Chopzi-admin',
+      'short_name': 'chopzi-admin',
+      'description': 'Chopzi ECRA Admin',
+      'display': 'standalone',
+      'start_url': '.',
+      'icons': [
+        {
+          'src': 'icons/icon-128x128.png',
+          'sizes': '128x128',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-192x192.png',
+          'sizes': '192x192',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-256x256.png',
+          'sizes': '256x256',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-384x384.png',
+          'sizes': '384x384',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-512x512.png',
+          'sizes': '512x512',
+          'type': 'image/png'
+        }
+      ],
+      'orientation': 'portrait',
+      'background_color': '#ffffff',
+      'theme_color': '#027be3'
+    })
+  } else {
+    let pre = doc.data()
+    let icons = [
+      {
+        'src': 'icons/icon-128x128.png',
+        'sizes': '128x128',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-192x192.png',
+        'sizes': '192x192',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-256x256.png',
+        'sizes': '256x256',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-384x384.png',
+        'sizes': '384x384',
+        'type': 'image/png'
+      },
+      {
+        'src': 'icons/icon-512x512.png',
+        'sizes': '512x512',
+        'type': 'image/png'
+      }
+    ]
+    pre.icons = icons
+    pre.name = 'Chopzi-admin-' + pre.name
+    pre.short_name = 'Chopzi-admin-' + pre.short_name
+    return res.send({ ...pre })
+  }
+})

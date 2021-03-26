@@ -254,7 +254,7 @@ export default {
                 this.$router.push({ path: '/home' })
               } else {
                 this.$q.notify({
-                  message: `Acceso no permitido`,
+                  message: `Acceso no permitido, si es la primera vez que inicia sesión, vuelva a intentar`,
                   color: 'negative'
                 })
               }

@@ -16,7 +16,7 @@ export const firestore = () => {
   }
 }
 export const firestoreMain = () => {
-  return firebase.firestore()
+  return firebase.firestore().collection('ambiente').doc('chopzi')
 }
 /**
  * @param  {String} collectionName - Firestore collection name
