@@ -596,6 +596,26 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
               title: 'Error',
               message: 'Error inesperado, intente más tarde' })
           }
+          const payloadError = {
+            cardNumberFirst: request.transaction.card_number.substr(0, 4),
+            cardNumberLast: request.transaction.card_number.substr(request.transaction.card_number.length - 4),
+            orderId: 0,
+            paidAmount: request.transaction.amount,
+            paidAmountCurrency: '',
+            cardExpDate: typeof request.transaction.expiration_date === 'undefined' ? '' : request.transaction.expiration_date,
+            customerId: typeof request.transaction.customerId === 'undefined' ? '' : request.transaction.customerId,
+            rateId: 0,
+            txnBankId: 1,
+            trxType: 'Mercantil',
+            trxProcesingDate: err.data.transaction_response.processing_date,
+            paymentStatus: eer.data.transaction_response.trx_status,
+            message: err.response.data.error_list[0].description,
+            payment_method: 'MercantilTDD',
+            invoice_number: 0,
+            DateIn: new Date()
+          }
+          console.log(payload)
+          const res2 = await db.collection('transactions').add(payloadError)
         }
         break
       case reqBank === 'PagoMovil':
@@ -677,7 +697,7 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           } else {
             res.send({
               title: 'Error',
-              message: 'Error inesperado, intente más tarde'
+              message: 'Error inesperado, intente más tarde codigo error 9999'
             })
           }
         }
@@ -749,15 +769,35 @@ exports.MakePay = functions.https.onRequest(async (req, res) => {
           } else {
             res.send({
               title: 'Error',
-              message: 'Error inesperado, intente más tarde',
+              message: 'Error inesperado, intente más tarde codigo error : ' + err,
               error: err })
           }
+          const payloadError = {
+            cardNumberFirst: request.transaction.card_number.substr(0, 4),
+            cardNumberLast: request.transaction.card_number.substr(request.transaction.card_number.length - 4),
+            orderId: 0,
+            paidAmount: request.transaction.amount,
+            paidAmountCurrency: '',
+            cardExpDate: typeof request.transaction.expiration_date === 'undefined' ? '' : request.transaction.expiration_date,
+            customerId: typeof request.transaction.customerId === 'undefined' ? '' : request.transaction.customerId,
+            rateId: 0,
+            txnBankId: 1,
+            trxType: 'Mercantil',
+            trxProcesingDate: err.data.transaction_response.processing_date,
+            paymentStatus: eer.data.transaction_response.trx_status,
+            message: err.response.data.error_list[0].description,
+            payment_method: 'MercantilTDC',
+            invoice_number: 0,
+            DateIn: new Date()
+          }
+          console.log(payload)
+          const res2 = await db.collection('transactions').add(payloadError)
         }
         break
       default:
         res.send({
           title: 'Error',
-          message: 'Error inesperado, intente más tarde' })
+          message: 'Error inesperado, intente más tarde codigo error : 9999' })
     }
   }
 })
