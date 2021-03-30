@@ -3,7 +3,7 @@
     "default": "restaurant-testnet",
     "QA": "qa-restaurant-testnet",
     "ecr": "ecrhwei8",
-    "prodChopzi": "chopzi-production"
+    "prodchopzi": "chopzi-production"
   },
   "targets": {
     "restaurant-testnet": {
