@@ -44,7 +44,7 @@
       </div>
         <div >
             <div class="card-input"><label for="cardCvv" aria-label="Card CVV" >CVV</label>
-                <q-input filled rounded outlined type="tel" v-model="valueFields.cardCvv"  title="CVV" maxlength="4" data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="password" v-model="valueFields.cardCvv"  title="CVV" maxlength="4" data-card-field="" autocomplete="off"/>
             </div>
         </div>
     <div class="column items-center">
