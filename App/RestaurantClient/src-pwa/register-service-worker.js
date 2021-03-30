@@ -1,7 +1,7 @@
 import { register } from 'register-service-worker'
-import { Notify, Dialog } from 'quasar'
+import { Notify } from 'quasar'
 // eslint-disable-next-line no-unused-vars
-var clientVer = '0.8.49'
+var clientVer = '0.8.54'
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration
@@ -25,30 +25,28 @@ register('firebase-messaging-sw.js', {
     // console.log('Content has been cached for offline use.')
   },
 
-  updatefound (/* registration */) {
-    console.log('New content is available.')
-    Dialog.create({
-      title: 'Nueva actualización disponible',
-      message: 'Solo tiene que refrescar la página',
-      cancel: true,
-      persistent: true,
-      onOk () {
-        navigator.serviceWorker.getRegistrations().then(function (registrations) {
-          for (let registration of registrations) {
-            registration.unregister()
-          }
-          window.location.reload()
-        })
-      }
-    })
+  updated (registration) {
+    // console.log('New content is available.')
+    // Dialog.create({
+    //   title: 'Nueva actualización disponible',
+    //   message: 'Solo tiene que refrescar la página',
+    //   cancel: true,
+    //   persistent: true,
+    //   onOk () {
+    //     navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    //       for (let registration of registrations) {
+    //         registration.unregister()
+    //       }
+    //       window.location.reload()
+    //     })
+    //   }
+    // })
   },
-
-  updated (/* registration */) {
-    console.log('New content downloaded')
-    Notify.create({
-      message: 'Update Completed',
-      icon: 'announcement'
-    })
+  updatefound (registration) {
+    console.log('New content is available; please refresh.')
+    document.dispatchEvent(
+      new CustomEvent('swUpdated', { detail: registration })
+    )
   },
   offline () {
     console.log('No hay conexión a Internet. Ejecutando en modo fuera de línea, algunas fucntionalidades estan deshabilitadas.')
