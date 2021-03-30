@@ -1,0 +1,131 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "categorias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "groupComp",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "item",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "itemGroup",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "menu",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "menu",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "priority",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "promos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "filters",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "typeAccess",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "email",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

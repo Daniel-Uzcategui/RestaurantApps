@@ -11,7 +11,7 @@ function iOS () {
   (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
 }
 // eslint-disable-next-line no-unused-vars
-var clientVer = '0.8.51'
+var clientVer = '0.8.58'
 // eslint-disable-next-line no-undef
 if (firebase && firebase.messaging && firebase.messaging.isSupported() && !iOS()) {
   // eslint-disable-next-line no-undef

@@ -11,10 +11,16 @@ export const addUserToUsersCollection = async (state, userRef) => {
     { email, nombre, apellido, cedula, id, sexo, fecnac } = state,
     user = new User({ email, nombre, apellido, cedula, id, sexo, fecnac, status, admin, typeAccess, DateIn })
   let userSet1 = await userRef[0].set({ ...user }, { merge: true })
-  let userSet2 = await userRef[1].set({ ...user }, { merge: true })
   let userSetDelayForTrigger = await delay(3000)
-  if (userSet1 && userSetDelayForTrigger) {
-    if (userSet2) {
+  if (userRef.length === 2) {
+    var userSet2 = await userRef[1].set({ ...user, typeAccess: 'Client' }, { merge: true })
+    if (userSet1 && userSetDelayForTrigger) {
+      if (userSet2) {
+        return 1
+      }
+    }
+  } else {
+    if (userSet1 && userSetDelayForTrigger) {
       return 1
     }
   }

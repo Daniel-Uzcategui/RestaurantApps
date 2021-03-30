@@ -29,7 +29,6 @@ export const userRef = (collectionName, id) => {
   return firestore().collection(collectionName).doc(id)
 }
 export const userRefMain = (collectionName, id) => {
-  console.log({ play: firestoreMain().collection(collectionName).doc(id) })
   return firestoreMain().collection(collectionName).doc(id)
 }
 export const docGet = (doc) => {

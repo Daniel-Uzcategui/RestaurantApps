@@ -5,18 +5,59 @@
     "ecr": "ecrhwei8",
     "staging": "chopzip6kds",
     "chopzi": "chopzidjkb8",
-    "casacomadre": "chopziy3yk6"
+    "casacomadre": "chopziy3yk6",
+    "prodChopzi": "chopzi-production"
   },
   "targets": {
     "restaurant-testnet": {
       "hosting": {
+        "headers": [
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
+        ],
         "admin": [
           "admin-restaurant-testnet"
         ]
       }
     },
+    "chopzi-production": {
+      "hosting": {
+        "headers": [
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
+        ],
+        "admin": [
+          "chopzi-admin"
+        ]
+      }
+    },
     "qa-restaurant-testnet": {
       "hosting": {
+        "headers": [
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
+        ],
         "admin": [
           "qa-admin-testnet"
         ]
@@ -24,6 +65,17 @@
     },
     "ecrhwei8": {
       "hosting": {
+        "headers": [
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
+        ],
         "admin": [
           "ecrhwei8-admin"
         ]

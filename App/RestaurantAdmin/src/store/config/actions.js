@@ -25,6 +25,7 @@ export const saveManifest = firestoreAction(async (state, payload) => {
     .set(payload, { merge: true })
     .then(() => {
       console.log(`manifest updated!`)
+      return 1
     })
 })
 export const saveConfig = firestoreAction((state, payload) => {

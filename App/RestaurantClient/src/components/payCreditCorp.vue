@@ -154,7 +154,6 @@
  </div>
 </template>
 <script>
-// import AES from 'crypto-js/aes'
 import { VuePaycard } from 'vue-paycard'
 import { mapActions, mapGetters } from 'vuex'
 import CreditCorp from '../components/js/CreditCorp.js'

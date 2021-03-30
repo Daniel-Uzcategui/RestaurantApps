@@ -27,20 +27,20 @@
          <div class="text-h7">Status:</div>
          <div class="text-h7 text-green text-bold">En espera</div>
          <div class="text-h7">Fecha de solicitud:</div>
-         <div>{{currentUser && currentUser.requestDate ? currentUser.requestDate.toDate() : ''}}</div>
+         <div>{{currentUser && currentUser.requestDate ? new Date(currentUser.requestDate * 1000) : ''}}</div>
       </q-card-section>
       <q-card-section v-if="currentUser.trialDate">
          <div class="text-h6">Periodo de prueba: </div>
          <div class="text-h7 text-green text-bold">Fecha de inicio:</div>
-         <div>{{currentUser && currentUser.trialDate ? currentUser.trialDate.toDate() : ''}}</div>
+         <div>{{currentUser && currentUser.trialDate ? new Date(currentUser.trialDate.seconds * 1000) : ''}}</div>
          <div class="text-h7 text-red text-bold">Fecha de Fin:</div>
-         <div>{{addDays(currentUser.trialDate.toDate(), 30)}}</div>
+         <div>{{addDays(new Date(currentUser.trialDate.seconds * 1000), 30)}}</div>
       </q-card-section>
       <q-card-section v-if="currentUser.adminDomain">
-         <div>Url Administrativo: (entrar al administrativo primero y crear una cuenta, la primera cuenta será el administrador del sistema) </div>
-         <q-btn flat type="a" target="__blank" :href="'https://' + currentUser.adminDomain + '.web.app'" :label="'https:// ' + currentUser.adminDomain + '.web.app'" />
+         <div>Url Administrativo: (Iniciar con su mismo usuario, este es el administrador, si necesitas más de un usuario administrativo, creelos desde el mismo registro de esa pagina y asigne su rol) </div>
+         <q-btn flat type="a" target="__blank" :href="'https://' + currentUser.adminDomain + '.chopzi.com'" :label="'https:// ' + currentUser.adminDomain + '.chopzi.com'" />
         <div>Url Cliente: (Todos los cambios realizados en el administrativo, se verá reflejado en la página del cliente, este es el url que le enviarás a tus clientes.)</div>
-         <q-btn flat type="a" target="__blank" :href="'https://' + currentUser.clientDomain + '.web.app'" :label="'https:// ' + currentUser.clientDomain + '.web.app'" />
+         <q-btn flat type="a" target="__blank" :href="'https://' + currentUser.clientDomain + '.chopzi.com'" :label="'https:// ' + currentUser.clientDomain + '.chopzi.com'" />
          <div v-if="activeU === false">Solicitar un subdominio gratuito para su página de cliente ( Esto es para cambiar la direccion web que le das a tus clientes, adicionalmente le podrás dar la dirección solicitada, si ya tienes un dominio contáctanos )
          <q-input v-model="urlSolicit" label="url" :rules="[isValidCharacter]" suffix=".chopzi.com"/>
           <q-btn color="primary" no-caps label="Solicitar" @click="subscribeUrl()" />
@@ -56,7 +56,7 @@
          Estatus: <span class="text-green"> {{statusUrl[activeU.status]}} </span>
           </p>
           <p class="text-bold">
-         Fecha de solicitud: <span class="text-green"> {{activeU.DateIn.toDate()}} </span>
+         Fecha de solicitud: <span class="text-green"> {{new Date(activeU.DateIn.seconds * 1000)}} </span>
           </p>
          </div>
       </q-card-section>
@@ -64,9 +64,9 @@
           <div class="text-h6">Servicios activos:</div>
           <div class="text-h7 text-green text-bold">Chopzi plan {{currentUser.serviceType}}</div>
          <div class="text-h7">Fecha de inicio:</div>
-         <div>{{currentUser.trialDate.toDate()}}</div>
+         <div>{{new Date(currentUser.trialDate.seconds * 1000)}}</div>
          <div class="text-h7">Fecha de Fin:</div>
-         <div>{{addDays(currentUser.trialDate.toDate(), 30)}}</div>
+         <div>{{addDays(new Date(currentUser.trialDate.seconds * 1000), 30)}}</div>
       </q-card-section>
     </q-card>
   </div>
@@ -194,7 +194,7 @@ export default {
           }).onOk(async () => {
             this.$q.loading.show()
             // console.log('>>>> OK')
-            let confirm = await this.setUrlSub({ userId: this.currentUser.id, subdomain: this.urlSolicit + '.chopzi.com', status: 0 })
+            let confirm = await this.setUrlSub({ userId: this.currentUser.id, subdomain: this.urlSolicit + '.chopzi.com', status: 0, clientDomain: this.currentUser.clientDomain })
             if (confirm) {
               this.$q.notify({ message: 'Url suscrito' })
               this.activeUrl = await this.getActiveU()

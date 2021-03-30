@@ -1,6 +1,6 @@
 import { register } from 'register-service-worker'
 // eslint-disable-next-line no-unused-vars
-var clientVer = '0.8.51'
+var clientVer = '0.8.58'
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration

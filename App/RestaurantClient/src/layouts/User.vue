@@ -6,7 +6,7 @@
             <img src="favicon.ico">
           </q-avatar>
           <q-toolbar-title>{{ManiName}}</q-toolbar-title>
-          <q-btn @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
+          <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
             <q-badge color="red" floating>{{getCartQ}}</q-badge>
           </q-btn>
           <q-btn flat @click="isAnonymous ? (() => {})() : (() => { setEditUserDialog(true); setBlur() })()" icon="fas fa-user" />
@@ -136,6 +136,11 @@ import '@firebase/messaging'
 // import Axios from 'axios'
 export default {
   name: 'UserLayout',
+  meta () {
+    return {
+      ...this.meta
+    }
+  },
   components: {
     Nav,
     'user-settings': () => import('../pages/user/profile/UserSettings.vue'),
@@ -149,6 +154,11 @@ export default {
     'ClassicLight': () => import('./themes/ClassicLight')
   },
   computed: {
+    meta () {
+      return {
+        ...this.metamani
+      }
+    },
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg']),
     ...mapGetters('auth', ['isAnonymous']),
@@ -332,31 +342,31 @@ export default {
               this.leftDrawerOpen = false
             }
           },
-          {
-            title: 'Catálogo',
-            caption: '',
-            icon: 'menu_book',
-            // link: '#/menu/index',
-            click: () => {
-              this.setFilter('')
-              this.leftDrawerOpen = false
-              if (this.localizations.length === 1) {
-                this.setSede(this.localizations[0].id)
-                this.$router.push({ path: '/menu/menu' })
-              } else {
-                this.$router.push({ path: '/menu/index' })
-              }
-            }
-          },
-          {
-            title: 'Tus Ordenes',
-            caption: '',
-            icon: 'room_service',
-            link: '#/orders/index',
-            click: () => {
-              this.leftDrawerOpen = false
-            }
-          },
+          // {
+          //   title: 'Catálogo',
+          //   caption: '',
+          //   icon: 'menu_book',
+          //   // link: '#/menu/index',
+          //   click: () => {
+          //     this.setFilter('')
+          //     this.leftDrawerOpen = false
+          //     if (this.localizations.length === 1) {
+          //       this.setSede(this.localizations[0].id)
+          //       this.$router.push({ path: '/menu/menu' })
+          //     } else {
+          //       this.$router.push({ path: '/menu/index' })
+          //     }
+          //   }
+          // },
+          // {
+          //   title: 'Tus Ordenes',
+          //   caption: '',
+          //   icon: 'room_service',
+          //   link: '#/orders/index',
+          //   click: () => {
+          //     this.leftDrawerOpen = false
+          //   }
+          // },
           {
             title: 'Perfil',
             caption: '',
@@ -585,24 +595,44 @@ export default {
       this.chatServe(this.chat)
     }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindManif().then(e => {
-      if (e && e.icons && e.icons.favicon) {
-        const favicon = document.getElementById('favicon')
-        favicon.setAttribute('href', e.icons.favicon)
-      }
+      // if (e && e.icons && e.icons.favicon) {
+      //   const favicon = document.getElementById('favicon')
+      //   favicon.setAttribute('href', e.icons.favicon)
+      // }
       if (e && e.name) {
-        const title = document.getElementById('apptitle')
-        title.innerText = e.name
+        this.metamani = {
+          title: e.name,
+          meta: {
+            title: { name: 'title', content: e.name },
+            description: { name: 'description', content: e.description },
+            keywords: { name: 'keywords', content: e.keywords },
+            robots: { name: 'robots', content: 'index, follow' },
+            language: { name: 'language', content: 'Spanish' },
+            equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
+          },
+          link: {
+            favicon: { rel: 'shortcut icon', type: 'image/ico', href: e.icons.favicon },
+            '128x128': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon128x128 },
+            '192x192': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon192x192 },
+            '256x256': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon256x256 },
+            '512x512': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon512x512 }
+          }
+        }
       }
+      // if (e && e.name) {
+      //   const title = document.getElementById('apptitle')
+      //   title.innerText = e.name
+      // }
     }).catch(e => {
       console.error('error fetching data firebase', { e })
-      if (e.icons && e.icons.favicon) {
-        const favicon = document.getElementById('favicon')
-        favicon.setAttribute('href', e.icons.favicon)
-      }
-      if (e.name) {
-        const title = document.getElementById('apptitle')
-        title.innerText = e.name
-      }
+      // if (e.icons && e.icons.favicon) {
+      //   const favicon = document.getElementById('favicon')
+      //   favicon.setAttribute('href', e.icons.favicon)
+      // }
+      // if (e && e.name && typeof e.name === 'string') {
+      //   const title = document.getElementById('apptitle')
+      //   title.innerText = e.name
+      // }
     }
 
     )
@@ -709,6 +739,7 @@ export default {
   },
   data () {
     return {
+      metamani: {},
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       fullPath: '',
       Tawk_API: null,
@@ -979,7 +1010,7 @@ export default {
       this.insCss(typeof obj !== 'undefined' && obj !== null && typeof obj.css !== 'undefined' && obj.length ? obj.css : '')
     },
     currentUser () {
-      this.$q.loading.hide()
+      // this.$q.loading.hide()
       this.setupNotif()
     },
     Tawk_API () {

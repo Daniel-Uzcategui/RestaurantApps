@@ -228,19 +228,19 @@ export default {
       console.log('getTermsDialog')
       this.viewTermsDialog = true
     },
-    onSubmit () {
+    async onSubmit () {
       const { email, password, nombre, apellido, cedula, phone, sexo, fecnac } = this
+      this.$q.loading.show({
+        message: this.isRegistration
+          ? 'Registro de su cuenta...'
+          : 'Autenticando su cuenta...',
+        backgroundColor: 'grey',
+        spinner: QSpinnerGears,
+        customClass: 'loader'
+      })
       this.$refs.emailAuthenticationForm.validate()
         .then(async success => {
           if (success) {
-            this.$q.loading.show({
-              message: this.isRegistration
-                ? 'Registro de su cuenta...'
-                : 'Autenticando su cuenta...',
-              backgroundColor: 'grey',
-              spinner: QSpinnerGears,
-              customClass: 'loader'
-            })
             try {
               if (this.isRegistration) {
                 if (this.checkTerms) {
@@ -263,12 +263,11 @@ export default {
               }
             } catch (err) {
               console.error(err)
+              this.$q.loading.hide()
               this.$q.notify({
                 message: `An error as occured: ${err}`,
                 color: 'negative'
               })
-            } finally {
-              this.$q.loading.hide()
             }
           }
         })

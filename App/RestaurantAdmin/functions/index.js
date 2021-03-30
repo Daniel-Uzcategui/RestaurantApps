@@ -136,11 +136,8 @@ exports.FirstUser = functions.firestore
       }, { merge: true })
       return [res, res2]
     } else {
-      const data = snapshot.data()
-      if (data.chopzi) {
-        const res = await axios.post('https://us-central1-ecr7xo3y.cloudfunctions.net/addUser', { id: user.id }, { headers: {
-          'content-type': 'application/json'
-        } }).catch(e => console.error(e))
+      if (context.params.ambiente === 'chopzi') {
+        const res = await requestTrial(user.id)
         return res
       }
     }
@@ -189,14 +186,75 @@ async function getComponentPrice (compId, itemId, ambiente) {
   }
   return price
 }
+async function fetchSetup (url) {
+  try {
+    let options = { method: 'post',
+      url: url + '/getinitjs',
+      data:
+          {
+            url: url
+          }
+    }
+    const response = await axios(options)
+    return response.data
+  } catch (error) {
+    console.log(error)
+    return fetchSetup()
+  }
+}
 exports.GetManifest = functions.https.onRequest(async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  const reqRef = db.collection('environment').doc('manifest')
+  var url = req.headers.referer
+  // const url = 'https://chopzi.com'
+  console.log(url, 'URLS')
+  if (typeof req.headers.referer === 'undefined') {
+    return res.send({
+      'name': 'Chopzi',
+      'short_name': 'chopzi',
+      'description': 'Chopzi ECRA',
+      'display': 'standalone',
+      'start_url': '.',
+      'icons': [
+        {
+          'src': 'icons/icon-128x128.png',
+          'sizes': '128x128',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-192x192.png',
+          'sizes': '192x192',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-256x256.png',
+          'sizes': '256x256',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-384x384.png',
+          'sizes': '384x384',
+          'type': 'image/png'
+        },
+        {
+          'src': 'icons/icon-512x512.png',
+          'sizes': '512x512',
+          'type': 'image/png'
+        }
+      ],
+      'orientation': 'portrait',
+      'background_color': '#ffffff',
+      'theme_color': '#027be3'
+    })
+  } else {
+    url = url.substring(0, url.length - 1)
+  }
+  let ambiente = await fetchSetup(url)
+  const reqRef = db.doc(`ambiente/${ambiente.ambiente}/environment/manifest`)
   const doc = await reqRef.get()
   if (!doc.exists) {
     console.error('No such document!')
-    res.send({
+    return res.send({
       'name': 'Chopzi',
       'short_name': 'chopzi',
       'description': 'Chopzi ECRA',
@@ -264,85 +322,85 @@ exports.GetManifest = functions.https.onRequest(async (req, res) => {
     return res.send({ ...pre })
   }
 })
-exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  const reqRef = db.collection('environment').doc('manifest')
-  const doc = await reqRef.get()
-  if (!doc.exists) {
-    console.error('No such document!')
-    res.send({
-      'name': 'Chopzi-admin',
-      'short_name': 'chopzi-admin',
-      'description': 'Chopzi ECRA Admin',
-      'display': 'standalone',
-      'start_url': '.',
-      'icons': [
-        {
-          'src': 'icons/icon-128x128.png',
-          'sizes': '128x128',
-          'type': 'image/png'
-        },
-        {
-          'src': 'icons/icon-192x192.png',
-          'sizes': '192x192',
-          'type': 'image/png'
-        },
-        {
-          'src': 'icons/icon-256x256.png',
-          'sizes': '256x256',
-          'type': 'image/png'
-        },
-        {
-          'src': 'icons/icon-384x384.png',
-          'sizes': '384x384',
-          'type': 'image/png'
-        },
-        {
-          'src': 'icons/icon-512x512.png',
-          'sizes': '512x512',
-          'type': 'image/png'
-        }
-      ],
-      'orientation': 'portrait',
-      'background_color': '#ffffff',
-      'theme_color': '#027be3'
-    })
-  } else {
-    let pre = doc.data()
-    let icons = [
-      {
-        'src': 'icons/icon-128x128.png',
-        'sizes': '128x128',
-        'type': 'image/png'
-      },
-      {
-        'src': 'icons/icon-192x192.png',
-        'sizes': '192x192',
-        'type': 'image/png'
-      },
-      {
-        'src': 'icons/icon-256x256.png',
-        'sizes': '256x256',
-        'type': 'image/png'
-      },
-      {
-        'src': 'icons/icon-384x384.png',
-        'sizes': '384x384',
-        'type': 'image/png'
-      },
-      {
-        'src': 'icons/icon-512x512.png',
-        'sizes': '512x512',
-        'type': 'image/png'
-      }
-    ]
-    pre.icons = icons
-    pre.name = 'Chopzi-admin-' + pre.name
-    pre.short_name = 'Chopzi-admin-' + pre.short_name
-    return res.send({ ...pre })
-  }
-})
+// exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
+//   res.header('Access-Control-Allow-Origin', '*')
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+//   const reqRef = db.collection('environment').doc('manifest')
+//   const doc = await reqRef.get()
+//   if (!doc.exists) {
+//     console.error('No such document!')
+//     res.send({
+//       'name': 'Chopzi-admin',
+//       'short_name': 'chopzi-admin',
+//       'description': 'Chopzi ECRA Admin',
+//       'display': 'standalone',
+//       'start_url': '.',
+//       'icons': [
+//         {
+//           'src': 'icons/icon-128x128.png',
+//           'sizes': '128x128',
+//           'type': 'image/png'
+//         },
+//         {
+//           'src': 'icons/icon-192x192.png',
+//           'sizes': '192x192',
+//           'type': 'image/png'
+//         },
+//         {
+//           'src': 'icons/icon-256x256.png',
+//           'sizes': '256x256',
+//           'type': 'image/png'
+//         },
+//         {
+//           'src': 'icons/icon-384x384.png',
+//           'sizes': '384x384',
+//           'type': 'image/png'
+//         },
+//         {
+//           'src': 'icons/icon-512x512.png',
+//           'sizes': '512x512',
+//           'type': 'image/png'
+//         }
+//       ],
+//       'orientation': 'portrait',
+//       'background_color': '#ffffff',
+//       'theme_color': '#027be3'
+//     })
+//   } else {
+//     let pre = doc.data()
+//     let icons = [
+//       {
+//         'src': 'icons/icon-128x128.png',
+//         'sizes': '128x128',
+//         'type': 'image/png'
+//       },
+//       {
+//         'src': 'icons/icon-192x192.png',
+//         'sizes': '192x192',
+//         'type': 'image/png'
+//       },
+//       {
+//         'src': 'icons/icon-256x256.png',
+//         'sizes': '256x256',
+//         'type': 'image/png'
+//       },
+//       {
+//         'src': 'icons/icon-384x384.png',
+//         'sizes': '384x384',
+//         'type': 'image/png'
+//       },
+//       {
+//         'src': 'icons/icon-512x512.png',
+//         'sizes': '512x512',
+//         'type': 'image/png'
+//       }
+//     ]
+//     pre.icons = icons
+//     pre.name = 'Chopzi-admin-' + pre.name
+//     pre.short_name = 'Chopzi-admin-' + pre.short_name
+//     return res.send({ ...pre })
+//   }
+// })
 exports.RewardsPoints = functions.firestore
   .document('/ambiente/{ambiente}/orders/{ordersId}')
   .onUpdate(async (change, context) => {
@@ -368,7 +426,7 @@ exports.RewardsPoints = functions.firestore
             'title': 'ChopZi',
             'body': `${status.label}`,
             'click_action': 'http://localhost:8080/#/orders/index',
-            'icon': 'app-logo-128x128.png'
+            'icon': 'icons/favicon-128x128.png'
           } })
         }
       }
@@ -870,7 +928,7 @@ exports.getinitjs = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Headers', '*')
   console.log(req.body)
   const url = req.body.url
-  const getClientSub = await db.collection('ambienteList')
+  const getClientSub = await db.collection('ambiente')
     .where('domains', 'array-contains', url)
     .get()
   getClientSub.forEach((doc) => {
@@ -878,3 +936,110 @@ exports.getinitjs = functions.https.onRequest(async (req, res) => {
     return res.send({ ambiente: data.ambiente })
   })
 })
+async function requestTrial (requestUID) {
+  const reqRef = db.collection('ambiente')
+  const doc = await reqRef.where('available', '==', true).limit(1).get()
+  const chopziUserRef = await db.doc(`ambiente/chopzi/users/${requestUID}`).get()
+  const chopziUser = chopziUserRef.data()
+  if (doc.empty) {
+    admin.firestore().collection('mail').add({
+      to: chopziUser.email,
+      message: {
+        subject: 'Hola desde Chopzi!',
+        text: 'Por los momentos te hemos colocado en lista de espera',
+        html: ''
+      }
+    })
+    let ret = await db.doc(`ambiente/chopzi/users/${requestUID}`).set({ ...chopziUser, typeAccess: 'Client', requestDate: admin.firestore.Timestamp.now(), awaitingTrial: true }, { merge: true })
+    console.error('No such document!')
+    try {
+      if (ret) {
+        let e = { error: 9000, message: 'No hay servidores disponibles por el momento, el usuario ha sido colocado en lista de espera' }
+        throw e
+      } else {
+        let e = { error: 9000, message: 'No hay servidores disponibles por el momento, el usuario ha sido colocado en lista de espera' }
+        throw e
+      }
+    } catch (e) {
+      console.log('errorrrrrr', e)
+      admin.firestore().collection('mail').add({
+        to: 'danieluzca2@gmail.com',
+        message: {
+          subject: 'El usuario esta en lista de espera!',
+          text: requestUID,
+          html: ''
+        }
+      })
+      return 0
+    }
+  } else {
+    return doc.forEach(async (dox) => {
+      try {
+        if (typeof chopziUser.clientDomain !== 'undefined') {
+          let e = { error: 9001, message: 'El usuario ya tiene un servicio asociado', uu: chopziUser.clientDomain }
+          throw e
+        }
+        let env = await dox.data()
+        // const otherApp = admin.initializeApp(env, 'other2');
+        // const db2 = otherApp.firestore();
+        console.log('WTF', env.ambiente)
+        let ret3 = await db.doc(`ambiente/${env.ambiente}`).set({ available: false, trialDate: admin.firestore.Timestamp.now(), userAdmin: chopziUser }, { merge: true })
+        let ret2 = await db.doc(`ambiente/${env.ambiente}/users/${requestUID}`).set({ ...chopziUser, typeAccess: 'Admin', rol: ['Admin'] }, { merge: true })
+        /*eslint-disable */
+        let ret = await db.doc(`ambiente/chopzi/users/${requestUID}`).set({ ...chopziUser,trialDate: admin.firestore.Timestamp.now(), clientDomain: env.clientDomain, adminDomain: env.adminDomain }, {merge: true});
+        if (ret && ret2 && ret3) {
+          admin.firestore().collection('mail').add({
+            to: chopziUser.email,
+            message: {
+              subject: 'Hola desde Chopzi',
+              text: 'Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain,
+              html: '',
+            },
+          })
+          admin.firestore().collection('mail').add({
+            to: 'daniel.uzcategui@chopzi.com',
+            message: {
+              subject: 'Se Registró un usuario ',
+              text: requestUID + ' Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain + ' ' + JSON.stringify(chopziUser),
+              html: '',
+            },
+          })
+          admin.firestore().collection('mail').add({
+            to: 'chopzi.info@chopzi.com',
+            message: {
+              subject: 'Se Registró un usuario ',
+              text: requestUID + ' Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain + ' ' + JSON.stringify(chopziUser),
+              html: '',
+            },
+          })
+          return 1
+        } else {
+          let e = { error: 9002, message: 'Error al escribir documento'}
+          throw e
+          // res.status(400)
+          // return res.send(env)
+        }
+      } catch (e) {
+        console.log('errorrrrrr', e)
+        admin.firestore().collection('mail').add({
+          to: 'daniel.uzcategui@chopzi.com',
+          message: {
+            subject: 'Error con algun usuario ' + requestUID + ' ' + JSON.stringify(chopziUser),
+            text: JSON.stringify(e),
+            html: '',
+          },
+        })
+        admin.firestore().collection('mail').add({
+          to: 'chopzi.info@chopzi.com',
+          message: {
+            subject: 'Error con algun usuario ' + requestUID + ' ' + JSON.stringify(chopziUser),
+            text: JSON.stringify(e),
+            html: '',
+          },
+        })
+        return 0
+      }
+    })
+  }
+
+}

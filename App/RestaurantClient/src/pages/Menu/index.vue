@@ -11,6 +11,9 @@
         <q-card-section v-for="i in localizations" :key="i.index">
           <q-btn class="full-width" rounded color="primary" :label="i.name" @click="i.id === sede || sede === null ? (setSede(i.id), $router.push({ path: '/menu/menu' })) : (dialog = true, sedeIn = i)" />
         </q-card-section>
+        <q-card-section v-if="!localizations.length">
+          <p>Datos de sede no encontrados</p>
+        </q-card-section>
         </q-card>
       </div>
     </div>

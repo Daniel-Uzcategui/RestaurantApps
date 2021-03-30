@@ -105,7 +105,7 @@ module.exports = function (ctx) {
       ],
 
       // Quasar plugins
-      plugins: ['Loading', 'Notify', 'Dialog']
+      plugins: ['Loading', 'Notify', 'Dialog', 'Meta']
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie

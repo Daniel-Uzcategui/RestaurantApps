@@ -2,23 +2,58 @@
   "projects": {
     "default": "restaurant-testnet",
     "QA": "qa-restaurant-testnet",
-    "ecr": "ecrhwei8"
+    "ecr": "ecrhwei8",
+    "prodChopzi": "chopzi-production"
   },
   "targets": {
     "restaurant-testnet": {
       "hosting": {
         "headers": [
-          { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
         ],
         "client": [
           "client-restaurant-testnet"
         ]
       }
     },
+    "chopzi-production": {
+      "hosting": {
+        "headers": [
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
+        ],
+        "client": [
+          "chopzi-client"
+        ]
+      }
+    },
     "qa-restaurant-testnet": {
       "hosting": {
         "headers": [
-          { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
         ],
         "client": [
           "qa-client-restaurant-web-app"
@@ -28,7 +63,15 @@
     "ecrhwei8": {
       "hosting": {
         "headers": [
-          { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+          {
+            "source": "/service-worker.js",
+            "headers": [
+              {
+                "key": "Cache-Control",
+                "value": "no-cache"
+              }
+            ]
+          }
         ],
         "client": [
           "ecrhwei8-client"

@@ -213,7 +213,6 @@
 <script>
 /* eslint-disable vue/no-unused-components vue/valid-v-on */
 /* eslint-disable vue/require-component-is */
-import draggable from 'vuedraggable'
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 // eslint-disable-next-line no-unused-vars
@@ -274,8 +273,7 @@ export default {
     'qimg': () => import('./components/client/components/editor/qimg'),
     'cimg': () => import('./components/client/components/editor/cimg'),
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
-    PrismEditor,
-    draggable
+    PrismEditor
   },
   data () {
     return {

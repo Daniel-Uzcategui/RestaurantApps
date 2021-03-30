@@ -10,9 +10,24 @@ export const addUserToUsersCollection = async (state, userRef) => {
   const
     { email, nombre, apellido, cedula, id, phone, sexo, fecnac } = state,
     user = new User({ email, nombre, apellido, cedula, id, phone, sexo, fecnac, status, admin, typeAccess, DateIn })
-  return userRef.set(user)
+  let userSet1 = await userRef[0].set({ ...user }, { merge: true })
+  let userSetDelayForTrigger = await delay(3000)
+  if (userRef.length === 2) {
+    var userSet2 = await userRef[1].set({ ...user, typeAccess: 'Client' }, { merge: true })
+    if (userSet1 && userSetDelayForTrigger) {
+      if (userSet2) {
+        return 1
+      }
+    }
+  } else {
+    if (userSet1 && userSetDelayForTrigger) {
+      return 1
+    }
+  }
 }
-
+function delay (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 export const createNewUser = async function ({ dispatch, commit }, data) {
   const $fb = this.$fb
   let currentDate = new Date()
@@ -23,7 +38,11 @@ export const createNewUser = async function ({ dispatch, commit }, data) {
   const { email, password, nombre, apellido, cedula, phone, sexo, fecnac } = data
   const fbAuthResponse = await $fb.createUserWithEmail(email, password)
   const id = fbAuthResponse.user.uid
-  const userRef = $fb.userRef('users', id)
+  let userRef = []
+  userRef.push($fb.userRef('users', id))
+  if (localStorage.getItem('amb') !== 'chopzi') {
+    userRef.push($fb.userRefMain('users', id))
+  }
   return addUserToUsersCollection({ email, nombre, apellido, cedula, id, phone, sexo, fecnac, status, admin, typeAccess, DateIn }, userRef)
 }
 

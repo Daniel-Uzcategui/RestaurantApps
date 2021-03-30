@@ -12,11 +12,11 @@ import 'firebase/storage'
 export const firestore = () => {
   let local = localStorage.getItem('amb')
   if (local !== null) {
-    return firebase.firestore().collection('ambiente').doc(local)
+    return firebase.firestore().doc(`ambiente/${local}`)
   }
 }
 export const firestoreMain = () => {
-  return firebase.firestore().collection('ambiente').doc('chopzi')
+  return firebase.firestore().doc('ambiente/chopzi')
 }
 /**
  * @param  {String} collectionName - Firestore collection name
@@ -24,6 +24,9 @@ export const firestoreMain = () => {
  */
 export const userRef = (collectionName, id) => {
   return firestore().collection(collectionName).doc(id)
+}
+export const userRefMain = (collectionName, id) => {
+  return firestoreMain().collection(collectionName).doc(id)
 }
 export const docGet = (doc) => {
   console.log('getting ' + doc)

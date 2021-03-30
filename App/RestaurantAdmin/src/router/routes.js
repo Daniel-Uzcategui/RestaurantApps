@@ -112,7 +112,7 @@ const routes = [
       {
         path: 'index2',
         name: 'Editor',
-        component: () => import('pages/editor/index2.vue'),
+        component: () => import('components/editor/saveManifest.vue'),
         meta: {
           requiresAuth: true,
           nombre: 'Editor Web'

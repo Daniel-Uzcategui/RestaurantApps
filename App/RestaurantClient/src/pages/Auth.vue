@@ -231,7 +231,7 @@ export default {
       console.log('getTermsDialog')
       this.viewTermsDialog = true
     },
-    onSubmit () {
+    async onSubmit () {
       const { email, password, nombre, apellido, cedula, phone, sexo, fecnac } = this
       this.$refs.emailAuthenticationForm.validate()
         .then(async success => {
