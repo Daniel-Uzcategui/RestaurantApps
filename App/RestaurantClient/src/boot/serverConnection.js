@@ -10,4 +10,7 @@ export default ({ router, store, Vue }) => {
   firebaseService.routerBeforeEach(router, store)
   Vue.prototype.$fb = firebaseService
   store.$fb = firebaseService
+  if (process.env.environments.ENV_TYPE !== 'DEV') {
+    console.log = () => {}
+  }
 }

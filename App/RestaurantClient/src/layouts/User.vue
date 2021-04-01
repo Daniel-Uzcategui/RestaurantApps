@@ -1,11 +1,11 @@
 <template>
-   <q-layout class="main my-font2 backgroundImage" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }" :style="!$q.dark.isActive ? pagecfg.style :  pagecfg.style" view="hhh LpR fFf">
+   <q-layout class="main my-font2" :style="{ 'background-image': manifest && manifest.bgimage && manifest.bgimage.desktop ? `url(${manifest.bgimage.desktop})` : '' }" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }" view="hhh LpR fFf">
      <q-header class="bg-primary" v-if="$q.screen.gt.sm && mobileGreatView">
        <q-toolbar>
           <q-avatar>
             <img src="favicon.ico">
           </q-avatar>
-          <q-toolbar-title></q-toolbar-title>
+          <q-toolbar-title>{{ManiName}}</q-toolbar-title>
           <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
             <q-badge color="red" floating>{{getCartQ}}</q-badge>
           </q-btn>
@@ -105,7 +105,7 @@
          </q-list>
       </q-drawer>
       <q-page-container>
-            <component :is="themeUser">
+            <component id="bs" :is="themeUser">
          <transition
             name="transitions"
             enter-active-class="animated slideInUp"
@@ -136,6 +136,11 @@ import '@firebase/messaging'
 // import Axios from 'axios'
 export default {
   name: 'UserLayout',
+  meta () {
+    return {
+      ...this.meta
+    }
+  },
   components: {
     Nav,
     'user-settings': () => import('../pages/user/profile/UserSettings.vue'),
@@ -150,11 +155,16 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg']),
+    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('editor', ['blocks', 'page', 'routes']),
+    meta () {
+      return {
+        ...this.metamani
+      }
+    },
     pagecfg () {
       if (this.page) {
         return this.page
@@ -615,6 +625,32 @@ export default {
     this.bindCategorias().catch(e => console.error('error fetching data firebase', { e }))
     this.bindPromos().catch(e => console.error('error fetching data firebase', { e }))
     this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindManif().then(e => {
+      // if (e && e.icons && e.icons.favicon) {
+      //   const favicon = document.getElementById('favicon')
+      //   favicon.setAttribute('href', e.icons.favicon)
+      // }
+      if (e && e.name) {
+        this.metamani = {
+          title: e.name,
+          meta: {
+            title: { name: 'title', content: e.name },
+            description: { name: 'description', content: e.description },
+            keywords: { name: 'keywords', content: e.keywords },
+            robots: { name: 'robots', content: 'index, follow' },
+            language: { name: 'language', content: 'Spanish' },
+            equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
+          },
+          link: {
+            favicon: { rel: 'shortcut icon', type: 'image/ico', href: e.icons.favicon },
+            '128x128': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon128x128 },
+            '192x192': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon192x192 },
+            '256x256': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon256x256 },
+            '512x512': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon512x512 }
+          }
+        }
+      }
+    }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindItem().finally(() => {
       if ((this.blocks === null || typeof this.blocks === 'undefined' || (typeof this.blocks !== 'undefined' && this.blocks.length === 0)) && (window.location.hash === '#/home' || window.location.hash === '#/')) {
         if (this.localizations.length === 1) {
@@ -631,7 +667,8 @@ export default {
   },
   data () {
     return {
-      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
+      metamani: {},
+      isChopzi: window.location.hostname === 'chopzi.com',
       fullPath: '',
       Tawk_API: null,
       notifications: 0,

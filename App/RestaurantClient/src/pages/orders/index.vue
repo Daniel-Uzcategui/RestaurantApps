@@ -1,6 +1,6 @@
 <template>
    <q-page>
-      <q-card flat class="bg-dark text-white q-cardGlass" :class="$q.screen.lt.md ? 'q-mt-lg q-mb-lg' : ''">
+      <q-card flat class="bg-dark text-white q-cardGlass" :class="$q.screen.lt.md ? 'q-mb-lg' : ''">
          <q-card-section class="q-pa-xl text-h5 text-bold" :class="$q.screen.lt.md ? 'text-center' : ''">
             <div class="q-pt-xl">
                Status de

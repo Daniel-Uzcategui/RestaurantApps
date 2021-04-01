@@ -93,6 +93,9 @@
           <q-radio v-model="mobile2" :val="false" :size="$q.screen.name" color="white" label="Sin Iconos" />
           </div>
         </q-carousel-slide>
+        <q-carousel-slide name="savemani" class="column">
+          <changeBackground v-if="slide === 'savemani'" @saved="slide = 'themefin'"/>
+        </q-carousel-slide>
         <q-carousel-slide name="themefin" class="column no-wrap flex-center">
           <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem4 }}
@@ -107,8 +110,10 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import changeBackground from '../../components/editor/changeBackground'
 export default {
   components: {
+    changeBackground
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -187,7 +192,7 @@ export default {
       sedeAdded: false,
       slide: 'style',
       lorem: 'Hola 😊!! Vamos a cambiar los estilos de la app cliente, te voy a mostrar las opciones que tenemos 😋, primero seleccionemos el tema que más te guste',
-      lorem2: 'Ahora cambiemos como se muestra el menú',
+      lorem2: 'Si quieres cambiar los colores de los cuadros que envuelven al producto puedes hacerlo en la página de categorías, ahora cambiemos como se muestra el menú',
       lorem3: 'Escojamos el estilo de navegación',
       lorem4: 'Ya estamos ready 😎💪'
 
