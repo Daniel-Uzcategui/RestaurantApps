@@ -1,7 +1,7 @@
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { Notify } from 'quasar'
+import { Notify, Loading } from 'quasar'
 
 /**
  * Returns Firebase 's global namespace from which all Firebase services are accessed
@@ -30,12 +30,15 @@ export const auth = () => {
 export const ensureAuthIsInitialized = (store) => {
   if (store.state.auth.isReady) return true
   // Create the observer only once on init
+  Loading.show()
   return new Promise((resolve, reject) => {
     // Use a promise to make sure that the router will eventually show the route after the auth is initialized.
     const unsubscribe = firebase.auth().onAuthStateChanged(() => {
+      Loading.hide()
       resolve()
       unsubscribe()
     }, () => {
+      Loading.hide()
       reject(new Error('Looks like there is a problem with the firebase service. Please try again later'))
     })
   })
@@ -67,8 +70,8 @@ export const handleOnAuthStateChanged = async (store, currentUser) => {
     uid: (currentUser ? currentUser.uid : '')
   })
   // Get & bind the current user
-  if (store.state.auth.isAuthenticated) {
-    console.log({ currentUser })
+  if (store.state.auth.isAuthenticated && !currentUser.isAnonymous) {
+    console.log({ currentUser }, 'dispatch')
     await store.dispatch('user/getCurrentUser', currentUser.uid)
   }
 
@@ -119,19 +122,17 @@ export const routerBeforeEach = async (router, store) => {
   router.beforeEach(async (to, from, next) => {
     try {
       if (typeof to === 'undefined' || typeof next === 'undefined') { return }
-      let waitforme = await ensureAuthIsInitialized(store)
-      console.log({ waitforme })
-      if (waitforme && to.matched.some(record => record.meta.requiresAuth)) {
-        if (isAuthenticated(store)) {
+      // Loading.show()
+      if (to.matched.some(record => record && record.meta && record.meta.requiresAuth)) {
+        let waitforme = await ensureAuthIsInitialized(store)
+        console.log('started')
+        if (isAuthenticated(store) && waitforme) {
           console.log('trueee')
           if (typeof next !== 'undefined') { next() }
         } else {
           console.log('falseeee')
           if (typeof next !== 'undefined') { next('/auth/login') }
         }
-      } else if ((to.path === '/auth/register' && isAuthenticated(store)) ||
-        (to.path === '/auth/login' && isAuthenticated(store))) {
-        if (typeof next !== 'undefined') { next() }
       } else {
         if (typeof next !== 'undefined') { next() }
       }

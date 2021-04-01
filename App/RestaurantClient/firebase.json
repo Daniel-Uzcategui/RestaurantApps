@@ -1,13 +1,6 @@
 {
   "hosting": {
     "headers": [
-      {
-        "source" : "index.html",
-        "headers" : [ {
-          "key" : "Access-Control-Allow-Origin",
-          "value" : "*"
-        } ]
-      },
       { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
       { "source":"/workbox-e170c028.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
       { "source":"/firebase-messaging-sw.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
@@ -20,21 +13,22 @@
         "source": "/getmanifest.json",
         "function": "GetManifest"
       },
+      
       {
         "source": "/transact",
         "function": "MakePay"
-      },
-      {
-        "source": "/getauth",
-        "function": "GetAuth"
       },
       {
         "source": "/getinitjs",
         "function": "getinitjs"
       },
       {
-        "source": "/getmanifestadm.json",
-        "function": "GetManifestAdmin"
+        "source": "/getauth",
+        "function": "GetAuth"
+      },
+      {
+        "source": "**",
+        "function": "seoHandling"
       }
     ]
   }

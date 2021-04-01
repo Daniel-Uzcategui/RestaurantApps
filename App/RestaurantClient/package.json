@@ -15,16 +15,21 @@
     "dev-qa": "cross-env QENV=qa quasar dev",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
-    "build": "cross-env QENV=production quasar build",
-    "build-pwa": "cross-env QENV=dev-prod quasar build -m pwa",
+    "build": "cross-env QENV=development quasar build",
+    "build-dev": "cross-env QENV=development quasar build -m pwa",
+    "build-prod": "cross-env QENV=prod quasar build -m pwa",
     "build-qa": "cross-env QENV=qa quasar build",
-    "build-ecr": "cross-env QENV=ecr quasar build"
+    "build-ecr": "cross-env QENV=ecr quasar build",
+    "deploy-dev": "firebase use default && yarn build-dev && node addmanifest.js deploy -d && firebase deploy",
+    "deploy-prod": "firebase use prodchopzi && yarn build-prod && node addmanifest.js deploy -p && firebase deploy",
+    "deploy-dev2": "firebase use default && yarn build-dev && firebase deploy"
   },
   "dependencies": {
     "@firebase/storage": "^0.4.0",
     "@quasar/extras": "^1.9.17",
     "axios": "^0.19.2",
     "browser-image-compression": "^1.0.14",
+    "caniuse-lite": "^1.0.30001205",
     "core-js": "3.0.0",
     "draggable-vue-directive": "^2.1.0",
     "eslint-plugin-prettier": "^3.3.1",
@@ -49,10 +54,12 @@
     "eslint": "^5.10.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
+    "firebase-admin": "^9.6.0",
     "fs-extra": "^9.1.0",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
-    "workbox-webpack-plugin": "5.0.0"
+    "workbox-webpack-plugin": "5.0.0",
+    "yargs": "^16.2.0"
   },
   "engines": {
     "node": ">= 8.9.0",

@@ -13,13 +13,12 @@
       <q-carousel
         no-route-fullscreen-exit
         v-model="slide"
+        :navigation="!['payserv', 'addsede', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
         transition-prev="scale"
         transition-next="scale"
         :arrows="!['payserv', 'addsede', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
         :swipeable="!['payserv', 'addsede', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
-        fullscreen
         animated
-        :control-color="['payserv', 'addsede', 'addcat', 'addprod', 'theme'].includes(slide) ? 'grey' : 'white'"
         height="100%"
         class="q-fullscreen-glassMorph  shadow-1 rounded-borders"
       >
@@ -35,7 +34,7 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="payserv" class="column no-wrap flex-center">
-          <PayServ class="full-width" @done="slide = 'addsedelorem'" :quick="false" style="height: 100%;"/>
+          <PayServ class="full-width"  @done="slide = 'addsedelorem'" :quick="false" style="height: 100%;"/>
         </q-carousel-slide>
         <q-carousel-slide name="addsedelorem" class="column no-wrap flex-center">
           <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
@@ -50,10 +49,8 @@
             {{ lorem4 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="savemani" class="column no-wrap flex-center full-width">
-          <div class="q-mt-xl q-cardGlass q-pa-md full-width" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
-            <save-manifest v-if="slide === 'savemani'" @saved="slide = 'themefin'"/>
-          </div>
+        <q-carousel-slide name="savemani" class="column">
+          <save-manifest v-if="slide === 'savemani'" @saved="slide = 'themefin'"/>
         </q-carousel-slide>
         <q-carousel-slide name="themefin" class="column no-wrap flex-center">
           <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">

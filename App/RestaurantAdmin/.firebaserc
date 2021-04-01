@@ -6,7 +6,7 @@
     "staging": "chopzip6kds",
     "chopzi": "chopzidjkb8",
     "casacomadre": "chopziy3yk6",
-    "prodChopzi": "chopzi-production"
+    "prodchopzi": "chopzi-production"
   },
   "targets": {
     "restaurant-testnet": {

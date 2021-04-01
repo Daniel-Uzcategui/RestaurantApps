@@ -205,10 +205,10 @@ async function fetchSetup (url) {
 exports.GetManifest = functions.https.onRequest(async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  var url = req.headers.referer
+  var url = 'https://' + req.headers['x-forwarded-host']
   // const url = 'https://chopzi.com'
   console.log(url, 'URLS')
-  if (typeof req.headers.referer === 'undefined') {
+  if (typeof req.headers['x-forwarded-host'] === 'undefined') {
     return res.send({
       'name': 'Chopzi',
       'short_name': 'chopzi',
@@ -246,8 +246,6 @@ exports.GetManifest = functions.https.onRequest(async (req, res) => {
       'background_color': '#ffffff',
       'theme_color': '#027be3'
     })
-  } else {
-    url = url.substring(0, url.length - 1)
   }
   let ambiente = await fetchSetup(url)
   const reqRef = db.doc(`ambiente/${ambiente.ambiente}/environment/manifest`)
@@ -322,85 +320,7 @@ exports.GetManifest = functions.https.onRequest(async (req, res) => {
     return res.send({ ...pre })
   }
 })
-// exports.GetManifestAdmin = functions.https.onRequest(async (req, res) => {
-//   res.header('Access-Control-Allow-Origin', '*')
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-//   const reqRef = db.collection('environment').doc('manifest')
-//   const doc = await reqRef.get()
-//   if (!doc.exists) {
-//     console.error('No such document!')
-//     res.send({
-//       'name': 'Chopzi-admin',
-//       'short_name': 'chopzi-admin',
-//       'description': 'Chopzi ECRA Admin',
-//       'display': 'standalone',
-//       'start_url': '.',
-//       'icons': [
-//         {
-//           'src': 'icons/icon-128x128.png',
-//           'sizes': '128x128',
-//           'type': 'image/png'
-//         },
-//         {
-//           'src': 'icons/icon-192x192.png',
-//           'sizes': '192x192',
-//           'type': 'image/png'
-//         },
-//         {
-//           'src': 'icons/icon-256x256.png',
-//           'sizes': '256x256',
-//           'type': 'image/png'
-//         },
-//         {
-//           'src': 'icons/icon-384x384.png',
-//           'sizes': '384x384',
-//           'type': 'image/png'
-//         },
-//         {
-//           'src': 'icons/icon-512x512.png',
-//           'sizes': '512x512',
-//           'type': 'image/png'
-//         }
-//       ],
-//       'orientation': 'portrait',
-//       'background_color': '#ffffff',
-//       'theme_color': '#027be3'
-//     })
-//   } else {
-//     let pre = doc.data()
-//     let icons = [
-//       {
-//         'src': 'icons/icon-128x128.png',
-//         'sizes': '128x128',
-//         'type': 'image/png'
-//       },
-//       {
-//         'src': 'icons/icon-192x192.png',
-//         'sizes': '192x192',
-//         'type': 'image/png'
-//       },
-//       {
-//         'src': 'icons/icon-256x256.png',
-//         'sizes': '256x256',
-//         'type': 'image/png'
-//       },
-//       {
-//         'src': 'icons/icon-384x384.png',
-//         'sizes': '384x384',
-//         'type': 'image/png'
-//       },
-//       {
-//         'src': 'icons/icon-512x512.png',
-//         'sizes': '512x512',
-//         'type': 'image/png'
-//       }
-//     ]
-//     pre.icons = icons
-//     pre.name = 'Chopzi-admin-' + pre.name
-//     pre.short_name = 'Chopzi-admin-' + pre.short_name
-//     return res.send({ ...pre })
-//   }
-// })
+
 exports.RewardsPoints = functions.firestore
   .document('/ambiente/{ambiente}/orders/{ordersId}')
   .onUpdate(async (change, context) => {
@@ -926,8 +846,11 @@ exports.getinitjs = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')
   res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
   res.set('Access-Control-Allow-Headers', '*')
-  console.log(req.body)
-  const url = req.body.url
+  var url = 'https://' + req.headers['x-forwarded-host']
+  console.log(url)
+  if (typeof req.headers['x-forwarded-host'] === 'undefined' || url.includes('localhost')) {
+    return res.send('chopzi')
+  }
   const getClientSub = await db.collection('ambiente')
     .where('domains', 'array-contains', url)
     .get()
@@ -935,6 +858,171 @@ exports.getinitjs = functions.https.onRequest(async (req, res) => {
     let data = doc.data()
     return res.send({ ambiente: data.ambiente })
   })
+})
+exports.seoHandling = functions.https.onRequest(async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  var url = 'https://' + req.headers['x-forwarded-host']
+  // const url = 'https://chopzi.com'
+  console.log(url, 'URLS')
+  if (typeof req.headers['x-forwarded-host'] === 'undefined') {
+    return res.send(``)
+  }
+  let ambiente = await fetchSetup(url)
+  const reqRef = db.doc(`ambiente/${ambiente.ambiente}/environment/manifest`)
+  const sourceRef = db.doc(`environment/sources`)
+  const sources = await sourceRef.get()
+  const doc = await reqRef.get()
+  var scripts = ''
+  var stylesheets = ''
+  if (!sources.exists) {
+    console.log('No such document!')
+  } else {
+    const srcData = sources.data()
+    const src = srcData.src
+    for (let i of src) {
+      scripts = scripts + `<script src="${i}"></script>`
+    }
+    const style = srcData.stylesheet
+    for (let i of style) {
+      stylesheets = stylesheets + `<link href="${i}" rel="stylesheet">`
+    }
+  }
+  if (!doc.exists && sources.exists) {
+    console.error('No such document!')
+    return res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+        <meta name="robots" content="index, follow" data-qmeta="robots">
+        <meta name="language" content="Spanish" data-qmeta="language">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" data-qmeta="equiv">
+        <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#027be3">
+        ${stylesheets}
+        <meta name="msapplication-TileImage" content="icons/ms-icon-144x144.png">
+        <meta name="msapplication-TileColor" content="#000000">
+    </head>
+    <body>
+    <div id="q-app">
+    <style>
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  top: 50%;
+  position: fixed;
+  left: 50%;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="loader"></div>
+    </div>
+    <script>
+    localStorage.setItem('amb', '${ambiente.ambiente}')
+    </script>
+    ${scripts}
+    </body>
+  </html>
+    `)
+  } else {
+    let pre = doc.data()
+    let html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+        <title>${pre.name}</title>
+        <meta name="title" content="${pre.name}" data-qmeta="title">
+        <meta name="description" content="${pre.description}" data-qmeta="description">
+        <meta name="keywords" content="${pre.keywords}" data-qmeta="keywords">
+        <meta name="robots" content="index, follow" data-qmeta="robots">
+        <meta name="language" content="Spanish" data-qmeta="language">
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="${url}">
+        <meta property="og:title" content="${pre.name}">
+        <meta property="og:description" content="${pre.description}">
+        <meta property="og:image" content="${pre.icons.icon512x512}">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="${url}">
+        <meta property="twitter:title" content="Chopzi">
+        <meta property="twitter:description" content="${pre.description}">
+        <meta property="twitter:image" content="${pre.icons.icon512x512}">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" data-qmeta="equiv">
+        <link rel="shortcut icon" type="image/ico" href="${pre.icons.favicon}" data-qmeta="favicon">
+        <link rel="shortcut icon" type="image/png" href="${pre.icons.icon128x128}" data-qmeta="128x128">
+        <link rel="shortcut icon" type="image/png" href="${pre.icons.icon192x192}" data-qmeta="192x192">
+        <link rel="shortcut icon" type="image/png" href="${pre.icons.icon256x256}" data-qmeta="256x256">
+        <link rel="shortcut icon" type="image/png" href="${pre.icons.icon512x512}" data-qmeta="512x512">
+        <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#027be3">
+        ${stylesheets}
+        <meta name="msapplication-TileImage" content="icons/ms-icon-144x144.png">
+        <meta name="msapplication-TileColor" content="#000000">
+    </head>
+    <body>
+    <div id="q-app">
+    <style>
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<div class="loader"></div>
+    </div>
+    <script>
+    localStorage.setItem('amb', '${ambiente.ambiente}')
+    </script>
+    ${scripts}
+    </body>
+  </html>`
+    return res.send(html)
+  }
 })
 async function requestTrial (requestUID) {
   const reqRef = db.collection('ambiente')

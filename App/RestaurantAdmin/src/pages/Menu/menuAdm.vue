@@ -18,6 +18,7 @@
     <template v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
       {{menucfg.dispName ? menucfg.dispName : 'Productos'}}
+      <q-btn flat icon="edit" @click="promptNombre()" />
       </p>
       <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
       <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
@@ -40,7 +41,6 @@
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
           <q-btn v-if="version" flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
-          <q-btn flat icon="label" no-caps label="Cambio de Nombre" @click="promptNombre()" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>
@@ -1099,8 +1099,8 @@ export default {
       if (typeof this.temp1.menu === 'undefined') {
         this.temp1.menu = {}
       }
-      this.temp1.menu[rand] = { id: rand, isNew: true, price: 0, descripcion: '' }
-      this.menuTemp.unshift({ id: rand, price: 0, descripcion: '' })
+      this.temp1.menu[rand] = { id: rand, isNew: true, price: 0, descripcion: '', estatus: { [`${this.sede}`]: true }, stock: { [`${this.sede}`]: 1000 }, disptype: 0 }
+      this.menuTemp.unshift({ id: rand, price: 0, descripcion: '', estatus: { [`${this.sede}`]: true }, stock: { [`${this.sede}`]: 1000 }, disptype: 0 })
       this.$forceUpdate()
     },
     showPhotoUpload (type, prop) {

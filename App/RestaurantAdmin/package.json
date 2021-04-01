@@ -17,13 +17,17 @@
     "test": "echo \"No test specified\" && exit 0",
     "build": "cross-env QENV=production quasar build",
     "build-qa": "cross-env QENV=qa quasar build",
-    "build-pwa": "cross-env QENV=qa quasar build -m pwa",
-    "build-ecr": "cross-env QENV=ecr quasar build"
+    "build-dev": "cross-env QENV=development quasar build -m pwa",
+    "build-prod": "cross-env QENV=prod quasar build -m pwa",
+    "build-ecr": "cross-env QENV=ecr quasar build",
+    "deploy-dev": "firebase use default && yarn build-dev && firebase deploy",
+    "deploy-prod": "firebase use prodchopzi && yarn build-prod && firebase deploy"
   },
   "dependencies": {
     "@quasar/extras": "^1.6.0",
     "axios": "^0.19.2",
     "browser-image-compression": "^1.0.14",
+    "caniuse-lite": "^1.0.30001205",
     "core-js": "^3.8.1",
     "dom-to-image-more": "^2.8.0",
     "draggable-vue-directive": "^2.1.0",

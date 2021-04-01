@@ -24,11 +24,6 @@ export default {
   @extends .q-diag-glassMorph
   border-radius 0px !important
 
-.backgroundImage
-  // background-image: url('https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fdarkslate975187?alt=media&token=790d4254-67c2-428d-9c57-bec81258b354');
-  //
-  background-color $secondary
-
 .q-dialog__backdrop
   background-color transparent
 

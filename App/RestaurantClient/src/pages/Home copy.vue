@@ -118,7 +118,7 @@ export default {
   mounted () {
     this.visible = false
     console.log('home mounted')
-    this.isAnonymous ? this.newsletter = true : this.newsletter = false
+    // this.isAnonymous ? this.newsletter = true : this.newsletter = false
   },
   watch: {
     blocks (e) {

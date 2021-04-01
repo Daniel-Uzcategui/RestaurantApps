@@ -5,7 +5,7 @@
           <q-avatar>
             <img src="favicon.ico">
           </q-avatar>
-          <q-toolbar-title>{{ManiName}}</q-toolbar-title>
+          <q-toolbar-title></q-toolbar-title>
           <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
             <q-badge color="red" floating>{{getCartQ}}</q-badge>
           </q-btn>
@@ -136,11 +136,6 @@ import '@firebase/messaging'
 // import Axios from 'axios'
 export default {
   name: 'UserLayout',
-  meta () {
-    return {
-      ...this.meta
-    }
-  },
   components: {
     Nav,
     'user-settings': () => import('../pages/user/profile/UserSettings.vue'),
@@ -154,11 +149,6 @@ export default {
     'ClassicLight': () => import('./themes/ClassicLight')
   },
   computed: {
-    meta () {
-      return {
-        ...this.metamani
-      }
-    },
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg']),
     ...mapGetters('auth', ['isAnonymous']),
@@ -183,7 +173,7 @@ export default {
       if (this.themecfg && typeof this.themecfg.mobile !== 'undefined') {
         return this.themecfg.mobile
       } else {
-        return true
+        return false
       }
     },
     ManiName () {
@@ -594,76 +584,7 @@ export default {
     this.bindChat().then(() => {
       this.chatServe(this.chat)
     }).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindManif().then(e => {
-      // if (e && e.icons && e.icons.favicon) {
-      //   const favicon = document.getElementById('favicon')
-      //   favicon.setAttribute('href', e.icons.favicon)
-      // }
-      if (e && e.name) {
-        this.metamani = {
-          title: e.name,
-          meta: {
-            title: { name: 'title', content: e.name },
-            description: { name: 'description', content: e.description },
-            keywords: { name: 'keywords', content: e.keywords },
-            robots: { name: 'robots', content: 'index, follow' },
-            language: { name: 'language', content: 'Spanish' },
-            equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
-          },
-          link: {
-            favicon: { rel: 'shortcut icon', type: 'image/ico', href: e.icons.favicon },
-            '128x128': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon128x128 },
-            '192x192': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon192x192 },
-            '256x256': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon256x256 },
-            '512x512': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon512x512 }
-          }
-        }
-      }
-      // if (e && e.name) {
-      //   const title = document.getElementById('apptitle')
-      //   title.innerText = e.name
-      // }
-    }).catch(e => {
-      console.error('error fetching data firebase', { e })
-      // if (e.icons && e.icons.favicon) {
-      //   const favicon = document.getElementById('favicon')
-      //   favicon.setAttribute('href', e.icons.favicon)
-      // }
-      // if (e && e.name && typeof e.name === 'string') {
-      //   const title = document.getElementById('apptitle')
-      //   title.innerText = e.name
-      // }
-    }
-
-    )
     this.bindEnv()
-    // .then(e => {
-    //   // console.log({ environment: e })
-    //   let ver = localStorage.getItem('envVer')
-    //   if (ver === null) {
-    //     localStorage.setItem('envVer', e.version)
-    //   } else if (ver !== e.version) {
-    //     this.$q.dialog({
-    //       title: 'Nueva Version',
-    //       message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
-    //       cancel: true,
-    //       persistent: true
-    //     }).onOk(() => {
-    //       localStorage.setItem('envVer', e.version)
-    //       if ('serviceWorker' in navigator) {
-    //         navigator.serviceWorker.getRegistrations().then(function (registrations) {
-    //           for (let registration of registrations) {
-    //             registration.update()
-    //           }
-    //         })
-    //       }
-    //       this.getNewVer()
-    //     })
-    //   }
-    //   if (ver === e.version) {
-    //     // console.log('App is in the newer version')
-    //   }
-    // }).catch(e => console.error('error fetching data firebase', { e }))
     const { currentUser } = this
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
       if (Object.keys(this.$router.currentRoute.meta).length === 0) {
@@ -675,45 +596,16 @@ export default {
       // is available before the page renders
       this.$q.loading.hide()
     }
-    //   function iOS () {
-    //     return [
-    //       'iPad Simulator',
-    //       'iPhone Simulator',
-    //       'iPod Simulator',
-    //       'iPad',
-    //       'iPhone',
-    //       'iPod'
-    //     ].includes(navigator.platform) ||
-    // // iPad on iOS 13 detection
-    // (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
-    //   }
-    // eslint-disable-next-line no-undef
-    // let messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging : firebase.messaging
-    // let fb = typeof firebase.default === 'undefined' ? firebase : firebase.default
-    // if (messaging.isSupported() && !iOS()) {
-    //   if (!fb.apps.length) {
-    //     Axios.get('/__/firebase/init.json').then(async response => {
-    //       fb.initializeApp(await response.json())
-    //       this.setupNotif()
-    //     }).catch(e => console.error('error fetching cfg firebase', { e }))
-    //     // fetch('/__/firebase/init.json').then(async response => {
-    //     //   fb.initializeApp(await response.json())
-    //     //   this.setupNotif()
-    //     // }).catch(e => console.error('error fetching cfg firebase', { e }))
-    //   } else {
-    //     this.setupNotif()
-    //   }
-    // }
     if (firebase && firebase.messaging && firebase.messaging.isSupported()) {
       if (!(firebase && firebase.apps & firebase.apps.length)) {
-        fetch('/__/firebase/init.json').then(async response => {
-          try {
-            firebase.initializeApp(await response.json())
-          } catch (error) {
-            console.log(error)
-          }
+        const config = process.env.environments.FIREBASE_CONFIG
+        try {
+          firebase.initializeApp(config)
+        } catch (error) {
+          console.log(error)
+        } finally {
           this.setupNotif()
-        })
+        }
       } else {
         this.setupNotif()
       }
@@ -739,7 +631,6 @@ export default {
   },
   data () {
     return {
-      metamani: {},
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       fullPath: '',
       Tawk_API: null,

@@ -1,22 +1,27 @@
+import layout from 'layouts/User.vue'
+import Home from 'pages/home.vue'
+import auth from 'pages/Auth.vue'
+import Menu from 'pages/menu/menu.vue'
+import MenuIndex from 'pages/menu/index.vue'
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: '',
-        component: () => import('pages/home.vue')
+        component: Home
       }
     ]
   },
   {
     path: '/',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'home',
         name: 'Home',
-        component: () => import('pages/home.vue')
+        component: Home
       },
       {
         path: 'dashboard',
@@ -40,11 +45,11 @@ const routes = [
   },
   {
     path: '/pg',
-    component: () => import('layouts/User.vue')
+    component: layout
   },
   {
     path: '/auth',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'forgotPassword',
@@ -54,18 +59,18 @@ const routes = [
       {
         path: 'login',
         name: 'Login',
-        component: () => import('pages/Auth.vue')
+        component: auth
       },
       {
         path: 'register',
         name: 'Register',
-        component: () => import('pages/Auth.vue')
+        component: auth
       }
     ]
   },
   {
     path: '/user',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'rewards',
@@ -87,24 +92,24 @@ const routes = [
   },
   {
     path: '/menu',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'menu',
         name: 'Menu',
-        component: () => import('pages/menu/menu.vue')
+        component: Menu
       },
       {
         path: 'index',
         name: 'index',
-        component: () => import('pages/menu/index.vue'),
+        component: MenuIndex,
         props: route => ({ query: route.query.q, queryprod: route.query.t, qprodtype: route.query.j })
       }
     ]
   },
   {
     path: '/test',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'payout',
@@ -115,7 +120,7 @@ const routes = [
   },
   {
     path: '/cart',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'index',
@@ -129,7 +134,7 @@ const routes = [
   },
   {
     path: '/orders',
-    component: () => import('layouts/User.vue'),
+    component: layout,
     children: [
       {
         path: 'index',

@@ -1,13 +1,13 @@
 <template>
-  <div transition-hide="scale" transition-show="scale">
-       <q-card class="bg-transparent full-width" flat>
+  <div>
+       <q-card class="q-cardGlass" >
        <q-card-section>
        <q-input filled rounded placeholder="Nombre de su empresa" v-model="app_name" @input="(e) => app_short_name = e" label="Nombre de su empresa" />
        <q-input class="q-pt-md" type="textarea" filled rounded placeholder="Descripción" v-model="app_description" label="Descripción" />
        <q-input class="q-pt-md" type="textarea" filled rounded placeholder="keywords" v-model="keywords" label="Palabras Clave (Keywords)"
         />
         <p class="text-caption q-pa-xs">Palabras Clave separadas por coma, ellas identifican tu empresa por ejemplo: comida, retaurante, tacos. Esto ayuda a que las personas encuentren tu pagina por buscadores</p>
-         <p class="q-pt-md text-center">Logo de Marca</p>
+         <p class="q-pt-md text-center text-h5">Logo de Marca</p>
          <p class="text-caption text-center">(click en la imagen para subir foto)</p>
          <q-item class="column items-center" key="photo">
             <div class="text-center" @click="photoUpload = true">

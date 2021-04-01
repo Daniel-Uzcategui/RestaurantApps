@@ -8,7 +8,7 @@
       <q-card :class="$q.screen.gt.xs ? 'q-mr-lg q-ml-lg': ''" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
          <q-card-section class="">
             <div class="row header-title relative-position">
-               <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg && menucfg.dispName ? menu.dispName : '' : (filters.find( e => e.id === selectedFilter).name)}}</div>
+               <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg && menucfg.dispName ? menu.dispName : '' : (filterFindName(selectedFilter))}}</div>
                <q-btn flat class="fontsize-13 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click="nextFilter()" icon="fas fa-chevron-circle-right" />
                <!-- <div v-if="filters.length && (rewards ? false : promo ? false : true)" class="fontsize-10 self-center">(Siguiente Catálogo)</div> -->
                <q-btn flat class="fontsize-13 self-center absolute-bottom-right" @click="nextDisp()" icon="fas fa-grip-horizontal"/>
@@ -431,7 +431,7 @@ export default {
     filtercat () {
       if (this.selectedFilter === '') { return this.cats } else if (this.filters && this.selectedFilter && this.cats) {
         let thfilter = this.filters.find(e => e.id === this.selectedFilter)
-        let filtered = this.cats.filter(x => thfilter.cats.includes(x.id))
+        let filtered = typeof thfilter !== 'undefined' ? this.cats.filter(x => thfilter.cats.includes(x.id)) : []
         return filtered
       }
       return []
@@ -624,6 +624,10 @@ export default {
   methods: {
     ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
     ...mapActions('config', ['setMenuDispType']),
+    filterFindName (x) {
+      let found = this.filters.find(e => e.id === x)
+      return typeof found === 'undefined' ? 'Catálogo' : found.name
+    },
     afterbinding () {
       // menu
       this.menuLoading = false
