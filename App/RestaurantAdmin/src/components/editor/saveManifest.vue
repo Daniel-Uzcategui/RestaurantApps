@@ -165,6 +165,7 @@ export default {
       this.photoType = ''
     },
     uploadComplete (info) {
+      console.log('Upload complete', info)
       try {
         for (let i of info) {
           this.appicons[i.file] = i.link

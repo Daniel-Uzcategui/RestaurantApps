@@ -125,6 +125,7 @@ exports.FirstUser = functions.firestore
   .onCreate(async (user, context) => {
     const userRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser')
     const snapshot = await userRef.get()
+    const original = user.data()
     if (!snapshot.exists) {
       const data = {
         user: 'created'
@@ -136,7 +137,7 @@ exports.FirstUser = functions.firestore
       }, { merge: true })
       return [res, res2]
     } else {
-      if (context.params.ambiente === 'chopzi') {
+      if (context.params.ambiente === 'chopzi' && typeof original.otherDb === 'undefined') {
         const res = await requestTrial(user.id)
         return res
       }
@@ -959,6 +960,7 @@ exports.seoHandling = functions.https.onRequest(async (req, res) => {
         <meta name="title" content="${pre.name}" data-qmeta="title">
         <meta name="description" content="${pre.description}" data-qmeta="description">
         <meta name="keywords" content="${pre.keywords}" data-qmeta="keywords">
+        <link rel="manifest" href="getmanifest.json">
         <meta name="robots" content="index, follow" data-qmeta="robots">
         <meta name="language" content="Spanish" data-qmeta="language">
         <!-- Open Graph / Facebook -->

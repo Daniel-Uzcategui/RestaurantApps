@@ -17,6 +17,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import GoogleMap from '../GoogleMap.vue'
 export default {
   props: {
     global_class: {
@@ -38,7 +39,7 @@ export default {
     }
   },
   components: {
-    GoogleMap: require('./GoogleMap').default
+    GoogleMap: GoogleMap
   },
   computed: {
     ...mapGetters('localization', ['localizations']),

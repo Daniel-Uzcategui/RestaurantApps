@@ -15,7 +15,7 @@ export const getCurrentUser = firestoreAction(async ({ bindFirestoreRef }, id) =
     const chpziusr = await getChopziUser.get()
     if (!chpziusr.exists) {
       console.log('No such document!')
-      return bindFirestoreRef('currentUser', userRef('users', id))
+      throw new Error('El usuario no existe')
     } else {
       var data = chpziusr.data()
       delete data.rol

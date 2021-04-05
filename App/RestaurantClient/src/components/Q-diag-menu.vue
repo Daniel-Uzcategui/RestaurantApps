@@ -50,20 +50,16 @@
                   <div>
                      <div class="column items-center">
                         <div v-if="typeof displayVal.disptype === 'undefined' && $q.screen.gt.sm  ? true : displayVal.disptype == 0 && $q.screen.gt.sm" class="q-pt-lg">
-                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
+                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="primary" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
                            <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
-                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
+                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="primary" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
                               <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
                               <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
                                  <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
                               </q-badge>
                            </q-btn>
                         </div>
-                        <q-btn round color="dark" style="z-index: 999999" :size="$q.screen.gt.xs ? 'md': 'xs'" @click="copyToClip(loc + '/#/menu/index?j=' +displayVal.prodType + '&t=' + displayVal.id + (selectedFilter !== '' ? '&q=' + selectedFilter : ''))" text-color="white" icon="fas fa-share-alt" class="q-ma-md"  />
-                        <!-- <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0">
-                           <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA && !$q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                           <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA && !$q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
-                        </div> -->
+                        <q-btn round color="secondary" style="z-index: 999999" :size="$q.screen.gt.xs ? 'md': 'xs'" @click="copyToClip(loc + '/#/menu/index?j=' +displayVal.prodType + '&t=' + displayVal.id + (selectedFilter !== '' ? '&q=' + selectedFilter : ''))" text-color="white" icon="fas fa-share-alt" class="q-ma-md"  />
                      </div>
                   </div>
                </div>
@@ -88,8 +84,8 @@
                      </div>
                      <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
                        <div >
-                        <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                        <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+                        <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
                        </div>
                     </q-card-actions>
                   </div>
@@ -116,9 +112,9 @@
             </q-card-section>
             <q-card-section class="q-pa-none q-pt-xl column items-center" v-if="typeof displayVal.disptype === 'undefined' && !$q.screen.gt.sm ? true : displayVal.disptype == 0 && !$q.screen.gt.sm">
               <div>
-                <q-btn size="md" class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
+                <q-btn size="md" class="q-mr-lg" color="primary" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
                 <q-btn size="md"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
-                <q-btn size="md"  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
+                <q-btn size="md"  class="q-ml-lg" color="primary" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
                   <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
                   <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
                       <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
@@ -126,8 +122,8 @@
                 </q-btn>
               </div>
               <div >
-              <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-              <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+              <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+              <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
               </div>
             </q-card-section>
             <q-card-section v-if="typeof displayVal.disptype === 'undefined' ? false : displayVal.disptype == 1">
@@ -135,9 +131,9 @@
                   <div style="max-width: 300px; min-width: 40vmin; border-radius: 28px; background-color: #FFD63D" class="q-pa-xl">
                      <div class="text-h6 text-center"> Cantidad </div>
                      <div class="q-pt-lg flex flex-center">
-                        <q-btn class="q-mr-lg" color="dark" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
+                        <q-btn class="q-mr-lg" color="primary" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
                         <q-btn :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
-                        <q-btn  class="q-ml-lg" color="dark" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
+                        <q-btn  class="q-ml-lg" color="primary" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
                            <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
                            <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
                               <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
@@ -153,8 +149,8 @@
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
                         <div class="q-pt-lg" >
-                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                           <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
                   </div>
@@ -202,8 +198,8 @@
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
                         <div class="q-pt-lg" vertical >
-                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="dark" no-caps>Agregar al carrito</q-btn>
-                           <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="dark" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
                   </div>
@@ -220,7 +216,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { copyToClipboard } from 'quasar'
+import carouselmenu from './carouselMenu.vue'
+import itemcomp from './itemComp'
+import addresses from './addresses'
+import orderdate from './orderdate'
 export default {
+  name: 'q-dialog-menu',
   props: {
     dgbg: {
       type: Object,
@@ -259,10 +260,10 @@ export default {
     }
   },
   components: {
-    'carouselmenu': () => import('./carouselMenu.vue'),
-    'itemcomp': () => import('./itemComp'),
-    'addresses': () => import('./addresses.vue'),
-    'orderdate': () => import('./orderDate')
+    carouselmenu,
+    itemcomp,
+    addresses,
+    orderdate
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),

@@ -3,6 +3,14 @@ import Home from 'pages/home.vue'
 import auth from 'pages/Auth.vue'
 import Menu from 'pages/menu/menu.vue'
 import MenuIndex from 'pages/menu/index.vue'
+import IndexOrd from 'pages/orders/index.vue'
+import Cart from 'pages/cart/index.vue'
+import FindUs from 'pages/findus.vue'
+import Debit from 'components/payment/debit.vue'
+import ForgotPassword from 'pages/ForgotPassword.vue'
+import Dashboard from 'pages/user/dashboard.vue'
+import Rewards from 'pages/user/Rewards.vue'
+import Address from 'pages/user/address.vue'
 const routes = [
   {
     path: '/',
@@ -26,7 +34,7 @@ const routes = [
       {
         path: 'dashboard',
         name: 'dashboard',
-        component: () => import('pages/user/dashboard.vue'),
+        component: Dashboard,
         meta: {
           requiresAuth: true
         }
@@ -34,12 +42,12 @@ const routes = [
       {
         path: 'findus',
         name: 'findUs',
-        component: () => import('pages/findus.vue')
+        component: FindUs
       },
       {
         path: 'debit',
         name: 'debit',
-        component: () => import('components/payment/debit.vue')
+        component: Debit
       }
     ]
   },
@@ -54,7 +62,7 @@ const routes = [
       {
         path: 'forgotPassword',
         name: 'ForgotPassword',
-        component: () => import('pages/ForgotPassword.vue')
+        component: ForgotPassword
       },
       {
         path: 'login',
@@ -75,7 +83,7 @@ const routes = [
       {
         path: 'rewards',
         name: 'Rewards',
-        component: () => import('pages/user/Rewards.vue'),
+        component: Rewards,
         meta: {
           requiresAuth: true
         }
@@ -83,7 +91,7 @@ const routes = [
       {
         path: 'address',
         name: 'Address',
-        component: () => import('pages/user/address.vue'),
+        component: Address,
         meta: {
           requiresAuth: true
         }
@@ -125,7 +133,7 @@ const routes = [
       {
         path: 'index',
         name: 'carrito',
-        component: () => import('pages/cart/index.vue'),
+        component: Cart,
         meta: {
           requiresAuth: true
         }
@@ -139,7 +147,7 @@ const routes = [
       {
         path: 'index',
         name: 'indexord',
-        component: () => import('pages/orders/index.vue'),
+        component: IndexOrd,
         meta: {
           requiresAuth: true
         }

@@ -9,20 +9,23 @@ export const getCurrentUser = firestoreAction(async ({ bindFirestoreRef }, id) =
   const user = userRef('users', id)
   const query = await user.get()
   const exists = query.exists
-  if (!exists) {
+  if (!exists && localStorage.getItem('amb') !== 'chopzi') {
     console.log('No existe ', id)
     const getChopziUser = userRefMain('users', id)
     const chpziusr = await getChopziUser.get()
     if (!chpziusr.exists) {
-      console.log('No such document!')
-      return bindFirestoreRef('currentUser', userRef('users', id))
+      console.log('No such document user!')
+      throw new Error('El usuario no existe')
     } else {
       var data = chpziusr.data()
+      console.log('Usuario encontrado', data)
       delete data.rol
       data.typeAccess = 'Client'
-      const set = await userRef('users', id).set(data, { merge: true })
+      const set = await userRef('users', id).set(data, { merge: true }).then(e => { return 1 }).catch(l => console.error(l))
+      console.log(set)
       if (set) {
-        return bindFirestoreRef('currentUser', userRef('users', id))
+        bindFirestoreRef('currentUser', userRef('users', id))
+        return 1
       }
     }
   } else {

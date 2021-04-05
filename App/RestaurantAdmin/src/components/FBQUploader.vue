@@ -48,7 +48,8 @@ export default {
       uploading: false,
       filesUploading: [],
       uploadedFl: [],
-      links: []
+      links: [],
+      uploadedProfiles: []
     }
   },
 
@@ -79,9 +80,24 @@ export default {
       })
 
       Promise.all(upl)
-        .then(() => {
+        .then(async () => {
+          let done = []
+          console.log(this.uploadedProfiles, 'Uploaded profiles')
+          for (let i of this.uploadedProfiles) {
+            done.push({ link: await i.profileImageStorageRef.snapshot.ref.getDownloadURL(), file: i.filename })
+          }
           this.uploading = false
-          this.$emit('uploaded', this.uploadedFl)
+          Promise.all(done)
+            .then(async (done) => {
+              console.log(done)
+              this.$emit('uploaded', done)
+            })
+            .catch(err => {
+              this.$q.notify({
+                color: 'negative',
+                message: `One or more of your files failed to upload. ${err}`
+              })
+            })
         })
         .catch(err => {
           this.$q.notify({
@@ -93,16 +109,19 @@ export default {
 
     async uploadFileToFirestore (file) {
       // // console.log(file)
+      console.log(file, 'FILE UPLOADE')
       // eslint-disable-next-line no-unused-vars
       const { meta } = this,
         { storageRef } = this.$fb,
         index = this.filesUploading.length,
         fileSuffix = file.type.split('/')[1],
-        filePreffix = file.name.split('.')[0],
+        filename = file.name.split('.')[0],
+        filePreffix = filename + Math.round((new Date()).getTime() / 1000),
         uploadImageStorageRef = this.myPath === 'none' ? storageRef(`${this.prefixPath}${fileSuffix}`) : storageRef(`${this.prefixPath}${filePreffix}`),
         profileImageStorageRef = uploadImageStorageRef.put(file),
         STATE_CHANGED = this.$fb.self().storage.TaskEvent.STATE_CHANGED
-      // // console.log({ file })
+      this.uploadedProfiles.push({ profileImageStorageRef, filename })
+      console.log({ profileImageStorageRef })
       return new Promise((resolve, reject) => {
         // Firebase UploadTask Event
         profileImageStorageRef.on(
@@ -124,18 +143,19 @@ export default {
               this.uploadedFiles = this.uploadedFiles.concat(this.files)
               this.queuedFiles = []
               this.filesUploading = []
-              // // console.log(111)
+              console.log(this.queuedFiles, 'uploaded files')
               let cry = await this.files.reduce(async (y, x) => {
                 this.updateComponent(index, 0, 'uploaded')
                 // console.log(index)
                 let link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
+                let name = await profileImageStorageRef.snapshot.metadata.name
                 if (!this.links.includes(link)) {
                   try {
-                    this.links.push(link)
-                    this.uploadedFl.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
-                    y.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                    if (Array.isArray(y)) {
+                      y.push({ file: name, link })
+                    }
                   } catch (error) {
-                    console.error('tpush err')
+                    console.error('tpush err', error)
                   }
                 // // console.log(profileImageStorageRef.snapshot, 'snap')
                 }

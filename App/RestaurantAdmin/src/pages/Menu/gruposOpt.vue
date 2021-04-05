@@ -124,6 +124,12 @@
         </q-list>
           <q-dialog class="bg-transparent" :persistent="temp1 && Object.keys(temp1).length > 0" v-model="props.expand">
             <q-list class="q-diag-glassMorph">
+          <q-item>
+            <div class="full-width row justify-between">
+                  <q-btn @click="execCancel" label="Cancelar" color="green" rounded no-caps />
+                  <q-btn @click="execSave" label="Guardar" color="blue" rounded no-caps icon="save" />
+                </div>
+          </q-item>
           <q-item class="column items-start" key="desc" :props="props">
             <q-td><label class="label-expand">Alias (para uso interno, puede ser el mismo que el nombre)</label></q-td>
               <q-input filled
@@ -170,7 +176,7 @@
                     <!-- <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red" text-color="white" icon="tune">
                        {{item.name}}
                     </q-chip> -->
-                    <opcionesconf :elitempass="elitem" class="q-pa-none q-ma-none" :isDiagEasy="true" :isDiagView="true" :itemsDiag="item" @executedSave="executeSave(); props.expand = false" @Cancel="props.expand = false; temp1 = {}; init()" @updateOpt="(e) => {opcionesconfView = false}" />
+                    <opcionesconf ref="opcionConf" :elitempass="elitem" class="q-pa-none q-ma-none" :isDiagEasy="true" :isDiagView="true" :itemsDiag="item" @executedSave="executeSave(); props.expand = false" @Cancel="props.expand = false; temp1 = {}; init()" @updateOpt="(e) => {opcionesconfView = false}" />
                </div>
           </q-item>
 
@@ -327,6 +333,13 @@ export default {
     }
   },
   methods: {
+    execCancel () {
+      console.log(this.$refs)
+      this.$refs.opcionConf[0].executeCancel()
+    },
+    execSave () {
+      this.$refs.opcionConf[0].executeSave()
+    },
     addNewOpts () {
       // this.tempid = this.tempOpt.map(x => {
       //   return {
@@ -417,7 +430,7 @@ export default {
               let groupId = await this.addRow({ collection: 'itemGroup' })
               this.setMultiValue({ payload: { name: val, id: groupId, estatus: true }, collection: 'itemGroup' })
               let groupCompId = await this.addRow({ collection: 'groupComp' })
-              this.setMultiValue({ payload: { name: val, id: groupCompId, group_id: groupId, estatus: true }, collection: 'groupComp' })
+              this.setMultiValue({ payload: { name: val, id: groupCompId, group_id: groupId, estatus: true, required: 0, price: 0, free: 0, max: 5, min: 0, maxUnit: 2, type: 1 }, collection: 'groupComp' })
               if (groupId && groupCompId) {
                 this.elGroup = JSON.parse(JSON.stringify(this.groupComp))
                 this.elitemGroup = JSON.parse(JSON.stringify(this.itemGroup))
@@ -477,9 +490,12 @@ export default {
         } else {
           val = [id]
         }
-        this.saveTemp({ payload: { value: val, id: toAdd[0].id, key }, collection: 'item' })
+        console.log('VAAAL', val)
         let elit = this.elitem.find(x => x.id === toAdd[0].id)
+        console.log(elit.group_id, 'Step1')
         elit.group_id = elit.group_id ? [...elit.group_id, ...val] : val
+        this.saveTemp({ payload: { value: elit.group_id, id: toAdd[0].id, key }, collection: 'item' })
+        console.log(elit.group_id, 'Step2')
       }
       if (toRemove.length) {
         const index = toRemove[0].group_id.indexOf(id)

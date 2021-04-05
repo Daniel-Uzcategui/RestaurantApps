@@ -34,7 +34,7 @@
          </q-toolbar>
       </q-header>
       <q-drawer
-      style="border-top-right-radius 100px"
+         style="border-top-right-radius 100px"
          on-layout="hide"
          v-if="$router.history.current.path !== '/editor/index'"
          v-model="leftDrawerOpen"
@@ -103,10 +103,6 @@ export default {
       this.logoutUser()
     }
     window.sessionStorage.setItem('reloaded', 'yes')
-    // Check that our app has access to the user id
-    // from Firebase before the page renders
-    // this.bindOrders().then(x => { this.countOrder = x.length; console.log('binded', x) })
-    // console.log('FIREBASE AUTH USER uid', this.$store.state.auth.uid)
     const online = window.navigator.onLine
     this.$q.loading.show({
       message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
@@ -116,35 +112,8 @@ export default {
     })
   },
   async mounted () {
-    // this.$q.dark.set(true)
     this.bindEnv().then(e => {
-      // // console.log({ environment: e })
-      // let ver = localStorage.getItem('envVer')
-      // if (ver === null && e && e.version) {
-      //   localStorage.setItem('envVer', e.version)
-      // } else if (e && ver !== e.version) {
-      //   this.$q.dialog({
-      //     title: 'Nueva Version',
-      //     message: 'Hay una nueva version disponible.\nRefrescar la app para descargar las nuevas actualizaciones?',
-      //     cancel: true,
-      //     persistent: true
-      //   }).onOk(() => {
-      //     localStorage.setItem('envVer', e.version)
-      //     if ('serviceWorker' in navigator) {
-      //       navigator.serviceWorker.getRegistrations().then(function (registrations) {
-      //         for (let registration of registrations) {
-      //           registration.update()
-      //         }
-      //       })
-      //     }
-      //     this.getNewVer()
-      //   })
-      // }
-      // if (e && ver === e.version) {
-      //   // console.log('App is in the newer version')
-      // }
     })
-    // console.log({ rt: this.$router })
     const { currentUser } = this
     console.log(currentUser, 'currentUser')
     if (currentUser) {
@@ -481,7 +450,6 @@ export default {
       console.log('User Data available', { e })
       if (!(e && e.rol)) {
         this.$router.push({ path: '/auth/login' })
-        this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
       }
       if (e && e.firstAccess) {
         this.$router.push({ path: '/guide/intro' })
@@ -494,26 +462,26 @@ export default {
           console.error(err)
         }
       }
-    },
-    orders (e) {
-      if (e.length === 0) {
-        return
-      }
-      if (this.initAudio === 0) {
-        if (typeof this.$refs['mediapl'] !== 'undefined') {
-          this.$refs['mediapl'].play()
-        }
-        // console.log(this.orders.length, this.countOrder, 'COUNT2', e.length)
-        this.initAudio = 1
-      } else {
-        // console.log(this.orders.length, this.countOrder, 'COUNT')
-        if (this.initAudio === 2 && this.orders.length > this.countOrder) {
-          this.countOrder = this.orders.length
-          this.showNotif()
-        }
-        this.initAudio = 2
-      }
     }
+    // orders (e) {
+    //   if (e.length === 0) {
+    //     return
+    //   }
+    //   if (this.initAudio === 0) {
+    //     if (typeof this.$refs['mediapl'] !== 'undefined') {
+    //       this.$refs['mediapl'].play()
+    //     }
+    //     // console.log(this.orders.length, this.countOrder, 'COUNT2', e.length)
+    //     this.initAudio = 1
+    //   } else {
+    //     // console.log(this.orders.length, this.countOrder, 'COUNT')
+    //     if (this.initAudio === 2 && this.orders.length > this.countOrder) {
+    //       this.countOrder = this.orders.length
+    //       this.showNotif()
+    //     }
+    //     this.initAudio = 2
+    //   }
+    // }
   }
 }
 </script>
@@ -527,4 +495,8 @@ export default {
     background-repeat no-repeat
     background-size 15vmin
     background-position center
+  .q-popup-edit
+    min-width: unset !important
+  .q-popup-edit__buttons > .q-btn
+    color: white !important
 </style>

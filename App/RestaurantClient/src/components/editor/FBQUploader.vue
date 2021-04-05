@@ -129,13 +129,14 @@ export default {
                 this.updateComponent(index, 0, 'uploaded')
                 // console.log(index)
                 let link = await profileImageStorageRef.snapshot.ref.getDownloadURL()
+                let name = await profileImageStorageRef.snapshot.metadata.name
                 if (!this.links.includes(link)) {
                   try {
                     this.links.push(link)
-                    this.uploadedFl.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
-                    y.push({ file: profileImageStorageRef.snapshot.metadata.name, link })
+                    this.uploadedFl.push({ file: name, link })
+                    // y.push({ file: name, link })
                   } catch (error) {
-                    console.error('tpush err')
+                    console.error('tpush err', error)
                   }
                 // // console.log(profileImageStorageRef.snapshot, 'snap')
                 }

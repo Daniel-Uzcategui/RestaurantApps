@@ -201,6 +201,7 @@ export default {
       apellido: null,
       cedula: null,
       phone: null,
+      newuser: false,
       sexo: null,
       fecnac: null,
       checkTerms: false,
@@ -245,12 +246,11 @@ export default {
               customClass: 'loader'
             })
             try {
-              let newuser = false
               if (this.isRegistration) {
                 if (this.checkTerms) {
                   await this.createNewUser({ email, password, nombre, apellido, cedula, phone, sexo, fecnac }).then(() => {
                     console.log('Hola usuario creado', this.currentUser)
-                    newuser = true
+                    this.newuser = true
                   })
                 } else {
                   this.validationError = true
@@ -259,31 +259,35 @@ export default {
               } else {
                 await this.loginUser({ email, password })
               }
-              this.validarUsers = this.getUser
-              if (this.validarUsers) {
-                console.log('Hola usuario valido', this.getUser)
-                if (newuser && window.location.hostname === 'chopzi.com') {
-                  this.$router.push({ path: '/dashboard' })
-                } else {
-                  this.$router.push({ path: '/home' })
-                }
-              } else {
-                this.$q.notify({
-                  message: `Acceso no permitido`,
-                  color: 'negative'
-                })
-              }
             } catch (err) {
               console.error(err)
+              this.$q.loading.hide()
               this.$q.notify({
-                message: `An error as occured: ${err}`,
+                message: `Ocurrió un error: ${err}`,
                 color: 'negative'
               })
-            } finally {
-              this.$q.loading.hide()
             }
           }
         })
+    }
+  },
+  watch: {
+    currentUser (e) {
+      this.validarUsers = this.getUser
+      if (this.validarUsers) {
+        if (this.newuser && window.location.hostname === 'chopzi.com') {
+          this.$router.push({ path: '/dashboard' })
+        } else {
+          this.$router.push({ path: '/menu/index' })
+        }
+      } else {
+        this.$q.notify({
+          message: `Acceso no permitido`,
+          color: 'negative'
+        })
+      }
+      this.newuser = false
+      this.$q.loading.hide()
     }
   }
 }

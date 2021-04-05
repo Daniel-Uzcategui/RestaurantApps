@@ -29,14 +29,14 @@
                   <div class="text-weight-thin">{{item.quantity}}</div>
                   <div class="relative-position">
                   <q-btn-group v-if="!item.reward"  style="transform: rotateZ(90deg); height: 20px ; border-radius: 0.5em">
-                    <q-btn size="0.3em" class="q-pl-xs" color="white" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-chevron-left" text-color="dark" dense >
+                    <q-btn size="0.3em" class="q-pl-xs" color="primary" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-chevron-left" text-color="white" dense >
                     </q-btn>
-                     <q-btn size="0.3em" color="white" text-color="black" label="│" dense/>
-                    <q-btn size="0.3em" class="q-pr-xs" color="white" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-chevron-right" text-color="dark" dense />
+                     <q-btn size="0.3em" color="primary" text-color="black" label="│" dense/>
+                    <q-btn size="0.3em" class="q-pr-xs" color="primary" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-chevron-right" text-color="white" dense />
                   </q-btn-group>
                   <div style="top: -200%; position: absolute">
                     <q-badge color="red" v-if="item.avail === 0" style="">max</q-badge>
-                      <q-badge color="red" v-if="item.avail == 2" style=""><q-icon name="fas fa-exclamation-circle" size="15px" color="white" /></q-badge>
+                      <q-badge color="red" v-if="item.avail == 2" style=""><q-icon name="fas fa-exclamation-circle" size="15px" color="white" />Hay más de lo disponible</q-badge>
                   </div>
                 </div>
                 </q-item-label>
@@ -99,7 +99,10 @@
             </div>
           </q-card-section>
           <q-card-actions class="q-pa-md column items-center" >
-            <div v-if='allowBuy'>
+            <p v-if="CheckAv === 2">
+              Hay un producto que no cumple con la disponibilidad en su carrito, porfavor disminuya la cantidad o eliminelo antes de continuar
+            </p>
+            <div v-if="allowBuy">
               <q-btn name="cart" no-caps class="q-pr-xl q-pl-xl text-weight-thin" rounded color="primary" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true">
               Siguiente
               </q-btn>
@@ -147,7 +150,7 @@
                             <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery`"/>
                           </q-item>
                           <q-item>
-                            <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 :label="isChopzi ? 'Pago en línea' : 'Pick-up'" />
+                            <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
                           </q-item>
                           <q-item>
                             <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
@@ -158,7 +161,7 @@
                        <q-card class="q-pa-xl q-cardGlass" style="border-radius: 28px">
                          <q-card-section>
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
-                           <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el la fecha</p>
+                           <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado en la fecha</p>
                             <div class="q-gutter-sm">
                               <q-radio v-model="orderWhen" val=0 label="Lo más pronto posible" />
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
@@ -211,6 +214,7 @@
                      >
                      <div class="col-6" style="min-width: 300px">
                       <div class="q-pt-xl q-pb-xl text-h4 text-bold">Formas de Pago</div>
+                      <div v-if="tipoPago && tipoPago.length === 0">No existe ningún método de pago activo</div>
                     <q-option-group
                       :options="tipoPago"
                       label="Tipo de Pago"
@@ -279,21 +283,23 @@
                         </q-card>
                     </div>
                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
-                    <div>
+                    <div v-if="this.rates.length">
                      <debitPayment
                       :ordersId=currentUser.cedula
                       :amount="getRates(totalPrice + deliveryPrice)"
                       @payment-done='payment' />
                      </div>
+                     <div v-else>No hay tasa de cambio colocada</div>
                     </div>
                      <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 9">
-                    <div>
+                    <div v-if="this.rates.length">
                      <creditPayment
                       :ordersId=currentUser.cedula
                       :credit="true"
                       :amount="getRates(totalPrice + deliveryPrice)"
                       @payment-done='payment' />
                      </div>
+                     <div v-else>No hay tasa de cambio colocada</div>
                     </div>
                     <div class="q-pt-md col-12 column items-center">
                       <div>
@@ -302,9 +308,12 @@
                         <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
                       </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
+                        <div v-if="this.rates.length">
                         <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8 ||  pagoSel == 9" >Total: Bs
                           {{ (getRates(totalPrice + deliveryPrice)).toFixed(2)}}
                         </div>
+                        </div>
+                        <div v-else>No hay tasa de cambio colocada</div>
                         <div v-if="CheckTDD ===true">
                         <q-btn @click="confirm = true" v-if="pagoSel !== null && pagoSel !== 3 && cart.length && (CheckAv === 1 || CheckAv === 0)" color="primary" no-caps rounded label="Finalizar orden" />
                         </div>
@@ -477,7 +486,7 @@ export default {
     this.bindConfigs() // .then(e => this.getDays())
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
-    this.bindRates()
+    this.bindRates().catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.rates)
   },
   mounted () {
@@ -570,9 +579,9 @@ export default {
         timeout: 0,
         position: 'right',
         message: 'Un producto ha cambiado la disponibilidad',
-        color: 'alert',
+        color: 'red',
         actions: [
-          { label: 'Dismiss', color: 'white', handler: () => { /* ... */ } }
+          { label: 'X', color: 'white', handler: () => { /* ... */ } }
         ]
       })
     },
@@ -600,11 +609,13 @@ export default {
     },
     getRates (mto) {
       let mtoTotal = 0
-      let rate = ''
-      rate = this.rates.find(obj => {
-        return obj.currency === 'Bs'
-      })
-      if (mto !== 'undefined' && rate && rate.rateValue) {
+      let rate
+      if (typeof this.rates !== 'undefined' && this.rates.length) {
+        rate = this.rates.find(obj => {
+          return obj.currency === 'Bs'
+        })
+      }
+      if (typeof mto !== 'undefined' && rate && rate.rateValue) {
         mtoTotal = rate.rateValue * mto
       }
       return mtoTotal
@@ -619,7 +630,7 @@ export default {
       console.log('sedecfg', sedecfg)
       console.log(today)
       console.log(this.sede)
-      if (sedecfg !== 'undefined') {
+      if (typeof sedecfg !== 'undefined' && typeof this.configDates !== 'undefined') {
         let hr = sedecfg.days[today][0].close.substr(0, 2)
         let min = sedecfg.days[today][0].close.substr(2, 2)
         if (sedecfg.status === 1) {
@@ -636,6 +647,8 @@ export default {
           }
         }
         console.log(this.allowBuy)
+      } else {
+        this.allowBuy = true
       }
     },
     getTransactions () {
@@ -694,9 +707,15 @@ export default {
       // console.log({ id, val, type })
       if (type === 0) {
         var obj = this.menu.find(e => { return e.id === id })
+        if (typeof obj === 'undefined') {
+          return 'El Producto no existe o fue eliminado, porfavor quitar del carrito'
+        }
         return obj[val]
       } else {
         obj = this.promos.find(e => { return e.id === id })
+        if (typeof obj === 'undefined') {
+          return 'El Producto no existe o fue eliminado, porfavor quitar del carrito'
+        }
         return obj[val]
       }
     },
@@ -841,6 +860,12 @@ export default {
   watch: {
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()
+    },
+    menu () {
+      for (let index in this.cart) {
+        let item = this.cart[index]
+        this.checkAvail(item.prodId, item.prodType, index)
+      }
     },
     pagoSel () {
       if (this.pagoSel === 3) {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="column items-center">
        <q-card class="q-cardGlass" >
        <q-card-section>
          <p class="q-pt-md text-center text-h5">Imagen de Fondo</p>
@@ -111,6 +111,7 @@ export default {
     this.bindManifest().then(e => {
       console.log({ manifest: e }, 'Manifest')
       if (typeof e !== 'undefined' && e !== null && typeof e.bgimage !== 'undefined' && e.bgimage !== null) {
+        this.bgimage = {}
         Vue.set(this.bgimage, 'desktop', typeof e.bgimage && typeof e.bgimage.desktop !== 'undefined' ? e.bgimage.desktop : '')
         Vue.set(this.bgimage, 'mobile', typeof e.bgimage && typeof e.bgimage.mobile !== 'undefined' ? e.bgimage.mobile : '')
       }

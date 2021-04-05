@@ -94,7 +94,10 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="savemani" class="column">
-          <changeBackground v-if="slide === 'savemani'" @saved="slide = 'themefin'"/>
+          <changeBackground v-if="slide === 'savemani'" @saved="slide = 'savepage'"/>
+        </q-carousel-slide>
+        <q-carousel-slide name="savepage" class="column">
+          <change-page-color v-if="slide === 'savepage'" @saved="slide = 'themefin'"/>
         </q-carousel-slide>
         <q-carousel-slide name="themefin" class="column no-wrap flex-center">
           <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
@@ -110,10 +113,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import changeBackground from '../../components/editor/changeBackground'
+import changeBackground from '../../components/editor/changeBackground.vue'
+import changePageColor from '../../components/editor/changePageColors.vue'
 export default {
   components: {
-    changeBackground
+    changeBackground,
+    changePageColor
   },
   computed: {
     ...mapGetters('order', ['orders']),

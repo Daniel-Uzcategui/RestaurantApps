@@ -33,7 +33,7 @@
         </div>
       </slide>
   </carousel>
-  <q-dialog-menu
+  <Qdiag
       v-if="dialog"
       :display="display"
       :displayVal2="displayVal"
@@ -47,6 +47,7 @@
 
 import { mapActions, mapGetters } from 'vuex'
 import { Carousel, Slide } from './vue-carousel/dist/vue-carousel.min.js'
+import Qdiag from './Q-diag-menu.vue'
 export default {
   props: {
     title: {
@@ -84,7 +85,7 @@ export default {
   components: {
     Carousel,
     Slide,
-    'q-dialog-menu': () => import('./Q-diag-menu.vue')
+    Qdiag
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),

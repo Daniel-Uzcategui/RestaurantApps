@@ -117,9 +117,10 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import GoogleMap from './GoogleMap.vue'
 export default {
   components: {
-    GoogleMap: require('./GoogleMap.vue').default
+    GoogleMap: GoogleMap
   },
   props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping'],
   computed: {

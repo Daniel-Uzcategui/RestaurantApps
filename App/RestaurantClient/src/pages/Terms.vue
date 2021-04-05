@@ -485,12 +485,20 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   created () {
-    this.bindConfigs().then(() => this.afterBindigGeneral())
+    this.bindConfigs().then(() => this.afterBindigGeneral()).catch(e => console.error(e))
   },
   computed: {
     ...mapGetters('config', ['configurations']),
     config () {
-      return this.configurations.find(e => e.id === 'general')
+      let cfg = this.configurations.find(e => e.id === 'general')
+      if (typeof cfg === 'undefined') {
+        return {
+          companyName: 'Nombre (no disponible)',
+          companyComercialName: 'Nombre (no disponible)'
+        }
+      } else {
+        return cfg
+      }
     }
   },
   methods: {

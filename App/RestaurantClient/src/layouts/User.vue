@@ -1,9 +1,9 @@
 <template>
-   <q-layout class="main my-font2" :style="{ 'background-image': manifest && manifest.bgimage && manifest.bgimage.desktop ? `url(${manifest.bgimage.desktop})` : '' }" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }" view="hhh LpR fFf">
+   <q-layout class="main my-font2 bgsetting" :style="{ 'background-image': manifest && manifest.bgimage && manifest.bgimage.desktop ? `url(${manifest.bgimage.desktop})` : '' }" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }" view="hhh LpR fFf">
      <q-header class="bg-primary" v-if="$q.screen.gt.sm && mobileGreatView">
        <q-toolbar>
-          <q-avatar>
-            <img src="favicon.ico">
+          <q-avatar size="80px">
+            <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
           </q-avatar>
           <q-toolbar-title>{{ManiName}}</q-toolbar-title>
           <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
@@ -18,10 +18,11 @@
                 @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :label="link.title" />
                 <q-btn-dropdown v-show="nav2[1].length > 1" no-caps auto-close stretch flat label="Catálogos">
                   <q-list>
-                  <q-item clickable no-caps v-for="(link, index) in nav2[1]"
+                  <q-item @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" clickable no-caps v-for="(link, index) in nav2[1]"
                     :key="index + 'j'"
                     >
-                    <q-btn no-caps @click="link.click(); link.link ? $router.push({ path: link.link.slice(1) }) : null" :icon="link.icon" :label="link.title" flat />
+                    <q-item-label>{{link.title}}</q-item-label>
+                    <!-- <q-btn no-caps :icon="link.icon" :label="" flat /> -->
                   </q-item>
                   </q-list>
                 </q-btn-dropdown>
@@ -40,7 +41,7 @@
                name="cart"
                @click="leftDrawerOpen = !leftDrawerOpen"
                exact />
-        <q-tab @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
+        <q-tab v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
           <q-badge color="red" floating>{{getCartQ}}</q-badge>
         </q-tab>
       </q-tabs>
@@ -58,7 +59,7 @@
                style="z-index: 99999"
                exact />
                <div class="absolute-right">
-                 <q-btn to="/cart/index" style="z-index: 99999" class="carticon" flat icon="fas fa-shopping-cart" >
+                 <q-btn v-if="!isChopzi" to="/cart/index" style="z-index: 99999" class="carticon" flat icon="fas fa-shopping-cart" >
                    <q-badge color="red" floating>{{getCartQ}}</q-badge>
                  </q-btn>
                <q-toggle v-show="false" class="toggleicon" icon="fas fa-sun" keep-color @input="$q.dark.toggle(); toggleColors()" :value="$q.dark.isActive" />
@@ -78,7 +79,12 @@
          v-model="leftDrawerOpen"
          behavior="mobile"
          >
-         <q-list class="q-pa-xl">
+         <div class="q-ml-xl q-mt-md">
+         <q-avatar size="80px">
+            <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
+          </q-avatar>
+         </div>
+         <q-list class="q-pl-xl">
             <Nav
                v-ripple
                v-for="(link, index) in nav"
@@ -240,9 +246,9 @@ export default {
           menu = [ ...menu, ...inter ]
         } else {
           let inter = [{
-            title: 'Catálogo',
+            title: 'Todos nuestros productos',
             caption: '',
-            icon: 'menu_book',
+            icon: '',
             // link: '#/menu/index',
             click: () => {
               this.setFilter('')
@@ -668,7 +674,7 @@ export default {
   data () {
     return {
       metamani: {},
-      isChopzi: window.location.hostname === 'chopzi.com',
+      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       fullPath: '',
       Tawk_API: null,
       notifications: 0,
@@ -862,22 +868,15 @@ export default {
       return navig
     },
     toggleColors () {
+      console.log('Seteando colores', this.page)
       this.$q.dark.isActive ? colors.setBrand('primary', '#107154') : colors.setBrand('primary', '#43A047')
       this.$q.dark.isActive ? colors.setBrand('secondary', '#0C6247') : colors.setBrand('secondary', '#92CD94')
       if (this.page) {
-        if (!this.$q.dark.isActive) {
-          for (let key in this.page) {
-            if (key.includes('light')) {
-              var colorLabel = (key.replace('light', '')).toLowerCase()
-              colors.setBrand(colorLabel, this.page[key])
-            }
-          }
-        } else {
-          for (let key in this.page) {
-            if (key.includes('dark')) {
-              colorLabel = (key.replace('dark', '')).toLowerCase()
-              colors.setBrand(colorLabel, this.page[key])
-            }
+        for (let key in this.page) {
+          if (key.includes('light')) {
+            console.log('Seteando colores')
+            var colorLabel = (key.replace('light', '')).toLowerCase()
+            colors.setBrand(colorLabel, this.page[key])
           }
         }
       }
@@ -970,6 +969,10 @@ export default {
   }
   .my-font
     font-family: 'customfont';
+  .bgsetting
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
   .main
     &.blur-layout
       -webkit-filter: blur(5px);

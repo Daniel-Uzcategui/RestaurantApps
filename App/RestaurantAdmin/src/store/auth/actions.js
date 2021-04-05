@@ -13,7 +13,7 @@ export const addUserToUsersCollection = async (state, userRef) => {
   let userSet1 = await userRef[0].set({ ...user }, { merge: true })
   let userSetDelayForTrigger = await delay(3000)
   if (userRef.length === 2) {
-    var userSet2 = await userRef[1].set({ ...user, typeAccess: 'Client' }, { merge: true })
+    var userSet2 = await userRef[1].set({ ...user, typeAccess: 'Client', otherDb: true }, { merge: true })
     if (userSet1 && userSetDelayForTrigger) {
       if (userSet2) {
         return 1

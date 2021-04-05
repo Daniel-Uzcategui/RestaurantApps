@@ -3,12 +3,12 @@
         <q-card class="q-my-md">
             <q-card-section class="bg-primary text-h5  justify-center col">
                 <q-item>
-                    <q-item-section avatar>
+                    <!-- <q-item-section avatar>
                         <q-avatar v-if="showDefaultPhoto()" size="100px" round="round" color="blue-grey-8" icon="person" text-color="white"></q-avatar>
                         <q-avatar size="100px" v-else class="q-mb-sm shadow-2">
                             <q-img :src="currentUser.profilePhoto" />
                         </q-avatar>
-                    </q-item-section>
+                    </q-item-section> -->
                     <q-item-section>
                         <q-item-label>
                             {{ getUserData('nombre') }}

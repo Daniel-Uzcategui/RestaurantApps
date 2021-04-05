@@ -89,7 +89,7 @@
                   @click="selectedCat=tabs; search()"
                   :name="tabs.id"
                   >
-                  {{tabs.name.toLowerCase()}}
+                  {{tabs.name}}
                </q-tab>
             </q-tabs>
             <div>
@@ -244,7 +244,7 @@
                   @click="selectedCat=tabs; search()"
                   :name="tabs.id"
                   >
-                  {{tabs.name.toLowerCase()}}
+                  {{tabs.name}}
                </q-tab>
             </q-tabs>
             <div class="row justify-around" >

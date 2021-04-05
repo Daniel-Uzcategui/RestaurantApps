@@ -444,7 +444,7 @@
             <q-input type="number" filled rounded outlined @input="(e) => saved2(e, temp1.groupComp[tempid].max, temp1.groupComp[tempid].id, 'max')" v-model="temp1.groupComp[tempid].max" dense  />
           </q-td>
           </q-item>
-          <q-item class="column items-start" v-if="temp1.groupComp[tempid].type == 2"  >
+          <q-item class="column items-start" v-if="temp1.groupComp[tempid].type == 2 || temp1.groupComp[tempid].type == 3"  >
                 <q-td><label class="col label-expand">Max Unidades</label></q-td>
           <q-td key="maxUnit" >
             <q-input filled rounded outlined @input="(e) => saved2(e, temp1.groupComp[tempid].maxUnit, temp1.groupComp[tempid].id, 'maxUnit')" v-model="temp1.groupComp[tempid].maxUnit" dense  />
@@ -465,8 +465,8 @@
               </q-item>
               <q-item>
                 <div class="full-width row justify-between">
-                  <q-btn @click="addopt = false; $emit('Cancel')" label="Cancelar" color="green" rounded no-caps />
-                  <q-btn @click="addopt = false; executeSave(); $emit('executedSave')" label="Guardar" color="blue" rounded no-caps icon="save" />
+                  <q-btn @click="executeCancel()" label="Cancelar" color="green" rounded no-caps />
+                  <q-btn @click="executeSave();" label="Guardar" color="blue" rounded no-caps icon="save" />
                 </div>
               </q-item>
             </q-list>
@@ -503,8 +503,8 @@ export default {
   },
   props: {
     elitempass: {
-      type: Object,
-      default: () => {}
+      type: Array,
+      default: () => []
     },
     isDiag: {
       type: Boolean,
@@ -534,7 +534,7 @@ export default {
       addopt: false,
       tempid: null,
       value: [],
-      typeOpts: [{ name: 'Seleccion Múltiple CheckBox', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple Slider', value: 2 }, { name: 'Seleccion Múltiple Inputs', value: 3 }],
+      typeOpts: [{ name: 'Seleccion Múltiple CheckBox', value: 0 }, { name: 'Seleccion Simple', value: 1 }, { name: 'Seleccion Múltiple Inputs', value: 3 }],
       typeFree: [{ name: 'Si', value: 1 }, { name: 'No', value: 0 }],
       columns,
       selected: [],
@@ -592,6 +592,10 @@ export default {
       this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
       this.$forceUpdate()
     },
+    executeCancel () {
+      this.addopt = false
+      this.$emit('Cancel')
+    },
     executeSave () {
       for (let collection in this.temp1) {
         for (let document in this.temp1[collection]) {
@@ -614,6 +618,8 @@ export default {
       if (!this.isDiagEasy) {
         this.temp1 = {}
       }
+      this.$emit('executedSave')
+      this.addopt = false
       this.$q.notify({ message: 'Cambios Guardados' })
     },
     showPopup (row, col) {

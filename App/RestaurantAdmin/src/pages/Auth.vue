@@ -158,7 +158,7 @@ export default {
   },
   name: 'Auth',
   computed: {
-    ...mapGetters('user', ['users']),
+    ...mapGetters('user', ['users', 'currentUser']),
     getAuthType () {
       return this.isRegistration ? 'Registro' : 'Iniciar Sesión'
     },
@@ -170,16 +170,16 @@ export default {
     },
     routeAuthentication () {
       return this.isRegistration ? '/auth/login' : '/auth/register'
-    },
-    getUser () {
-      let Access = false
-      for (let i = 0; i < this.users.length; i++) {
-        if (this.users[i].email === this.email && this.users[i].typeAccess === 'Admin' && this.users[i].status === true) {
-          Access = true
-        }
-      }
-      return Access
     }
+    // getUser () {
+    //   let Access = false
+    //   for (let i = 0; i < this.users.length; i++) {
+    //     if (this.users[i].email === this.email && this.users[i].typeAccess === 'Admin' && this.users[i].status === true) {
+    //       Access = true
+    //     }
+    //   }
+    //   return Access
+    // }
   },
   data () {
     return {
@@ -190,6 +190,7 @@ export default {
       nombre: null,
       apellido: null,
       cedula: null,
+      newuser: false,
       sexo: null,
       fecnac: null,
       checkTerms: false,
@@ -211,10 +212,7 @@ export default {
     }
   },
   created () {
-    if (window.sessionStorage.getItem('reloaded') !== 'yes') {
-      this.logoutUser()
-    }
-    window.sessionStorage.setItem('reloaded', 'yes')
+    this.logoutUser()
   },
   mounted () {
     this.bindusers()
@@ -242,21 +240,13 @@ export default {
               if (this.isRegistration) {
                 if (this.checkTerms) {
                   await this.createNewUser({ email, password, nombre, apellido, cedula, sexo, fecnac })
+                  this.newuser = true
                 } else {
                   this.validationError = true
                   return
                 }
               } else {
                 await this.loginUser({ email, password })
-              }
-              this.validarUsers = this.getUser
-              if (this.validarUsers) {
-                this.$router.push({ path: '/home' })
-              } else {
-                this.$q.notify({
-                  message: `Acceso no permitido, si es la primera vez que inicia sesión, vuelva a intentar`,
-                  color: 'negative'
-                })
               }
             } catch (err) {
               console.error(err)
@@ -269,6 +259,26 @@ export default {
             }
           }
         })
+    }
+  },
+  watch: {
+    currentUser (e) {
+      if (e && e.typeAccess === 'Admin' && e.status === true) {
+        if (e && e.rol) {
+          this.$q.loading.hide()
+          return this.$router.push({ path: '/home' })
+        } else {
+          this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
+          this.logoutUser()
+        }
+      } else {
+        this.$q.notify({
+          message: `Acceso no permitido`,
+          color: 'negative'
+        })
+      }
+      this.newuser = false
+      this.$q.loading.hide()
     }
   }
 }

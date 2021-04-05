@@ -126,7 +126,7 @@ export default {
       lorem5: 'Excelente!, ya estamos casi listos 😄, ahora crearemos las categorías de los productos, siempre puedes agregar más luego',
       lorem6: 'Ahora vamos con los productos 😁, los productos se comparten entre todas las sedes, pero puedes desactivarlos para alguna en particular',
       lorem7: 'Un pasito más y estamos listos 😉, es para escoger el tema del menú, como tus clientes ven tus productos',
-      lorem8: 'Ya estamos ready 😎💪, si necesitas ver esta guía u otras ve a la sección asistentes, en el menú'
+      lorem8: 'Ya estamos ready 😎💪, si necesitas ver esta guía u otras, ve a la sección Asistentes, en el menú'
 
     }
   }

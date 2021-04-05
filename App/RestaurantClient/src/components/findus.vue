@@ -20,9 +20,10 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import GoogleMap from '../components/GoogleMap'
 export default {
   components: {
-    GoogleMap: require('../components/GoogleMap').default
+    GoogleMap: GoogleMap
   },
   computed: {
     ...mapGetters('localization', ['localizations']),
