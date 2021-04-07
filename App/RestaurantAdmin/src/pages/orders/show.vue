@@ -13,22 +13,37 @@
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell q-ma-sm col-2">
-          <q-input filled rounded outlined label="Nombre del Cliente" :value="this.getClient(order.customer_id)"  type="text" float-label="Float Label" disable/>
+           <p class="text-bold">Cliente</p>
+           <p>{{getClientValue('nombre')}} {{getClientValue('apellido')}}</p>
         </div>
         <div class="header-cell q-ma-sm col-1">
-          <q-input filled rounded outlined label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable />
+           <p class="text-bold">Teléfono</p>
+           <p>{{getClientValue('phone')}}</p>
+        </div>
+        <div class="header-cell q-ma-sm col-1">
+          <p class="text-bold">Nro. Pedido</p>
+           <p>{{order.factura}}</p>
+          <!-- <q-input filled rounded outlined label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div class="header-cell q-ma-sm col-2">
-          <q-input filled rounded outlined label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+          <p class="text-bold">SubTotal</p>
+           <p>{{order.paid}}</p>
+          <!-- <q-input filled rounded outlined label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
-          <q-input filled rounded outlined label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable />
+          <p class="text-bold">Costo Delivery</p>
+           <p>{{order.delivery}}</p>
+          <!-- <q-input filled rounded outlined label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div class="header-cell q-ma-sm col-2">
-          <q-input filled rounded outlined label="Total $" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable />
+          <p class="text-bold">Total $</p>
+           <p>{{order.paid && order.delivery ? order.paid + order.delivery : order.paid}}</p>
+          <!-- <q-input filled rounded outlined label="Total $" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div v-if="order.typePayment==8 || order.typePayment == 0" class="header-cell q-ma-sm col-2">
-          <q-input filled rounded outlined label="Total Bs" :value="this.getRates(order.paid + order.delivery).toFixed(2)"   type="text" float-label="Float Label" disable />
+          <p class="text-bold">Total Bs</p>
+           <p>{{getRates(order.paid + order.delivery).toFixed(2)}}</p>
+          <!-- <q-input filled rounded outlined label="Total Bs" :value="this.getRates(order.paid + order.delivery).toFixed(2)"   type="text" float-label="Float Label" disable /> -->
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
@@ -94,14 +109,14 @@
           <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
-         <div v-if="phone" class="q-pa-sm ">
+         <!-- <div v-if="phone" class="q-pa-sm ">
             <q-input filled rounded outlined label="Número de Teléfono" :value="phone" placeholder="Número de Teléfono"  disabled/>
-         </div>
+         </div> -->
          <div class="flex-break q-pa-md"></div>
-         <div v-if="puntoRef" class="header-cell2 q-pa-sm col-6">
+         <div v-if="puntoRef && puntoRef !== 'No disponible'" class="header-cell2 q-pa-sm col-6">
             <q-input filled rounded outlined label="punto de Referencia" :value="puntoRef"  type="textarea" placeholder="Punto de referencia"  disabled/>
          </div>
-         <div class="header-cell2 q-pa-sm col-6">
+         <div v-if="addressDelivery && addressDelivery !== 'No disponible'" class="header-cell2 q-pa-sm col-6">
             <q-input filled rounded outlined label="Dirección de entrega" :value="addressDelivery"  type="textarea" placeholder="Dirección del cliente" disabled />
          </div>
          <div class="flex-break q-pa-md"></div>
@@ -369,6 +384,14 @@ export default {
         return obj.id === this.$route.query.Order_Id
       })
     },
+    getClient () {
+      let order = this.order
+      if (order && order.id) {
+        return this.clients.find(obj => obj.id === order.customer_id)
+      } else {
+        return {}
+      }
+    },
     orderDate: {
       get () {
         let test = (new Date(this.order.orderWhen.orderDate.seconds * 1000)).toLocaleString('en-US', { timeStyle: 'short', dateStyle: 'short', hour12: false })
@@ -485,14 +508,12 @@ export default {
         })
       }
     },
-    getClient (value) {
-      let fullname
-      let objclients
-      objclients = this.clients.find(obj => {
-        return obj.id === value
-      })
-      fullname = typeof objclients !== 'undefined' ? objclients.nombre + ' ' + objclients.apellido : 'No disponible'
-      return fullname
+    getClientValue (key) {
+      if (this.getClient && this.getClient[key]) {
+        return this.getClient[key]
+      } else {
+        return 'No disponible'
+      }
     },
     checkOrder (e) {
       switch (e) {

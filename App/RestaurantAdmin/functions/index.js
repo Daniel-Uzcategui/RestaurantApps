@@ -130,16 +130,20 @@ exports.FirstUser = functions.firestore
       const data = {
         user: 'created'
       }
-      const res = await db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser').set(data)
-      const res2 = user.ref.set({
+      const res = await db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser').set({ ...data, DateIn: admin.firestore.Timestamp.now() })
+      const res2 = await user.ref.set({
         rol: ['Admin'],
-        firstAccess: true
+        firstAccess: true,
+        DateIn: admin.firestore.Timestamp.now()
       }, { merge: true })
       return [res, res2]
     } else {
+      const res3 = await user.ref.set({
+        DateIn: admin.firestore.Timestamp.now()
+      }, { merge: true })
       if (context.params.ambiente === 'chopzi' && typeof original.otherDb === 'undefined') {
         const res = await requestTrial(user.id)
-        return res
+        return [res, res3]
       }
     }
   })
@@ -855,6 +859,10 @@ exports.getinitjs = functions.https.onRequest(async (req, res) => {
   const getClientSub = await db.collection('ambiente')
     .where('domains', 'array-contains', url)
     .get()
+  if (getClientSub.empty) {
+    console.log('No matching documents.')
+    return res.send({ ambiente: 'NA' })
+  }
   getClientSub.forEach((doc) => {
     let data = doc.data()
     return res.send({ ambiente: data.ambiente })
@@ -870,6 +878,9 @@ exports.seoHandling = functions.https.onRequest(async (req, res) => {
     return res.send(``)
   }
   let ambiente = await fetchSetup(url)
+  if (ambiente.ambiente === 'NA') {
+    return res.send('<p> Error en la configuracion del ambiente contacte al administrador </p>')
+  }
   const reqRef = db.doc(`ambiente/${ambiente.ambiente}/environment/manifest`)
   const sourceRef = db.doc(`environment/sources`)
   const sources = await sourceRef.get()

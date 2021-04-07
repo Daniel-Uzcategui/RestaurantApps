@@ -674,7 +674,7 @@ export default {
   data () {
     return {
       metamani: {},
-      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
+      isChopzi: window.location.hostname === 'chopzi.com',
       fullPath: '',
       Tawk_API: null,
       notifications: 0,

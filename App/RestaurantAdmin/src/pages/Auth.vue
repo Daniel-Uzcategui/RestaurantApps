@@ -263,6 +263,8 @@ export default {
   },
   watch: {
     currentUser (e) {
+      console.log(e, 'current watcher')
+      if (e === null) { return }
       if (e && e.typeAccess === 'Admin' && e.status === true) {
         if (e && e.rol) {
           this.$q.loading.hide()

@@ -21,7 +21,8 @@
                <q-item-section :style="$q.screen.lt.sm ? 'margin-left: 62px;' : ''" :class="$q.screen.lt.md ? 'col column items-end' : ''">
                  <div>
                    <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
-                  <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{item.prodPrice}}</q-item-label>
+                  <!-- <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{ item.prodPrice }} x {{item.quantity}} = $ {{item.prodPrice * item.quantity}}</q-item-label> -->
+                                   <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{(parseFloat(parseFloat(item.prodPrice) + totalItComp(item.items)) * item.quantity).toFixed(2)}}</q-item-label>
                  </div>
                </q-item-section>
                <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">

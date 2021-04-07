@@ -51,7 +51,14 @@ export const loginUser = async function ({ commit }, payload) {
   const { email, password } = payload
   return $fb.loginWithEmail(email, password)
 }
-
+export const GoogleSignIn = async function ({ commit }, payload) {
+  const $fb = this.$fb
+  return $fb.GoogleSignIn()
+}
+export const GoogleSignInMobile = async function ({ commit }, payload) {
+  const $fb = this.$fb
+  return $fb.GoogleSignInMobile()
+}
 export const logoutUser = async function ({ commit }, payload) {
   await firestoreAction(({ unbindFirestoreRef }) => { unbindFirestoreRef('users') })
   commit('user/setCurrentUserData', null, { root: true })
