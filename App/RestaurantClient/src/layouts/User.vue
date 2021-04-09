@@ -1,5 +1,8 @@
 <template>
-   <q-layout class="main my-font2 bgsetting" :style="{ 'background-image': manifest && manifest.bgimage && manifest.bgimage.desktop ? `url(${manifest.bgimage.desktop})` : '' }" :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }" view="hhh LpR fFf">
+   <q-layout class="main my-font2 bgsetting"
+    :style="{ 'background-image': manifest && manifest.bgimage && manifest.bgimage.desktop ? `url(${manifest.bgimage.desktop})` : '', ...pageStyle }"
+    :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }"
+    view="hhh LpR fFf">
      <q-header class="bg-primary" v-if="$q.screen.gt.sm && mobileGreatView">
        <q-toolbar>
           <q-avatar size="80px">
@@ -166,6 +169,14 @@ export default {
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('editor', ['blocks', 'page', 'routes']),
+    pageStyle () {
+      if (this.page && this.page.style) {
+        let style = this.pagecfg.style
+        return this.cssToObj(style)
+      } else {
+        return {}
+      }
+    },
     meta () {
       return {
         ...this.metamani
@@ -695,6 +706,13 @@ export default {
       file.rel = 'stylesheet'
       file.href = 'myfile.css'
       document.head.appendChild(file)
+    },
+    cssToObj (css) {
+      var obj = {}, s = css.toLowerCase().replace(/-(.)/g, function (m, g) {
+        return g.toUpperCase()
+      }).replace(/;\s?$/g, '').split(/:|;/g)
+      for (var i = 0; i < s.length; i += 2) { obj[s[i].replace(/\s/g, '')] = s[i + 1].replace(/^\s+|\s+$/g, '') }
+      return obj
     },
     addRoutes () {
       let { routes } = this.$router.options

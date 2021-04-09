@@ -4,8 +4,8 @@
   <carousel
       ref="carousel"
       :loop="true"
-      navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" aria-hidden="true"></i>'
-      navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x" aria-hidden="true"></i>'
+      navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x text-primary" aria-hidden="true"></i>'
+      navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x text-primary" aria-hidden="true"></i>'
       :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
       <slide ref="slide" class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
         <div  ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >

@@ -98,11 +98,6 @@ export const logoutUser = () => {
 export const routerBeforeEach = async (router, store) => {
   router.beforeEach(async (to, from, next) => {
     try {
-      if (to.name === 'Login') {
-        logoutUser()
-        store.dispatch('auth/logoutUser', {})
-        console.log('LOGOUT')
-      }
       console.log({ from, to, next })
       let getUsr = store.getters['user/currentUser']
       console.log({ getUsr: getUsr })
@@ -130,7 +125,7 @@ export const routerBeforeEach = async (router, store) => {
         }
       } else if ((to.path === '/auth/register' && isAuthenticated(store)) ||
         (to.path === '/auth/login' && isAuthenticated(store))) {
-        next('/user/profile')
+        next('/home')
       } else {
         next()
       }

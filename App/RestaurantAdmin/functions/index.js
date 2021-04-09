@@ -141,6 +141,12 @@ exports.FirstUser = functions.firestore
       const res3 = await user.ref.set({
         DateIn: admin.firestore.Timestamp.now()
       }, { merge: true })
+      if (context.params.ambiente !== 'chopzi' && typeof original.otherDb === 'undefined') {
+        const userRef2 = db.collection('ambiente').doc('chopzi').collection('users').doc(original.id)
+        let usuario = original
+        delete original.rol
+        await userRef2.set({ ...usuario, otherDb: true, typeAccess: 'Client', DateIn: admin.firestore.Timestamp.now() })
+      }
       if (context.params.ambiente === 'chopzi' && typeof original.otherDb === 'undefined') {
         const res = await requestTrial(user.id)
         return [res, res3]
@@ -1093,7 +1099,7 @@ async function requestTrial (requestUID) {
             to: chopziUser.email,
             message: {
               subject: 'Hola desde Chopzi',
-              text: 'Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain,
+              text: 'Administrativo: ' + 'https://' + env.adminDomain + '.chopzi.com' + ' Cliente: '+ 'https://'  + env.clientDomain + '.chopzi.com',
               html: '',
             },
           })

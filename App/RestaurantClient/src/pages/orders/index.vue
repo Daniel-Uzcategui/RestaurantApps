@@ -135,7 +135,7 @@
                         <div class="text-h7 text-left">
                            <div class="row" >
                               <p class="col-6"> Subtotal </p>
-                              <p class="text-right col-6">$ {{getTotalCarrito()[0].toFixed(2)}}</p>
+                              <p class="text-right col-6">$ {{getTotalCarrito()[3].toFixed(2)}}</p>
                            </div>
                            <div class="row" v-if="getTotalCarrito()[1] && ordenDet.tipEnvio != 1">
                               <p class="col-6">Extras</p>
@@ -399,14 +399,16 @@ export default {
     getTotalCarrito () {
       var sumProd = 0
       var sumExtra = 0
+      var sumProdDelivery = 0
       this.carrito.forEach(e => {
         sumProd = (e.prodPrice * e.quantity) + sumProd
         sumExtra = (this.totalItComp(e.items) * e.quantity) + sumExtra
       })
+
       if (this.ordenDet.delivery) {
-        sumProd = sumProd + this.ordenDet.delivery
+        sumProdDelivery = sumProd + this.ordenDet.delivery
       }
-      return [sumProd, sumExtra, sumProd + sumExtra]
+      return [sumProdDelivery, sumExtra, sumProd + sumExtra, sumProd]
     },
     showPhotoUpload (type) {
       this.photoUpload = true

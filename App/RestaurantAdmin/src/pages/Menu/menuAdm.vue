@@ -684,7 +684,7 @@ export default {
     },
     async executeSave () {
       try {
-        this.$q.loading({ message: 'Guardando los cambios' })
+        this.$q.loading.show({ message: 'Guardando los cambios' })
         let waitSaved = await this.asyncSave()
         if (waitSaved) {
           this.$q.notify({ message: 'Cambios Guardados', color: 'green' })
@@ -692,7 +692,7 @@ export default {
         }
       } catch (error) {
         console.error(error)
-        this.$q.notify({ message: 'Error guardando los cambios', color: 'green' })
+        this.$q.notify({ message: 'Error guardando los cambios', color: 'red' })
       } finally {
         this.$q.loading.hide()
       }

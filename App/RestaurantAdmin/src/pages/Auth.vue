@@ -212,10 +212,20 @@ export default {
     }
   },
   created () {
-    this.logoutUser()
+    // this.logoutUser()
   },
   mounted () {
     this.bindusers()
+    let e = this.currentUser
+    if (e && e.typeAccess === 'Admin' && e.status === true) {
+      if (e && e.rol) {
+        this.$q.loading.hide()
+        return this.$router.push({ path: '/home' })
+      } else {
+        this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
+        this.logoutUser()
+      }
+    }
   },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser', 'logoutUser']),

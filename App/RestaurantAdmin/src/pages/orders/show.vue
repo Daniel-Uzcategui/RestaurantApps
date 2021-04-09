@@ -27,7 +27,7 @@
         </div>
         <div class="header-cell q-ma-sm col-2">
           <p class="text-bold">SubTotal</p>
-           <p>{{order.paid}}</p>
+           <p>{{order.paid && order.delivery ? order.paid - order.delivery : order.paid}}</p>
           <!-- <q-input filled rounded outlined label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
@@ -37,7 +37,7 @@
         </div>
         <div class="header-cell q-ma-sm col-2">
           <p class="text-bold">Total $</p>
-           <p>{{order.paid && order.delivery ? order.paid + order.delivery : order.paid}}</p>
+           <p>{{order.paid}}</p>
           <!-- <q-input filled rounded outlined label="Total $" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div v-if="order.typePayment==8 || order.typePayment == 0" class="header-cell q-ma-sm col-2">

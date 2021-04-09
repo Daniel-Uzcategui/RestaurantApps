@@ -1,63 +1,103 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
+  match /databases/{database}/documents/ambiente/{ambiente} {
     match /{document=**} {
       allow read, write: if true;
     }
-    match /users/{usr} {
-      allow read: if request.auth.uid == resource.data.id || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+    function isUserAdmin(user) {
+      return get(/databases/$(database)/documents/ambiente/$(ambiente)/users/$(user)).data.typeAccess == "Admin"
+    }
+    match /environment/{doc} {
+      allow read: if request.auth.uid != null;
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
+    }
+    match /rates/{rates} {
+      allow read: if request.auth != null;
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
+    }
+    match /newsletter/{doc} {
+      allow read: if isUserAdmin(request.auth.uid);
+      allow create: if request.auth.uid != null;
+      allow update: if isUserAdmin(request.auth.uid);
+    }
+    match /subdomains/{doc} {
+      allow read: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
       allow create: if request.auth != null;
-      allow update: if request.auth.uid == resource.data.id;
+      allow update: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
+    }
+    match /users/{usr} {
+      allow read: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
+      allow create: if request.auth != null;
+      allow update: if (request.auth.uid == resource.data.id && (!request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['typeAccess', 'rol', 'status', 'estatus']))) || isUserAdmin(request.auth.uid);
     }
     match /orders/{ord} {
-      allow read: if request.auth.uid == resource.data.id || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow read: if request.auth.uid == resource.data.customer_id || isUserAdmin(request.auth.uid);
       allow create: if request.auth != null;
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow update: if isUserAdmin(request.auth.uid) || (request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['userComment']));
     }
     match /address/{add} {
-      allow read: if request.auth.uid == resource.data.user || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow read: if request.auth.uid == resource.data.user || isUserAdmin(request.auth.uid);
       allow create: if request.auth != null;
       allow update: if request.auth.uid == resource.data.user;
     }
+    match /filters/{filter} {
+      allow read: if request.auth != null;
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
+    }
     match /categorias/{cat} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /menu/{men} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /config/{cfg} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /groupComp/{grpcmp} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /item/{itm} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /itemGroup/{itmgrp} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /localizations/{lc} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
+    }
+    match /editor/{editor} {
+      allow read: if request.auth != null;
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
+    }
+    match /localZones/{lc} {
+      allow read: if request.auth != null;
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
     match /promos/{prm} {
       allow read: if request.auth != null;
-      allow create: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.typeAccess == "Admin";
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
     }
   }
 }

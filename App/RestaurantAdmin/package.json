@@ -22,7 +22,7 @@
     "build-ecr": "cross-env QENV=ecr quasar build",
     "deploy-dev": "firebase use default && yarn build-dev && firebase deploy --only hosting",
     "deploy-dev-functions": "firebase use default && yarn build-dev && firebase deploy",
-    "deploy-prod": "firebase use prodchopzi && yarn build-prod && firebase deploy"
+    "deploy-prod": "firebase use prodchopzi && yarn build-prod && firebase deploy --only hosting"
   },
   "dependencies": {
     "@quasar/extras": "^1.6.0",
