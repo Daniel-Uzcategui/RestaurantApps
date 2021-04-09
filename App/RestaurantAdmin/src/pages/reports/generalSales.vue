@@ -17,7 +17,7 @@
      <div v-if="responsesalesSum">Resultado :  {{responsesalesSum}}</div>
      </div>
      <div class="filler">
-     <button  v-on:click="salesRange ('2021,3,11')"> Procesar Ventas por dia </button>
+     <button  v-on:click="salesRange ('12 Mar 2021 10:00:00 GMT')"> Procesar Ventas por dia </button>
      <div v-if="responsesalesRange">Resultado : {{responsesalesRange}}</div>
      </div>
     </div>
@@ -46,6 +46,8 @@ export default {
     salesSum (dateStart, dateEnd) {
       dateStart = new Date(dateStart)
       dateEnd = new Date(dateEnd)
+      dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
+      dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
       let objdateIn
       this.paidOrder = 0
       this.countSales = 0
@@ -67,6 +69,8 @@ export default {
       return result
     },
     salesRange (dateStart, quantity) {
+      dateStart = new Date(dateStart)
+      dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
       let dateEnd
       let result, responseSales
       if (quantity > 0) {
@@ -74,6 +78,7 @@ export default {
       } else {
         dateEnd = date.addToDate(dateStart, { days: 30 })
       }
+      dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
       responseSales = this.salesSum(dateStart, dateEnd)
       result = {
         dateSale: dateStart,
