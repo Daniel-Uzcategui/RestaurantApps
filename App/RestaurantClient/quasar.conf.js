@@ -67,7 +67,7 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       // vueRouterMode: 'history',
-      // showProgress: false,
+      showProgress: true,
       // analyze: true,
       // preloadChunks: false,
       // extractCSS: false,

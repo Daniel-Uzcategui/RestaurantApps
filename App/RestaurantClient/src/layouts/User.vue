@@ -131,6 +131,50 @@
       size="10px"
       skip-hijack
     />
+    <q-dialog v-model="promptInstalliOs" class="bg-transparent">
+      <q-card class="q-cardGlass" style="max-width: 320px" >
+        <q-card-section class="column items-center bg-grey-3">
+          <div v-if="!(metamani && metamani.link && metamani.link['128x128'])">
+            <q-spinner size="128px"/>
+          </div>
+          <q-img v-else width="128px" height="128px" :src="metamani && metamani.link && metamani.link['128x128'] ? metamani.link['128x128'].href : 'favicon.ico'" />
+        </q-card-section>
+        <q-card-section class="column bg-white items-center">
+          <p class="text-h4 text-bold">Instala {{ManiName}}</p>
+        </q-card-section>
+        <q-card-section>
+          <p class="q-pa-lg text-h6 justify-center">
+            Añade esta aplicación en su pantalla de inicio para un acceso rápido y fácil
+          </p>
+        </q-card-section>
+        <q-card-actions class="bg-grey-3 column items-center">
+          <p>Solo toca <q-img height="1.5rem" width="1.5rem" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/icons%2Fios_share_icon_button_iphone.png?alt=media&token=480b9bc8-273d-43ee-91dd-9f72e40d7051"/> </p>
+          <p>luego 'Agregar a la pantalla de inicio'</p>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="promptInstall" class="bg-transparent">
+      <q-card class="q-cardGlass" style="max-width: 320px" >
+        <q-card-section class="column items-center bg-grey-3">
+          <div v-if="!(metamani && metamani.link && metamani.link['128x128'])">
+            <q-spinner size="128px"/>
+          </div>
+          <q-img v-else width="128px" height="128px" :src="metamani && metamani.link && metamani.link['128x128'] ? metamani.link['128x128'].href : 'favicon.ico'" />
+        </q-card-section>
+        <q-card-section class="column bg-white items-center">
+          <p class="text-h4 text-bold">Instala {{metamani.title}}</p>
+        </q-card-section>
+        <q-card-section>
+          <p class="q-pa-lg text-h6 justify-center">
+            Añade esta aplicación en su pantalla de inicio para un acceso rápido y fácil
+          </p>
+        </q-card-section>
+        <q-card-actions class="bg-grey-3" align="around">
+           <q-btn flat color="blue" label="Instalar" @click="installPwa()" />
+           <q-btn flat color="grey" label="Cancelar" @click="promptInstall = false" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
    </q-layout>
 </template>
 
@@ -574,6 +618,27 @@ export default {
     //     }
     //   }
     // }
+    window.addEventListener('beforeinstallprompt', (event) => {
+      console.log('👍', 'beforeinstallprompt', event)
+      // Stash the event so it can be triggered later.
+      let needsPrompt = this.needsToSeePrompt()
+      if (needsPrompt) {
+        window.deferredPrompt = event
+        // Remove the 'hidden' class from the install button container
+        this.promptInstall = true
+      }
+    })
+    window.addEventListener('appinstalled', (event) => {
+      console.log('👍', 'appinstalled', event)
+      // Clear the deferredPrompt so it can be garbage collected
+      window.deferredPrompt = null
+    })
+    if (['iPhone', 'iPad', 'iPod'].includes(navigator.platform)) {
+      let needsPrompt = this.needsToSeePrompt()
+      if (needsPrompt) {
+        this.promptInstalliOs = true
+      }
+    }
     this.bindBlocks().then((e) => {
       this.$q.loading.hide()
       // console.log({ bindblock: e })
@@ -684,6 +749,8 @@ export default {
   },
   data () {
     return {
+      promptInstall: false,
+      promptInstalliOs: false,
       metamani: {},
       isChopzi: window.location.hostname === 'chopzi.com',
       fullPath: '',
@@ -701,6 +768,45 @@ export default {
     ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
+    async installPwa () {
+      console.log('👍', 'butInstall-clicked')
+      const promptEvent = window.deferredPrompt
+      if (!promptEvent) {
+        // The deferred prompt isn't available.
+        return
+      }
+      // Show the install prompt.
+      promptEvent.prompt()
+      // Log the result
+      const result = await promptEvent.userChoice
+      console.log('👍', 'userChoice', result)
+      // Reset the deferred prompt variable, since
+      // prompt() can only be called once.
+      window.deferredPrompt = null
+      // Hide the install button.
+      this.promptInstall = true
+    },
+    needsToSeePrompt () {
+      if (navigator.standalone) {
+        return false
+      }
+      let today = new Date()
+      today = today.getTime()
+      let lastPrompt = localStorage.getItem('lastPrompt')
+      if (lastPrompt === null) {
+        // this.promptInstall = true
+        localStorage.setItem('lastPrompt', today)
+        return true
+      }
+      var DifferenceTime = today - lastPrompt
+      var DifferenceDays = DifferenceTime / (1000 * 3600 * 24)
+      // let isApple = ['iPhone', 'iPad', 'iPod'].includes(navigator.platform)
+      if (isNaN(DifferenceDays) > 14) {
+        // this.promptInstall = true
+        localStorage.setItem('lastPrompt', today)
+        return true
+      }
+    },
     appendFile () {
       let file = document.createElement('link')
       file.rel = 'stylesheet'
