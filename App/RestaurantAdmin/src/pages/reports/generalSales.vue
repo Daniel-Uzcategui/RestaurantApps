@@ -69,21 +69,26 @@ export default {
       return result
     },
     salesRange (dateStart, quantity) {
+      let objresponseSales, responseSales
+      let dateEnd
+      let result = []
       dateStart = new Date(dateStart)
       dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
-      let dateEnd
-      let result, responseSales
       if (quantity > 0) {
         dateEnd = date.addToDate(dateStart, { days: quantity })
       } else {
-        dateEnd = date.addToDate(dateStart, { days: 30 })
+        quantity = 30
       }
-      dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
-      responseSales = this.salesSum(dateStart, dateEnd)
-      result = {
-        dateSale: dateStart,
-        countSales: responseSales['countSales'],
-        totalSales: responseSales['totalSales']
+      for (let i = 1; i <= quantity; i++) {
+        dateEnd = date.addToDate(dateStart, { days: i })
+        dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
+        responseSales = this.salesSum(dateStart, dateEnd)
+        objresponseSales = {
+          dateSale: dateEnd,
+          countSales: responseSales['countSales'],
+          totalSales: responseSales['totalSales']
+        }
+        result.push(objresponseSales)
       }
       this.responsesalesRange = result // temporal solo para fines de verificar la rutina
       return result
