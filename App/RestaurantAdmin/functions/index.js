@@ -1,6 +1,12 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-admin.initializeApp()
+// admin.initializeApp()
+const acc = require('./acc.json')
+admin.initializeApp({
+  credential: admin.credential.cert(
+    acc
+  )
+})
 const db = admin.firestore()
 const querystring = require('querystring')
 const axios = require('axios')
@@ -353,12 +359,8 @@ exports.RewardsPoints = functions.firestore
         var status = options.find(e => e.value === newValue.status)
         const userData = doc.data()
         if (typeof userData.fcm !== 'undefined') {
-          return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
-            'title': 'ChopZi',
-            'body': `${status.label}`,
-            'click_action': 'http://localhost:8080/#/orders/index',
-            'icon': 'icons/favicon-128x128.png'
-          } })
+          const pre = await getPreManifest(context.params.ambiente)
+          sendNotif(pre, userRef, userData, status.label)
         }
       }
     }
@@ -1150,3 +1152,64 @@ async function requestTrial (requestUID) {
   }
 
 }
+
+exports.sendMessage = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+  res.set('Access-Control-Allow-Headers', '*')
+  console.log(req.body.user, req.body.message)
+  let ambiente = 'chopzi'
+  let body = req.body.message
+  let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(req.body.user)
+  const doc = await userRef.get()
+  const userData = doc.data()
+  if (typeof userData.fcm !== 'undefined') {
+    const pre = await getPreManifest (ambiente)
+    return res.send(sendNotif(pre, userRef, userData, body))
+  }
+})
+async function sendNotif (pre, userRef, userData, body) {
+  return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
+    'title': pre.name,
+    'body': body,
+    'click_action': 'http://localhost:8080/#/orders/index',
+    'icon': pre.icon
+  } }).then(async function(response) {
+    var userfcm = userData.fcm
+    if (response.failureCount) {
+      let toDelete = []
+      for (let i in response.results) {
+        var result = response.results[i]
+        if (result.error) {
+          toDelete.push(userfcm[i])
+        }
+      }
+      for (let i of toDelete) {
+        let index = userfcm.findIndex(x => x === i)
+        userfcm.splice(index, 1)
+      }
+    }
+    return [userRef.set({ fcm: userfcm}, { merge: true }), response]
+   })
+   .catch(function(error) {
+    console.log("Error sending message:", error);
+    return [false, error]
+  })
+}
+async function getPreManifest (ambiente) {
+  const reqRef = db.doc(`ambiente/${ambiente}/environment/manifest`)
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    return {
+      'name': 'Chopzi',
+      'icon': 'icons/icon-128x128.png',
+    }
+  } else {
+    let prev = doc.data()
+    return {
+      'name': prev.name,
+      'icon': prev.icons.icon128x128
+    }
+  }
+} 

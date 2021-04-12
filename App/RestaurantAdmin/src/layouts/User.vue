@@ -80,7 +80,7 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     'ClassicDark': () => import('./themes/ClassicDark'),
     // eslint-disable-next-line vue/no-unused-components
-    'ClassicLight': () => import('./themes/ClassicLight')
+    'ClassicLight': () => import('./yyythemes/ClassicLight')
   },
   computed: {
     themeUser () { return this.$route.fullPath === '/editor/index' ? 'GlassLight' : 'GlassDark' },

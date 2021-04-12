@@ -275,7 +275,7 @@ export default {
       if (e === null) { return }
       this.validarUsers = this.getUser
       if (this.validarUsers) {
-        if (this.newuser && window.location.hostname === 'chopzi.com') {
+        if (window.location.hostname === 'chopzi.com') {
           this.$router.push({ path: '/dashboard' })
         } else {
           this.$router.push({ path: '/menu/index' })
