@@ -120,6 +120,7 @@ export default {
             descripcion: x.descripcion,
             name: x.name,
             photo: x.photo,
+            photomulti: x.photomulti,
             price: x.price,
             id: x.id,
             stock: x.stock,

@@ -40,7 +40,7 @@
           <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
-          <q-btn v-if="version" flat icon="visibility" type="a" :href="'https://' + version.clientDomain + '.web.app/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
+          <q-btn v-if="version" flat icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>
@@ -99,6 +99,7 @@
                 <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
               </q-item>
           <q-item class="column items-center" key="photo" :props="props">
+            <p class="text-bold col-6">Foto primaria</p>
             <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
                 <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" text-color="white"></q-avatar></div>
@@ -121,7 +122,19 @@
                       color="blue"
                     />
               </q-item>
-          <q-item class="column items-start" key="desc" :props="props">
+          <q-item  :props="props" key="photomulti" class="column items-start">
+            <div class="row justify-start">
+                  <p class="text-bold col-6">Múltiples fotos</p>
+                  <q-btn class="col-4" flat color="white" push icon="help">
+                    <q-tooltip anchor="center right" self="center left">
+                      <strong :class="{ 'text-h5': $q.screen.gt.xs }">Las fotos que montes aqui se mostrarán en el dialogo cuando un usuario le de click a tu producto, si quieres mostrar la foto primaria también, tendras que volverla a subir aquí, luego de subirlas puedes darle click para cambiar el orden o eliminar
+                      </strong>
+                    </q-tooltip>
+                  </q-btn>
+            </div>
+                  <photomulti :row="props.row.photomulti" @updated="(e) => saved(e, props.row.photomulti, props.row.id, 'photomulti')" />
+              </q-item>
+          <q-item class="column items-start" key="name" :props="props">
             <div class="col-12 label-expand">Nombre</div>
               <q-input filled dense
               @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
@@ -238,6 +251,24 @@
                   min="1" max="999"
                   type="number">
                   </q-input>
+                </div>
+              </q-item>
+              <q-item class="column items-start" key="pricerange" :props="props">
+                <div class="col-12 label-expand">Solapar precio</div>
+                <div class="col-12 row justify-start">
+                  <q-input filled dense
+                  @input="(e) => saved(e, props.row.pricerange, props.row.id, 'pricerange')"
+                  v-model="props.row.pricerange"
+                  rounded
+                  class="col-8"
+                  outlined />
+                  <q-btn class="col-4" flat color="white" push icon="help">
+                    <q-tooltip anchor="center right" self="center left">
+                      <strong :class="{ 'text-h5': $q.screen.gt.xs }">Este texto, sobreescribe el precio que el cliente ve en el menu, el mejor caso de uso
+                        es para productos que tienen rangos de precios, variando las opciones seleccionadas.
+                      </strong>
+                    </q-tooltip>
+                  </q-btn>
                 </div>
               </q-item>
               <q-item class="row justify-center"  :props="props">
@@ -388,10 +419,13 @@ const columns = [
   { name: 'price', align: 'center', field: 'price' },
   { name: 'priority', align: 'center', field: 'priority' },
   { name: 'disptype', align: 'center', field: 'disptype' },
-  { name: 'estatus', align: 'left', field: 'estatus' }
+  { name: 'estatus', align: 'left', field: 'estatus' },
+  { name: 'photomulti', align: 'left', field: 'photomulti' },
+  { name: 'pricerange', align: 'left', field: 'pricerange' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
+import photomulti from '../../components/menu/photomulti.vue'
 import Croppa from 'vue-croppa'
 import imageCompression from 'browser-image-compression'
 import 'vue-croppa/dist/vue-croppa.css'
@@ -402,6 +436,7 @@ export default {
   components: {
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
     // ClientMenu,
+    photomulti,
     'croppa': Croppa.component,
     AddCat: () => import('./Categorias'),
     AddOpt: () => import('./gruposOpt')
@@ -488,6 +523,7 @@ export default {
       preview: false,
       searchBar: '',
       menuTemp: [],
+      amb: localStorage.getItem('amb'),
       sede: null,
       columns,
       temp1: {},

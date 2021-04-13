@@ -1,12 +1,13 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-// admin.initializeApp()
-const acc = require('./acc.json')
-admin.initializeApp({
-  credential: admin.credential.cert(
-    acc
-  )
-})
+admin.initializeApp()
+// const acc = require('./acc.json')
+const template = require('./template/email.js')
+// admin.initializeApp({
+//   credential: admin.credential.cert(
+//     acc
+//   )
+// })
 const db = admin.firestore()
 const querystring = require('querystring')
 const axios = require('axios')
@@ -103,7 +104,7 @@ exports.CheckCart = functions.firestore
           if (typeof items.quantity === 'undefined') {
             items.quantity = 1
           }
-          items.price = await getComponentPrice(items.component, items.item, items.quantity, context.params.ambiente)
+          items.price = await getComponentPrice(items.component, items.item, context.params.ambiente)
           sumPaid = sumPaid + ((items.price * items.quantity) * cart[prod].quantity)
         }
       } else {
@@ -121,7 +122,7 @@ exports.CheckCart = functions.firestore
     }
     change.ref.set({
       cart: newcart,
-      paid: parseFloat(sumPaid.toFixed(2))
+      paid: newValue.delivery ? parseFloat(sumPaid.toFixed(2)) + newValue.delivery : parseFloat(sumPaid.toFixed(2))
     }, {
       merge: true
     })
@@ -149,12 +150,16 @@ exports.FirstUser = functions.firestore
       }, { merge: true })
       if (context.params.ambiente !== 'chopzi' && typeof original.otherDb === 'undefined') {
         const userRef2 = db.collection('ambiente').doc('chopzi').collection('users').doc(original.id)
-        let usuario = original
-        delete original.rol
-        await userRef2.set({ ...usuario, otherDb: true, typeAccess: 'Client', DateIn: admin.firestore.Timestamp.now() })
+        const doc = await userRef2.get()
+        if (doc.empty) {
+          let usuario = original
+          delete original.rol
+          await userRef2.set({ ...usuario, otherDb: true, typeAccess: 'Client', DateIn: admin.firestore.Timestamp.now() })
+        }
       }
       if (context.params.ambiente === 'chopzi' && typeof original.otherDb === 'undefined') {
-        const res = await requestTrial(user.id)
+        console.log(context.params.userId, 'context')
+        const res = await requestTrial(user.data())
         return [res, res3]
       }
     }
@@ -168,7 +173,7 @@ exports.facturasSequence = functions.firestore
     var docRef = await countRef.get()
     if (!docRef.exists) {
       console.log('No such document!')
-      countRef.set({
+      await countRef.set({
         factura: 0
       }).then(async () => {
         change.ref.set({
@@ -178,7 +183,7 @@ exports.facturasSequence = functions.firestore
         })
       })
     } else {
-      countRef.update({
+      await countRef.update({
         factura: admin.firestore.FieldValue.increment(1)
       }).then(async () => {
         var counter = await db.collection('ambiente').doc(context.params.ambiente).collection('counters').doc('orders').get()
@@ -187,6 +192,13 @@ exports.facturasSequence = functions.firestore
         }, {
           merge: true
         })
+      })
+    }
+    const adminRef = db.collection('ambiente').doc(context.params.ambiente).collection('users')
+    const allAdmins = await adminRef.where('typeAccess', '==', 'Admin').get()
+    if (!allAdmins.empty) {
+      allAdmins.forEach(doc => {
+        console.log(doc.id, '=>', doc.data())
       })
     }
   })
@@ -1045,11 +1057,12 @@ exports.seoHandling = functions.https.onRequest(async (req, res) => {
     return res.send(html)
   }
 })
-async function requestTrial (requestUID) {
+async function requestTrial (userData) {
+  const requestUID = userData.id
   const reqRef = db.collection('ambiente')
   const doc = await reqRef.where('available', '==', true).limit(1).get()
-  const chopziUserRef = await db.doc(`ambiente/chopzi/users/${requestUID}`).get()
-  const chopziUser = chopziUserRef.data()
+  console.log(requestUID, 'requestUID')
+  const chopziUser = userData
   if (doc.empty) {
     admin.firestore().collection('mail').add({
       to: chopziUser.email,
@@ -1100,9 +1113,8 @@ async function requestTrial (requestUID) {
           admin.firestore().collection('mail').add({
             to: chopziUser.email,
             message: {
-              subject: 'Hola desde Chopzi',
-              text: 'Administrativo: ' + 'https://' + env.adminDomain + '.chopzi.com' + ' Cliente: '+ 'https://'  + env.clientDomain + '.chopzi.com',
-              html: '',
+              subject: 'Bienvenido a Chopzi',
+              html: template.welcomeMail(env.adminDomain, env.clientDomain),
             },
           })
           admin.firestore().collection('mail').add({

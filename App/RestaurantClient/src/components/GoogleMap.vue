@@ -56,7 +56,7 @@ export default {
       google: window.google,
       places: [],
       currentPlace: null,
-      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: {} }],
+      markersClone: this.markers.length ? Array.from(this.markers) : [{ position: { lat: 0, lng: 0 } }],
       centerClone: this.center
     }
   },

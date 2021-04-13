@@ -151,7 +151,7 @@
                            </div>
                            <div class="row">
                               <p class="col-6">Total</p>
-                              <p class="text-right col-6">$ {{getTotalCarrito()[2].toFixed(2)}}</p>
+                              <p class="text-right col-6">$ {{ordenDet && ordenDet.delivery ? getTotalCarrito()[0].toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
                            </div>
                            <div class="row" v-if="ordenDet.typePayment==8 || ordenDet.typePayment == 0">
                               <p class="col-6">Total</p>
@@ -406,7 +406,7 @@ export default {
       })
 
       if (this.ordenDet.delivery) {
-        sumProdDelivery = sumProd + this.ordenDet.delivery
+        sumProdDelivery = sumProd + this.ordenDet.delivery + sumExtra
       }
       return [sumProdDelivery, sumExtra, sumProd + sumExtra, sumProd]
     },

@@ -20,9 +20,10 @@
     "build-dev": "cross-env QENV=development quasar build -m pwa",
     "build-prod": "cross-env QENV=prod quasar build -m pwa",
     "build-ecr": "cross-env QENV=ecr quasar build",
-    "deploy-dev": "firebase use default && yarn build-dev && firebase deploy --only hosting",
+    "deploy-dev": "firebase use default && yarn build-dev && firebase deploy",
     "deploy-dev-functions": "firebase use default && yarn build-dev && firebase deploy",
-    "deploy-prod": "firebase use prodchopzi && yarn build-prod && firebase deploy --only hosting"
+    "deploy-prod": "firebase use prodchopzi && yarn build-prod && firebase deploy",
+    "deploy-prod-functions": "firebase use prodchopzi && firebase deploy --only functions"
   },
   "dependencies": {
     "@quasar/extras": "^1.6.0",
