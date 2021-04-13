@@ -22,14 +22,11 @@
      </div>
     </div>
  <line-chart :data="{'2017-05-13': 2, '2017-05-14': 5}"></line-chart>
- <Chart></Chart>
   </q-page>
 </template>
 <script>
 import { date } from 'quasar'
 import { mapGetters, mapActions } from 'vuex'
-import { Chartkick } from 'vue-chartkick'
-import Chart from 'chart.js'
 export default {
   data () {
     return {
@@ -38,10 +35,6 @@ export default {
       responsesalesSum: '',
       responsesalesRange: ''
     }
-  },
-  components: {
-    'line-chart': Chartkick,
-    Chart
   },
   computed: {
     ...mapGetters('order', ['orders'])
