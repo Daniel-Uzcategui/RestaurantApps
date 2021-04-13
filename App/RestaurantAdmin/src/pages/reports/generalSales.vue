@@ -1,6 +1,6 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
-    <div class="row header-container">
+    <!-- <div class="row header-container">
      <div class="flex-break"></div>
      <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
@@ -20,8 +20,8 @@
      <button  v-on:click="salesRange ('12 Mar 2021 10:00:00 GMT')"> Procesar Ventas por dia </button>
      <div v-if="responsesalesRange">Resultado : {{responsesalesRange}}</div>
      </div>
-    </div>
- <line-chart :data="{'2017-05-13': 2, '2017-05-14': 5}"></line-chart>
+    </div> -->
+<pie-chart :data="[['Blueberry', 44], ['Strawberry', 23]]"></pie-chart>
   </q-page>
 </template>
 <script>
@@ -30,6 +30,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
+      chardata: [['Jan', 4], ['Feb', 2], ['Mar', 10], ['Apr', 5], ['May', 3]],
       countSales: 0,
       paidOrder: 0,
       responsesalesSum: '',
@@ -97,7 +98,3 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
-.filler
-  margin : 40px
-</style>
