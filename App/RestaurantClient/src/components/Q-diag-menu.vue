@@ -36,17 +36,7 @@
             <q-card-section class="q-pa-none q-pt-xl row justify-center" style="overflow: visible !important">
                <div class="column items-center col-4 q-pt-xl"
                   style="min-width: 320px; overflow: visible !important"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
-                  <div class="diagphcont relative-position q-pt-lg" :class="displayVal.disptype !== 1 ? 'column items-center' : ''" :style="displayVal.disptype == 1 ? 'background-color: unset' : dgbg">
-                     <img
-                        v-if="displayVal.disptype == 1"
-                        style="position: absolute;
-                        width: 300%;
-                        top: -109%;
-                        left: -135%;" src="https://firebasestorage.googleapis.com/v0/b/pokeujz3w.appspot.com/o/Editor%2FPhotos%2FUnion%2016611559523208?alt=media&token=dde13ab5-c671-4ca2-8eb6-2c9a838a6236" alt="">
-                     <div class="diagphcont2" style="position: absolute; overflow: visible !important">
-                        <img class="diagph" :style="typeof displayVal.disptype === 'undefined' ? 'overflow: visible !important;' : displayVal.disptype == 1 ? 'overflow: visible !important; min-width: 250px; min-height: 250px; top: -81%;' : 'overflow: visible !important;'" v-if="displayVal.photo" contain :src=displayVal.photo >
-                     </div>
-                  </div>
+                  <diag-photo :displayVal="displayVal" :dgbg="dgbg"/>
                   <div>
                      <div class="column items-center">
                         <div v-if="typeof displayVal.disptype === 'undefined' && $q.screen.gt.sm  ? true : displayVal.disptype == 0 && $q.screen.gt.sm" class="q-pt-lg">
@@ -67,7 +57,7 @@
                   <div :class="displayVal.disptype == 1 ? 'text-h3 text-uppercase text-weight-medium' : 'text-h4'">
                      {{displayVal.name}}
                   </div>
-                  <div :class="displayVal.disptype == 1 ? 'text-h6' : ' text-h5 text-grey'" class="q-pt-lg text-left" :style="displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;'" v-html=displayVal.descripcion>
+                  <div class="q-pt-lg text-left" :style="[displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;', {'color': displayVal.descripcioncolor}]" v-html="displayVal.descripcion">
                   </div>
                   <div class="row justify-between q-pa-none">
                      <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1" class="q-pt-md text-h6">
@@ -220,6 +210,7 @@ import carouselmenu from './carouselMenu.vue'
 import itemcomp from './itemComp'
 import addresses from './addresses'
 import orderdate from './orderdate'
+import diagPhoto from './menu/menuphoto.vue'
 export default {
   name: 'q-dialog-menu',
   props: {
@@ -263,7 +254,8 @@ export default {
     carouselmenu,
     itemcomp,
     addresses,
-    orderdate
+    orderdate,
+    diagPhoto
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
@@ -319,8 +311,10 @@ export default {
             categoria: x.categoria,
             estatus: x.estatus,
             descripcion: x.descripcion,
+            descripcioncolor: x.descripcioncolor,
             name: x.name,
             photo: x.photo,
+            photomulti: x.photomulti,
             price: x.price,
             id: x.id,
             stock: x.stock,
@@ -361,6 +355,7 @@ export default {
         y.price = e.price
         y.estatus = e.estatus
         y.descripcion = e.descripcion
+        y.descripcioncolor = e.descripcioncolor
         y.prodType = 1
         y.photo = e.photo
         y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp

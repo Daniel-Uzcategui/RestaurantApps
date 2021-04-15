@@ -121,6 +121,21 @@ const routes = [
     ]
   },
   {
+    path: '/testing',
+    component: () => import('layouts/User.vue'),
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('components/menu/photomulti.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Editor Web'
+        }
+      }
+    ]
+  },
+  {
     path: '/localization',
     component: () => import('layouts/User.vue'),
     children: [

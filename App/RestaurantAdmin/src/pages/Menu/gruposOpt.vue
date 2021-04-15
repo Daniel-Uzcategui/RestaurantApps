@@ -24,6 +24,7 @@
           <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="createValue()"/>
           <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
+          <q-btn class="q-ml-md" @click="executeSave()" v-if="Object.keys(temp1).length" label="Guardar" color="blue" rounded no-caps icon="save" />
       </template>
       <!-- <template v-slot:body="props">
         <q-tr :props="props">

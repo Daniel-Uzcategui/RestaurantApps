@@ -99,10 +99,6 @@ export default {
     }
   },
   async created () {
-    if (window.sessionStorage.getItem('reloaded') !== 'yes') {
-      this.logoutUser()
-    }
-    window.sessionStorage.setItem('reloaded', 'yes')
     const online = window.navigator.onLine
     this.$q.loading.show({
       message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',

@@ -69,7 +69,7 @@
             </q-bar>
     <q-card-section @click.prevent class="q-pt-none q-pa-md">
       <google-map
-        v-if="address.length || markers.length || gActive"
+        v-if="address.length || markers.length || gActive "
         :poly="getZones()"
         @address-update="(e) => updateAddIn(e)"
         :readOnly="readAddr"
@@ -317,8 +317,10 @@ export default {
       this.loading = false
     }
     console.log({ addd: this.address })
-    this.dialog = false
-    this.diagHack = true
+    setTimeout(() => {
+      this.dialog = false
+      this.diagHack = true
+    }, 100)
   },
   watch: {
     loading () {
