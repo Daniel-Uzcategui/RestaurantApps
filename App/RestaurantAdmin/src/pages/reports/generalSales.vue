@@ -1,6 +1,6 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
-    <!-- <div class="row header-container">
+    <div class="row header-container">
      <div class="flex-break"></div>
      <div class="header-cell col-xs-12 col-10" tabindex="0">
       <q-card >
@@ -20,8 +20,15 @@
      <button  v-on:click="salesRange ('12 Mar 2021 10:00:00 GMT')"> Procesar Ventas por dia </button>
      <div v-if="responsesalesRange">Resultado : {{responsesalesRange}}</div>
      </div>
-    </div> -->
-<pie-chart :data="[['Blueberry', 44], ['Strawberry', 23]]"></pie-chart>
+    </div>
+    <div >Resultado : {{responsesalesRange}}</div>
+      <button  v-on:click="showGraph()"> Procesar showGraph </button>
+    <div >Resultado : {{chardataTotal}}</div>
+     <line-chart :data="chardataTotal"></line-chart>
+    <!--line-chart :data="[
+  {name: 'Workout', data: {'2017-01-01 00:00:00 -0800': 3, '2017-01-02 00:00:00 -0800': 4}},
+  {name: 'Call parents', data: {'2017-01-01 00:00:00 -0800': 5, '2017-01-02 00:00:00 -0800': 3}}
+]"></line-chart!-->
   </q-page>
 </template>
 <script>
@@ -30,11 +37,13 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      chardata: [['Jan', 4], ['Feb', 2], ['Mar', 10], ['Apr', 5], ['May', 3]],
+      chardataTotal: [ ],
+      chardataCount: [ ],
       countSales: 0,
       paidOrder: 0,
       responsesalesSum: '',
-      responsesalesRange: ''
+      responsesalesRange: '',
+      responsesalesGraph: ''
     }
   },
   computed: {
@@ -48,7 +57,9 @@ export default {
     salesSum (dateStart, dateEnd) {
       dateStart = new Date(dateStart)
       dateEnd = new Date(dateEnd)
+      let dateProceso = new Date(dateEnd)
       dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
+      dateProceso = date.addToDate(dateProceso, { hours: 23 })
       dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
       let objdateIn
       this.paidOrder = 0
@@ -57,7 +68,7 @@ export default {
         let obj = this.orders[i]
         if (obj.status === 3) {
           objdateIn = date.formatDate(obj.dateIn.toDate(), 'YYYY-MM-DDTHH:mm:ss.SSSZ')
-          if (date.isBetweenDates(objdateIn, dateStart, dateEnd)) {
+          if (date.isBetweenDates(objdateIn, dateStart, dateProceso)) {
             this.countSales++
             this.paidOrder = parseFloat(obj.paid) + parseFloat(this.paidOrder)
           }
@@ -67,6 +78,9 @@ export default {
         countSales: this.countSales,
         totalSales: this.paidOrder
       }
+      console.log(dateStart)
+      console.log(dateEnd)
+      console.log(result)
       this.responsesalesSum = result // temporal solo para fines de verificar la rutina
       return result
     },
@@ -76,9 +90,7 @@ export default {
       let result = []
       dateStart = new Date(dateStart)
       dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
-      if (quantity > 0) {
-        dateEnd = date.addToDate(dateStart, { days: quantity })
-      } else {
+      if (quantity < 0) {
         quantity = 30
       }
       for (let i = 1; i <= quantity; i++) {
@@ -91,9 +103,28 @@ export default {
           totalSales: responseSales['totalSales']
         }
         result.push(objresponseSales)
+        this.responsesalesRange = result // temporal solo para fines de verificar la rutina
       }
-      this.responsesalesRange = result // temporal solo para fines de verificar la rutina
       return result
+    },
+    showGraph () {
+      let responseSaleRange = this.salesRange('2021,04,03', 10)
+      let objresponseSalesTotal
+      let responseSalesTotal = []
+      this.chardataTotal = []
+      for (let i = 0; i <= responseSaleRange.length - 5; i++) {
+        if (typeof responseSaleRange[i]['countSales'] !== 'undefined') {
+          this.chardataTotal.push(responseSaleRange[i]['countSales'])
+          console.log(responseSaleRange.length) // temporal solo para fines de verificar la rutina
+          console.log(this.chardataTotal) // temporal solo para fines de verificar la rutina
+          objresponseSalesTotal = {
+            name: responseSaleRange[i]['dateSale'],
+            data: { cantidad: responseSaleRange[i]['countSales'] }
+          }
+        }
+        responseSalesTotal.push(objresponseSalesTotal)
+      }
+      this.chardataTotal = responseSalesTotal
     }
   }
 }
