@@ -40,7 +40,7 @@
           <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
-          <q-btn v-if="version" flat icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
+          <q-btn flat icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>
@@ -132,7 +132,7 @@
                     </q-tooltip>
                   </q-btn>
             </div>
-                  <photomulti :row="props.row.photomulti" @updated="(e) => saved(e, props.row.photomulti, props.row.id, 'photomulti')" />
+                  <photomulti :row="props.row.photomulti" @updated="(e) => {saved(e, props.row.photomulti, props.row.id, 'photomulti'); props.row.photomulti = e}" />
               </q-item>
           <q-item class="column items-start" key="name" :props="props">
             <div class="col-12 label-expand">Nombre</div>
@@ -194,12 +194,31 @@
                 <q-td><label class="col label-expand">Descripción</label></q-td>
                 <q-td class="col" key="descripcion" :props="props">
                     <q-editor content-class="bg-blue-6"
+                      :definitions="definitions" :toolbar="toolbar"
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       v-model="props.row.descripcion"
                       min-height="5rem"
+                      :content-style="{color: props.row.descripcioncolor}"
 
                     />
-
+                          <q-dialog v-model="colorText">
+                            <q-card class="q-cardGlass">
+                              <q-card-section>
+                                <p class="text-bold q-ma-md">Color del texto</p>
+                                <q-color
+                                v-model="props.row.descripcioncolor"
+                                @input="(e) => saved(e, props.row.descripcioncolor, props.row.id, 'descripcioncolor')"
+                                default-view="palette"
+                                format-model="rgba"
+                                :palette="[
+                                  '#019A9D', '#D9B801', '#E8045A', '#B2028A',
+                                  '#2A0449', '#019A9D'
+                                ]"
+                                class="my-picker"
+                              />
+                              </q-card-section>
+                            </q-card>
+                          </q-dialog>
                 </q-td>
               </q-item>
               <q-item class="row justify-center"  :props="props">
@@ -421,7 +440,8 @@ const columns = [
   { name: 'disptype', align: 'center', field: 'disptype' },
   { name: 'estatus', align: 'left', field: 'estatus' },
   { name: 'photomulti', align: 'left', field: 'photomulti' },
-  { name: 'pricerange', align: 'left', field: 'pricerange' }
+  { name: 'pricerange', align: 'left', field: 'pricerange' },
+  { name: 'descripcioncolor', align: 'left', field: 'descripcioncolor' }
 ]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
@@ -502,14 +522,38 @@ export default {
         photoType: this.photoType
       }
     }
-    // prefixPath () {
-    //   const id = this.currentUser && this.currentUser.id ? this.currentUser.id : '',
-    //     path = `${id}/${this.photoType}Photo/${this.photoType}Photo.`
-    //   return path
-    // }
   },
   data () {
     return {
+      colorText: false,
+      definitions: {
+        color: {
+          tip: 'Cambiar color de fuente',
+          icon: 'palette',
+          label: 'Color',
+          handler: () => { this.colorText = true }
+        },
+        'tamaño': { cmd: 'color', param: 'red', icon: this.$q.iconSet.editor.size1 || this.$q.iconSet.editor.size, tip: this.$q.lang.editor.size1, htmlTip: `<font class="fontsize-42">${this.$q.lang.editor.size1}</font>` }
+      },
+      toolbar: [
+        ['bold', 'italic', 'underline', 'color'],
+        [{
+          label: this.$q.lang.editor.fontSize,
+          icon: this.$q.iconSet.editor.fontSize,
+          fixedLabel: true,
+          fixedIcon: true,
+          list: 'no-icons',
+          options: [
+            'size-1',
+            'size-2',
+            'size-3',
+            'size-4',
+            'size-5',
+            'size-6',
+            'size-7'
+          ]
+        }]
+      ],
       showUploader: false,
       myCroppa: {},
       viewId: null,
@@ -706,6 +750,7 @@ export default {
         this.temp1[temp.collection][temp.payload.id] = {}
       }
       this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
+      console.log({ temp1: this.temp1 })
       this.$forceUpdate()
     },
     saved3 (value, initialValue, id, key) {
@@ -725,6 +770,8 @@ export default {
         if (waitSaved) {
           this.$q.notify({ message: 'Cambios Guardados', color: 'green' })
           this.temp1 = {}
+          this.menuTemp = JSON.parse(JSON.stringify(this.menu))
+          this.$forceUpdate()
         }
       } catch (error) {
         console.error(error)
@@ -736,17 +783,14 @@ export default {
     async asyncSave () {
       for (let collection in this.temp1) {
         for (let document in this.temp1[collection]) {
+          console.log(document, collection)
           if (this.temp1[collection][document].isNew) {
             let data = this.temp1[collection][document]
             delete data.isNew
             delete data.id
             await this.newAddRow({ collection, data })
           } else {
-            for (let key in this.temp1[collection][document]) {
-              var value = this.temp1[collection][document][key]
-              // console.log({ payload: { value, document, key }, collection: collection })
-              await this.setValue2({ payload: { value, id: document, key }, collection: collection })
-            }
+            await this.setMultiValue({ payload: { id: document, ...this.temp1[collection][document] }, collection: collection })
           }
         }
       }
@@ -755,7 +799,7 @@ export default {
     canceled (val, initialValue) {
       // console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'setValue2', 'newAddRow', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue', 'setValue2', 'setMultiValue', 'newAddRow', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindConfigs']),
     /* delrow () {

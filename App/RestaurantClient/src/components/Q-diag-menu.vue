@@ -57,7 +57,7 @@
                   <div :class="displayVal.disptype == 1 ? 'text-h3 text-uppercase text-weight-medium' : 'text-h4'">
                      {{displayVal.name}}
                   </div>
-                  <div :class="displayVal.disptype == 1 ? 'text-h6' : ' text-h5 text-grey'" class="q-pt-lg text-left" :style="displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;'" v-html=displayVal.descripcion>
+                  <div class="q-pt-lg text-left" :style="[displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;', {'color': displayVal.descripcioncolor}]" v-html="displayVal.descripcion">
                   </div>
                   <div class="row justify-between q-pa-none">
                      <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1" class="q-pt-md text-h6">
@@ -311,6 +311,7 @@ export default {
             categoria: x.categoria,
             estatus: x.estatus,
             descripcion: x.descripcion,
+            descripcioncolor: x.descripcioncolor,
             name: x.name,
             photo: x.photo,
             photomulti: x.photomulti,
@@ -354,6 +355,7 @@ export default {
         y.price = e.price
         y.estatus = e.estatus
         y.descripcion = e.descripcion
+        y.descripcioncolor = e.descripcioncolor
         y.prodType = 1
         y.photo = e.photo
         y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp

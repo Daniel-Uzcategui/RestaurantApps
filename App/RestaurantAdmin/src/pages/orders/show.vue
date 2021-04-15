@@ -121,7 +121,7 @@
          </div>
          <div class="flex-break q-pa-md"></div>
         <div class="header-cell q-ma-sm col-6" v-if="order.userComment">
-          <q-input filled rounded outlined label="punto de Referencia" :value="order.userComment"  type="textarea" placeholder="Punto de referencia"  disabled/>
+          <q-input filled rounded outlined label="Comentario del Cliente" :value="order.userComment"  type="textarea" placeholder="Punto de referencia"  disabled/>
         </div>
       </div>
       <div v-if="(order.typePayment !== 3 ) && order.photo" class="column items-center filled-soport">

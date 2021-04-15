@@ -118,6 +118,7 @@ export default {
             categoria: x.categoria,
             estatus: x.estatus,
             descripcion: x.descripcion,
+            descripcioncolor: x.descripcioncolor,
             name: x.name,
             photo: x.photo,
             photomulti: x.photomulti,

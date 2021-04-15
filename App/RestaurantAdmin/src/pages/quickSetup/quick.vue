@@ -16,7 +16,7 @@
         :navigation="!['payserv', 'addsede', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
         transition-prev="scale"
         transition-next="scale"
-        :arrows="!['payserv', 'addsede', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
+        :arrows="!['payserv', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
         :swipeable="!['payserv', 'addsede', 'addcat', 'addprod', 'theme', 'savemani'].includes(slide)"
         animated
         height="100%"
@@ -41,12 +41,12 @@
             {{ lorem3 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide v-if="!sedeAdded && !localizations.length" name="addsede" class="column no-wrap flex-center">
-          <AddSede  @done="slide = 'addsede2'; sedeAdded = true" :quick="false" style="height: 100%;"/>
-        </q-carousel-slide>
-        <q-carousel-slide name="addsede2" class="column no-wrap flex-center">
-          <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+        <q-carousel-slide name="addsede" class="column no-wrap flex-center">
+          <div class="col-12">
+          <p v-if="localizations.length">
             {{ lorem4 }}
+            </p>
+          <AddSede @done="slide = 'savemani'; sedeAdded = true" :quick="false"/>
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="savemani" class="column">
@@ -122,7 +122,7 @@ export default {
       lorem: 'Bienvenido a Chopzi, el Ecommerce diseñado para tí 😉, te guiaremos para que tu negocio pueda disfrutar de nuestra plataforma en pocos minutos ✌️.',
       lorem2: 'Primero seleccionaremos los tipos de servicio que su empresa va a dar a sus clientes, siempre los puedes ajustar más adelante 👍',
       lorem3: 'Ahora agregaremos la info de su empresa, la localización es la que tus clientes usarán para pickup 📍, con nuestra plataforma puedes hacer manejo de múltiples sedes, así que manejaremos el stock de todas ellas 😲',
-      lorem4: 'Sede Agregada, la puedes modificar al finalizar dirigiéndose en el menu a configuración',
+      lorem4: 'Ya tienes una sede Agregada, la puedes modificar al finalizar dirigiéndose en el menu a configuración',
       lorem5: 'Excelente!, ya estamos casi listos 😄, ahora crearemos las categorías de los productos, siempre puedes agregar más luego',
       lorem6: 'Ahora vamos con los productos 😁, los productos se comparten entre todas las sedes, pero puedes desactivarlos para alguna en particular',
       lorem7: 'Un pasito más y estamos listos 😉, es para escoger el tema del menú, como tus clientes ven tus productos',

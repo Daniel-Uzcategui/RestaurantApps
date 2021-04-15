@@ -468,6 +468,7 @@ export default {
               categoria: x.categoria,
               estatus: x.estatus,
               descripcion: x.descripcion,
+              descripcioncolor: x.descripcioncolor,
               name: x.name,
               photo: x.photo,
               pricerange: x.pricerange,
@@ -515,6 +516,7 @@ export default {
         y.price = e.price
         y.estatus = e.estatus
         y.descripcion = e.descripcion
+        y.descripcioncolor = e.descripcioncolor
         y.prodType = 1
         y.photo = e.photo
         y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
