@@ -67,7 +67,7 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       // vueRouterMode: 'history',
-      // showProgress: false,
+      showProgress: true,
       // analyze: true,
       // preloadChunks: false,
       // extractCSS: false,
@@ -93,6 +93,7 @@ module.exports = function (ctx) {
     devServer: {
       // https: true,
       // port: 8080,
+      public: '192.168.68.100:8080',
       open: true // opens browser window automatically
     },
 

@@ -1,6 +1,13 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp()
+// const acc = require('./acc.json')
+const template = require('./template/email.js')
+// admin.initializeApp({
+//   credential: admin.credential.cert(
+//     acc
+//   )
+// })
 const db = admin.firestore()
 const querystring = require('querystring')
 const axios = require('axios')
@@ -97,7 +104,7 @@ exports.CheckCart = functions.firestore
           if (typeof items.quantity === 'undefined') {
             items.quantity = 1
           }
-          items.price = await getComponentPrice(items.component, items.item, items.quantity, context.params.ambiente)
+          items.price = await getComponentPrice(items.component, items.item, context.params.ambiente)
           sumPaid = sumPaid + ((items.price * items.quantity) * cart[prod].quantity)
         }
       } else {
@@ -115,7 +122,7 @@ exports.CheckCart = functions.firestore
     }
     change.ref.set({
       cart: newcart,
-      paid: parseFloat(sumPaid.toFixed(2))
+      paid: newValue.delivery ? parseFloat(sumPaid.toFixed(2)) + newValue.delivery : parseFloat(sumPaid.toFixed(2))
     }, {
       merge: true
     })
@@ -130,16 +137,30 @@ exports.FirstUser = functions.firestore
       const data = {
         user: 'created'
       }
-      const res = await db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser').set(data)
-      const res2 = user.ref.set({
+      const res = await db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('firstUser').set({ ...data, DateIn: admin.firestore.Timestamp.now() })
+      const res2 = await user.ref.set({
         rol: ['Admin'],
-        firstAccess: true
+        firstAccess: true,
+        DateIn: admin.firestore.Timestamp.now()
       }, { merge: true })
       return [res, res2]
     } else {
+      const res3 = await user.ref.set({
+        DateIn: admin.firestore.Timestamp.now()
+      }, { merge: true })
+      if (context.params.ambiente !== 'chopzi' && typeof original.otherDb === 'undefined') {
+        const userRef2 = db.collection('ambiente').doc('chopzi').collection('users').doc(original.id)
+        const doc = await userRef2.get()
+        if (doc.empty) {
+          let usuario = original
+          delete original.rol
+          await userRef2.set({ ...usuario, otherDb: true, typeAccess: 'Client', DateIn: admin.firestore.Timestamp.now() })
+        }
+      }
       if (context.params.ambiente === 'chopzi' && typeof original.otherDb === 'undefined') {
-        const res = await requestTrial(user.id)
-        return res
+        console.log(context.params.userId, 'context')
+        const res = await requestTrial(user.data())
+        return [res, res3]
       }
     }
   })
@@ -152,7 +173,7 @@ exports.facturasSequence = functions.firestore
     var docRef = await countRef.get()
     if (!docRef.exists) {
       console.log('No such document!')
-      countRef.set({
+      await countRef.set({
         factura: 0
       }).then(async () => {
         change.ref.set({
@@ -162,7 +183,7 @@ exports.facturasSequence = functions.firestore
         })
       })
     } else {
-      countRef.update({
+      await countRef.update({
         factura: admin.firestore.FieldValue.increment(1)
       }).then(async () => {
         var counter = await db.collection('ambiente').doc(context.params.ambiente).collection('counters').doc('orders').get()
@@ -171,6 +192,13 @@ exports.facturasSequence = functions.firestore
         }, {
           merge: true
         })
+      })
+    }
+    const adminRef = db.collection('ambiente').doc(context.params.ambiente).collection('users')
+    const allAdmins = await adminRef.where('typeAccess', '==', 'Admin').get()
+    if (!allAdmins.empty) {
+      allAdmins.forEach(doc => {
+        console.log(doc.id, '=>', doc.data())
       })
     }
   })
@@ -343,12 +371,8 @@ exports.RewardsPoints = functions.firestore
         var status = options.find(e => e.value === newValue.status)
         const userData = doc.data()
         if (typeof userData.fcm !== 'undefined') {
-          return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
-            'title': 'ChopZi',
-            'body': `${status.label}`,
-            'click_action': 'http://localhost:8080/#/orders/index',
-            'icon': 'icons/favicon-128x128.png'
-          } })
+          const pre = await getPreManifest(context.params.ambiente)
+          sendNotif(pre, userRef, userData, status.label)
         }
       }
     }
@@ -895,6 +919,10 @@ exports.getinitjs = functions.https.onRequest(async (req, res) => {
   const getClientSub = await db.collection('ambiente')
     .where('domains', 'array-contains', url)
     .get()
+  if (getClientSub.empty) {
+    console.log('No matching documents.')
+    return res.send({ ambiente: 'NA' })
+  }
   getClientSub.forEach((doc) => {
     let data = doc.data()
     return res.send({ ambiente: data.ambiente })
@@ -910,6 +938,9 @@ exports.seoHandling = functions.https.onRequest(async (req, res) => {
     return res.send(``)
   }
   let ambiente = await fetchSetup(url)
+  if (ambiente.ambiente === 'NA') {
+    return res.send('<p> Error en la configuracion del ambiente contacte al administrador </p>')
+  }
   const reqRef = db.doc(`ambiente/${ambiente.ambiente}/environment/manifest`)
   const sourceRef = db.doc(`environment/sources`)
   const sources = await sourceRef.get()
@@ -1066,11 +1097,12 @@ exports.seoHandling = functions.https.onRequest(async (req, res) => {
     return res.send(html)
   }
 })
-async function requestTrial (requestUID) {
+async function requestTrial (userData) {
+  const requestUID = userData.id
   const reqRef = db.collection('ambiente')
   const doc = await reqRef.where('available', '==', true).limit(1).get()
-  const chopziUserRef = await db.doc(`ambiente/chopzi/users/${requestUID}`).get()
-  const chopziUser = chopziUserRef.data()
+  console.log(requestUID, 'requestUID')
+  const chopziUser = userData
   if (doc.empty) {
     admin.firestore().collection('mail').add({
       to: chopziUser.email,
@@ -1121,9 +1153,8 @@ async function requestTrial (requestUID) {
           admin.firestore().collection('mail').add({
             to: chopziUser.email,
             message: {
-              subject: 'Hola desde Chopzi',
-              text: 'Administrativo: ' + env.adminDomain + ' Cliente: ' + env.clientDomain,
-              html: '',
+              subject: 'Bienvenido a Chopzi',
+              html: template.welcomeMail(env.adminDomain, env.clientDomain),
             },
           })
           admin.firestore().collection('mail').add({
@@ -1173,3 +1204,64 @@ async function requestTrial (requestUID) {
   }
 
 }
+
+exports.sendMessage = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+  res.set('Access-Control-Allow-Headers', '*')
+  console.log(req.body.user, req.body.message)
+  let ambiente = 'chopzi'
+  let body = req.body.message
+  let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(req.body.user)
+  const doc = await userRef.get()
+  const userData = doc.data()
+  if (typeof userData.fcm !== 'undefined') {
+    const pre = await getPreManifest (ambiente)
+    return res.send(sendNotif(pre, userRef, userData, body))
+  }
+})
+async function sendNotif (pre, userRef, userData, body) {
+  return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
+    'title': pre.name,
+    'body': body,
+    'click_action': 'http://localhost:8080/#/orders/index',
+    'icon': pre.icon
+  } }).then(async function(response) {
+    var userfcm = userData.fcm
+    if (response.failureCount) {
+      let toDelete = []
+      for (let i in response.results) {
+        var result = response.results[i]
+        if (result.error) {
+          toDelete.push(userfcm[i])
+        }
+      }
+      for (let i of toDelete) {
+        let index = userfcm.findIndex(x => x === i)
+        userfcm.splice(index, 1)
+      }
+    }
+    return [userRef.set({ fcm: userfcm}, { merge: true }), response]
+   })
+   .catch(function(error) {
+    console.log("Error sending message:", error);
+    return [false, error]
+  })
+}
+async function getPreManifest (ambiente) {
+  const reqRef = db.doc(`ambiente/${ambiente}/environment/manifest`)
+  const doc = await reqRef.get()
+  if (!doc.exists) {
+    console.error('No such document!')
+    return {
+      'name': 'Chopzi',
+      'icon': 'icons/icon-128x128.png',
+    }
+  } else {
+    let prev = doc.data()
+    return {
+      'name': prev.name,
+      'icon': prev.icons.icon128x128
+    }
+  }
+} 

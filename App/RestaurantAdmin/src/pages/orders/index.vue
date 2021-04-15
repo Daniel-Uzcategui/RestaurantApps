@@ -122,7 +122,7 @@ export default {
           } else { tipoPago = '' }
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           // tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
-          let mtoTotal = obj.paid + obj.delivery
+          let mtoTotal = obj.paid
           OrderClient.push({
             'id': obj.id,
             'nombre': fullname,

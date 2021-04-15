@@ -21,7 +21,8 @@
                <q-item-section :style="$q.screen.lt.sm ? 'margin-left: 62px;' : ''" :class="$q.screen.lt.md ? 'col column items-end' : ''">
                  <div>
                    <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
-                  <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{item.prodPrice}}</q-item-label>
+                  <!-- <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{ item.prodPrice }} x {{item.quantity}} = $ {{item.prodPrice * item.quantity}}</q-item-label> -->
+                                   <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{(parseFloat(parseFloat(item.prodPrice) + totalItComp(item.items)) * item.quantity).toFixed(2)}}</q-item-label>
                  </div>
                </q-item-section>
                <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">
@@ -276,7 +277,7 @@
                                   </div>
                                 </div>
                                 <div class=" column items-center">
-                                <img :src="photoSRC" class="q-mb-sm" style="width:100%">
+                                <img :src="photoSRC" class="q-mb-sm" style="width:100%; max-width: 300px;">
                                 </div>
                            </div>
                         </q-card-section>
@@ -339,14 +340,19 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
-         <fbq-uploader
+         <!-- <fbq-uploader
             class="q-my-lg"
             label="por favor anexe la imagen del pago"
             :meta="meta"
             :prefixPath="prefixPath"
             @uploaded="uploadComplete"
             document='orders_cache'
-            ></fbq-uploader>
+            ></fbq-uploader> -->
+            <photo-upload
+              :row="photoSRC"
+              :photoUpload="photoUpload"
+              @updated="uploadComplete"
+            />
       </q-dialog>
    </q-page>
 </template>
@@ -358,16 +364,18 @@ import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
 import { QUploaderBase, date } from 'quasar'
+import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
     'addresses': () => import('../../components/addresses.vue'),
     'itemcomp': () => import('../../components/itemComp.vue'),
-    'fbq-uploader': () => import('../../components/FBQUploader20.vue'),
+    // 'fbq-uploader': () => import('../../components/FBQUploader20.vue'),
     payCreditCorp: payCreditCorp,
     Addresses,
     debitPayment,
-    creditPayment
+    creditPayment,
+    photoUpload
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -843,18 +851,20 @@ export default {
       this.photoType = ''
     },
     uploadComplete (info) {
-      console.log(info)
-      let fileNames = []
-      info.files.forEach(file => fileNames.push(file))
-      console.log('info payment: ' + info.files[0])
-      this.photoSRC = info.files[0]
+      // console.log(info)
+      // let fileNames = []
+      // info.files.forEach(file => fileNames.push(file))
+      // console.log('info payment: ' + info.files[0])
+      // this.photoSRC = info.files[0]
+      console.log('info payment: ' + info)
+      this.photoSRC = info
       this.photoUpload = false
       this.photoMessage = false
       this.CheckTDD = true
-      this.$q.notify({
-        message: `Foto subida correctamente`,
-        color: 'primary'
-      })
+      // this.$q.notify({
+      //   message: `Foto subida correctamente`,
+      //   color: 'primary'
+      // })
     }
   },
   watch: {

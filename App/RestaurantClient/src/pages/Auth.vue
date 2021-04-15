@@ -133,7 +133,7 @@
             <div class="text-center q-pa-md q-gutter-md">
               <q-btn round color="indigo-7" icon="fab fa-facebook-f" />
               <q-btn round color="red-8">
-                <q-icon name="fab fa-google-plus-g" size="1.2rem" />
+                <q-icon name="fab fa-google" @click="$q.platform.is.mobile ? GoogleSignInMobile() : GoogleSignIn()" size="1.2rem" />
               </q-btn>
               <q-btn round color="light-blue-5">
                 <q-icon name="fab fa-twitter" size="1.2rem" />
@@ -151,7 +151,7 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
        <q-card-section>
-         Debe Acpetar los Terminos y Condiciones para continuar
+         Debe Aceptar los Terminos y Condiciones para continuar
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -183,10 +183,8 @@ export default {
     },
     getUser () {
       let Access = false
-      for (let i = 0; i < this.users.length; i++) {
-        if (this.users[i].email === this.email && this.users[i].status === true) {
-          Access = true
-        }
+      if (this.currentUser && this.currentUser.status === true) {
+        Access = true
       }
       return Access
     }
@@ -226,7 +224,7 @@ export default {
     this.bindusers()
   },
   methods: {
-    ...mapActions('auth', ['createNewUser', 'loginUser']),
+    ...mapActions('auth', ['createNewUser', 'loginUser', 'GoogleSignIn', 'GoogleSignInMobile', 'logoutUser']),
     ...mapActions('user', ['bindusers']),
     getTermsDialog () {
       console.log('getTermsDialog')
@@ -273,9 +271,11 @@ export default {
   },
   watch: {
     currentUser (e) {
+      console.log(e, 'Cuuurrreeent')
+      if (e === null) { return }
       this.validarUsers = this.getUser
       if (this.validarUsers) {
-        if (this.newuser && window.location.hostname === 'chopzi.com') {
+        if (window.location.hostname === 'chopzi.com') {
           this.$router.push({ path: '/dashboard' })
         } else {
           this.$router.push({ path: '/menu/index' })

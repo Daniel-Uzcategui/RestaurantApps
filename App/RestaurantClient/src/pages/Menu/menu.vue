@@ -58,11 +58,15 @@
                                        </div>
                                     </div>
                                     <div class="price-content" >
-                                       <div>
+                                       <div v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                                          <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                                           </q-item-label>
                                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
+                                          </q-item-label>
+                                       </div>
+                                       <div v-else>
+                                         <q-item-label>{{item.pricerange}}
                                           </q-item-label>
                                        </div>
                                     </div>
@@ -108,12 +112,16 @@
                               </div>
                            </div>
                            <div>
-                              <div class="menuprice col">
+                              <div class="menuprice col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                                  <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                  <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                                  </q-item-label>
                                  <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                                  </q-item-label>
+                              </div>
+                              <div v-else class="menuprice col">
+                                <q-item-label>{{item.pricerange}}
+                                </q-item-label>
                               </div>
                            </div>
                         </div>
@@ -151,14 +159,18 @@
                         <q-item-section>
                           <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
                         </q-item-section>
-                        <q-item-section>
+                        <q-item-section v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                           </q-item-label>
                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                           </q-item-label>
                         </q-item-section>
-                        <q-item-section>
+                        <q-item-section v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                           <q-btn color="green" rounded v-if="item.discount > 0">-{{item.discount}}%</q-btn>
+                        </q-item-section>
+                        <q-item-section v-else>
+                          <q-item-label>{{item.pricerange}}
+                          </q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="fas fa-chevron-right" />
@@ -179,14 +191,18 @@
                         <q-item-section>
                           <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
                         </q-item-section>
-                        <q-item-section>
+                        <q-item-section v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                           </q-item-label>
                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                           </q-item-label>
                         </q-item-section>
-                        <q-item-section>
+                        <q-item-section v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                           <q-btn color="green" rounded v-if="item.discount > 0">-{{item.discount}}%</q-btn>
+                        </q-item-section>
+                        <q-item-section v-else>
+                          <q-item-label>{{item.pricerange}}
+                          </q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="fas fa-chevron-right" />
@@ -299,7 +315,7 @@
                                  <q-item-label lines="5">{{item.name}} </q-item-label>
                               </div>
                            </div>
-                           <div class="price-content" >
+                           <div class="price-content" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')" >
                               <div>
                                 <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                  <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
@@ -309,6 +325,10 @@
                                  </q-item-label>
                               </div>
                            </div>
+                           <div class="price-content" v-else>
+                              <q-item-label>{{item.pricerange}}
+                              </q-item-label>
+                            </div>
                            <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
                            <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
                         </q-card>
@@ -333,13 +353,17 @@
                            </div>
                         </div>
                         <div>
-                           <div class="menuprice col">
+                           <div class="menuprice col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                               <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                               <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                               </q-item-label>
                               <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
                               </q-item-label>
                            </div>
+                           <div class="price-content" v-else>
+                              <q-item-label>{{item.pricerange}}
+                              </q-item-label>
+                            </div>
                         </div>
                      </div>
                   </div>
@@ -444,8 +468,11 @@ export default {
               categoria: x.categoria,
               estatus: x.estatus,
               descripcion: x.descripcion,
+              descripcioncolor: x.descripcioncolor,
               name: x.name,
               photo: x.photo,
+              pricerange: x.pricerange,
+              photomulti: x.photomulti,
               photosmall: x.photosmall,
               price: x.price,
               id: x.id,
@@ -489,6 +516,7 @@ export default {
         y.price = e.price
         y.estatus = e.estatus
         y.descripcion = e.descripcion
+        y.descripcioncolor = e.descripcioncolor
         y.prodType = 1
         y.photo = e.photo
         y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
@@ -530,48 +558,6 @@ export default {
     if (this.Sede !== '') {
       this.setSede(this.Sede)
     }
-    // try {
-    //   this.bindMenu().then(() => {
-    //     // this.menuLoading = false
-    //     // this.filteredMenu = this.origMenu
-    //     // if (!parseInt(this.selectedProdType)) {
-    //     //   this.productSelected()
-    //     // }
-    //   }).catch(e => {
-    //     console.error('error fetching data firebase', { e })
-    //     // this.menuLoading = false
-    //     // this.filteredMenu = this.origMenu
-    //     // if (!parseInt(this.selectedProdType)) {
-    //     //   this.productSelected()
-    //     // }
-    //   })
-    // } catch (e) {
-    //   console.error(e)
-    // }
-    // this.bindCategorias().then(() => {
-    //   // if (!this.displayType) {
-    //   //   this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
-    //   //   this.selectedCat = this.filtercat[0]
-    //   // }
-    // }).catch(e => {
-    //   console.error(e)
-    //   // if (!this.displayType) {
-    //   //   this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
-    //   //   this.selectedCat = this.filtercat[0]
-    //   // }
-    // })
-    // this.bindPromos().then(() => {
-    //   // if (parseInt(this.selectedProdType)) {
-    //   //   this.productSelected()
-    //   // }
-    // }).catch(e => {
-    //   console.error('error fetching data firebase', { e })
-    //   // if (parseInt(this.selectedProdType)) {
-    //   //   this.productSelected()
-    //   // }
-    // })
-    // this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
-    // this.bindItem().catch(e => console.error('error fetching data firebase', { e }))
   },
   watch: {
     Sede (e) {
