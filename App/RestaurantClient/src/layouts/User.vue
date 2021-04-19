@@ -554,15 +554,15 @@ export default {
             this.leftDrawerOpen = false
           }
         },
-        {
-          title: 'Mi Billetera',
-          caption: '',
-          icon: 'fas fa-map-marked-alt',
-          link: '#/user/wallet',
-          click: () => {
-            this.leftDrawerOpen = false
-          }
-        },
+        // {
+        //   title: 'Mi Billetera',
+        //   caption: '',
+        //   icon: 'fas fa-map-marked-alt',
+        //   link: '#/user/wallet',
+        //   click: () => {
+        //     this.leftDrawerOpen = false
+        //   }
+        // },
         {
           title: 'Encuentranos',
           caption: '',

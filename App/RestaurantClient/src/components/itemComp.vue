@@ -211,25 +211,25 @@ export default {
           switch (true) {
             case (e.type === 0):
               if ((e.required && items.length < e.min) || (!e.required && items.length > 0 && items.length < e.min)) {
-                return false
+                return [false, this.Group]
               }
               break
             case (e.type === 1):
               if (e.required && !items.length) {
-                return false
+                return [false, this.Group]
               }
               break
             case (e.type === 2 || e.type === 3):
               // console.log(this.qSliderMinCheck(e), 'slodercheck')
               if ((e.required && this.qSliderMinCheck(e) < 0) || (!e.required && this.qSliderMinCheck(e) !== e.min && this.qSliderMinCheck(e) < 0)) {
-                return false
+                return [false, this.Group]
               }
           }
         }
       } else {
-        return true
+        return [true, this.Group]
       }
-      return true
+      return [true, this.Group]
     },
     totalItComp () {
       var sum = 0
@@ -248,15 +248,9 @@ export default {
       return sum
     }
   },
-  mounted () {
-    if (this.Group.length === 0) {
-      this.$emit('update-comp', this.checkReqAll)
-    }
-  },
   watch: {
     checkReqAll (e) {
-      this.$emit('update-comp', e)
-      // console.log(e, 'checkReqAll')
+      this.$emit('update-comp', e[0])
     },
     totalItComp (e) {
       this.$emit('update-tot', e)
