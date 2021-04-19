@@ -555,6 +555,15 @@ export default {
           }
         },
         {
+          title: 'Mi Billetera',
+          caption: '',
+          icon: 'fas fa-map-marked-alt',
+          link: '#/user/wallet',
+          click: () => {
+            this.leftDrawerOpen = false
+          }
+        },
+        {
           title: 'Encuentranos',
           caption: '',
           icon: 'fa fa-globe',

@@ -2,6 +2,18 @@
   <div >
     <div v-if="readOnly">
         <q-list dense v-for="(items, indice) in value" :key="indice">
+          <q-item v-if="indice === 0" v-ripple>
+            <q-item-section class="text-left" >
+            <div class="text-caption text-bold">Descripción </div>
+            </q-item-section>
+            <q-item-section class="text-caption text-center text-bold">
+              <q-item-label lines="3">Opción</q-item-label>
+            </q-item-section>
+            <q-item-section class="text-caption text-right text-bold">
+              <q-item-label>Precio</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-separator v-if="indice === 0" />
           <q-item v-ripple>
             <q-item-section class="text-left" >
             <div class="text-caption">{{getComponent(items.component, 'name')}} </div>
@@ -9,8 +21,8 @@
             <q-item-section class="text-center">
               <q-item-label lines="3">{{items.quantity > 1 ? items.quantity + ' x ' : null}} {{getItem(items.item, 'name')}}</q-item-label>
             </q-item-section>
-            <q-item-section class="text-right" v-if="!getComponent(items.component, 'free')">
-              <q-item-label caption>+ $ {{(typeof items.quantity === 'undefined' ? items.price : (items.price * items.quantity)).toFixed(2)}}</q-item-label>
+            <q-item-section class="text-right">
+              <q-item-label v-if="!getComponent(items.component, 'free')" caption>+ $ {{roundNumber(readOnlyPrice(items) * quantity)}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -36,7 +48,7 @@
               <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section>
-              <q-item-label v-if="!component.free" caption>+ $ {{(items.price).toFixed(2)}}</q-item-label>
+              <q-item-label v-if="!component.free" caption>+ $ {{roundNumber(readOnlyPrice(items))}}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -64,7 +76,7 @@
               <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section>
-              <q-item-label v-if="!component.free" caption>+ $ {{(items.price).toFixed(2)}}</q-item-label>
+              <q-item-label v-if="!component.free" caption>+ $ {{roundNumber(readOnlyPrice(items))}}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -94,7 +106,7 @@
               <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section v-if="!component.free" >
-              <q-item-label caption>+ $ {{(items.price).toFixed(2)}}</q-item-label>
+              <q-item-label caption>+ $ {{roundNumber(readOnlyPrice(items))}}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -133,7 +145,7 @@
               <q-item-label caption v-html="items.descripcion"></q-item-label>
             </q-item-section>
             <q-item-section v-if="!component.free" >
-              <q-item-label caption>+ $ {{(items.price).toFixed(2)}}</q-item-label>
+              <q-item-label caption>+ $ {{roundNumber(readOnlyPrice(items))}}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -148,6 +160,14 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
     mode: {
+      type: Number,
+      default: 0
+    },
+    quantity: {
+      type: Number,
+      default: 1
+    },
+    discount: {
       type: Number,
       default: 0
     },
@@ -186,6 +206,7 @@ export default {
     checkReqAll () {
       if (typeof this.value !== 'undefined' && this.comp.length) {
         for (let e of this.Group) {
+          // console.log(e, 'checking')
           var items = this.value.filter(x => e.id === x.component)
           switch (true) {
             case (e.type === 0):
@@ -199,14 +220,11 @@ export default {
               }
               break
             case (e.type === 2 || e.type === 3):
+              // console.log(this.qSliderMinCheck(e), 'slodercheck')
               if ((e.required && this.qSliderMinCheck(e) < 0) || (!e.required && this.qSliderMinCheck(e) !== e.min && this.qSliderMinCheck(e) < 0)) {
                 return false
               }
-              break
-            default:
-              return true
           }
-          return true
         }
       } else {
         return true
@@ -238,6 +256,7 @@ export default {
   watch: {
     checkReqAll (e) {
       this.$emit('update-comp', e)
+      // console.log(e, 'checkReqAll')
     },
     totalItComp (e) {
       this.$emit('update-tot', e)
@@ -245,6 +264,18 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindItem', 'bindGroupComp', 'bindCategorias', 'bindPromos']),
+    roundNumber (num) {
+      return parseFloat(num.toFixed(2))
+    },
+    readOnlyPrice (items) {
+      let check = items ?? false
+      if (!check) {
+        return 'Valor no encontrado'
+      }
+      let price = typeof items.quantity === 'undefined' ? items.price : (items.price * items.quantity)
+      let total = price * (1 - (this.discount / 100))
+      return parseFloat(total.toFixed(2))
+    },
     getValueInput (value, component, items) {
       if (value.length) {
         if (typeof value.find(x => (x['component'] === component.id && x['item'] === items.id)) !== 'undefined') {
@@ -267,6 +298,7 @@ export default {
       } else if (sum >= max) {
         this.qSliderInput(obj, max)
       }
+      this.$forceUpdate()
     },
     getComponent (id, val) {
       var comp = this.groupComp.find(x => x.id === id)
@@ -344,14 +376,14 @@ export default {
     },
     sliderValidate (component) {
       if (component.required && this.qSliderMinCheck(component) < 0) {
-        console.log('sliderVal1')
+        // console.log('sliderVal1')
         return 'Seleccionar el mínimo'
       }
       if (!component.required && this.qSliderMinCheck(component) !== component.min && this.qSliderMinCheck(component) < 0) {
-        console.log('sliderVal2')
+        // console.log('sliderVal2')
         return 'Seleccionar el mínimo o 0'
       }
-      console.log('sliderVal3')
+      // console.log('sliderVal3')
       return true
     },
     qSliderMinCheck (component) {

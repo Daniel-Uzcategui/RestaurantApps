@@ -32,66 +32,25 @@
                   <q-tooltip :hide-delay="650" content-class=" text-primary">Close</q-tooltip>
                </q-btn>
             </q-bar>
-
-            <q-card-section class="q-pa-none q-pt-xl row justify-center" style="overflow: visible !important">
-               <div class="column items-center col-4 q-pt-xl"
-                  style="min-width: 320px; overflow: visible !important"  :style="displayVal.disptype == 1 ? 'height: 45vmin; min-height: 304px;' : ''">
-                  <diag-photo :displayVal="displayVal" :dgbg="dgbg"/>
-                  <div>
-                     <div class="column items-center">
-                        <div v-if="typeof displayVal.disptype === 'undefined' && $q.screen.gt.sm  ? true : displayVal.disptype == 0 && $q.screen.gt.sm" class="q-pt-lg">
-                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'" class="q-mr-lg" color="primary" round @click="quantity--; (quantity < 1) ? (quantity = 1) : false" icon="remove" text-color="white" dense />
-                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  :class="'q-pl-'+ $q.screen.name + ' q-pr-' + $q.screen.name" color="white" rounded text-color="black" :label="quantity" />
-                           <q-btn :size="$q.screen.gt.xs ? 'md': 'xs'"  class="q-ml-lg" color="primary" round @click="(checkAvail(displayVal.id, displayVal.prodType, rewards)[0] === 1 && checkAvailReward(displayVal)[0]) ? quantity++ : false" icon="add" text-color="white" dense >
-                              <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !checkAvailReward(displayVal)[0]" floating>MAX</q-badge>
-                              <q-badge color="red" v-if="checkAvail(displayVal.id, displayVal.prodType)[0] == 2" floating style="left: 10px; right: auto;">
-                                 <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
-                              </q-badge>
-                           </q-btn>
-                        </div>
-                        <q-btn round color="secondary" style="z-index: 999999" :size="$q.screen.gt.xs ? 'md': 'xs'" @click="copyToClip(loc + '/#/menu/index?j=' +displayVal.prodType + '&t=' + displayVal.id + (selectedFilter !== '' ? '&q=' + selectedFilter : ''))" text-color="white" icon="fas fa-share-alt" class="q-ma-md"  />
-                     </div>
-                  </div>
-               </div>
-               <div class="q-pa-lg col-8"  style="min-width: 320px">
-                  <div :class="displayVal.disptype == 1 ? 'text-h3 text-uppercase text-weight-medium' : 'text-h4'">
-                     {{displayVal.name}}
-                  </div>
-                  <div class="q-pt-lg text-left" :style="[displayVal.disptype == 1 ? '' : 'max-width: 50vmax; letter-spacing: 0.094em; line-height: 35px;', {'color': displayVal.descripcioncolor}]" v-html="displayVal.descripcion">
-                  </div>
-                  <div class="row justify-between q-pa-none">
-                     <div v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1" class="q-pt-md text-h6">
-                        <div v-if="displayVal.discount > 0 && displayVal.groupComp.length">
-                           Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
-                           <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
-                        </div>
-                        <q-item-label class="text-h6" v-if="!displayVal.discount && displayVal.groupComp.length">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
-                        <q-item-label v-if="displayVal.discount > 0 && displayVal.groupComp.length == 0">
-                           $ {{(((parseFloat(displayVal.price).toFixed(2) * (1 - (displayVal.discount/100))) ) * quantity).toFixed(2)}}
-                           <q-badge color="red" floating rounded v-if="displayVal.discount > 0" >Descuento {{displayVal.discount}}%</q-badge>
-                        </q-item-label>
-                        <q-item-label v-if="!displayVal.discount && displayVal.groupComp.length == 0">$ {{((parseFloat(displayVal.price).toFixed(2) ) * quantity).toFixed(2) }}</q-item-label>
-                     </div>
-                     <q-card-actions v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype == 0" vertical>
-                       <div >
-                        <q-btn class="q-pl-md q-pr-md" v-if="requiredA && $q.screen.gt.sm" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
-                        <q-btn class="q-pl-md q-pr-md" v-if="!requiredA && $q.screen.gt.sm" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
-                       </div>
-                    </q-card-actions>
-                  </div>
-                  <itemcomp
-                     v-if="typeof displayVal.disptype === 'undefined' ? true : displayVal.disptype != 1"
-                     :mode="typeof displayVal.disptype === 'undefined' ? 0 : parseInt(displayVal.disptype)"
-                     class="q-pt-xl row justify-start"
-                     :comp="displayVal.groupComp"
-                     :value="itComp"
-                     @update-comp="(e) => {required = e}"
-                     @update-tot="(e) => {totSum = e}"
-                     />
-               </div>
-            </q-card-section>
+            <top @up="quantityUp(displayVal)"
+              @down="quantityDown(displayVal)"
+              :displayVal="displayVal"
+              :quantity="quantity"
+              :checkMax="checkMax(displayVal)"
+              :checkAlert="checkAlert(displayVal)"
+              :itComp="itComp"
+              :requiredA="requiredA"
+              :dgbg="dgbg"
+              :totSum="totSum"
+              @addtocart="addToCart(rewards)"
+              @copyClip="copyToClip()"
+              @showNotif="showNotif()"
+              @update-comp="(e) => {required = e}"
+              @update-tot="(e) => {totSum = e}"
+              />
             <q-card-section class="q-pa-none q-ma-none" v-if="displayVal.disptype == 1">
                <itemcomp
+                  :discount="displayVal.discount"
                   :mode="1"
                   class="q-pt-xl"
                   :comp="displayVal.groupComp"
@@ -133,7 +92,7 @@
                      <div class="column items-center">
                         <div  class="q-pt-md">
                            <div class="text-h6" v-if="displayVal.discount > 0">
-                              Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
+                              Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price + totSum) * (1 - (displayVal.discount/100)) ) ) * quantity).toFixed(2)}}
                               <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
                            </div>
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
@@ -182,7 +141,7 @@
                      <div class="column items-center">
                         <div  class="q-pt-md">
                            <div class="text-h6" v-if="displayVal.discount > 0">
-                              Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price) * (1 - (displayVal.discount/100)) + totSum ) ) * quantity).toFixed(2)}}
+                              Total <span class="text-strike"> {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }} </span> $ {{(((parseFloat(displayVal.price + totSum) * (1 - (displayVal.discount/100)) ) ) * quantity).toFixed(2)}}
                               <q-badge color="green" rounded v-if="displayVal.discount > 0" >-{{displayVal.discount}}%</q-badge>
                            </div>
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
@@ -210,7 +169,7 @@ import carouselmenu from './carouselMenu.vue'
 import itemcomp from './itemComp'
 import addresses from './addresses'
 import orderdate from './orderdate'
-import diagPhoto from './menu/menuphoto.vue'
+import Top from './menu/classic/top.vue'
 export default {
   name: 'q-dialog-menu',
   props: {
@@ -255,7 +214,7 @@ export default {
     itemcomp,
     addresses,
     orderdate,
-    diagPhoto
+    Top
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
@@ -419,6 +378,23 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    checkMax (displayVal) {
+      return this.checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !this.checkAvailReward(displayVal)[0]
+    },
+    checkAlert (displayVal) {
+      return this.checkAvail(displayVal.id, displayVal.prodType)[0] === 2
+    },
+    quantityUp (displayVal) {
+      if (this.checkAvail(displayVal.id, displayVal.prodType, this.rewards)[0] === 1 && this.checkAvailReward(displayVal)[0]) {
+        this.quantity++
+      }
+    },
+    quantityDown () {
+      this.quantity--
+      if (this.quantity < 1) {
+        this.quantity = 1
+      }
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {
@@ -429,8 +405,9 @@ export default {
         }
       })
     },
-    copyToClip (e) {
-      copyToClipboard(e)
+    copyToClip () {
+      let toClip = this.loc + '/#/menu/index?j=' + this.displayVal.prodType + '&t=' + this.displayVal.id + (this.selectedFilter !== '' ? '&q=' + this.selectedFilter : '')
+      copyToClipboard(toClip)
         .then(() => {
           this.$q.notify({
             message: `URL Copiado al Clipboard`,
@@ -458,7 +435,7 @@ export default {
         var toCart = {
           prodId: this.displayVal.id,
           name: this.displayVal.name,
-          prodPrice: typeof this.displayVal.discount !== 'undefined' ? parseFloat((this.displayVal.price * (1 - (this.displayVal.discount / 100))).toFixed(2)) : this.displayVal.price,
+          prodPrice: this.displayVal.price,
           quantity: this.quantity,
           items: this.itComp,
           prodType: this.displayVal.prodType,
@@ -549,9 +526,9 @@ export default {
           }
         })
         if (counter) { exists = 1 }
-        console.log({ product, filter: this.filteredMenu, id })
+        // console.log({ product, filter: this.filteredMenu, id })
         if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
-          console.log(counter, parseInt(product.stock[this.sede]))
+          // console.log(counter, parseInt(product.stock[this.sede]))
           if (counter === parseInt(product.stock[this.sede])) {
             return [0, exists]
           } else if (counter > parseInt(product.stock[this.sede])) {

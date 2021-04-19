@@ -23,31 +23,26 @@
         <div class="header-cell q-ma-sm col-1">
           <p class="text-bold">Nro. Pedido</p>
            <p>{{order.factura}}</p>
-          <!-- <q-input filled rounded outlined label="Nro. Pedido" :value="order.factura"  @input="(e) => saved(e, this.$route.query.Order_Id, 'factura')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div class="header-cell q-ma-sm col-2">
           <p class="text-bold">SubTotal</p>
            <p>{{order.paid && order.delivery ? order.paid - order.delivery : order.paid}}</p>
-          <!-- <q-input filled rounded outlined label="SubTotal" :value="order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Costo Delivery</p>
            <p>{{order.delivery}}</p>
-          <!-- <q-input filled rounded outlined label="Costo Delivery" :value="order.delivery"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div class="header-cell q-ma-sm col-2">
           <p class="text-bold">Total $</p>
            <p>{{order.paid}}</p>
-          <!-- <q-input filled rounded outlined label="Total $" :value="order.paid && order.delivery ? order.paid + order.delivery : order.paid"  @input="(e) => saved(e, this.$route.query.Order_Id, 'paid')"  type="text" float-label="Float Label" disable /> -->
         </div>
         <div v-if="order.typePayment==8 || order.typePayment == 0" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Total Bs</p>
            <p>{{getRates(order.paid + order.delivery).toFixed(2)}}</p>
-          <!-- <q-input filled rounded outlined label="Total Bs" :value="this.getRates(order.paid + order.delivery).toFixed(2)"   type="text" float-label="Float Label" disable /> -->
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
-          <q-input filled rounded outlined label="Sede" :value="this.getLocalization (order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
+          <q-input filled rounded outlined label="Sede" :value="this.getLocalization(order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
         </div>
         <div style="min-width: 300px" class="header-cell q-ma-sm col-4">
         <q-input filled rounded outlined label="Fecha de Entrega" v-if="order && order.orderWhen && order.orderWhen.orderWhen == '1'" v-model="orderDate" >
@@ -79,6 +74,8 @@
         <div class="header-cell q-ma-sm col-4">
           <q-input filled rounded outlined label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
         </div>
+        <q-btn label="Copiar URL de google maps" class="col-2 q-ma-md" no-caps color="blue" rounded icon="place" v-if="addressLocation" @click="copyToClip()" />
+        <q-btn label="abrir localización en google maps" class="col-2 q-ma-md" no-caps color="green" rounded icon="place" v-if="addressLocation" @click="openGmap()" />
         <div class="header-cell q-ma-sm col-4" v-if="order.tipEnvio==2">
           <q-input filled rounded outlined label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
         </div>
@@ -109,9 +106,6 @@
           <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
          <div class="flex-break q-pa-md"></div>
-         <!-- <div v-if="phone" class="q-pa-sm ">
-            <q-input filled rounded outlined label="Número de Teléfono" :value="phone" placeholder="Número de Teléfono"  disabled/>
-         </div> -->
          <div class="flex-break q-pa-md"></div>
          <div v-if="puntoRef && puntoRef !== 'No disponible'" class="header-cell2 q-pa-sm col-6">
             <q-input filled rounded outlined label="punto de Referencia" :value="puntoRef"  type="textarea" placeholder="Punto de referencia"  disabled/>
@@ -152,6 +146,7 @@
           style="border-radius: 28px"
           :data="detailOrder"
           :columns="columns"
+          :visible-columns="visibleColumns"
           :dense="$q.screen.lt.md"
           row-key="id"
           no-data-label="No se encontraron registros"
@@ -159,7 +154,14 @@
       <template v-slot:body="props">
         <q-tr :props="props">
            <q-td key="name" :props="props">
+             <div class="column items-start">
+            <div>
             {{ props.row.name }}
+            </div>
+            <div v-if="props.row.discount">
+              - {{ props.row.discount }} %
+            </div>
+             </div>
             <q-popup-edit
             :value="props.row.name"
             @show="() => showPopup(props.row, 'name')"
@@ -330,12 +332,14 @@
 import { mapGetters, mapActions } from 'vuex'
 import jsPDF from 'jspdf'
 import domtoimage from 'dom-to-image-more'
+import { copyToClipboard } from 'quasar'
 export default {
   components: {
     Viewer: require('../../components/Viewer.vue').default
   },
   data () {
     return {
+      addressLocation: null,
       phone: null,
       photoDiag: false,
       estatus_options: [
@@ -359,8 +363,10 @@ export default {
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
-        { name: 'price', required: true, align: 'center', label: 'Precio/Unidad', field: 'price' }
+        { name: 'price', required: true, align: 'center', label: 'Precio/Unidad', field: 'price' },
+        { name: 'discount', align: 'center', label: 'discount', field: 'discount' }
       ],
+      visibleColumns: ['name', 'quantity', 'price'],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },
         { label: 'Delivery', value: 1 },
@@ -433,6 +439,28 @@ export default {
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindRates']),
+    copyToClip () {
+      let position = this.addressLocation[0].position
+      let toClip = 'https://www.google.com/maps/dir/?api=1&destination=' + position.lat + ',' + position.lng
+      copyToClipboard(toClip)
+        .then(() => {
+          this.$q.notify({
+            message: `URL Copiado al Clipboard`,
+            color: 'positive'
+          })
+        })
+        .catch(() => {
+          this.$q.notify({
+            message: `Error copiando url al Clipboard`,
+            color: 'positive'
+          })
+        })
+    },
+    openGmap () {
+      let position = this.addressLocation[0].position
+      let toClip = 'https://www.google.com/maps/dir/?api=1&destination=' + position.lat + ',' + position.lng
+      window.open(toClip)
+    },
     download () {
       // eslint-disable-next-line new-cap
       const doc = new jsPDF()
@@ -543,6 +571,7 @@ export default {
         return obj.id === value
       })
       console.log({ objaddress, add: this.address })
+      this.addressLocation = JSON.parse(objaddress?.location)
       this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
       if (typeof objaddress !== 'undefined') {
         let tempString = ''

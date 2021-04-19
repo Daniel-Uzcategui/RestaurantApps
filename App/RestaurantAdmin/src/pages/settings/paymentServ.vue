@@ -95,9 +95,9 @@
           outlined label="CreditCorp API" />
         </div>
         </div>
-        <div  v-if="statusCreditCorp" class="row header-container q-pt-md q-pb-md">
+        <!-- <div  v-if="statusMercantil" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito Mercantil</div>
-       </div>
+       </div> -->
        <div v-if="statusMercantil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Ambiente</p>

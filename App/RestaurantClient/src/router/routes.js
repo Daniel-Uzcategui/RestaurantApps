@@ -11,6 +11,7 @@ import ForgotPassword from 'pages/ForgotPassword.vue'
 import Dashboard from 'pages/user/dashboard.vue'
 import Rewards from 'pages/user/Rewards.vue'
 import Address from 'pages/user/address.vue'
+import Wallet from 'pages/user/wallet.vue'
 const routes = [
   {
     path: '/',
@@ -84,6 +85,14 @@ const routes = [
         path: 'rewards',
         name: 'Rewards',
         component: Rewards,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'wallet',
+        name: 'wallet',
+        component: Wallet,
         meta: {
           requiresAuth: true
         }

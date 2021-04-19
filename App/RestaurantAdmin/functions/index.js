@@ -23,6 +23,8 @@ exports.CheckCart = functions.firestore
     const cart = newValue.cart
     var newcart = cart
     var sumPaid = 0
+    var sumProd = 0
+    var sumExtras = 0
     var cfgRew
     var cfgData
     if (newValue.tipEnvio === '1') {
@@ -67,11 +69,13 @@ exports.CheckCart = functions.firestore
         })
         var menu = await reference.get()
         var menuDoc = menu.data()
+        var discount = menuDoc.discount || 0
         if (!cart[prod].reward) {
-          var discount = typeof menuDoc.discount !== 'undefined' ? menuDoc.discount : 0
           var prodPrice = parseFloat((menuDoc.price * (100 - discount) / 100).toFixed(2))
           sumPaid = (cart[prod].quantity * prodPrice) + sumPaid
+          sumProd = (cart[prod].quantity * prodPrice) + sumProd
           newcart[prod].prodPrice = prodPrice
+          newcart[prod].discount = discount
         } else {
           let enoughPoints = 0
           let prodCat = cart[prod].category
@@ -93,7 +97,6 @@ exports.CheckCart = functions.firestore
                 [`pointsCat.${catEnough}`]: decrement
               })
             } else {
-              discount = typeof menuDoc.discount !== 'undefined' ? menuDoc.discount : 0
               prodPrice = parseFloat((menuDoc.price * (100 - discount) / 100).toFixed(2))
               sumPaid = (cart[prod].quantity * prodPrice) + sumPaid
               newcart[prod].prodPrice = prodPrice
@@ -101,11 +104,14 @@ exports.CheckCart = functions.firestore
           }
         }
         for (var items of cart[prod].items) {
-          if (typeof items.quantity === 'undefined') {
-            items.quantity = 1
-          }
+          items.quantity = items.quantity || 1
           items.price = await getComponentPrice(items.component, items.item, context.params.ambiente)
-          sumPaid = sumPaid + ((items.price * items.quantity) * cart[prod].quantity)
+          items.price = (items.price * (100 - discount) / 100)
+          let price = ((items.price * items.quantity) * cart[prod].quantity)
+          sumPaid = sumPaid + price
+          sumPaid = roundNumber(sumPaid)
+          sumExtras = sumExtras + price
+          sumExtras = roundNumber(sumExtras)
         }
       } else {
         let multiplier = prod.quantity
@@ -122,11 +128,16 @@ exports.CheckCart = functions.firestore
     }
     change.ref.set({
       cart: newcart,
-      paid: newValue.delivery ? parseFloat(sumPaid.toFixed(2)) + newValue.delivery : parseFloat(sumPaid.toFixed(2))
+      paid: newValue.delivery ? roundNumber(sumPaid + newValue.delivery) : roundNumber(sumPaid),
+      subtotal: roundNumber(sumProd),
+      extras: roundNumber(sumExtras)
     }, {
       merge: true
     })
   })
+function roundNumber (num) {
+  return parseFloat(num.toFixed(2))
+}
 exports.FirstUser = functions.firestore
   .document('/ambiente/{ambiente}/users/{userId}')
   .onCreate(async (user, context) => {

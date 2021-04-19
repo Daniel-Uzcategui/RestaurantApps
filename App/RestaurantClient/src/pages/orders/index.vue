@@ -70,61 +70,18 @@
             </q-card-section>
             <q-card-section class="column items-center" style="">
                <q-list v-for="(item, index) in carrito" :key="index" class="full-width">
-                  <q-item class="row justify-between">
-                     <q-item-section class="col">
-                        <div class="row">
-                           <div>
-                              <div class="q-ma-md position-relative">
-                                 <div class="bg-primary" style="border-radius: 15px">
-                                    <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="q-ma-md rounded-borders" />
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </q-item-section>
-                     <q-item-section :style="$q.screen.lt.sm ? 'margin-left: 75px;' : ''" :class="$q.screen.lt.md ? 'col column items-end' : ''">
-                        <div>
-                           <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
-                           <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{item.prodPrice}}</q-item-label>
-                        </div>
-                     </q-item-section>
-                     <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">
-                        <q-item-label class="text-h6 row">
-                           <div class="text-weight-thin">{{item.quantity}}</div>
-                           <q-btn-group  style="transform: rotateZ(90deg); border-radius: 0.5em">
-                              <q-btn size="0.3em" class="q-pl-xs" color="white" icon="fas fa-chevron-left" text-color="dark" dense >
-                                 <q-badge color="red" v-if="item.avail === 0" floating style="left: 10px; right: auto;">max</q-badge>
-                                 <q-badge color="red" v-if="item.avail == 2" floating style="left: 10px; right: auto;">
-                                    <q-icon name="fas fa-exclamation-circle" size="15px" color="white" />
-                                 </q-badge>
-                              </q-btn>
-                              <q-btn size="0.3em" color="white" text-color="black" label="│" dense/>
-                              <q-btn size="0.3em" class="q-pr-xs" color="white" icon="fas fa-chevron-right" text-color="dark" dense />
-                           </q-btn-group>
-                        </q-item-label>
-                     </q-item-section>
-                  </q-item>
-                  <q-item >
-                     <q-item-section>
-                        <itemcomp
-                           :value="item.items"
-                           :readOnly="true"
-                           />
-                     </q-item-section>
-                  </q-item>
-                  <q-item v-if="carrito.length > 1">
-                     <q-item-section class="text-h6 text-right">
-                        <q-item-label v-if="totalItComp (item.items)">
-                           SubTotal:        {{(item.prodPrice * item.quantity).toFixed(2)}}
-                        </q-item-label>
-                        <q-item-label v-if="totalItComp (item.items)">
-                           Extras:     + <u> {{ ((totalItComp (item.items)) * item.quantity).toFixed(2) }} </u>
-                        </q-item-label>
-                        <q-item-label v-if="totalItComp (item.items)">
-                           Total:      $ {{((parseFloat(item.prodPrice) + totalItComp (item.items)) * item.quantity).toFixed(2)}}
-                        </q-item-label>
-                     </q-item-section>
-                  </q-item>
+               <classic-list
+                  :photo="getProdValById(item.prodId, 'photo', item.prodType)"
+                  :name="getProdValById(item.prodId, 'name', item.prodType)"
+                  :priceDisplay="item.prodPrice"
+                  :item="item"
+                  :orders="true"
+                  :cart="cart"
+                  :totalItComp="totalItComp(item.items)"
+                  :subTotalItem="subTotalItem(item)"
+                  :Total="totalItem(item)"
+                  :extrasTotalItem="extrasTotalItem(item)"
+               />
                </q-list>
             </q-card-section>
             <q-card-section class="column items-center">
@@ -151,11 +108,11 @@
                            </div>
                            <div class="row">
                               <p class="col-6">Total</p>
-                              <p class="text-right col-6">$ {{ordenDet && ordenDet.delivery ? getTotalCarrito()[0].toFixed(2) : getTotalCarrito()[2].toFixed(2)}}</p>
+                              <p class="text-right col-6">$ {{ordenDet.paid.toLocaleString()}}</p>
                            </div>
                            <div class="row" v-if="ordenDet.typePayment==8 || ordenDet.typePayment == 0">
                               <p class="col-6">Total</p>
-                              <p class="text-right col-6">Bs {{getRates(getTotalCarrito()[2].toFixed(2)).toFixed(2)}}</p>
+                              <p class="text-right col-6">Bs {{parseFloat(getRates(getTotalCarrito()[2].toFixed(2)).toFixed(2)).toLocaleString()}}</p>
                            </div>
                         </div>
                      </div>
@@ -166,24 +123,6 @@
                         <div class=" column items-center" >
                          <img :src="ordenDet.photo" class="q-mb-sm" style="width:100%">
                         </div>
-                        <!--div class=" column items-center" v-if="showDefaultPhoto(getOrdedVal(ordenDet.id, 'photo'))">
-                           <q-btn style="border-radius: 28px;" push>
-                              <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4"></q-avatar>
-                           </q-btn>
-                           <div class="q-pt-md">
-                             <span class="text-caption" v-if="ordenDet.typePayment == 2">Haga click cargar captura del pago realizado a {{ordenDet.payto}}</span>
-                           <span class="text-caption" v-if="ordenDet.typePayment == 1">Porfavor Subir Foto del Efectivo</span>
-                           </div>
-                        </div>
-                        <div class="column items-center" v-else>
-                           <q-btn style="border-radius: 28px;" :style="`background-image: url(${getOrdedVal(ordenDet.id, 'photo')}); background-size: cover; background-repeat: no-repeat; max-width: 100%; background-position: center;`"  @click="showPhotoUpload(ordenDet.id)" push>
-                            <img style="visibility: hidden;" :src="getOrdedVal(ordenDet.id, 'photo')">
-                           </q-btn>
-                           <span>
-                              <q-icon class="q-mr-sm" color="blue-grey-10" name="edit" size="16px"></q-icon>
-                              Click para editar
-                           </span>
-                        </div!-->
                      </div>
                   </q-card-section>
                </q-card>
@@ -208,27 +147,17 @@
             </q-card-section>
          </q-card>
       </q-dialog>
-      <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
-         <fbq-uploader
-            class="q-my-lg"
-            label="Please Upload a Photo"
-            :meta="meta"
-            :prefixPath="prefixPath"
-            @uploaded="uploadComplete"
-            document='orders'
-            ></fbq-uploader>
-      </q-dialog>
    </q-page>
 </template>
 
 <script>
 import { date, QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
+import ClassicList from '../../components/cart/classicList/classicList.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
-    'fbq-uploader': () => import('../../components/FBQUploader.vue'),
-    'itemcomp': () => import('../../components/itemComp.vue')
+    ClassicList
   },
   data () {
     return {
@@ -321,6 +250,17 @@ export default {
     }
   },
   methods: {
+    totalItem (item) {
+      return ((parseFloat(item.prodPrice) + this.totalItComp(item.items)) * item.quantity).toFixed(2)
+    },
+    extrasTotalItem (item) {
+      let price = item.extras ?? ((this.totalItComp(item.items)) * item.quantity).toFixed(2)
+      return price
+    },
+    subTotalItem (item) {
+      let price = item.subtotal ?? parseFloat((item.prodPrice * item.quantity).toFixed(2))
+      return price
+    },
     getRates (mto) {
       let mtoTotal = 0
       let rate = ''

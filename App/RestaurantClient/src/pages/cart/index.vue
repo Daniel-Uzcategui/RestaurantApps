@@ -4,74 +4,21 @@
          <div class="text-h5 menuTop q-mt-md">Tu Carrito</div>
          <div class="column items-center">
          <q-list v-for="(item, index) in cart" :key="index" class="full-width">
-            <q-item class="row justify-between">
-              <q-item-section class="col">
-                <div class="row">
-                <q-btn v-if="$q.screen.gt.sm" color="primary" class="q-ma-md q-mr-lg" style="height: 25px; width: 25px;" size="xs" round @click="delCartItem(index)" icon="clear"></q-btn>
-                <div>
-                <div class="q-ma-md position-relative">
-                  <q-btn v-if="$q.screen.lt.md" color="black" class="q-ma-md q-ml-lg absolute-top-left" style="height: 25px; width: 25px;" size="xs" round @click="delCartItem(index)" icon="clear"></q-btn>
-                  <div class="bg-primary" style="border-radius: 15px">
-                  <q-img :src="getProdValById(item.prodId, 'photo', item.prodType)" width="80px" color="primary" text-color="white" class="q-ma-md rounded-borders" />
-                  </div>
-                </div>
-                </div>
-                </div>
-               </q-item-section>
-               <q-item-section :style="$q.screen.lt.sm ? 'margin-left: 62px;' : ''" :class="$q.screen.lt.md ? 'col column items-end' : ''">
-                 <div>
-                   <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">{{getProdValById(item.prodId, 'name', item.prodType)}}</q-item-label>
-                  <!-- <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{ item.prodPrice }} x {{item.quantity}} = $ {{item.prodPrice * item.quantity}}</q-item-label> -->
-                                   <q-item-label :class="$q.screen.lt.md ? 'text-caption' : ''">$ {{(parseFloat(parseFloat(item.prodPrice) + totalItComp(item.items)) * item.quantity).toFixed(2)}}</q-item-label>
-                 </div>
-               </q-item-section>
-               <q-item-section :class="$q.screen.lt.md ? 'col column items-end' : ''">
-                <q-item-label class="text-h6 row">
-                  <div class="text-weight-thin">{{item.quantity}}</div>
-                  <div class="relative-position">
-                  <q-btn-group v-if="!item.reward"  style="transform: rotateZ(90deg); height: 20px ; border-radius: 0.5em">
-                    <q-btn size="0.3em" class="q-pl-xs" color="primary" @click="(checkAvail(item.prodId, item.prodType, index)[0] === 1) ? modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)+1)}) : false" icon="fas fa-chevron-left" text-color="white" dense >
-                    </q-btn>
-                     <q-btn size="0.3em" color="primary" text-color="black" label="│" dense/>
-                    <q-btn size="0.3em" class="q-pr-xs" color="primary" @click=" modCartVal({id: index, key: 'quantity', value: (parseInt(item.quantity)-1)}); (checkAvail(item.prodId, item.prodType, index)[0] === 1) ;(item.quantity < 1) ? modCartVal({id: index, key: 'quantity', value: 1}) : false" icon="fas fa-chevron-right" text-color="white" dense />
-                  </q-btn-group>
-                  <div style="top: -200%; position: absolute">
-                    <q-badge color="red" v-if="item.avail === 0" style="">max</q-badge>
-                      <q-badge color="red" v-if="item.avail == 2" style=""><q-icon name="fas fa-exclamation-circle" size="15px" color="white" />Hay más de lo disponible</q-badge>
-                  </div>
-                </div>
-                </q-item-label>
-               </q-item-section>
-            </q-item>
-            <q-item >
-              <q-item-section>
-                  <itemcomp
-                  :value="item.items"
-                  :readOnly="true"
-                  />
-               </q-item-section>
-            </q-item>
-            <q-item v-if="item.addressPickup && item.addressShipping">
-              <q-item-section>
-                <addresses
-                :readOnly="true"
-                :addressPickup="item.addressPickup"
-                :addressShipping="item.addressShipping" />
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section v-if="cart.length > 1" class="text-h6 text-right">
-                  <q-item-label v-if="totalItComp(item.items)">
-                    Subtotal: $ {{(parseFloat(parseFloat(item.prodPrice)) * item.quantity).toFixed(2)}}
-                  </q-item-label>
-                  <q-item-label v-if="totalItComp(item.items)">
-                    Extras:     + <u> {{ ((totalItComp(item.items)) * item.quantity).toFixed(2) }} </u>
-                  </q-item-label>
-                  <q-item-label >
-                    Total:      $ {{(parseFloat(parseFloat(item.prodPrice) + totalItComp(item.items)) * item.quantity).toFixed(2)}}
-                  </q-item-label>
-               </q-item-section>
-            </q-item>
+           <classic-list
+            :photo="getProdValById(item.prodId, 'photo', item.prodType)"
+            :name="getProdValById(item.prodId, 'name', item.prodType)"
+            :priceDisplay="priceDisplay(item)"
+            :item="item"
+            :cart="cart"
+            :discount="getProdValById(item.prodId, 'discount', item.prodType)"
+            :totalItComp="totalItComp(item.items)"
+            :subTotalItem="subTotalItem(item)"
+            :Total="roundNumber(subTotalItem(item) + extrasTotalItem(item))"
+            :extrasTotalItem="extrasTotalItem(item)"
+            @up="modEventUp(item, index)"
+            @down="modEventDown(item, index)"
+            @delcart="delCartItem(index)"
+           />
          </q-list>
          <q-card class="q-pa-lg q-cardGlass" style="border-radius: 28px; min-width: 40vmin">
            <q-card-section>
@@ -284,7 +231,7 @@
                         </q-card>
                     </div>
                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
-                    <div v-if="this.rates.length">
+                    <div v-if="ratesComp.length">
                      <debitPayment
                       :ordersId=currentUser.cedula
                       :amount="getRates(totalPrice + deliveryPrice)"
@@ -293,7 +240,7 @@
                      <div v-else>No hay tasa de cambio colocada</div>
                     </div>
                      <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 9">
-                    <div v-if="this.rates.length">
+                    <div v-if="ratesComp.length">
                      <creditPayment
                       :ordersId=currentUser.cedula
                       :credit="true"
@@ -309,9 +256,9 @@
                         <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
                       </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
-                        <div v-if="this.rates.length">
+                        <div v-if="ratesComp.length">
                         <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8 ||  pagoSel == 9" >Total: Bs
-                          {{ (getRates(totalPrice + deliveryPrice)).toFixed(2)}}
+                          {{ parseFloat((getRates(totalPrice + deliveryPrice)).toFixed(2)).toLocaleString()}}
                         </div>
                         </div>
                         <div v-else>No hay tasa de cambio colocada</div>
@@ -340,14 +287,6 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
-         <!-- <fbq-uploader
-            class="q-my-lg"
-            label="por favor anexe la imagen del pago"
-            :meta="meta"
-            :prefixPath="prefixPath"
-            @uploaded="uploadComplete"
-            document='orders_cache'
-            ></fbq-uploader> -->
             <photo-upload
               :row="photoSRC"
               :photoUpload="photoUpload"
@@ -359,23 +298,26 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
-import Addresses from '../../components/addresses.vue'
+// import Addresses from '../../components/addresses.vue'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
 import { QUploaderBase, date } from 'quasar'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
+import ClassicList from '../../components/cart/classicList/classicList.vue'
+import Addresses from '../../components/addresses.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
-    'addresses': () => import('../../components/addresses.vue'),
-    'itemcomp': () => import('../../components/itemComp.vue'),
+    // 'itemcomp': () => import('../../components/itemComp.vue'),
     // 'fbq-uploader': () => import('../../components/FBQUploader20.vue'),
     payCreditCorp: payCreditCorp,
-    Addresses,
+    // Addresses,
     debitPayment,
     creditPayment,
-    photoUpload
+    photoUpload,
+    ClassicList,
+    Addresses
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -385,6 +327,12 @@ export default {
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
     ...mapGetters('user', ['currentUser']),
+    ratesComp () {
+      if (this.rates.length) {
+        return this.rates
+      }
+      return this.rateDefault
+    },
     checkCartType () {
       let a = 0
       let b = 0
@@ -457,6 +405,7 @@ export default {
     return {
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       cupon: '',
+      rateDefault: null,
       loadingState: false,
       orderDate: null,
       orderWhen: window.location.hostname === 'chopzi.com' ? '0' : null,
@@ -484,7 +433,7 @@ export default {
       allowBuy: true
     }
   },
-  created () {
+  async created () {
     console.log('created page')
     // this.bindLocalizations()
     this.bindPaymentServ().then(() => {
@@ -494,7 +443,12 @@ export default {
     this.bindConfigs() // .then(e => this.getDays())
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
-    this.bindRates().catch(e => console.error('error fetching data firebase', { e }))
+    await this.bindRates().then(async e => {
+      if (!e.length) {
+        await this.$axios.get('https://s3.amazonaws.com/dolartoday/data.json')
+          .then(e => { this.rateDefault = [{ rateValue: e?.data?.USD?.promedio, currency: 'Bs' }] }).catch(e => console.error('error fetching data ratesApi', { e }))
+      }
+    }).catch(e => console.error('error fetching data firebase', { e }))
     console.log(this.rates)
   },
   mounted () {
@@ -509,6 +463,52 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     ...mapActions('editor', ['bindBlocks']),
+    modEventDown (item, index) {
+      this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) - 1) })
+      this.checkAvail(item.prodId, item.prodType, index)
+      if (item.quantity < 1) {
+        this.modCartVal({ id: index, key: 'quantity', value: 1 })
+      }
+    },
+    modEventUp (item, index) {
+      if (this.checkAvail(item.prodId, item.prodType, index)[0] === 1) {
+        this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) + 1) })
+      }
+    },
+    priceDisplay (item) {
+      let prodPrice = this.getProdPrice(item)
+      let classes = ''
+      let discount = ''
+      if (this.$q.screen.lt.md) {
+        classes += 'text-caption '
+      }
+      if (prodPrice[1]) {
+        classes += 'text-strike'
+        discount = `<span>$ ${prodPrice[1]}</span>`
+      }
+      return `<span class="${classes}" >$ ${prodPrice[0]}</span> ${discount}`
+    },
+    subTotalItem (item) {
+      try {
+        let subtotal = this.getProdPrice(item)[1] || this.getProdPrice(item)[0]
+        return this.roundNumber(subtotal)
+      } catch (e) {
+        console.error(e)
+        return 'Precios no encontrados'
+      }
+    },
+    extrasTotalItem (item) {
+      try {
+        let subtotal = this.totalItComp(item.items)
+        let discount = this.getProdValById(item.prodId, 'discount', item.prodType) || 0
+        discount = 1 - (discount / 100)
+        let total = subtotal * discount * item.quantity
+        return this.roundNumber(total)
+      } catch (error) {
+        console.error(error)
+        return 'Precios no encontrados'
+      }
+    },
     dateOptions (date) {
       if (typeof this.configDates === 'undefined') { return new Date(date + ' 23:59:59') >= new Date() }
       let sedecfg = this.configDates
@@ -574,12 +574,16 @@ export default {
     totalItComp (its) {
       var sum = 0
       its.forEach(x => {
-        if (typeof x.quantity === 'undefined') {
-          sum = sum + x.price
-        } else {
-          sum = sum + (x.price * x.quantity)
-        }
+        let qty = x.quantity ?? 1
+        sum = sum + (x.price * qty)
+        sum = parseFloat(sum.toFixed(2))
+        // if (typeof x.quantity === 'undefined') {
+        //   sum = sum + x.price
+        // } else {
+        //   sum = sum + (x.price * x.quantity)
+        // }
       })
+      console.log({ sum })
       return sum
     },
     showNotif () {
@@ -618,8 +622,8 @@ export default {
     getRates (mto) {
       let mtoTotal = 0
       let rate
-      if (typeof this.rates !== 'undefined' && this.rates.length) {
-        rate = this.rates.find(obj => {
+      if (typeof this.ratesComp !== 'undefined' && this.ratesComp.length) {
+        rate = this.ratesComp.find(obj => {
           return obj.currency === 'Bs'
         })
       }
@@ -701,18 +705,53 @@ export default {
       }).catch(() => this.$q.loading.hide())
     },
     getTotalCarrito () {
-      // console.log({ cart: this.cart })
       var sumProd = 0
       var sumExtra = 0
+      console.log(this.cart)
       this.cart.forEach(e => {
-        sumProd = (e.prodPrice * e.quantity) + sumProd
-        sumExtra = (this.totalItComp(e.items) * e.quantity) + sumExtra
+        sumProd = this.subTotalItem(e) + sumProd
+        let toSumExtra = this.extrasTotalItem(e)
+        sumExtra = toSumExtra + sumExtra
       })
-      this.totalPrice = sumProd + sumExtra
-      return [sumProd, sumExtra, sumProd + sumExtra]
+      let totalPrice = this.roundNumber(sumProd + sumExtra)
+      this.totalPrice = totalPrice
+      sumProd = this.roundNumber(sumProd)
+      sumExtra = this.roundNumber(sumExtra)
+      return [sumProd, sumExtra, totalPrice]
+    },
+    roundNumber (num) {
+      return parseFloat(num.toFixed(2))
+    },
+    getProdPrice (item) {
+      let check = item ?? false
+      if (!check) {
+        return 'Valor no encontrado'
+      }
+      let price2
+      const product = this.getProd(item.prodId, item.prodType)
+      let price = (product.price * item.quantity)
+      if (product.discount) {
+        price2 = price * (1 - (product.discount / 100))
+        price2 = parseFloat(price2.toFixed(2))
+      }
+      return [price, price2]
+    },
+    getProd (id, type) {
+      if (type === 0) {
+        var obj = this.menu.find(e => { return e.id === id })
+        if (typeof obj === 'undefined') {
+          return 'El Producto no existe o fue eliminado, porfavor quitar del carrito'
+        }
+        return obj
+      } else {
+        obj = this.promos.find(e => { return e.id === id })
+        if (typeof obj === 'undefined') {
+          return 'El Producto no existe o fue eliminado, porfavor quitar del carrito'
+        }
+        return obj
+      }
     },
     getProdValById (id, val, type) {
-      // console.log({ id, val, type })
       if (type === 0) {
         var obj = this.menu.find(e => { return e.id === id })
         if (typeof obj === 'undefined') {
@@ -765,7 +804,6 @@ export default {
           }
         })
         if (counter) { exists = 1 }
-        // console.log({ sede: product.stock[this.sede], counter })
         if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
           if (counter === parseInt(product.stock[this.sede])) {
             this.modCartVal({ id: index, key: 'avail', value: 0 })
@@ -851,20 +889,11 @@ export default {
       this.photoType = ''
     },
     uploadComplete (info) {
-      // console.log(info)
-      // let fileNames = []
-      // info.files.forEach(file => fileNames.push(file))
-      // console.log('info payment: ' + info.files[0])
-      // this.photoSRC = info.files[0]
       console.log('info payment: ' + info)
       this.photoSRC = info
       this.photoUpload = false
       this.photoMessage = false
       this.CheckTDD = true
-      // this.$q.notify({
-      //   message: `Foto subida correctamente`,
-      //   color: 'primary'
-      // })
     }
   },
   watch: {

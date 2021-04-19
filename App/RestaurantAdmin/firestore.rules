@@ -1,9 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents/ambiente/{ambiente} {
-    match /{document=**} {
-      allow read, write: if true;
-    }
+    // match /{document=**} {
+    //   allow read, write: if true;
+    // }
     function isUserAdmin(user) {
       return get(/databases/$(database)/documents/ambiente/$(ambiente)/users/$(user)).data.typeAccess == "Admin"
     }
