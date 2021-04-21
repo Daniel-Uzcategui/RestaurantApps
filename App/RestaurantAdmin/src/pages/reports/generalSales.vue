@@ -10,7 +10,7 @@
       </q-card>
     </div>
     <div class="filler"> <h3> Lista de ordenes </h3>
-      {{orders}}
+      <!-- {{orders}} -->
     </div>
     <div class="filler">
      <button v-on:click="salesSum ('2020,4,12','2022,4,12')"> Procesar Ventas </button>
@@ -24,7 +24,7 @@
     <div >Resultado : {{responsesalesRange}}</div>
       <button  v-on:click="showGraph()"> Procesar showGraph </button>
     <div >Resultado : {{chardataTotal}}</div>
-     <line-chart :data="chardataTotal"></line-chart>
+     <area-chart download="Ventas" label="Ventas" :legend="true" xtitle="Time" ytitle="Population" id="users-chart" prefix="$" :messages="{empty: 'No Hay data disponible'}" :data="chardataTotal" />
     <!--line-chart :data="[
   {name: 'Workout', data: {'2017-01-01 00:00:00 -0800': 3, '2017-01-02 00:00:00 -0800': 4}},
   {name: 'Call parents', data: {'2017-01-01 00:00:00 -0800': 5, '2017-01-02 00:00:00 -0800': 3}}
@@ -90,9 +90,7 @@ export default {
       let result = []
       dateStart = new Date(dateStart)
       dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
-      if (quantity < 0) {
-        quantity = 30
-      }
+      quantity = quantity ?? 30
       for (let i = 1; i <= quantity; i++) {
         dateEnd = date.addToDate(dateStart, { days: i })
         dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
@@ -107,7 +105,7 @@ export default {
       }
       return result
     },
-    showGraph () {
+    showGraph2 () {
       let responseSaleRange = this.salesRange('2021,04,03', 10)
       let objresponseSalesTotal
       let responseSalesTotal = []
@@ -117,6 +115,7 @@ export default {
           this.chardataTotal.push(responseSaleRange[i]['countSales'])
           console.log(responseSaleRange.length) // temporal solo para fines de verificar la rutina
           console.log(this.chardataTotal) // temporal solo para fines de verificar la rutina
+          console.log(responseSaleRange[i], 'Salerange')
           objresponseSalesTotal = {
             name: responseSaleRange[i]['dateSale'],
             data: { cantidad: responseSaleRange[i]['countSales'] }
@@ -125,6 +124,23 @@ export default {
         responseSalesTotal.push(objresponseSalesTotal)
       }
       this.chardataTotal = responseSalesTotal
+    },
+    showGraph () {
+      let responseSaleRange = this.salesRange('2021,03,20', 40)
+      let objresponseSalesTotal = []
+      this.chardataTotal = []
+      for (let i = 0; i <= responseSaleRange.length - 5; i++) {
+        if (typeof responseSaleRange[i]['countSales'] !== 'undefined') {
+          this.chardataTotal.push(responseSaleRange[i]['countSales'])
+          console.log(responseSaleRange.length) // temporal solo para fines de verificar la rutina
+          console.log(this.chardataTotal) // temporal solo para fines de verificar la rutina
+          console.log(responseSaleRange[i], 'Salerange')
+          let date = responseSaleRange[i]['dateSale']
+          objresponseSalesTotal.push([date.slice(5), parseFloat(responseSaleRange[i]['totalSales'].toFixed(2))])
+        }
+      }
+      this.chardataTotal = objresponseSalesTotal
+      console.log(this.chardataTotal)
     }
   }
 }
