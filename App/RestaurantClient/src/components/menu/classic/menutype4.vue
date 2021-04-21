@@ -1,7 +1,6 @@
 <template>
   <div>
             <q-tabs
-               v-if="!(typeof sede === 'undefined' || sede === null)"
                class="wrapel"
                content-class="wrapel"
                :value="selectedCat ? selectedCat.id : ''"

@@ -1,7 +1,7 @@
 <template>
   <div class="row">
-    <q-dialog class="bg-transparent" :value="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
-      <q-card class="q-cardGlass">
+    <q-dialog full-height full-width class="bg-transparent" :value="photoUpload" transition-hide="scale" transition-show="scale" @before-hide="resetPhotoType">
+      <q-card>
         <q-card-section>
           <p>Formatos recomendados: <span class="text-bold">jpg y png</span></p>
           <p>Las imágenes son comprimidas antes de la carga, si su imagen es muy grande puede tardar unos segundos.</p>
@@ -11,8 +11,9 @@
         <q-card-section class="column items-center relative-position">
           <div>
         <croppa v-model="myCroppa"
-          :width="300"
-          :height="300"
+          :width="imageWidth || 200"
+          :height="imageHeight || 200"
+          @new-image="(e) => getimageSize()"
           placeholder="click aquí para subir foto"
           placeholder-color="#000"
           :placeholder-font-size="16"
@@ -20,7 +21,7 @@
           :show-remove-button="true"
           remove-button-color="black"
           show-loading
-          :quality="4"
+          :quality="quality || 2"
           :loading-size="50"
           :loading-color="'#606060'"
           ref="croppa"
@@ -83,8 +84,11 @@ export default {
   },
   data () {
     return {
+      imageWidth: null,
+      imageHeight: null,
       menuopciones: false,
       photoindex: null,
+      quality: 3.3333,
       ambiente: localStorage.getItem('amb'),
       showUploader: false,
       myCroppa: {},
@@ -94,11 +98,39 @@ export default {
   watch: {
     photoArray (e) {
       this.$emit('updated', e)
-    }
+    },
+    myCroppa (e) { console.log(e, 'my croppa') }
   },
   methods: {
+    getimageSize () {
+      let file = this.$refs.croppa.getChosenFile()
+      console.log(file, 'le file')
+      this.readImageFile(file)
+    },
     resetPhotoType () {
       this.photoType = ''
+    },
+    readImageFile (file) {
+      var reader = new FileReader() // CREATE AN NEW INSTANCE.
+      var that = this
+      reader.onload = async function (e) {
+        var img = new Image()
+        img.src = e.target.result
+        console.log('onload', e)
+        img.onload = function () {
+          that.setSizes(this)
+        }
+      }
+      reader.readAsDataURL(file)
+    },
+    setSizes (e) {
+      console.log(e, 'setting size')
+      let aspectRatio = e.width / e.height
+      let width = this.$q.screen.width * 0.3
+      this.quality = 3.3333
+      this.imageWidth = width
+      this.imageHeight = width / aspectRatio
+      console.log(aspectRatio, width, this.$q.screen.width)
     },
     uploadComplete (info) {
       console.log('Upload complete', info)
@@ -124,9 +156,10 @@ export default {
         console.log(this.appicons)
       }
     },
-    conss () {},
+    conss (e) { console.log(e) },
     async croppaPic () {
       let file = this.$refs.croppa.getChosenFile()
+      console.log(file, 'le file')
       let blob = await this.$refs.croppa.promisedBlob(file.type)
       let imageFile = blob
       var re = /(?:\.([^.]+))?$/

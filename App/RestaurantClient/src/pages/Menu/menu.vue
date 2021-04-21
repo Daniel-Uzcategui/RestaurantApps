@@ -84,6 +84,7 @@
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
               :sede="sede"
+              :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
               @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (display = true, getMenuItem(e.id, 0)) : false}" />
             </div>
@@ -93,6 +94,7 @@
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
               :sede="sede"
+              :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
               @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (display = true, getMenuItem(e.id, 0)) : false}" />
             </div>

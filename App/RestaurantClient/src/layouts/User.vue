@@ -13,7 +13,7 @@
             <q-badge color="red" floating>{{getCartQ}}</q-badge>
           </q-btn>
           <q-btn flat @click="isAnonymous ? (() => {})() : (() => { setEditUserDialog(true); setBlur() })()" icon="fas fa-user" />
-          <q-btn flat @click="isAnonymous ? (() => { $router.push({ path: '/auth/login' }) })() : (() => { logoutUser(); localStorage.removeItem('ott-token') })()" icon="fas fa-sign-out-alt" />
+          <q-btn flat @click="isAnonymous ? (() => { $router.push({ path: '/auth/login' }) })() : (() => { loguserout() })()" icon="fas fa-sign-out-alt" />
         </q-toolbar>
       <q-tabs dense shrink stretch>
                 <q-tab v-show="nav2[1].length === 1" no-caps v-for="(link, index) in nav2[1]"
@@ -440,7 +440,7 @@ export default {
             caption: '',
             icon: 'fas fa-sign-out-alt',
             link: '#',
-            click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
+            click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.loguserout() })() }
           }]
         if (this.menucfg && !this.menucfg.iconsactive) {
           nvv = nvv.map(x => { return { ...x, icon: '' } })
@@ -584,7 +584,7 @@ export default {
           caption: '',
           icon: 'fas fa-sign-out-alt',
           link: '#',
-          click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
+          click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.loguserout() })() }
         }]
       console.log({ men: this.menucfg })
       if (this.menucfg && !this.menucfg.iconsactive) {
@@ -777,6 +777,9 @@ export default {
     ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
+    loguserout () {
+      this.logoutUser(); localStorage.removeItem('ott-token')
+    },
     async installPwa () {
       console.log('👍', 'butInstall-clicked')
       const promptEvent = window.deferredPrompt
@@ -992,7 +995,7 @@ export default {
         caption: '',
         icon: 'fas fa-sign-out-alt',
         link: '#',
-        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.logoutUser(); localStorage.removeItem('ott-token') })() }
+        click: () => { this.isAnonymous ? (() => { this.$router.push({ path: '/auth/login' }) })() : (() => { this.loguserout() })() }
       }]
       console.log({ men: this.menucfg })
       if (this.menucfg && !this.menucfg.iconsactive) {
