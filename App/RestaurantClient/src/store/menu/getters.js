@@ -57,6 +57,7 @@ export const listext = ({ extras }) => extras
 export const cart = ({ cart }) => cart
 
 export const sede = ({ sede }) => sede
+export const rewards = ({ rewards }) => rewards
 
 export const promos = ({ promos }) => {
   const keys = Object.keys(promos)

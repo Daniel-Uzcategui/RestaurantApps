@@ -42,7 +42,7 @@
               :requiredA="requiredA"
               :dgbg="dgbg"
               :totSum="totSum"
-              @addtocart="addToCart(rewards)"
+              @addtocart="addToCart(displayVal.reward)"
               @copyClip="copyToClip()"
               @showNotif="showNotif()"
               @update-comp="(e) => {required = e}"
@@ -71,7 +71,7 @@
                 </q-btn>
               </div>
               <div >
-              <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+              <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="requiredA" @click="addToCart(displayVal.reward)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
               <q-btn class="q-pl-md q-pr-md q-mt-lg" v-if="!requiredA" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
               </div>
             </q-card-section>
@@ -98,7 +98,7 @@
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
                         <div class="q-pt-lg" >
-                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(displayVal.reward)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
                            <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
@@ -147,7 +147,7 @@
                            <q-item-label class="text-h6" v-if="!displayVal.discount">Total $ {{(((parseFloat(displayVal.price) + totSum ) ) * quantity).toFixed(2) }}</q-item-label>
                         </div>
                         <div class="q-pt-lg" vertical >
-                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(rewards)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
+                           <q-btn class="q-pl-md q-pr-md" v-if="requiredA" @click="addToCart(displayVal.reward)" rounded v-close-popup color="primary" no-caps>Agregar al carrito</q-btn>
                            <q-btn class="q-pl-md q-pr-md" v-if="!requiredA" @click="showNotif" rounded color="primary" no-caps>Agregar al carrito</q-btn>
                         </div>
                      </div>
@@ -480,6 +480,7 @@ export default {
         }
         )
       }
+      console.log({ cart: this.cart })
     },
     checkAvailReward (item) {
       if (!this.rewards) { return [true, true] }

@@ -7,7 +7,7 @@
            <classic-list
             :photo="getProdValById(item.prodId, 'photo', item.prodType)"
             :name="getProdValById(item.prodId, 'name', item.prodType)"
-            :priceDisplay="priceDisplay(item)"
+            :priceDisplay="extrasTotalItem(item) ? 'Precio base ' + priceDisplay(item) : priceDisplay(item)"
             :item="item"
             :cart="cart"
             :discount="getProdValById(item.prodId, 'discount', item.prodType)"
@@ -727,6 +727,9 @@ export default {
       if (!check) {
         return 'Valor no encontrado'
       }
+      if (item.reward) {
+        return [0, 0]
+      }
       let price2
       const product = this.getProd(item.prodId, item.prodType)
       let price = (product.price * item.quantity)
@@ -734,6 +737,7 @@ export default {
         price2 = price * (1 - (product.discount / 100))
         price2 = parseFloat(price2.toFixed(2))
       }
+      // console.log({ item }, 'geprodprice')
       return [price, price2]
     },
     getProd (id, type) {

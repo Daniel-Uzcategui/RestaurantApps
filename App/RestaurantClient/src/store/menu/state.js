@@ -3,6 +3,7 @@ export default function () {
     categorias: [],
     menu: [],
     extras: [],
+    rewards: [],
     cart: [],
     sede: null,
     promos: [],

@@ -47,6 +47,14 @@ export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
     console.error(e)
   }
 })
+export const bindRewards = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindRewards')
+  try {
+    return bindFirestoreRef('rewards', firestore().collection('rewards').where('softDelete', '==', 0), { reset: false, serialize: serialize, wait: true })
+  } catch (e) {
+    console.error(e)
+  }
+})
 export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingFilters')
   return bindFirestoreRef('filters', firestore()

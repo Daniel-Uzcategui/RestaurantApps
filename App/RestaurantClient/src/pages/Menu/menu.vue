@@ -5,9 +5,10 @@
             <q-icon name="fas fa-search" />
          </template>
       </q-input>
+      <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn>
       <q-card :class="$q.screen.gt.xs ? 'q-mr-lg q-ml-lg': ''" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+          <!-- :rewards="rewards" -->
          <menu-filter
-          :rewards="rewards"
           :promo="promo"
           :selectedFilter="selectedFilter"
           :menucfg="menucfg"
@@ -17,18 +18,18 @@
           :paymentServ="paymentServ"
           :promoData="promoData"
           @nextDisp="nextDisp()"
-          @rewards="rewards = !rewards"
           @promos="promo = !promo"
           :filters="filters"
           @nextFilter="nextFilter()"
          />
+          <!-- @rewards="rewards = !rewards" -->
          <q-card-section class="row justify-center" v-if="menuLoading">
            <q-spinner
               color="primary"
               size="md"
             />
          </q-card-section>
-         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && !rewards">
+         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo">
            <div
                v-if="displayType == 1"
                class="wrapel "
@@ -36,7 +37,7 @@
                <div class="wrapel" :class="$q.dark.isActive ? 'background-color q-cardGlass' : 'background-color'" content-class="wrapel"  v-for="tabs in filtercat"
                   :key="tabs.id">
                   <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
-                  <q-card-section class="q-pa-none q-ma-none" v-if="!promo && !rewards">
+                  <q-card-section class="q-pa-none q-ma-none" v-if="!promo">
                      <carousel
                         :loop="true"
                         navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x" style="padding-left: -15px; z-index: 10000;" aria-hidden="true"></i>'
@@ -184,7 +185,7 @@
             </div>
          </q-card-section>
           <!-- Seccion de rewards -->
-         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && rewards">
+         <!-- <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && rewards">
             <div class="background-color q-pa-none q-ma-none" v-if="displayType">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
                <carousel
@@ -260,9 +261,9 @@
                </q-card>
             </div>
             </div>
-         </q-card-section>
+         </q-card-section> -->
          <!-- Seccion de promociones -->
-         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="promo && !rewards">
+         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="promo">
               <div class="background-color" v-if="displayType">
                <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
@@ -394,7 +395,7 @@ export default {
     Menutype4
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'rewards', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType']),
     cats () {
@@ -426,17 +427,51 @@ export default {
       }
     },
     filtercat () {
-      if (this.selectedFilter === '') { return this.cats } else if (this.filters && this.selectedFilter && this.cats) {
-        let thfilter = this.filters.find(e => e.id === this.selectedFilter)
-        let filtered = typeof thfilter !== 'undefined' ? this.cats.filter(x => thfilter.cats.includes(x.id)) : []
+      const { selectedFilter, cats, filters
+      // , viewRewards, origMenu
+      } = this
+      let elcat = cats
+      // if (viewRewards) {
+      //   elcat = cats.filter(x => {
+      //     for (let i of filteredMenuCat(selectedCat ? selectedCat.id : '')) {
+      //       console.log(i)
+      //       if (i.categoria.includes(x.id)) {
+      //         return true
+      //       }
+      //     }
+      //     return false
+      //   })
+      //   console.log({ elcat })
+      // }
+      if (selectedFilter === '') { return elcat }
+      if (filters && selectedFilter && elcat) {
+        let thfilter = filters.find(e => e.id === selectedFilter)
+        let filtered = typeof thfilter !== 'undefined' ? elcat.filter(x => thfilter?.cats.includes(x.id)) : []
         return filtered
       }
       return []
     },
+    catWithProd () {
+      const { cats, filteredMenu } = this
+      return cats.filter(x => {
+        for (let i of filteredMenu) {
+          let solve = i.categoria.includes(x.id)
+          if (solve) {
+            return true
+          }
+          return false
+        }
+      })
+    },
     origMenu () {
-      if (this.menu.length) {
-        return this.menu.reduce((y, x) => {
-          if (x.estatus && x.estatus[this.sede]) {
+      const { menu, viewRewards, sede } = this
+      if (menu.length) {
+        return menu.reduce((y, x) => {
+          if (x.estatus && x.estatus[sede]) {
+            let price = { price: x.price }
+            if (viewRewards) {
+              price = { price: 0, reward: true }
+            }
             y.push({
               categoria: x.categoria,
               estatus: x.estatus,
@@ -447,7 +482,7 @@ export default {
               pricerange: x.pricerange,
               photomulti: x.photomulti,
               photosmall: x.photosmall,
-              price: x.price,
+              ...price,
               id: x.id,
               stock: x.stock,
               discount: x.discount,
@@ -502,10 +537,11 @@ export default {
   },
   data () {
     return {
+      viewRewards: false,
       menuLoading: true,
       loc: window.location.origin,
       dgbg: {},
-      rewards: false,
+      // rewards: false,
       itComp: [],
       totSum: 0,
       required: false,
@@ -581,7 +617,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindRewards', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
     ...mapActions('config', ['setMenuDispType']),
     filterFindName (x) {
       let found = this.filters.find(e => e.id === x)
@@ -603,6 +639,9 @@ export default {
       if (parseInt(this.selectedProdType)) {
         this.productSelected()
       }
+      this.bindRewards().catch(e => {
+        console.error('error fetching data firebase', { e })
+      })
     },
     click () {
       this.$emit('click-edit', {
@@ -670,8 +709,15 @@ export default {
     },
     filteredMenuCat (e) {
       let filtered = []
+      const { viewRewards, rewards } = this
+      function filter (x) {
+        if (viewRewards) {
+          return x && x.categoria && x.categoria.includes(e) && rewards[0].products.includes(x.id)
+        }
+        return x && x.categoria && x.categoria.includes(e)
+      }
       if (Array.isArray(this.filteredMenu)) {
-        filtered = this.filteredMenu.filter(x => x && x.categoria && x.categoria.includes(e))
+        filtered = this.filteredMenu.filter(x => filter(x))
         for (let item of filtered) {
           item.checkAvail = this.checkAvail(item.id, item.prodType)
         }
@@ -694,33 +740,33 @@ export default {
         })
       }
     },
-    checkAvailReward (item) {
-      if (!this.rewards) { return [true, true] }
-      var available = 0
-      var available2 = 0
-      var quant = this.quantity ? this.quantity + 1 : 2
-      var counter = 1
-      var exists = 0
-      var inCart = this.cart.filter(x => x.prodId === item.id && x.reward)
-      inCart.forEach(element => {
-        counter = element.quantity + counter
-      })
-      if (counter > 1) { exists = 1 }
-      quant = quant + counter - 1
-      var categories = item.categoria
-      var rewardCategories = typeof this.pointsCat === 'undefined' ? [] : Object.keys(this.pointsCat)
-      var intersection = categories ? categories.filter(x => rewardCategories && rewardCategories.includes(x)) : []
-      for (var cat of intersection) {
-        var points = this.pointsCat[cat]
-        if ((points - (quant * 10)) >= 0) {
-          available++
-        }
-        if ((points - (counter * 10)) >= 0) {
-          available2++
-        }
-      }
-      return [available, available2, exists]
-    },
+    // checkAvailReward (item) {
+    //   if (!this.rewards) { return [true, true] }
+    //   var available = 0
+    //   var available2 = 0
+    //   var quant = this.quantity ? this.quantity + 1 : 2
+    //   var counter = 1
+    //   var exists = 0
+    //   var inCart = this.cart.filter(x => x.prodId === item.id && x.reward)
+    //   inCart.forEach(element => {
+    //     counter = element.quantity + counter
+    //   })
+    //   if (counter > 1) { exists = 1 }
+    //   quant = quant + counter - 1
+    //   var categories = item.categoria
+    //   var rewardCategories = typeof this.pointsCat === 'undefined' ? [] : Object.keys(this.pointsCat)
+    //   var intersection = categories ? categories.filter(x => rewardCategories && rewardCategories.includes(x)) : []
+    //   for (var cat of intersection) {
+    //     var points = this.pointsCat[cat]
+    //     if ((points - (quant * 10)) >= 0) {
+    //       available++
+    //     }
+    //     if ((points - (counter * 10)) >= 0) {
+    //       available2++
+    //     }
+    //   }
+    //   return [available, available2, exists]
+    // },
     checkAvail (id, type, diag) {
       var exists = 0
       if (typeof id === 'undefined' || typeof type === 'undefined') { return false }

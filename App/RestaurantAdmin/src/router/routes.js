@@ -191,6 +191,15 @@ const routes = [
         }
       },
       {
+        path: 'rewards',
+        name: 'Rewards',
+        component: () => import('pages/menu/rewards.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'rewards'
+        }
+      },
+      {
         path: 'promo',
         name: 'Promo',
         component: () => import('pages/menu/promociones.vue'),
