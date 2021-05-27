@@ -4,6 +4,7 @@ export default function () {
     categorias: [
     ],
     rewards: [],
+    coupons: [],
     menu: [
       {
         name: '',

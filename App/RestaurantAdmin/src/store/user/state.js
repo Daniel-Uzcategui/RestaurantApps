@@ -9,6 +9,8 @@ export default {
     Loans: null,
     Outstanding: null
   },
+  roles: [],
+  ambientes: [],
   hist: [{
     'index': 0,
     'no': true

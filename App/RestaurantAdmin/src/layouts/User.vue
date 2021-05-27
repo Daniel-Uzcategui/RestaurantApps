@@ -47,6 +47,24 @@
                :key="link.title"
                v-bind="link"
                />
+        <q-list>
+        <q-item clickable v-ripple>
+        <q-item-section
+          side
+          style="color: inherit"
+        >
+          <q-icon name="face"/>
+        </q-item-section>
+        <q-item-section>
+              <a class="text-white" flat type="a" unelevated :href="'https://' + amb + '.chopzi.com/#'" no-caps label="Vista en Cliente" target="_blank" >
+          <q-item-label></q-item-label>
+          <q-item-label>
+              Ir a página cliente
+          </q-item-label>
+              </a>
+        </q-item-section>
+        </q-item>
+        </q-list>
       </q-drawer>
       <q-page-container>
         <component :is="themeUser">
@@ -84,8 +102,11 @@ export default {
   },
   computed: {
     themeUser () { return this.$route.fullPath === '/editor/index' ? 'GlassLight' : 'GlassDark' },
-    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('user', ['currentUser', 'roles']),
     ...mapGetters('order', ['orders']),
+    amb () {
+      return localStorage.getItem('amb')
+    },
     productName () {
       return window.sessionStorage.productName
     },
@@ -116,6 +137,23 @@ export default {
       // Hide the loading screen if currentUser
       // is available before the page renders
       // console.log(this.currentUser)
+      this.bindRoles(currentUser.id).then(e => {
+        console.log('ROLES binded', e)
+        if (e && e.firstAccess) {
+          this.$router.push({ path: '/guide/intro' })
+          try {
+            this.updateLocalUserData({
+              ...e,
+              firstAccess: false
+            })
+          } catch (err) {
+            console.error(err)
+          }
+        }
+        if (!(e && e.rol)) {
+          this.$router.push({ path: '/auth/login' })
+        }
+      }).catch(e => console.error(e))
       this.$q.loading.hide()
       if (currentUser && currentUser.firstAccess) {
         this.$router.push({ path: '/guide/intro' })
@@ -164,6 +202,12 @@ export default {
       blurLayout: false,
       leftDrawerOpen: false,
       nav: [
+        {
+          title: 'Ambientes',
+          caption: '',
+          icon: 'language',
+          link: '#/ambientes'
+        },
         {
           title: 'Dashboard',
           caption: '',
@@ -375,7 +419,7 @@ export default {
     ...mapActions('order', ['bindOrders']),
     ...mapActions('config', ['bindEnv']),
     ...mapActions('menu', ['setValue']),
-    ...mapActions('user', ['updateUserData']),
+    ...mapActions('user', ['updateUserData', 'bindRoles', 'updateLocalUserData']),
     setupNotif () {
       if (!('PushManager' in window)) {
         console.log('Push messaging isn\'t supported.')
@@ -444,20 +488,23 @@ export default {
       this.$q.loading.hide()
       this.setupNotif()
       console.log('User Data available', { e })
-      if (!(e && e.rol)) {
-        this.$router.push({ path: '/auth/login' })
-      }
-      if (e && e.firstAccess) {
-        this.$router.push({ path: '/guide/intro' })
-        try {
-          this.updateUserData({
-            ...e,
-            firstAccess: false
-          })
-        } catch (err) {
-          console.error(err)
+      this.bindRoles(e.id).then(e => {
+        console.log('ROLES binded', e)
+        if (e && e.firstAccess) {
+          this.$router.push({ path: '/guide/intro' })
+          try {
+            this.updateLocalUserData({
+              ...e,
+              firstAccess: false
+            })
+          } catch (err) {
+            console.error(err)
+          }
         }
-      }
+        if (!(e && e.rol)) {
+          this.$router.push({ path: '/auth/login' })
+        }
+      }).catch(e => console.error(e))
     }
     // orders (e) {
     //   if (e.length === 0) {

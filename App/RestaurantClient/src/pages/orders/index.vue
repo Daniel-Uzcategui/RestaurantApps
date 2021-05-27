@@ -106,13 +106,17 @@
                               <p class="col-6"> Delivery </p>
                               <p class="text-right col-6"> $ {{parseFloat(ordenDet.delivery).toFixed(2)}}</p>
                            </div>
+                            <div class="row" v-if="ordenDet.cuponTotal > 0">
+                              <p class="col-6"> Cupones </p>
+                              <p class="text-right col-6"> - $ {{parseFloat(ordenDet.cuponTotal).toFixed(2)}}</p>
+                           </div>
                            <div class="row">
                               <p class="col-6">Total</p>
                               <p class="text-right col-6">$ {{ordenDet.paid.toLocaleString()}}</p>
                            </div>
                            <div class="row" v-if="ordenDet.typePayment==8 || ordenDet.typePayment == 0">
-                              <p class="col-6">Total</p>
-                              <p class="text-right col-6">Bs {{parseFloat(getRates(getTotalCarrito()[2].toFixed(2)).toFixed(2)).toLocaleString()}}</p>
+                              <p class="col-6"></p>
+                              <p class="text-right col-6">Bs {{parseFloat(getRates(ordenDet.paid).toFixed(2)).toLocaleString()}}</p>
                            </div>
                         </div>
                      </div>
@@ -200,6 +204,7 @@ export default {
           factura: x.factura,
           paid: x.paid,
           sede: x.sede,
+          cuponTotal: x.cuponTotal,
           status: x.status,
           table: x.table,
           tipEnvio: x.tipEnvio,

@@ -120,9 +120,9 @@ export default {
     }
   },
   mounted () {
-    this.bindClients()
-    this.bindAddress()
-    this.bindOrders()
+    this.bindClients().catch(e => console.error(e))
+    this.bindAddress().catch(e => console.error(e))
+    this.bindOrders().catch(e => console.error(e))
   },
   updated () {
     this.getAddress(this.$route.query.client_Id)

@@ -5,9 +5,10 @@
             <q-icon name="fas fa-search" />
          </template>
       </q-input>
-      <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn>
+      <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
       <q-card :class="$q.screen.gt.xs ? 'q-mr-lg q-ml-lg': ''" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
           <!-- :rewards="rewards" -->
+          <!-- {{displayType}} display -->
          <menu-filter
           :promo="promo"
           :selectedFilter="selectedFilter"
@@ -85,6 +86,7 @@
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
               :sede="sede"
+              @hook:mounted="selectedCat=filtercat[0]"
               :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
               @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (display = true, getMenuItem(e.id, 0)) : false}" />
@@ -94,6 +96,7 @@
               @tabs="(e) => {selectedCat=e; search()}"
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
+              @hook:mounted="selectedCat=filtercat[0]"
               :sede="sede"
               :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
@@ -594,7 +597,7 @@ export default {
       this.filteredMenu = this.origMenu
     },
     filtercat () {
-      if (this.displayType === 0) {
+      if (this.displayType === 0 || this.displayType === 3) {
         this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
         this.selectedCat = this.filtercat[0]
       }

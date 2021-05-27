@@ -21,7 +21,7 @@
     "build-qa": "cross-env QENV=qa quasar build",
     "build-ecr": "cross-env QENV=ecr quasar build",
     "deploy-dev": "firebase use default && yarn build-dev && node addmanifest.js deploy -d && firebase deploy",
-    "deploy-prod": "firebase use prodchopzi && yarn build-prod && node addmanifest.js deploy -p && firebase deploy",
+    "deploy-prod": "firebase use prodchopzi && yarn build-prod && node addmanifest.js deploy -p",
     "deploy-dev2": "firebase use default && yarn build-dev && firebase deploy"
   },
   "dependencies": {

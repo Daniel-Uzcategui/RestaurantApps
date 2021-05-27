@@ -26,7 +26,16 @@
         </div>
         <div class="header-cell q-ma-sm col-2">
           <p class="text-bold">SubTotal</p>
-           <p>{{order.paid && order.delivery ? order.paid - order.delivery : order.paid}}</p>
+           <p>$ {{order.subtotal ? order.subtotal : order.paid && order.delivery ? order.paid - order.delivery : order.paid}}</p>
+        </div>
+        <div v-if="order.extras" class="header-cell q-ma-sm col-2">
+          <p class="text-bold">Extras</p>
+           <p>$ {{order.extras}}</p>
+        </div>
+        <div v-if="order.cuponTotal" class="header-cell q-ma-sm col-2">
+          <p class="text-bold">Cupones</p>
+           <p>- $ {{order.cuponTotal}}</p>
+           <span v-for="(cupon, index) of order.cupons" :key="index">{{cupon.name}} </span>
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Costo Delivery</p>
@@ -38,7 +47,7 @@
         </div>
         <div v-if="order.typePayment==8 || order.typePayment == 0" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Total Bs</p>
-           <p>{{getRates(order.paid + order.delivery).toFixed(2)}}</p>
+           <p>{{getRates(order.paid).toLocaleString()}}</p>
         </div>
          <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-4">
@@ -289,7 +298,7 @@
         {{'Punto de referencia:' + puntoRef}}
       </q-card-section>
       <q-card-section class="text-h7">
-        <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid && order.delivery ? order.paid + order.delivery : order.paid }}</q-item-section></q-item>
+        <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid}}</q-item-section></q-item>
       </q-card-section>
       <q-card-section class="text-left text-h7">
         CANT ITEM
@@ -349,17 +358,6 @@ export default {
         { label: 'Orden Entregada', value: 3 },
         { label: 'Anulada', value: 4 }
       ],
-      typePayment_options: [
-        { label: 'Punto de venta', value: 0 },
-        { label: 'Efectivo', value: 1 },
-        { label: 'Zelle', value: 2 },
-        { label: 'Tarjeta o Paypal', value: 3 },
-        { label: 'Venmo', value: 4 },
-        { label: 'Débito o Crédito', value: 5 },
-        { label: 'Tarjeta Venezolana', value: 6 },
-        { label: 'Transferencia Bancaria', value: 7 },
-        { label: 'Pago móvil', value: 8 }
-      ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
@@ -379,7 +377,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('order', ['orders']),
+    ...mapGetters('order', ['orders', 'typePayment_options']),
     ...mapGetters('menu', ['menu', 'item', 'promos']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('address', ['address']),

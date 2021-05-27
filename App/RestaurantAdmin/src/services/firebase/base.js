@@ -99,7 +99,10 @@ export const routerBeforeEach = async (router, store) => {
   router.beforeEach(async (to, from, next) => {
     try {
       console.log({ from, to, next })
-      let getUsr = store.getters['user/currentUser']
+      // let users = store.getters['user/users']
+      // let getUsrs = store.getters['user/currentUser']
+      // let getUsr = users.find(x => x.id === getUsrs.id)
+      let getUsr = store.getters['user/roles']
       console.log({ getUsr: getUsr })
       if (getUsr !== null) {
         if (typeof to.meta.nombre !== 'undefined') {

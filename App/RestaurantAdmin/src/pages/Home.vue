@@ -131,8 +131,8 @@ export default {
     }
   },
   mounted () {
-    this.bindOrders()
-    this.bindClients()
+    this.bindOrders().catch(e => console.error(e))
+    this.bindClients().catch(e => console.error(e))
   },
   methods: {
     ...mapActions('order', ['bindOrders']),

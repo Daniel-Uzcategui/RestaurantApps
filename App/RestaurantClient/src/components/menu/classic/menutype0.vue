@@ -17,7 +17,7 @@
             <div>
                <div class="row justify-around">
                   <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
-                     :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]" @click="$emit('productSelect', item)"
+                     :style="[{'width':$q.screen.gt.xs ? '370px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]" @click="$emit('productSelect', item)"
                      v-for="item in filteredMenuCat" :key="item.id" >
                      <div :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                         <div class="menuitem row">
@@ -26,7 +26,7 @@
                            </div>
                            <div class="menutext col column justify-center">
                               <div class="col-auto">
-                                 <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
+                                 <q-item-label class="text-bold title" lines="5">{{item.name}} </q-item-label>
                               </div>
                            </div>
                            <div>
@@ -57,3 +57,11 @@ export default {
   props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede']
 }
 </script>
+<style lang="stylus">
+.title
+  overflow hidden
+  text-overflow ellipsis
+  -webkit-line-clamp 4
+  display -webkit-box
+  -webkit-box-orient vertical
+</style>

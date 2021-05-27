@@ -31,6 +31,9 @@
               <div class="row" v-if="getTotalCarrito()[1].toFixed(2) > 0">
                         <p class="col-6">Extras:</p>  <p class="text-right col-6"> + <u> {{getTotalCarrito()[1].toFixed(2)}} </u> </p>
               </div>
+              <div class="row" v-if="cupons.length">
+                  <p class="col-6">Cupones:</p> <p class="text-right col-6">- {{getTotalCarrito()[3].toFixed(2)}}</p>
+              </div>
               <div class="row">
                   <p class="col-6">Total:</p> <p class="text-right col-6">$ {{getTotalCarrito()[2].toFixed(2)}}</p>
               </div>
@@ -39,17 +42,21 @@
           </q-card-section>
           <q-separator inset />
           <q-card-section class="q-pa-lg">
-            <div class="text-caption text-center">Ingresar Código del cupón</div>
             <div class="column items-center">
+            <q-btn :disable="loadingState" class="q-pr-lg q-mb-md q-pl-lg text-weight-thin" v-if="cupon.length"  @click="useCupon()" no-caps rounded color="secondary" label="Aplicar cupón"></q-btn>
+            <div class="text-caption text-center">Ingresar Código del cupón</div>
             <q-input filled
-              :rules="[val => val.length === 0 || 'Cupón no válido']"
-              style="width: 60%" v-model="cupon" :loading="loadingState" @input="setLoadingState()" />
+              style="width: 60%" v-model="cupon" :loading="loadingState" />
             </div>
           </q-card-section>
           <q-card-actions class="q-pa-md column items-center" >
             <p v-if="CheckAv === 2">
               Hay un producto que no cumple con la disponibilidad en su carrito, porfavor disminuya la cantidad o eliminelo antes de continuar
             </p>
+            <div v-if="loadingConfig">
+              <q-spinner color="primary" size="3em" />
+            </div>
+            <div v-else>
             <div v-if="allowBuy">
               <q-btn name="cart" no-caps class="q-pr-xl q-pl-xl text-weight-thin" rounded color="primary" v-if="cart.length && (CheckAv === 1 || CheckAv === 0)" @click="ordenar = true">
               Siguiente
@@ -57,6 +64,7 @@
             </div>
             <div class="q-pt-lg" vertical v-if='!allowBuy'>
                 <p> En estos momentos estamos cerrados vuelve pronto</p>
+            </div>
             </div>
           </q-card-actions>
          </q-card>
@@ -114,29 +122,29 @@
                               <q-radio v-model="orderWhen" val=0 label="Lo más pronto posible" />
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
                             </div>
-                            <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
-                              <q-input filled readonly v-model="orderDate" hint="Seleccione Fecha y hora">
+                            <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">Micasa
+                              <q-input filled readonly v-model="orderDate" hint="Seleccione Fecha y hora, esta hora es estimada para un mejor seguimiento contáctenos">
                                 <template v-slot:prepend>
-                                  <q-icon name="event" class="cursor-pointer">
-                                    <q-popup-proxy transition-show="scale" transition-hide="scale">
+                                  <q-icon @click="openDate = !openDate" name="event" class="cursor-pointer">
+                                    <q-dialog persistent v-model="openDate" transition-show="scale" transition-hide="scale">
                                       <q-date :options="dateOptions" v-model="orderDate" mask="YYYY-MM-DD HH:mm">
                                         <div class="row items-center justify-end">
-                                          <q-btn v-close-popup label="Close" color="primary" flat />
+                                          <q-btn v-close-popup @click="openHours = !openHours" label="Close" color="primary" flat />
                                         </div>
                                       </q-date>
-                                    </q-popup-proxy>
+                                    </q-dialog>
                                   </q-icon>
                                 </template>
 
                                 <template v-slot:append>
-                                  <q-icon name="access_time" class="cursor-pointer">
-                                    <q-popup-proxy transition-show="scale" transition-hide="scale">
-                                      <q-time :disable="orderDate === null" :options="optionsFnTime" v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
+                                  <q-icon @click="openHours = !openHours" name="access_time" class="cursor-pointer">
+                                    <q-dialog persistent v-model="openHours" transition-show="scale" transition-hide="scale">
+                                      <q-time @input="canCloseHours = true" :disable="orderDate === null" :options="optionsFnTime2" v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
                                         <div class="row items-center justify-end">
-                                          <q-btn v-close-popup label="Close" color="primary" flat />
+                                          <q-btn v-if="canCloseHours" @click="canCloseHours = false; openHours = false" v-close-popup label="Close" color="primary" flat />
                                         </div>
                                       </q-time>
-                                    </q-popup-proxy>
+                                    </q-dialog>
                                   </q-icon>
                                 </template>
                               </q-input>
@@ -347,10 +355,6 @@ export default {
     },
     configDates () {
       let cfg = this.configurations.find(e => e.id === 'sede' + this.sede)
-      console.log('rutina configDates')
-      console.log('cfg')
-      console.log(this.sede)
-      console.log(cfg)
       return cfg
     },
     config () {
@@ -403,6 +407,11 @@ export default {
   },
   data () {
     return {
+      canCloseHours: false,
+      loadingConfig: true,
+      cupons: [],
+      openDate: false,
+      openHours: false,
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       cupon: '',
       rateDefault: null,
@@ -430,17 +439,17 @@ export default {
       photoUpload: false,
       photoMessage: true,
       photoSRC: '',
-      allowBuy: true
+      allowBuy: false
     }
   },
   async created () {
-    console.log('created page')
+    // console.log('created page')
     // this.bindLocalizations()
     this.bindPaymentServ().then(() => {
     }).catch(e => console.error('error fetching data firebase', { e }))
-    console.log(this.cart)
-    console.log(this.$refs)
-    this.bindConfigs() // .then(e => this.getDays())
+    // console.log(this.cart)
+    // console.log(this.$refs)
+    this.bindConfigs().then(() => { this.loadingConfig = false }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
     await this.bindRates().then(async e => {
@@ -449,11 +458,10 @@ export default {
           .then(e => { this.rateDefault = [{ rateValue: e?.data?.USD?.promedio, currency: 'Bs' }] }).catch(e => console.error('error fetching data ratesApi', { e }))
       }
     }).catch(e => console.error('error fetching data firebase', { e }))
-    console.log(this.rates)
+    // console.log(this.rates)
   },
   mounted () {
-    console.log('mounted')
-    this.getDays()
+    // console.log('mounted')
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -463,6 +471,60 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     ...mapActions('editor', ['bindBlocks']),
+    async useCupon () {
+      this.loadingState = true
+      const { cupon, cupons } = this
+      if (!cupon?.length) {
+        return
+      }
+      if (cupons?.some(item => item.name === cupon)) {
+        this.loadingState = false
+        return this.$q.notify({ message: 'Cupón ya aplicado', color: 'red', position: 'top' })
+      }
+      let res
+      try {
+        const url = window.location.origin + '/getcoupon'
+        // const url = 'https://us-central1-restaurant-testnet.cloudfunctions.net/GetCoupon'
+        // const url = 'http://localhost:5001/restaurant-testnet/us-central1/GetCoupon'
+        res = await this.$axios.post(url, { ambiente: localStorage.getItem('amb'), cupon })
+        // res = {
+        //   'empty': false,
+        //   'exclude': {
+        //     'products': [
+        //       'dkv3J0b3JZacBjPvIpFo'
+        //     ],
+        //     'categories': [
+        //       'dkv3J0b3JZacBjPvIpFo', 'WV6hfwummfD2gKIi7iWA', 'tHI2fYnPse6SunOczMmx', 'ZixLLq4Bp1DRbzcA5nsE', 'QzXVdAhocxcDlZYxIRIk', '5blcubYNhSyLoRIUfaph', 'jcgbPgfsyQ32bbtNhs3y', 'eqDbgoHcIPzt01RgTpG8'
+        //     ]
+        //   },
+        //   'include':
+        //     {
+        //       'categories': [
+        //         'dkv3J0b3JZacBjPvIpFo'
+        //       ],
+        //       'products': [
+        //         'dkv3J0b3JZacBjPvIpFo'
+        //       ]
+        //     },
+        //   'name': 'mayospicy',
+        //   'includeAll': true,
+        //   'discount': 10
+        // }
+        console.log({ res })
+      } catch (e) {
+        console.error(e)
+        return this.$q.notify({ message: 'Error de conexión', color: 'red', position: 'top' })
+      } finally {
+        this.loadingState = false
+      }
+      if (res?.data?.empty) {
+        return this.$q.notify({ message: 'Cupón no válido', color: 'red', position: 'top' })
+      } else {
+        this.$q.notify({ message: 'Cupón aplicado', color: 'blue', position: 'top' })
+        cupons.push(res?.data)
+        this.cupon = ''
+      }
+    },
     modEventDown (item, index) {
       this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) - 1) })
       this.checkAvail(item.prodId, item.prodType, index)
@@ -518,14 +580,7 @@ export default {
       }
       return new Date(date + ' 23:59:59') >= new Date()
     },
-    hourOptions (hr) {
-      return hr >= parseInt(new Date(new Date().getTime() + 80 * 60000).toLocaleTimeString('en-GB', { hour: '2-digit' }))
-    },
-    minuteOptions (min) {
-      if (min === null) { return true }
-      return min >= parseInt(new Date(new Date().getTime() + 80 * 60000).toLocaleTimeString('en-GB', { minute: '2-digit' }))
-    },
-    optionsFnTime (hr, min) {
+    optionsFnTime2 (hr, min) {
       console.log({ hr, min })
       if (typeof this.configDates === 'undefined') {
         if (!this.hourOptions(hr)) {
@@ -559,6 +614,20 @@ export default {
       }
       return false
     },
+    optionsFnTime (hrClose, minClose, hrOpen, minOpen) {
+      let open = new Date()
+      open.setHours(hrOpen, minOpen, 0, 0)
+      console.log(open, 'OPEEEN')
+      let close = new Date()
+      close.setHours(hrClose, minClose, 0, 0)
+      console.log(close, 'Close')
+      let now = new Date()
+      if (open < now && now < close) {
+        console.log('Chuquiti')
+        return true
+      }
+      return false
+    },
     setLoadingState () {
       this.loadingState = true
       setTimeout(() => {
@@ -583,7 +652,7 @@ export default {
         //   sum = sum + (x.price * x.quantity)
         // }
       })
-      console.log({ sum })
+      // // console.log({ sum })
       return sum
     },
     showNotif () {
@@ -609,7 +678,7 @@ export default {
     },
     getStock (id, type) {
       if (!type) {
-        // console.log({ cart: this.cart })
+        // // console.log({ cart: this.cart })
         var item = this.menu.find(x => x.id === id)
         return item.stock[this.sede]
       }
@@ -636,32 +705,31 @@ export default {
       let timeStamp = Date.now()
       let today = date.formatDate(timeStamp, 'dddd').toLowerCase()
       let sedecfg = this.configDates
-      console.log('getDays')
-      console.log(this.configDates)
-      console.log(this.configurations)
-      console.log('sedecfg', sedecfg)
-      console.log(today)
-      console.log(this.sede)
+      // // console.log('getDays')
+      // // console.log(this.configDates)
+      // // console.log(this.configurations)
+      // // console.log('sedecfg', sedecfg)
+      // // console.log(today)
+      // // console.log(this.sede)
       if (typeof sedecfg !== 'undefined' && typeof this.configDates !== 'undefined') {
-        let hr = sedecfg.days[today][0].close.substr(0, 2)
-        let min = sedecfg.days[today][0].close.substr(2, 2)
-        if (sedecfg.status === 1) {
-          this.allowBuy = true
-        } else {
-          if (!sedecfg.days[today][0].isOpen) {
-            this.allowBuy = false
-          } else {
-            if (this.optionsFnTime(hr, min)) {
-              this.allowBuy = false
-            } else {
-              this.allowBuy = true
-            }
+        for (let today1 of sedecfg.days[today]) {
+          let hrClose = today1.close.substr(0, 2)
+          let minClose = today1.close.substr(2, 2)
+          let hrOpen = today1.open.substr(0, 2)
+          let minOpen = today1.open.substr(2, 2)
+          if (sedecfg.status === 1) {
+            this.allowBuy = true
+            return
+          }
+          if (this.optionsFnTime(hrClose, minClose, hrOpen, minOpen)) {
+            this.allowBuy = true
+            return
           }
         }
-        console.log(this.allowBuy)
       } else {
         this.allowBuy = true
       }
+      // // console.log(this.allowBuy)
     },
     getTransactions () {
       return this.transactions.find(obj => {
@@ -681,6 +749,9 @@ export default {
       let order = { photo: this.photoSRC, orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof details !== 'undefined' && typeof details.id === 'undefined') { order = { ...order, paypal: details } }
       if (typeof details !== 'undefined' && typeof details.id !== 'undefined') { order = { ...order, onlinePay: details } }
+      if (this.cupons?.length) {
+        order.cupons = this.cupons
+      }
       switch (this.pagoSel) {
         case 2:
           order = { ...order, payto: this.config.zelleEmail }
@@ -692,7 +763,7 @@ export default {
           break
       }
       this.addOrder({ ...order }).then(e => {
-        console.log(order)
+        // console.log(order)
         this.ordenar = false; this.delCart()
         let ordersFortransactions = this.getOrders()
         console.log('ordersFortransactions', ordersFortransactions.id)
@@ -707,17 +778,47 @@ export default {
     getTotalCarrito () {
       var sumProd = 0
       var sumExtra = 0
-      console.log(this.cart)
+      // console.log(this.cupons)
+      let cupon = 0
       this.cart.forEach(e => {
-        sumProd = this.subTotalItem(e) + sumProd
-        let toSumExtra = this.extrasTotalItem(e)
+        let sub = this.subTotalItem(e)
+        let extra = this.extrasTotalItem(e)
+        if (this.cupons?.length) {
+          for (let i of this.cupons) {
+            let excludeProd = !i.exclude?.products?.include?.(e.prodId)
+            let excludeCategory = !i.exclude?.categories?.some?.(item => e.category?.includes(item))
+            let excluyente = i.includeAll && excludeProd && excludeCategory
+            let incluyente = !i.includeAll && (i.include?.products?.include?.(e.prodId) || i.include?.categories?.some?.(item => e.category?.includes(item)))
+            console.log(excluyente, incluyente, e.name, excludeProd, excludeCategory)
+            let disctot = 0
+            if (i.discount && (excluyente || incluyente)) {
+              let disc = (1 - i.discount / 100)
+              let subdisc = sub * disc
+              let extradisc = extra * disc
+              disctot = (sub - subdisc) + (extra - extradisc)
+              // sub = subdisc
+              // extra = extradisc
+              cupon += disctot
+            }
+          }
+        }
+        sumProd = sub + sumProd
+        let toSumExtra = extra
         sumExtra = toSumExtra + sumExtra
       })
       let totalPrice = this.roundNumber(sumProd + sumExtra)
-      this.totalPrice = totalPrice
       sumProd = this.roundNumber(sumProd)
       sumExtra = this.roundNumber(sumExtra)
-      return [sumProd, sumExtra, totalPrice]
+      if (this.cupons.length) {
+        for (let i of this.cupons) {
+          if (i.amount) {
+            cupon += i.amount
+          }
+        }
+      }
+      totalPrice = totalPrice - cupon
+      this.totalPrice = totalPrice
+      return [sumProd, sumExtra, totalPrice, cupon]
     },
     roundNumber (num) {
       return parseFloat(num.toFixed(2))
@@ -737,7 +838,7 @@ export default {
         price2 = price * (1 - (product.discount / 100))
         price2 = parseFloat(price2.toFixed(2))
       }
-      // console.log({ item }, 'geprodprice')
+      // // console.log({ item }, 'geprodprice')
       return [price, price2]
     },
     getProd (id, type) {
@@ -855,10 +956,10 @@ export default {
     },
     payment (status) {
       let that = this
-      console.log(status)
+      // console.log(status)
       if (status && status.data && status.data.trx && status.data.trx.trx_status === 'approved') {
         this.CheckTDD = true
-        console.log('CheckTDD : ', this.CheckTDD)
+        // console.log('CheckTDD : ', this.CheckTDD)
         that.$q.loading.show({
           delay: 400
         })
@@ -870,7 +971,7 @@ export default {
       let responseHeader = respuesta.HEADER_PAGO_RESPONSE
       let responseBody = respuesta.BODY_PAGO_RESPONSE
       if (responseBody.CODIGO_RETORNO === '200') {
-        console.log(responseBody.CODIGO_RETORNO)
+        // console.log(responseBody.CODIGO_RETORNO)
         this.$q.dialog({
           title: 'Transacción procesada',
           message: 'Transacción  procesarse codigo de confirmacion :' + responseBody.NUMERO_CONFIRMACION
@@ -893,7 +994,7 @@ export default {
       this.photoType = ''
     },
     uploadComplete (info) {
-      console.log('info payment: ' + info)
+      // console.log('info payment: ' + info)
       this.photoSRC = info
       this.photoUpload = false
       this.photoMessage = false
@@ -901,6 +1002,9 @@ export default {
     }
   },
   watch: {
+    configDates () {
+      this.getDays()
+    },
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()
     },
@@ -930,10 +1034,10 @@ export default {
               that.$q.loading.show({
                 message: ''
               })
-              console.log({ data })
+              // console.log({ data })
               return actions.order.capture().then(function (details) {
                 // This function shows a transaction success message to your buyer.
-                console.log({ details })
+                // console.log({ details })
                 that.makeOrder(details)
               })
             }

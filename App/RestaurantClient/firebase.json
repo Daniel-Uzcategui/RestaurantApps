@@ -27,6 +27,10 @@
         "function": "GetAuth"
       },
       {
+        "source": "/getcoupon",
+        "function": "GetCoupon"
+      },
+      {
         "source": "**",
         "function": "seoHandling"
       }

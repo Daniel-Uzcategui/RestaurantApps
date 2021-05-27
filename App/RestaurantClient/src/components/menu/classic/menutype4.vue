@@ -24,7 +24,7 @@
                                  <q-btn color="red" class="absolute-top-right" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
 
                         <q-card-section class="text-center col">
-                        <div class="text-h6 text-bold">{{item.name}}</div>
+                        <div class="text-h6 text-bold title">{{item.name}}</div>
                         <div class="text-h5 text-grey text-bold">
                            <div>
                               <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
@@ -67,6 +67,12 @@ export default {
   overflow hidden
   text-overflow ellipsis
   -webkit-line-clamp 3
+  display -webkit-box
+  -webkit-box-orient vertical
+.title
+  overflow hidden
+  text-overflow ellipsis
+  -webkit-line-clamp 2
   display -webkit-box
   -webkit-box-orient vertical
 .cardtype4

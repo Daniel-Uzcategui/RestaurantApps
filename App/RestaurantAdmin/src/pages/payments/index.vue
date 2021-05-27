@@ -56,7 +56,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders']),
+    ...mapGetters('order', ['orders', 'typePayment_options']),
     ...mapGetters('client', ['clients']),
     OrderClient () {
       let OrderClient = []
@@ -68,7 +68,7 @@ export default {
         fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
         tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
         typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
-        tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
+        tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
         status = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : 'No disponible'
         OrderClient.push({
           'id': obj.id,
@@ -85,8 +85,8 @@ export default {
     }
   },
   mounted () {
-    this.bindOrders()
-    this.bindClients()
+    this.bindOrders().catch(e => console.error(e))
+    this.bindClients().catch(e => console.error(e))
   },
   methods: {
     clientOrders (value) {
@@ -138,17 +138,6 @@ export default {
         { label: 'Orden en vía', value: 2 },
         { label: 'Orden Entregada', value: 3 },
         { label: 'Anulada', value: 4 }
-      ],
-      tipo_pago: [
-        { label: 'Punto de venta', value: 0 },
-        { label: 'Efectivo', value: 1 },
-        { label: 'Zelle', value: 2 },
-        { label: 'Tarjeta o Paypal', value: 3 },
-        { label: 'Venmo', value: 4 },
-        { label: 'Débito o Crédito', value: 5 },
-        { label: 'Tarjeta Venezolana', value: 6 },
-        { label: 'Transferencia Bancaria', value: 7 },
-        { label: 'Pago móvil', value: 8 }
       ],
       tipo_servicio: [
         { label: 'Pick-up', value: 0 },

@@ -6,16 +6,50 @@
   "hosting": {
     "headers": [
       {
-        "source" : "index.html",
-        "headers" : [ {
-          "key" : "Access-Control-Allow-Origin",
-          "value" : "*"
-        } ]
+        "source": "index.html",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
       },
-      { "source":"/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
-      { "source":"/workbox-e170c028.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
-      { "source":"/firebase-messaging-sw.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] },
-      { "source":"/manifest.json", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+      {
+        "source": "/service-worker.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/workbox-e170c028.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/firebase-messaging-sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/manifest.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
     ],
     "target": "admin",
     "public": "dist/pwa",
@@ -41,5 +75,19 @@
         "function": "GetManifestAdmin"
       }
     ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
+    }
   }
 }

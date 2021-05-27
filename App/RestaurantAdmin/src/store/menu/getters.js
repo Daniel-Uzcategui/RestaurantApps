@@ -2,6 +2,7 @@ export const categorias = ({ categorias }) => categorias
 export const plaincategorias = ({ categorias }) => categorias
 export const menu = ({ menu }) => menu
 export const rewards = ({ rewards }) => rewards
+export const coupons = ({ coupons }) => coupons
 export const promos = ({ promos }) => promos
 export const listcategorias = ({ categorias }) => {
   const keys = Object.keys(categorias)

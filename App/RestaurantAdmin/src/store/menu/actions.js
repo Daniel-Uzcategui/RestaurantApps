@@ -128,6 +128,15 @@ export const bindRewards = firestoreAction(({ bindFirestoreRef }) => {
     .orderBy('DateIn', 'desc')
     .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
+export const bindCoupons = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindCoupons')
+  return bindFirestoreRef('coupons', firestore()
+    .collection('coupons')
+    .orderBy('softDelete', 'asc')
+    .orderBy('DateIn', 'desc')
+    .where('softDelete', '<', 1)
+  , { reset: false, serialize: serialize, wait: true })
+})
 export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingFilters')
   return bindFirestoreRef('filters', firestore()

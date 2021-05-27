@@ -21,7 +21,7 @@
     "build-prod": "cross-env QENV=prod quasar build -m pwa",
     "build-ecr": "cross-env QENV=ecr quasar build",
     "deploy-dev": "firebase use default && yarn build-dev && firebase deploy",
-    "deploy-dev-functions": "firebase use default && yarn build-dev && firebase deploy --only functions",
+    "deploy-dev-functions": "firebase use default && firebase deploy --only functions",
     "deploy-prod": "firebase use prodchopzi && yarn build-prod && firebase deploy",
     "deploy-prod-functions": "firebase use prodchopzi && firebase deploy --only functions"
   },
@@ -33,7 +33,7 @@
     "core-js": "^3.8.1",
     "dom-to-image-more": "^2.8.0",
     "draggable-vue-directive": "^2.1.0",
-    "firebase": "8.0.1",
+    "firebase": "^8.4.3",
     "gmap-vue": "^1.2.1",
     "jspdf": "^1.5.3",
     "prismjs": "^1.21.0",

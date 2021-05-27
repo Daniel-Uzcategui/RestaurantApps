@@ -1,33 +1,34 @@
 import { firestoreAction } from 'vuexfire'
-import { userRef, docGet, firestore, userRefMain } from '../../services/firebase/db.js'
+import { docGet, firestore, userRefMain, firestoreMain, userRef } from '../../services/firebase/db.js'
 /** Get current user from the firestore collection user's
  * via firebase uid
  *
  * @param  {Ojbect} payload.id - Firebase currentUser id
  */
 export const getCurrentUser = firestoreAction(async ({ bindFirestoreRef }, id) => {
-  const user = userRef('users', id)
-  const query = await user.get()
-  const exists = query.exists
-  if (!exists) {
-    console.log('No existe ', id)
-    const getChopziUser = userRefMain('users', id)
-    const chpziusr = await getChopziUser.get()
-    if (!chpziusr.exists) {
-      console.log('No such document!')
-      return bindFirestoreRef('currentUser', userRef('users', id))
-    } else {
-      var data = chpziusr.data()
-      delete data.rol
-      data.typeAccess = 'Admin'
-      const set = await userRef('users', id).set(data, { merge: true })
-      if (set) {
-        return bindFirestoreRef('currentUser', userRef('users', id))
-      }
-    }
-  } else {
-    return bindFirestoreRef('currentUser', userRef('users', id))
-  }
+  return bindFirestoreRef('currentUser', userRefMain('users', id))
+  // const user = userRef('users', id)
+  // const query = await user.get()
+  // const exists = query.exists
+  // if (!exists) {
+  //   console.log('No existe ', id)
+  //   const getChopziUser = userRefMain('users', id)
+  //   const chpziusr = await getChopziUser.get()
+  //   if (!chpziusr.exists) {
+  //     console.log('No such document!')
+  //     return bindFirestoreRef('currentUser', userRef('users', id))
+  //   } else {
+  //     var data = chpziusr.data()
+  //     delete data.rol
+  //     data.typeAccess = 'Admin'
+  //     const set = await userRef('users', id).set(data, { merge: true })
+  //     if (set) {
+  //       return bindFirestoreRef('currentUser', userRef('users', id))
+  //     }
+  //   }
+  // } else {
+  //   return bindFirestoreRef('currentUser', userRefMain('users', id))
+  // }
 })
 
 export const decsUser = firestoreAction(({ bindFirestoreRef }) => {
@@ -39,45 +40,57 @@ export const decsUser = firestoreAction(({ bindFirestoreRef }) => {
  * @param  {Object} payload
  */
 export const updateUserData = async function ({ state }, payload) {
+  return userRefMain('users', payload.id).update(payload)
+}
+export const updateLocalUserData = async function ({ state }, payload) {
   return userRef('users', payload.id).update(payload)
 }
-
 export const dcc = async function ({ commit }, payload) {
   const $fb = this.$fb
   return $fb.docGet('users')
 }
 
-export const updateSummary = async function ({ commit }, payload) {
-  return this._vm.$axios.get(`https://us-central1-unico-wallet.cloudfunctions.net/AccSumary?id=${payload.currentUser.id}`)
-    .then(response => {
-      console.log('response', response)
-      if (response.data.error) { throw response.data.error }
-      return commit('SetSummary', response.data.data)
-      // return response.data.data
-    }).catch(res => {
-      console.log(res.error)
-      return commit('SetSummary', {
-        Checking: 0,
-        Savings: 0,
-        Outstanding: 0,
-        Loans: 0
-      })
-    })
+export const getAvailableUrls = async ({ commit }, payload) => {
+  try {
+    console.log(payload)
+    const ref = firestoreMain().collection('subdomains')
+    let querySnapshot = await ref.where('subdomain', '==', payload).get()
+    if (querySnapshot.empty) {
+      console.log('No matching documents.')
+      return [true, true]
+    } else {
+      return [false, true]
+    }
+  } catch (error) {
+    console.error(error)
+    return [false, false]
+  }
 }
-
-export const GetUserHistory = async function ({ commit }, payload) {
-  return this._vm.$axios.get(`https://us-central1-unico-wallet.cloudfunctions.net/GetUserHistory?id=${payload.currentUser.id}`)
-    .then(response => {
-      if (!response.data.error) { console.log(response.data); commit('setHistory', response.data.data) }
-      console.log(payload.hist, 'History!!!')
-      payload.nohist = true
-      return response.data.data
-    })
+export const createAmbiente = async ({ commit }, payload) => {
+  try {
+    const ref = firestoreMain().collection('subdomains')
+    let querySnapshot = await ref.where('subdomain', '==', payload).get()
+    if (querySnapshot.empty) {
+      console.log('No matching documents.')
+      return [true, true]
+    } else {
+      return [false, true]
+    }
+  } catch (error) {
+    return false
+  }
 }
-
 export const bindusers = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindusers')
   return bindFirestoreRef('users', firestore().collection('users'))
+})
+export const bindAmbiente = firestoreAction(({ bindFirestoreRef }, userid) => {
+  console.log('bindAmbiente')
+  return bindFirestoreRef('ambientes', firestoreMain().collection(`users/${userid}/ambientes`))
+})
+export const bindRoles = firestoreAction(({ bindFirestoreRef }, userid) => {
+  console.log('bindRoles', userid)
+  return bindFirestoreRef('roles', userRef('users', userid))
 })
 export const bindNewsLetter = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindNewsLetter')

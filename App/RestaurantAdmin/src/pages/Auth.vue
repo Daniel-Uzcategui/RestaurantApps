@@ -275,14 +275,16 @@ export default {
     currentUser (e) {
       console.log(e, 'current watcher')
       if (e === null) { return }
-      if (e && e.typeAccess === 'Admin' && e.status === true) {
-        if (e && e.rol) {
-          this.$q.loading.hide()
-          return this.$router.push({ path: '/home' })
-        } else {
-          this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
-          this.logoutUser()
-        }
+      if (e && e.status === true) {
+        return this.$router.push({ path: '/ambientes' })
+      // && e.typeAccess === 'Admin'
+        // if (e && e.rol) {
+        //   this.$q.loading.hide()
+        //   return this.$router.push({ path: '/home' })
+        // } else {
+        //   this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
+        //   this.logoutUser()
+        // }
       } else {
         this.$q.notify({
           message: `Acceso no permitido`,

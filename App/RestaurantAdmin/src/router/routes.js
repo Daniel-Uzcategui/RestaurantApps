@@ -6,6 +6,10 @@ const routes = [
       {
         path: '',
         component: () => import('pages/Auth.vue')
+      },
+      {
+        path: 'ambientes',
+        component: () => import('pages/ambientes/index.vue')
       }
     ]
   },
@@ -197,6 +201,15 @@ const routes = [
         meta: {
           requiresAuth: true,
           nombre: 'rewards'
+        }
+      },
+      {
+        path: 'coupons',
+        name: 'Coupons',
+        component: () => import('pages/menu/coupons.vue'),
+        meta: {
+          requiresAuth: true,
+          nombre: 'Coupons'
         }
       },
       {

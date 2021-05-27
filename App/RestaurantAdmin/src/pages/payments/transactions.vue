@@ -99,8 +99,8 @@ export default {
     }
   },
   created () {
-    this.bindOrders()
-    this.bindClients()
+    this.bindOrders().catch(e => console.error(e))
+    this.bindClients().catch(e => console.error(e))
     this.bindtransactions().then(() => this.afterBindig())
   },
   methods: {

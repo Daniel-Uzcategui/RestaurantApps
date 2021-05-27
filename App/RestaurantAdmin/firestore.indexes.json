@@ -43,6 +43,34 @@
       ]
     },
     {
+      "collectionGroup": "rewards",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "coupons",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "softDelete",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateIn",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "itemGroup",
       "queryScope": "COLLECTION",
       "fields": [
