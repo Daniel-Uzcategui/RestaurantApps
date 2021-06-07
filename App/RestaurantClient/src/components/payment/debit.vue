@@ -175,7 +175,7 @@ export default {
         let cvv = this.valueFields.cardCvv
         // 'PFyDJwOukJXFEtC0s0t6Mg=='
         let currency = 'ves'
-        let amount = this.amount
+        let amount = parseFloat(this.amount.toFixed(2))
         let options = { method: 'post',
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
           url: window.location.origin + '/transact',

@@ -13,7 +13,25 @@
       rows-per-page-label=" "
       >
       <template v-slot:top-right>
-        <q-btn no-caps flat color="white" push icon="archive" @click="exportTable"/>
+        <div class="q-mr-sm">
+      <q-badge v-if="dateRange !== null " color="blue-grey">
+        {{ dateRange.from }} - {{ dateRange.to }}
+      </q-badge>
+       <q-badge v-else>
+        Últimos 30 días
+      </q-badge>
+    </div>
+
+    <q-btn icon="event" class="q-mr-sm" round color="blue">
+      <q-popup-proxy transition-show="scale" transition-hide="scale">
+        <q-date color="blue" v-model="dateRange" range >
+          <div class="row items-center justify-end q-gutter-sm">
+            <q-btn label="Borrar Filtro" @click="dateRange = null" color="white" flat v-close-popup/>
+          </div>
+        </q-date>
+      </q-popup-proxy>
+    </q-btn>
+        <q-btn no-caps round color="green" push icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })">
@@ -146,6 +164,22 @@ export default {
     this.bindClients().catch(e => console.error(e))
     this.bindLocalizations().catch(e => console.error(e))
   },
+  watch: {
+    dateRange (e) {
+      if (e === null) {
+        return this.bindOrders().catch(e => console.error(e))
+      }
+      console.log(e, 'DateRange')
+      let end = new Date(e.to)
+      end.setDate(end.getDate() + 1)
+      this.bindOrders(
+        {
+          start: new Date(e.from),
+          end: end
+        }
+      ).catch(e => console.error(e))
+    }
+  },
   methods: {
     clientOrders (value) {
       return this.clients.find(obj => {
@@ -194,6 +228,7 @@ export default {
   },
   data () {
     return {
+      dateRange: null,
       selected: [],
       columns: [
         { name: 'nameSede', required: true, label: 'Sede', align: 'left', field: 'nameSede', sortable: true },

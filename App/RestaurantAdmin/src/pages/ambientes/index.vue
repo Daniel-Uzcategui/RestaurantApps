@@ -7,8 +7,16 @@
                <img alt="chopZI" src="~assets/chopzi-01.png" class="imglogo">
             </template>
             </q-card-section>
-    <q-card-section class="row justify-center">
-      <q-card class="q-ma-md cardradius bg-primary">
+    <q-card-section v-if="!bindedAmb || ambientes === null" class="row justify-center">
+      <q-spinner color="primary" size="5em" />
+    </q-card-section>
+    <q-card-section v-else>
+      <transition-group
+          appear
+          class="row justify-start"
+          enter-active-class="animated fadeInRight"
+        >
+      <q-card key="createamb" class="q-ma-md cardradius bg-primary">
         <q-card-section v-if="!addnew" class="column items-center">
           <q-btn flat @click="addnew = !addnew" icon="add" size="lg"/>
             <p>Añadir ambiente</p>
@@ -31,6 +39,7 @@
           </q-item-label>
         </q-card-section>
       </q-card>
+      </transition-group>
     </q-card-section>
     </q-card>
   </q-page>
@@ -43,16 +52,16 @@ export default {
     ...mapGetters('user', ['currentUser', 'ambientes'])
   },
   watch: {
-    ambientes () {
-      this.$q.loading.hide()
-      this.$q.notify({
-        message: 'Ambiente creado exitosamente',
-        color: 'blue'
-      })
-    },
+    // ambientes () {
+    //   this.$q.loading.hide()
+    //   this.$q.notify({
+    //     message: 'Ambiente creado exitosamente',
+    //     color: 'blue'
+    //   })
+    // },
     currentUser () {
       if (this.currentUser && this.currentUser.id) {
-        this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e))
+        this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
       }
     }
   },
@@ -62,15 +71,17 @@ export default {
       addnew: false,
       newname: '',
       url: '',
+      bindedAmb: false,
       suffix: '.chopzi.com'
     }
   },
   mounted () {
     if (this.currentUser && this.currentUser.id) {
-      this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e))
+      this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
     }
   },
   methods: {
+    ...mapActions('auth', ['logoutUser']),
     async validation () {
       return this.isValidCharacterURL(this.url + this.suffix) && this.isValidCharacter(this.newname)
     },
@@ -89,7 +100,11 @@ export default {
             'url': this.url + this.suffix,
             'amb': this.url,
             'user': this.currentUser
-          }).then(e => console.log(e)).catch(e => console.log(e), this.addnew = false)
+          }).then(e => console.log(e)).catch(e => console.log(e), this.addnew = false, this.$q.loading.hide())
+          return this.$q.notify({
+            message: 'Ambiente creado exitosamente',
+            color: 'blue'
+          })
         } else {
           throw Error({ error: true })
         }

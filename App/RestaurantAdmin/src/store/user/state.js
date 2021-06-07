@@ -10,7 +10,7 @@ export default {
     Outstanding: null
   },
   roles: [],
-  ambientes: [],
+  ambientes: null,
   hist: [{
     'index': 0,
     'no': true

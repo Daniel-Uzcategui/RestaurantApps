@@ -116,7 +116,7 @@ exports.CheckCart = functions.firestore
             let excluyente = i.includeAll && !i.exclude?.products?.include?.(cart[prod].prodId) && !i.exclude?.categories?.some?.(item => cart[prod].category?.includes(item))
             let incluyente = !i.includeAll && (i.include?.products?.include?.(cart[prod].prodId) || i.include?.categories?.some?.(item => cart[prod].category?.includes(item)))
             let disctot = 0
-            if (i.discount && (excluyente || incluyente)) {
+            if (i.discount && !i.isAmount && (excluyente || incluyente)) {
               let disc = (1 - i.discount / 100)
               let subdisc = sub * disc
               let extradisc = extra * disc
@@ -143,7 +143,7 @@ exports.CheckCart = functions.firestore
     }
     if (newValue?.cupons?.length) {
       for (let i of newValue.cupons) {
-        if (i.amount) {
+        if (i.amount && i.isAmount) {
           cupon += i.amount
         }
       }

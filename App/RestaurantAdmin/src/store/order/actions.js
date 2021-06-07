@@ -1,9 +1,15 @@
 /// ////// Orders Action ////////
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
-export const bindOrders = firestoreAction(({ bindFirestoreRef }) => {
-  console.log('bindorders')
-  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('factura', 'desc'))
+export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
+  console.log('bindorders', { payload })
+  if (payload?.start && payload?.end) {
+    console.log('renge')
+    return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', payload.start).where('dateIn', '<', payload.end))
+  }
+  let hoy = new Date()
+  hoy.setDate(hoy.getDate() - 30)
+  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', hoy))
 })
 
 export const reportBindOrders = firestoreAction(({ bindFirestoreRef }) => {

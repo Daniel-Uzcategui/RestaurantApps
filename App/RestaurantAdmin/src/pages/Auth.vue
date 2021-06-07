@@ -190,7 +190,6 @@ export default {
       nombre: null,
       apellido: null,
       cedula: null,
-      newuser: false,
       sexo: null,
       fecnac: null,
       checkTerms: false,
@@ -216,16 +215,6 @@ export default {
   },
   mounted () {
     this.bindusers()
-    let e = this.currentUser
-    if (e && e.typeAccess === 'Admin' && e.status === true) {
-      if (e && e.rol) {
-        this.$q.loading.hide()
-        return this.$router.push({ path: '/home' })
-      } else {
-        this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
-        this.logoutUser()
-      }
-    }
   },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser', 'logoutUser']),
@@ -233,68 +222,78 @@ export default {
     getTermsDialog () {
       this.viewTermsDialog = true
     },
-    onSubmit () {
+    async authValidate () {
       const { email, password, nombre, apellido, cedula, sexo, fecnac } = this
-      this.$refs.emailAuthenticationForm.validate()
-        .then(async success => {
-          if (success) {
-            this.$q.loading.show({
-              message: this.isRegistration
-                ? 'Registro de su cuenta...'
-                : 'Autenticando su cuenta...',
-              backgroundColor: 'grey',
-              spinner: QSpinnerGears,
-              customClass: 'loader'
-            })
-            try {
-              if (this.isRegistration) {
-                if (this.checkTerms) {
-                  await this.createNewUser({ email, password, nombre, apellido, cedula, sexo, fecnac })
-                  this.newuser = true
-                } else {
-                  this.validationError = true
-                  return
-                }
-              } else {
-                await this.loginUser({ email, password })
-              }
-            } catch (err) {
-              console.error(err)
-              this.$q.notify({
-                message: `A occurido un error: ${err}`,
-                color: 'negative'
-              })
-            } finally {
+      let success = await this.$refs.emailAuthenticationForm.validate()
+      if (success) {
+        this.$q.loading.show({
+          message: this.isRegistration
+            ? 'Registro de su cuenta...'
+            : 'Autenticando su cuenta...',
+          backgroundColor: 'grey',
+          spinner: QSpinnerGears,
+          customClass: 'loader'
+        })
+        try {
+          let waitAuth
+          if (this.isRegistration) {
+            if (this.checkTerms) {
+              waitAuth = await this.createNewUser({ email, password, nombre, apellido, cedula, sexo, fecnac })
               this.$q.loading.hide()
+            } else {
+              this.validationError = true
+              this.$q.loading.hide()
+              return false
             }
+          } else {
+            waitAuth = await this.loginUser({ email, password })
+            this.$q.loading.hide()
           }
-        })
-    }
-  },
-  watch: {
-    currentUser (e) {
-      console.log(e, 'current watcher')
-      if (e === null) { return }
-      if (e && e.status === true) {
-        return this.$router.push({ path: '/ambientes' })
-      // && e.typeAccess === 'Admin'
-        // if (e && e.rol) {
-        //   this.$q.loading.hide()
-        //   return this.$router.push({ path: '/home' })
-        // } else {
-        //   this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
-        //   this.logoutUser()
-        // }
-      } else {
-        this.$q.notify({
-          message: `Acceso no permitido`,
-          color: 'negative'
-        })
+          return waitAuth
+        } catch (err) {
+          console.error(err)
+          this.$q.notify({
+            message: `A occurido un error: ${err}`,
+            color: 'negative'
+          })
+          this.$q.loading.hide()
+        }
       }
-      this.newuser = false
-      this.$q.loading.hide()
+    },
+    async onSubmit () {
+      let validate = await this.authValidate()
+      if (validate) {
+        return this.$router.push({ path: '/ambientes' })
+      }
+      return this.$q.notify({
+        message: `Acceso no permitido`,
+        color: 'negative'
+      })
     }
   }
+  // watch: {
+  //   currentUser (e) {
+  //     console.log(e, 'current watcher')
+  //     if (e === null) { return }
+  //     if (e && e.status === true) {
+  //       return this.$router.push({ path: '/ambientes' })
+  //     // && e.typeAccess === 'Admin'
+  //       // if (e && e.rol) {
+  //       //   this.$q.loading.hide()
+  //       //   return this.$router.push({ path: '/home' })
+  //       // } else {
+  //       //   this.$q.notify({ message: 'El usuario no tiene ningun rol asignado, comuniquese con su administrador para que le asigne uno ', color: 'blue' })
+  //       //   this.logoutUser()
+  //       // }
+  //     } else {
+  //       this.$q.notify({
+  //         message: `Acceso no permitido`,
+  //         color: 'negative'
+  //       })
+  //     }
+  //     this.$q.loading.hide()
+  //   }
+  // }
 }
 </script>
 

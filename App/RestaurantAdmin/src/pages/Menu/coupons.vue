@@ -37,7 +37,7 @@
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
                 <q-item-section class="column items-start" key="photo" :props="props">
                   <div class="row justify-between no-wrap full-width">
-                  <q-item-label class="col-5 self-center">{{props.row.name  || 'Nueva Recompensa'}}</q-item-label>
+                  <q-item-label class="col-5 self-center">{{props.row.name  || 'Nuevo Cupón'}}</q-item-label>
                   <q-icon
                     @click.stop="(e) => {saved(
                         typeof props.row.estatus === 'undefined' ? true : !props.row.estatus,
@@ -66,35 +66,117 @@
                       color="blue"
                     />
               </q-item>
+          <q-item  :props="props">
+                  <p class="text-bold">Incluir todos los productos</p>
+                  <q-toggle
+                      @input="(e) => {saved(e, props.row.includeAll, props.row.id, 'includeAll'); typeof props.row.includeAll === 'undefined' ? props.row.includeAll=true : props.row.includeAll=!props.row.includeAll}"
+                      :value="props.row.includeAll ? true : false"
+                      color="blue"
+                    />
+              </q-item>
           <q-item class="column items-start" key="name" :props="props">
             <div class="col-12 label-expand">Nombre</div>
               <q-input filled dense
-              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+              @input="(e) => saved(e.toUpperCase(), props.row.name, props.row.id, 'name')"
               v-model="props.row.name"
               rounded
               class="col-12 full-width"
               outlined />
           </q-item>
-          <q-item class="column items-start" key="quantity" :props="props">
-            <div class="col-12 label-expand">Cantidad</div>
-              <q-input filled dense
-              @input="(e) => saved(parseInt(e), props.row.quantity, props.row.id, 'quantity')"
-              v-model.number="props.row.quantity"
+          <q-item class="column items-start" :props="props">
+              <p>Tipo de Descuento</p>
+              <div class="row">
+             <q-radio v-model="props.row.isAmount" @input="(e) => saved(e, props.row.isAmount, props.row.id, 'isAmount')" :val="0" label="Porcentaje" />
+             <q-radio v-model="props.row.isAmount" @input="(e) => saved(e, props.row.isAmount, props.row.id, 'isAmount')" :val="1" label="Monto" />
+              </div>
+          </q-item>
+          <q-item v-if="props.row.isAmount === 0" class="column items-start" :props="props">
+            <q-input filled dense
+              @input="(e) => saved(parseFloat(e), props.row.discount, props.row.id, 'discount')"
+              v-model.number="props.row.discount"
               rounded
+              label="Descuento"
+              suffix="%"
               type="number"
-              class="col-12 full-width"
               outlined />
           </q-item>
-          <q-item class="column items-start" key="products" :props="props">
+          <q-item v-if="props.row.isAmount === 1" class="column items-start" :props="props">
+            <q-input filled dense
+              @input="(e) => saved(parseFloat(e), props.row.amount, props.row.id, 'amount')"
+              v-model.number="props.row.amount"
+              rounded
+              label="Monto"
+              suffix="$"
+              type="number"
+              outlined />
+          </q-item>
+          <q-item v-if="props.row.includeAll" class="column items-start" :props="props">
             <div class="col-12 label-expand">Excluir Categorias</div>
               <q-select filled dense
+              v-if="props.row.exclude"
               @input="(e) => saved(e, props.row.exclude.categories, props.row.id, 'exclude.categories')"
               v-model="props.row.exclude.categories"
               map-options
               emit-value
               clearable
+              @popup-show="filtering = categorias"
+              @filter="filterFn"
               use-chips
               :options="categorias"
+              multiple
+              :option-label="e => e.name"
+              :option-value="e => e.id"
+              rounded
+              class="col-12 full-width"
+              outlined />
+          </q-item>
+          <q-item v-if="props.row.includeAll" class="column items-start" :props="props">
+            <div class="col-12 label-expand">Excluir Productos</div>
+              <q-select filled dense
+              v-if="props.row.exclude"
+              @input="(e) => saved(e, props.row.exclude.products, props.row.id, 'exclude.products')"
+              v-model="props.row.exclude.products"
+              map-options
+              emit-value
+              clearable
+              use-chips
+              :options="menu"
+              multiple
+              :option-label="e => e.name"
+              :option-value="e => e.id"
+              rounded
+              class="col-12 full-width"
+              outlined />
+          </q-item>
+          <q-item v-if="!props.row.includeAll" class="column items-start" :props="props">
+            <div class="col-12 label-expand">Incluir Categorias</div>
+              <q-select filled dense
+              v-if="props.row.include"
+              @input="(e) => saved(e, props.row.include.categories, props.row.id, 'include.categories')"
+              v-model="props.row.include.categories"
+              map-options
+              emit-value
+              clearable
+              use-chips
+              :options="categorias"
+              multiple
+              :option-label="e => e.name"
+              :option-value="e => e.id"
+              rounded
+              class="col-12 full-width"
+              outlined />
+          </q-item>
+           <q-item v-if="!props.row.includeAll" class="column items-start" :props="props">
+            <div class="col-12 label-expand">Incluir Productos</div>
+              <q-select filled dense
+              v-if="props.row.include"
+              @input="(e) => saved(e, props.row.include.products, props.row.id, 'include.products')"
+              v-model="props.row.include.products"
+              map-options
+              emit-value
+              clearable
+              use-chips
+              :options="menu"
               multiple
               :option-label="e => e.name"
               :option-value="e => e.id"
@@ -150,6 +232,12 @@ export default {
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp', 'coupons']),
     ...mapGetters('user', ['currentUser']),
+    filtered () {
+      if (this.filtering === null) {
+        return []
+      }
+      return this.filtering.map(x => x.name)
+    },
     menucfg () {
       let men = this.configs.find(e => e.id === 'menu')
       if (typeof men === 'undefined') {
@@ -215,6 +303,7 @@ export default {
   },
   data () {
     return {
+      filtering: null,
       colorText: false,
       definitions: {
         color: {
@@ -281,6 +370,18 @@ export default {
     this.bindCategorias()
   },
   methods: {
+    filterFn (val, update) {
+      update(() => {
+        if (val === '') {
+          this.filterOptions = this.stringOptions
+        } else {
+          const needle = val.toLowerCase()
+          this.filterOptions = this.stringOptions.filter(
+            v => v.toLowerCase().indexOf(needle) > -1
+          )
+        }
+      })
+    },
     conss (e, y) {
       console.log(e, y)
     },
@@ -393,7 +494,7 @@ export default {
         if (waitSaved) {
           this.$q.notify({ message: 'Cambios Guardados', color: 'green' })
           this.temp1 = {}
-          this.menuTemp = JSON.parse(JSON.stringify(this.menu))
+          this.couponsTemp = JSON.parse(JSON.stringify(this.coupons))
           this.$forceUpdate()
         }
       } catch (error) {
@@ -439,7 +540,7 @@ export default {
           cancel: true,
           persistent: true
         }).onOk(() => {
-          this.delrows({ payload: this.selected, collection: 'menu' })
+          this.delrows({ payload: this.selected, collection: 'coupons' })
         }).onCancel(() => {
         })
       }
@@ -447,8 +548,8 @@ export default {
     delrows (payload) {
       this.$refs.table.clearSelection()
       for (const i in payload.payload) {
-        let index = this.menuTemp.findIndex(x => x.id === payload.payload[i].id)
-        this.menuTemp.splice(index, 1)
+        let index = this.couponsTemp.findIndex(x => x.id === payload.payload[i].id)
+        this.couponsTemp.splice(index, 1)
         if (typeof this.temp1[payload.collection] === 'undefined') {
           this.temp1[payload.collection] = {}
         }
@@ -466,8 +567,8 @@ export default {
       if (typeof this.temp1.coupons === 'undefined') {
         this.temp1.coupons = {}
       }
-      this.temp1.coupons[rand] = { id: rand, isNew: true, products: [] }
-      this.couponsTemp.unshift({ id: rand, isNew: true, products: [] })
+      this.temp1.coupons[rand] = { id: rand, isNew: true, products: [], exclude: {}, include: {} }
+      this.couponsTemp.unshift({ id: rand, isNew: true, products: [], exclude: {}, include: {} })
       this.$forceUpdate()
     },
     showPhotoUpload (type, prop) {
