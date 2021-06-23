@@ -24,9 +24,9 @@
 
     <q-btn icon="event" class="q-mr-sm" round color="blue">
       <q-popup-proxy transition-show="scale" transition-hide="scale">
-        <q-date color="blue" v-model="dateRange" range >
+        <q-date color="blue" v-model="dateRango" range >
           <div class="row items-center justify-end q-gutter-sm">
-            <q-btn label="Borrar Filtro" @click="dateRange = null" color="white" flat v-close-popup/>
+            <q-btn label="Borrar Filtro" @click="dateRango = null" color="white" flat v-close-popup/>
           </div>
         </q-date>
       </q-popup-proxy>
@@ -113,9 +113,17 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'dateRange']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('localization', ['localizations']),
+    dateRango: {
+      get () {
+        return this.dateRange
+      },
+      set (e) {
+        this.alterRange(e)
+      }
+    },
     OrderClient () {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago, sedeforOrder
@@ -219,7 +227,7 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.orders.length}`
     },
-    ...mapActions('order', ['deleteOrder', 'bindOrders']),
+    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('client', ['bindClients']),
     deleted () {
@@ -228,7 +236,6 @@ export default {
   },
   data () {
     return {
-      dateRange: null,
       selected: [],
       columns: [
         { name: 'nameSede', required: true, label: 'Sede', align: 'left', field: 'nameSede', sortable: true },

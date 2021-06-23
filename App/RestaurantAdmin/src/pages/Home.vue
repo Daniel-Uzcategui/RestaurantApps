@@ -70,7 +70,10 @@
            </q-card-section>
           </q-card>
       </div>
-     <ordertable class="col-12 orderHome" />
+      <orderVentaT :colors="['#b00', '#666']" key="orderventa" class="graphs col-xs-12 col-sm-12 col-md-12 col-lg-6" />
+    <cantidadsemanal key="cantidadsemanal" class="graphs col-xs-12 col-sm-12 col-md-12 col-lg-6" />
+    <productos key="productos" class="graphs col-xs-12 col-sm-12 col-md-12 col-lg-12" />
+     <ordertable class="col-12" />
     </div>
   </q-page>
 </template>
@@ -100,7 +103,10 @@ function wrapCsvValue (val, formatFn) {
 }
 export default {
   components: {
-    'ordertable': () => import('./orders/index')
+    'ordertable': () => import('./orders/index'),
+    'orderVentaT': () => import('../components/businessIntelligence/VentasT/index'),
+    'productos': () => import('../components/businessIntelligence/productovendidos/index'),
+    'cantidadsemanal': () => import('../components/businessIntelligence/semanacantidad/index')
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -209,7 +215,9 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
+<style lang="stylus">
+.graphs
+  height: 300px !important
 .separate
  padding-left: 70%
 .flex-break

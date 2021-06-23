@@ -50,3 +50,6 @@ export const addOrder = firestoreAction((state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
+export const alterRange = async function ({ commit }, payload) {
+  commit('order/alterRange', payload, { root: true })
+}

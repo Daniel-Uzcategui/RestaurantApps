@@ -4,3 +4,6 @@ export function saveOrderMt (state, payload) {
 export function deleteOrderMt (state, payload) {
   state.orders = payload
 }
+export function alterRange (state, payload) {
+  state.dateRange = payload
+}
