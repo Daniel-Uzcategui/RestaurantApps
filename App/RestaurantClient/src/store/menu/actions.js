@@ -21,6 +21,9 @@ export const modCartVal = async function ({ commit }, payload) {
 export const setFilter = async function ({ commit }, payload) {
   return commit('setFilter', payload)
 }
+export const setCat = async function ({ commit }, payload) {
+  return commit('setCat', payload)
+}
 export const setProduct = async function ({ commit }, payload) {
   return commit('setProduct', payload)
 }

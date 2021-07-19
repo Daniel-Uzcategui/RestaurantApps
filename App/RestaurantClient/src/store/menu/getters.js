@@ -76,6 +76,8 @@ export const selectedProdType = ({ selectedProdType }) => selectedProdType
 
 export const selectedFilter = ({ selectedFilter }) => selectedFilter
 
+export const selCat = ({ selCat }) => selCat
+
 export const item = ({ item }) => item
 
 export const itemGroup = ({ itemGroup }) => itemGroup

@@ -62,6 +62,10 @@ export default {
       type: String,
       default: null
     },
+    querycat: {
+      type: String,
+      default: null
+    },
     qprodtype: {
       type: String,
       default: null
@@ -73,7 +77,7 @@ export default {
   },
   methods: {
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('menu', ['bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede', 'setFilter', 'setProduct', 'setProdType']),
+    ...mapActions('menu', ['bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede', 'setFilter', 'setCat', 'setProduct', 'setProdType']),
     ...mapMutations('menu', ['delCart']),
     async init () {
       // try {
@@ -144,6 +148,9 @@ export default {
   mounted () {
     if (this.query !== null) {
       this.setFilter(this.query)
+    }
+    if (this.querycat !== null) {
+      this.setCat(this.querycat)
     }
     if (this.queryprod !== null) {
       this.setProduct(this.queryprod)

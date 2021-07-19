@@ -384,7 +384,7 @@
                      <q-btn v-if="hover" color="white" icon="fa fa-align-justify" style="height: 50px; position: absolute; z-index:999999"  text-color="black" class="handle float-left"/>
                      <q-card flat square>
                      <draggable :class="block.class" :style="block.style" group="childs" handle=".handle2" :list="block.child" @start="admin ? drag=true : drag=false" @end="drag=false">
-                        <q-card v-ripple :is="''" class="handle2" :class="chld.classes" :style="chld.styles" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx }" @click-edit="(e) => {placeHoldClick(e);}"  />
+                        <q-card v-ripple :is="''" class="handle2" :class="chld.classes" :style="chld.styles" v-for="(chld, indx) in block.child" :key="indx + '' + index"  @hook:mounted="(e) => childMounted(e)" v-bind="{ ...chld.props, block_index: index, child_index: indx, isAdmin: true}" @click-edit="(e) => {placeHoldClick(e);}"  />
                      </draggable>
                      </q-card>
                   </div>

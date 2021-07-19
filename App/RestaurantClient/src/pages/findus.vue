@@ -10,6 +10,7 @@
         </div>
       </q-card-section>
       <q-card-section class="q-pa-none">
+
         <google-map
           v-if="markers.length"
           :center="center"

@@ -10,6 +10,7 @@ export default function () {
     filters: [],
     selectedFilter: '',
     selectedProduct: '',
+    selCat: '',
     selectedProdType: '',
     item: [{
       id: 1,

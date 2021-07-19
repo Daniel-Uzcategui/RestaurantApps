@@ -39,6 +39,10 @@ export default {
       type: Boolean,
       default: () => false
     },
+    href: {
+      type: String,
+      default: ''
+    },
     styles: {
       type: String,
       default: 'max-width: 350px;'
@@ -236,6 +240,8 @@ export default {
     click () {
       if (this.isAdmin) {
         console.log('Aloha')
+      } else {
+        this.$router.push({ path: this.href })
       }
       this.$emit('click-edit', {
         block_info: {

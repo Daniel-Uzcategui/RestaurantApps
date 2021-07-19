@@ -50,6 +50,10 @@ export function setFilter (state, payload) {
   console.log(payload)
   state.selectedFilter = payload
 }
+export function setCat (state, payload) {
+  console.log(payload)
+  state.selCat = payload
+}
 export function setProduct (state, payload) {
   console.log(payload)
   state.selectedProduct = payload

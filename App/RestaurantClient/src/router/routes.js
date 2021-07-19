@@ -120,7 +120,7 @@ const routes = [
         path: 'index',
         name: 'index',
         component: MenuIndex,
-        props: route => ({ query: route.query.q, queryprod: route.query.t, qprodtype: route.query.j })
+        props: route => ({ query: route.query.q, queryprod: route.query.t, qprodtype: route.query.j, querycat: route.query.c })
       }
     ]
   },

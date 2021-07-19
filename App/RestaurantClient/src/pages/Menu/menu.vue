@@ -398,7 +398,7 @@ export default {
     Menutype4
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'rewards', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType']),
     cats () {
@@ -427,6 +427,14 @@ export default {
       },
       set (e) {
         this.setMenuDispType(e)
+      }
+    },
+    themeMode: {
+      get () {
+        if (this.menucfg && this.menucfg.themeMode === 0) {
+          return this.menucfg.themeMode
+        }
+        return 1
       }
     },
     filtercat () {
@@ -638,6 +646,11 @@ export default {
         this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
         this.selectedCat = this.filtercat[0]
       }
+      if (this.selCat !== '') {
+        let selected = this.filtercat.find(x => x.id === this.selCat)
+        this.selectedCat = selected
+        console.log({ selected })
+      }
       // promo
       if (parseInt(this.selectedProdType)) {
         this.productSelected()
@@ -657,6 +670,19 @@ export default {
       })
     },
     nextDisp () {
+      console.log(this.themeMode, this.menucfg)
+      if (this.themeMode === 0) {
+        if (this.displayType === this.menucfg.displayType && this.$q.platform.is.mobile) {
+          this.displayType = 2
+        } else {
+          this.displayType = this.menucfg.displayType
+          if (this.displayType === 1) {
+            this.selectedCat = null
+            this.search()
+          }
+        }
+        return
+      }
       if (this.displayType === 3) {
         this.displayType = 0
         this.selectedCat = this.filtercat[0]

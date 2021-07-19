@@ -51,7 +51,15 @@
             {{ lorem2 }}
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="theme" class="q-pa-none  row justify-between">
+        <q-carousel-slide name="theme" class="q-pa-none  row justify-center">
+          <q-select emit-value map-options class="col-xs-12 col-md-6 col-lg-2 q-pa-md q-pb-none" v-model="themeMode" label="Modo" :options="[{value: 0, label: 'Fijo'}, {value: 1, label: 'Dinámico'}]">
+
+          </q-select>
+          <div class="flex-break"></div>
+          <p class="text-caption text-center q-ma-md q-mt-none">
+            Dinámico permite a tu cliente seleccionar el tema que más guste, Fijo solo permite cambiar entre vista de lista en móvil y el tema seleccionado
+          </p>
+          <div class="q-pa-none col-12  row justify-between">
           <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FHorizontal312833?alt=media&token=dbf36c60-d2fb-439f-848a-922bf6d6390a" />
           <q-radio v-model="displayType" :val="1" :size="$q.screen.name" color="white" label="Horizontal" />
@@ -63,6 +71,11 @@
           <div v-show="photoClick === 2 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
           <q-img @click="photoClick === 2 ? photoClick = 99 : photoClick = 2" :width="photoClick === 2 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FDenso236599?alt=media&token=ed301d10-49a8-4392-adc3-1e6b9b3a5dbe" />
           <q-radio v-model="displayType" :val="2" color="white" :size="$q.screen.name" label="Denso" />
+          </div>
+          <div v-show="photoClick === 3 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <q-img @click="photoClick === 3 ? photoClick = 99 : photoClick = 3" :width="photoClick === 3 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2FPhotos%2Flocalhost_8081_(Moto%20G4)%20(2)%20(1).png?alt=media&token=2463f978-e518-401e-879a-fc56c5ca366f" />
+          <q-radio v-model="displayType" :val="3" color="white" :size="$q.screen.name" label="BigPhoto" />
+          </div>
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="style3" class="column no-wrap flex-center" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
@@ -137,6 +150,18 @@ export default {
         this.saved3(e, this.displayType, 'menu', 'displayType')
       }
     },
+    themeMode: {
+      get () {
+        let men = this.configs.find(e => e.id === 'menu')
+        if (men && typeof men.themeMode !== 'undefined') {
+          return men.themeMode
+        }
+        return 99
+      },
+      set (e) {
+        this.saved3(e, this.themeMode, 'menu', 'themeMode')
+      }
+    },
     mobile2: {
       get () {
         let men = this.configs.find(e => e.id === 'menu')
@@ -155,7 +180,7 @@ export default {
         if (men && typeof men.current !== 'undefined') {
           return men.current
         }
-        return 99
+        return null
       },
       set (e) {
         this.saved3(e, this.displayType, 'theme', 'current')
