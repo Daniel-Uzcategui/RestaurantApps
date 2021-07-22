@@ -468,7 +468,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp']),
+    ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp', 'itemGroup']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['configs', 'version']),
@@ -586,6 +586,7 @@ export default {
     this.bindCategorias()
     this.bindLocalizations()
     this.bindGroupComp()
+    this.bindItemGroup()
     this.bindConfigs()
     // console.log({ cat: this.categorias, gr: this.groupComp })
   },
@@ -659,13 +660,36 @@ export default {
       return value >= 0 || 'error'
     },
     groupCompFilter () {
+      let grupo
       if (this.propass.row.groupComp) {
-        return this.groupComp.filter(x => {
+        grupo = this.groupComp.filter(x => {
           return !this.propass.row.groupComp.includes(x.id)
         })
+        grupo = grupo.map(x => {
+          return {
+            id: x.id,
+            name: this.findname(x.group_id)
+          }
+        })
+        return grupo
       } else {
-        return this.groupComp
+        grupo = this.groupComp
+        grupo = grupo.map(x => {
+          return {
+            id: x.id,
+            name: this.findname(x.group_id)
+          }
+        })
+        return grupo
       }
+    },
+    findname (groupid) {
+      let obj
+      obj = this.itemGroup.find(x => x.id === groupid)
+      if (obj && obj.name) {
+        return obj.name
+      }
+      return 'nombre no encontrado'
     },
     addNewOpts () {
       let props = this.propass
@@ -799,7 +823,7 @@ export default {
     canceled (val, initialValue) {
       // console.log(`retain original value = ${initialValue}, canceled value = ${val}`)
     },
-    ...mapActions('menu', ['setValue', 'setValue2', 'setMultiValue', 'newAddRow', 'bindMenu', 'bindCategorias', 'bindGroupComp']),
+    ...mapActions('menu', ['setValue', 'setValue2', 'setMultiValue', 'newAddRow', 'bindMenu', 'bindCategorias', 'bindGroupComp', 'bindItemGroup']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindConfigs']),
     /* delrow () {
