@@ -665,31 +665,45 @@ export default {
         grupo = this.groupComp.filter(x => {
           return !this.propass.row.groupComp.includes(x.id)
         })
-        grupo = grupo.map(x => {
-          return {
-            id: x.id,
-            name: this.findname(x.group_id)
+        grupo = grupo.reduce((y, x) => {
+          let name = this.findname(x.group_id, x.name)
+          if (name !== null) {
+            y.push({
+              id: x.id,
+              name: name
+            })
           }
-        })
+          return y
+        }, [])
         return grupo
       } else {
         grupo = this.groupComp
-        grupo = grupo.map(x => {
-          return {
-            id: x.id,
-            name: this.findname(x.group_id)
+        // grupo = grupo.map(x => {
+        //   return {
+        //     id: x.id,
+        //     name: this.findname(x.group_id, x.name)
+        //   }
+        // })
+        grupo = grupo.reduce((y, x) => {
+          let name = this.findname(x.group_id, x.name)
+          if (name !== null) {
+            y.push({
+              id: x.id,
+              name: name
+            })
           }
-        })
+          return y
+        }, [])
         return grupo
       }
     },
-    findname (groupid) {
+    findname (groupid, name) {
       let obj
       obj = this.itemGroup.find(x => x.id === groupid)
       if (obj && obj.name) {
         return obj.name
       }
-      return 'nombre no encontrado'
+      return null
     },
     addNewOpts () {
       let props = this.propass

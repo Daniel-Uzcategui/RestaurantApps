@@ -7,7 +7,7 @@
       v-show="!(isDiag || isDiagView)"
       :columns="columns"
       title="Opciones"
-      :rows-per-page-options="[20, 30, 0]"
+      :rows-per-page-options="isDiagView ? [0] : [20, 30, 0]"
       row-key="id"
       grid
       :selected-rows-label="getSelectedString"
@@ -320,20 +320,43 @@ export default {
       this.elGroup = JSON.parse(JSON.stringify(e))
     }
   },
-  created () {
-    this.init()
-  },
-  mounted () {
-    if (this.isDiag) {
-      this.createValue()
-    }
-    console.log('Yeah')
-    if (this.isDiagView && this.viewId !== '') {
-      console.log('Yeah', this.viewId)
-      this.$refs.table.setExpanded([this.viewId])
+  async created () {
+    this.$q.loading.show()
+    try {
+      await this.init()
+      return this.afterInit()
+    } catch (error) {
+      this.$q.loading.hide()
     }
   },
+  // async mounted () {
+  //   console.log('mounted', new Date().getTime())
+  //   if (this.isDiag) {
+  //     this.createValue()
+  //   }
+  //   console.log('Yeah')
+  //   if (this.isDiagView && this.viewId !== '') {
+  //     console.log('Yeah', this.viewId)
+  //     this.$refs.table.setExpanded([this.viewId])
+  //   }
+  // },
   methods: {
+    afterInit () {
+      try {
+        console.log('mounted', new Date().getTime())
+        if (this.isDiag) {
+          this.createValue()
+        }
+        console.log('Yeah')
+        if (this.isDiagView && this.viewId !== '') {
+          console.log('Yeah', this.viewId)
+          this.$refs.table.setExpanded([this.viewId])
+        }
+        this.$q.loading.hide()
+      } catch (error) {
+        this.$q.loading.hide()
+      }
+    },
     execCancel () {
       console.log(this.$refs)
       this.$refs.opcionConf[0].executeCancel()
@@ -364,18 +387,22 @@ export default {
       }
       this.tempOpt = null
     },
-    init () {
-      this.bindItem().then((e) => {
-        this.elitem = JSON.parse(JSON.stringify(e))
-      })
-      this.bindItemGroup().then((e) => {
-        this.elitemGroup = JSON.parse(JSON.stringify(e))
-        this.filterOptions = JSON.parse(JSON.stringify(e))
-      })
-      this.bindGroupComp().then(e => {
-        this.elGroup = JSON.parse(JSON.stringify(e))
-      })
-      console.log({ it: this.elitemGroup })
+    async init () {
+      try {
+        this.bindItem().then((e) => {
+          this.elitem = JSON.parse(JSON.stringify(e))
+        })
+        await this.bindItemGroup().then((e) => {
+          console.log('bindingItem', e)
+          this.elitemGroup = JSON.parse(JSON.stringify(e))
+          this.filterOptions = JSON.parse(JSON.stringify(e))
+        })
+        this.bindGroupComp().then(e => {
+          this.elGroup = JSON.parse(JSON.stringify(e))
+        })
+      } catch (error) {
+        this.$q.loading.hide()
+      }
     },
     validate (value) {
       return value >= 0 || 'error'

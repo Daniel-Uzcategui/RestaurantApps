@@ -1,5 +1,6 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const axios = require('axios')
 admin.initializeApp()
 // const acc = require('./acc.json')
 // const template = require('./template/email.js')
@@ -160,6 +161,7 @@ exports.CheckCart = functions.firestore
     }, {
       merge: true
     })
+    sendMessageAdmin(context.params.ambiente, 'nueva orden!')
   })
 function roundNumber (num) {
   return parseFloat(num.toFixed(2))
@@ -341,27 +343,57 @@ exports.RewardsPoints = functions.firestore
       }
     }
   })
-
-exports.sendMessage = functions.https.onRequest(async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*')
-  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
-  res.set('Access-Control-Allow-Headers', '*')
-  console.log(req.body.user, req.body.message)
-  let ambiente = 'chopzi'
-  let body = req.body.message
-  let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(req.body.user)
+async function sendMessageAdmin (ambiente, message) {
+  let ambienteRef = db.collection('ambiente').doc(ambiente)
+  const docAmb = await ambienteRef.get()
+  const ambData = docAmb.data()
+  let user = ambData.userAdmin.id
+  let userRef = db.collection('ambiente').doc('chopzi').collection('users').doc(user)
   const doc = await userRef.get()
   const userData = doc.data()
   if (typeof userData.fcm !== 'undefined') {
     const pre = await getPreManifest(ambiente)
-    return res.send(sendNotif(pre, userRef, userData, body))
+    return sendNotif(pre, userRef, userData, message)
   }
-})
+}
+// async function sendMessage (user, message) {
+//   let ambiente = 'chopzi'
+//   let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(user)
+//   const doc = await userRef.get()
+//   const userData = doc.data()
+//   if (typeof userData.fcm !== 'undefined') {
+//     const pre = await getPreManifest(ambiente)
+//     return sendNotif(pre, userRef, userData, message)
+//   }
+// }
+// exports.sendMessage = functions.https.onRequest(async (req, res) => {
+//   res.set('Access-Control-Allow-Origin', '*')
+//   res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+//   res.set('Access-Control-Allow-Headers', '*')
+//   console.log(req.body.user, req.body.message)
+//   let ambiente = 'chopzi'
+//   let body = req.body.message
+//   let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(req.body.user)
+//   const doc = await userRef.get()
+//   const userData = doc.data()
+//   if (typeof userData.fcm !== 'undefined') {
+//     const pre = await getPreManifest(ambiente)
+//     return res.send(sendNotif(pre, userRef, userData, body))
+//   }
+// })
 async function sendNotif (pre, userRef, userData, body) {
-  return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
+  await admin.firestore().collection('mail').add({
+    to: userData.email,
+    message: {
+      subject: pre.name,
+      text: body,
+      html: ''
+    }
+  })
+  await admin.messaging().sendToDevice(userData.fcm, { 'notification': {
     'title': pre.name,
     'body': body,
-    'click_action': 'http://localhost:8080/#/orders/index',
+    // 'click_action': 'http://chopzi.com/#/',
     'icon': pre.icon
   } }).then(async function (response) {
     var userfcm = userData.fcm
@@ -384,6 +416,36 @@ async function sendNotif (pre, userRef, userData, body) {
       console.log('Error sending message:', error)
       return [false, error]
     })
+  try {
+    let time = Math.floor(Date.now() / 1000)
+    time = time.toString()
+    let postData = {
+      'app': {
+        'id': '584241329457',
+        'time': time,
+        'data': {
+          'recipient': {
+            'id': userData.phone
+          },
+          'message': [
+            {
+              'time': time,
+              'type': 'text',
+              'value': 'Nueva orden!'
+            }
+          ]
+        }
+      }
+    }
+    let options = {
+      url: 'https://whapi.io/api/send',
+      method: 'post',
+      data: postData
+    }
+    await axios(options)
+  } catch (err) {
+    console.error(err)
+  }
 }
 async function getPreManifest (ambiente) {
   const reqRef = db.doc(`ambiente/${ambiente}/environment/manifest`)

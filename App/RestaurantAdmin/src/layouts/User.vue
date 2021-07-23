@@ -291,6 +291,14 @@ export default {
 
             // },
             {
+              label: 'Cupones',
+              caption: '',
+              icon: 'fas fa-ad',
+              handler: () => this.$router.push({ path: '/menu/coupons' })
+              // separator: true,
+
+            },
+            {
               label: 'Promociones',
               caption: '',
               icon: 'fas fa-ad',
