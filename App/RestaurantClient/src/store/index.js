@@ -16,6 +16,7 @@ import localization from './localization'
 import config from './config'
 import editor from './editor'
 import transactions from './transactions'
+import seller from './seller'
 Vue.use(Vuex)
 
 /*
@@ -36,6 +37,7 @@ export default function (/* { ssrContext } */) {
       localization,
       config,
       editor,
+      seller,
       transactions
     },
     mutations: {

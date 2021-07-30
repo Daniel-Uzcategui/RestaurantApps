@@ -10,6 +10,40 @@ admin.initializeApp()
 //   )
 // })
 const db = admin.firestore()
+async function rewardAmount (context, newValue) {
+  let cfgData
+  let cfgRew
+  if (newValue.tipEnvio === '1') {
+    const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
+    const cfg = await configRef.get()
+    cfgData = cfg.data()
+    if (!cfg.exists) {
+      console.log('No such document!')
+    } else {
+      // sumPaid = sumPaid + parseInt(cfgData.price)
+      if (typeof cfgData.rewards === 'undefined') {
+        cfgRew = 10
+      } else {
+        cfgRew = cfgData.rewards
+      }
+    }
+  }
+  if (typeof cfgData === 'undefined') {
+    const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
+    const cfg = await configRef.get()
+    cfgData = cfg.data()
+    if (!cfg.exists) {
+      console.log('No such document!')
+    } else {
+      if (typeof cfgData.rewards === 'undefined') {
+        cfgRew = 10
+      } else {
+        cfgRew = cfgData.rewards
+      }
+    }
+  }
+  return cfgRew
+}
 
 exports.CheckCart = functions.firestore
   .document('/ambiente/{ambiente}/orders/{ordersId}')
@@ -22,36 +56,7 @@ exports.CheckCart = functions.firestore
     var sumProd = 0
     var sumExtras = 0
     var cfgRew
-    var cfgData
-    if (newValue.tipEnvio === '1') {
-      const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
-      const cfg = await configRef.get()
-      cfgData = cfg.data()
-      if (!cfg.exists) {
-        console.log('No such document!')
-      } else {
-        // sumPaid = sumPaid + parseInt(cfgData.price)
-        if (typeof cfgData.rewards === 'undefined') {
-          cfgRew = 10
-        } else {
-          cfgRew = cfgData.rewards
-        }
-      }
-    }
-    if (typeof cfgData === 'undefined') {
-      const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
-      const cfg = await configRef.get()
-      cfgData = cfg.data()
-      if (!cfg.exists) {
-        console.log('No such document!')
-      } else {
-        if (typeof cfgData.rewards === 'undefined') {
-          cfgRew = 10
-        } else {
-          cfgRew = cfgData.rewards
-        }
-      }
-    }
+    cfgRew = await rewardAmount(context, newValue) // Find if there is a configuration for rewards if not set it to 10
     var userRef = db.collection('ambiente').doc(context.params.ambiente).collection('users').doc(newValue.customer_id)
     const doc = await userRef.get()
     const userData = doc.data()
@@ -62,11 +67,13 @@ exports.CheckCart = functions.firestore
         let sub = 0
         let extra = 0
         let paid = 0
+        // Update product stock start
         var reference = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(cart[prod].prodId)
         var decrement = admin.firestore.FieldValue.increment(-cart[prod].quantity)
         reference.update({
           [`stock.${sede}`]: decrement
         })
+        // End
         var menu = await reference.get()
         var menuDoc = menu.data()
         var discount = menuDoc.discount || 0
@@ -111,8 +118,7 @@ exports.CheckCart = functions.firestore
           paid = paid + price
           extra = extra + price
         }
-        //  // chequear cupon y aplicar descuento
-        if (newValue.cupons && newValue.cupons.length) {
+        if (newValue.cupons && newValue.cupons.length) { // Check coupon and apply discount
           for (let i of newValue.cupons) {
             let excluyente = i.includeAll && !i.exclude?.products?.include?.(cart[prod].prodId) && !i.exclude?.categories?.some?.(item => cart[prod].category?.includes(item))
             let incluyente = !i.includeAll && (i.include?.products?.include?.(cart[prod].prodId) || i.include?.categories?.some?.(item => cart[prod].category?.includes(item)))

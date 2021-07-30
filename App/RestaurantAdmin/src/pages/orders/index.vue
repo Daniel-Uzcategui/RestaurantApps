@@ -113,7 +113,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options', 'dateRange']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'dateRange', 'tipoServicio']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('localization', ['localizations']),
     dateRango: {
@@ -142,7 +142,9 @@ export default {
           sedeforOrder = this.sedeOrders(obj.sede)
           fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
           nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
-          typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
+          console.log('AQUI')
+          typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
+          console.log('AQUI2')
           if (typeof obj.typePayment !== 'undefined') {
             tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
           } else { tipoPago = '' }
@@ -254,11 +256,6 @@ export default {
         { label: 'Orden en vía', value: 2 },
         { label: 'Orden Entregada', value: 3 },
         { label: 'Anulada', value: 4 }
-      ],
-      tipo_servicio: [
-        { label: 'Pick-up', value: 0 },
-        { label: 'Delivery', value: 1 },
-        { label: 'En-Local', value: 2 }
       ]
     }
   }

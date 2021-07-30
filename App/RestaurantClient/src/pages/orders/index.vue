@@ -240,7 +240,7 @@ export default {
         { label: 'Pago móvil', value: 8 },
         { label: 'Tarjeta Crédito Venezolana', value: 9 }
       ].find(e => e.value === this.ordenDet.typePayment)
-      return f.label
+      return f && f.label ? f.label : 'N/A'
     },
     meta () {
       return {

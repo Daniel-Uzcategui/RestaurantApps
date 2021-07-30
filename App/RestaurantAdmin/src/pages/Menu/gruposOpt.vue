@@ -389,18 +389,21 @@ export default {
     },
     async init () {
       try {
-        this.bindItem().then((e) => {
-          this.elitem = JSON.parse(JSON.stringify(e))
-        })
-        await this.bindItemGroup().then((e) => {
-          console.log('bindingItem', e)
-          this.elitemGroup = JSON.parse(JSON.stringify(e))
-          this.filterOptions = JSON.parse(JSON.stringify(e))
-        })
-        this.bindGroupComp().then(e => {
-          this.elGroup = JSON.parse(JSON.stringify(e))
-        })
-      } catch (error) {
+        await Promise.all([
+          this.bindItem().then((e) => {
+            this.elitem = JSON.parse(JSON.stringify(e))
+          }),
+          this.bindItemGroup().then((e) => {
+            console.log('bindingItem', e)
+            this.elitemGroup = JSON.parse(JSON.stringify(e))
+            this.filterOptions = JSON.parse(JSON.stringify(e))
+          }),
+          this.bindGroupComp().then(e => {
+            this.elGroup = JSON.parse(JSON.stringify(e))
+          })
+        ])
+      } catch (err) {
+        console.error('An error occurred!', err)
         this.$q.loading.hide()
       }
     },

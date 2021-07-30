@@ -2,3 +2,5 @@ export const orders = ({ orders }) => orders
 // eslint-disable-next-line camelcase
 export const typePayment_options = ({ typePayment_options }) => typePayment_options
 export const dateRange = ({ dateRange }) => dateRange
+// eslint-disable-next-line camelcase
+export const tipoServicio = ({ tipoServicio }) => tipoServicio

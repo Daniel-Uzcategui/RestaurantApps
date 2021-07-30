@@ -2,6 +2,12 @@ export default function () {
   return {
     orders: [
     ],
+    tipoServicio: [
+      { label: 'Pick-up', value: 0 },
+      { label: 'Delivery', value: 1 },
+      { label: 'En-Local', value: 2 },
+      { label: 'Orden de Compra', value: 3 }
+    ],
     dateRange: null,
     typePayment_options: [
       { label: 'Punto de venta', value: 0 },

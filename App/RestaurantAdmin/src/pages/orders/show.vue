@@ -13,7 +13,7 @@
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell q-ma-sm col-2">
-           <p class="text-bold">Cliente</p>
+           <p class="text-bold">{{order && order.tipEnvio == '3' ? 'Vendedor' : 'Cliente' }}</p>
            <p>{{getClientValue('nombre')}} {{getClientValue('apellido')}}</p>
         </div>
         <div class="header-cell q-ma-sm col-1">
@@ -297,6 +297,7 @@
       <q-card-section v-if="puntoRef" class="text-left text-h7">
         {{'Punto de referencia:' + puntoRef}}
       </q-card-section>
+      {{order.buyOrderClient}}
       <q-card-section class="text-h7">
         <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid}}</q-item-section></q-item>
       </q-card-section>
@@ -365,11 +366,6 @@ export default {
         { name: 'discount', align: 'center', label: 'discount', field: 'discount' }
       ],
       visibleColumns: ['name', 'quantity', 'price'],
-      tipo_servicio: [
-        { label: 'Pick-up', value: 0 },
-        { label: 'Delivery', value: 1 },
-        { label: 'En-Local', value: 2 }
-      ],
       puntoRef: '',
       addressDelivery: '',
       validationError: false,
@@ -377,8 +373,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio']),
     ...mapGetters('menu', ['menu', 'item', 'promos']),
+    ...mapGetters('seller', ['orderClients', 'branch']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('address', ['address']),
     ...mapGetters('localization', ['localizations']),
@@ -428,6 +425,7 @@ export default {
     this.bindLocalizations()
     this.bindPromos()
     this.bindRates()
+    this.bindOrderClients()
     console.log(this.rates)
   },
   methods: {
@@ -437,6 +435,7 @@ export default {
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindRates']),
+    ...mapActions('seller', ['bindOrderClients', 'bindClientBranch', 'addClient', 'addBranch']),
     copyToClip () {
       let position = this.addressLocation[0].position
       let toClip = 'https://www.google.com/maps/dir/?api=1&destination=' + position.lat + ',' + position.lng
@@ -470,7 +469,7 @@ export default {
     },
     getTypeService (e) {
       e = parseInt(e)
-      let tip = this.tipo_servicio.find(x => x.value === e)
+      let tip = this.tipoServicio.find(x => x.value === e)
       if (typeof tip === 'undefined') {
         return null
       }
@@ -569,6 +568,9 @@ export default {
         return obj.id === value
       })
       console.log({ objaddress, add: this.address })
+      if (typeof objaddress === 'undefined') {
+        return
+      }
       this.addressLocation = JSON.parse(objaddress?.location)
       this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
       if (typeof objaddress !== 'undefined') {
