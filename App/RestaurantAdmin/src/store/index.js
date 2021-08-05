@@ -13,6 +13,7 @@ import localization from './localization'
 import config from './config'
 import editor from './editor'
 import seller from './seller'
+import rider from './rider'
 Vue.use(Vuex)
 
 /*
@@ -28,6 +29,7 @@ export default function (/* { ssrContext } */) {
       user,
       menu,
       client,
+      rider,
       seller,
       order,
       payment,

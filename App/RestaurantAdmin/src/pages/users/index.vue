@@ -383,7 +383,8 @@ export default {
         { label: 'Proveedor', value: 'Proveedor' },
         { label: 'Delivery', value: 'Delivery' },
         { label: 'Cliente', value: 'Client' },
-        { label: 'Administrativo', value: 'Admin' }
+        { label: 'Administrativo', value: 'Admin' },
+        { label: 'Vendedor', value: 'Seller' }
       ],
       estatus_ubicacion: [
         { label: 'En Sede', value: 1 },

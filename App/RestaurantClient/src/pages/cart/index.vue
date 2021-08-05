@@ -155,7 +155,7 @@
                          </q-card-section>
                          <q-card-section v-else>
                            <div class="text-h5">Escoja o agregue un cliente</div>
-                           <client-list @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
+                           <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
                          </q-card-section>
                          <q-card-section v-show="!['0', '2', '3'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
@@ -166,6 +166,7 @@
                            <div class="column items-center">
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          cb{{ordCompraBranch}}  cc{{ordCompraClient}}
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
                           </div>
                          </q-card-section>

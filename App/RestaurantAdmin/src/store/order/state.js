@@ -2,6 +2,31 @@ export default function () {
   return {
     orders: [
     ],
+    estatus_options: [
+      { label: 'Por Confirmar', value: 0 },
+      { label: 'Preparando su pedido', value: 1 },
+      { label: 'Orden en vía', value: 2 },
+      { label: 'Orden Entregada', value: 3 },
+      { label: 'Anulada', value: 4 }
+    ],
+    estatus_optionsOrd: [
+      { label: 'Por Confirmar', value: 0 },
+      { label: 'Preparando su pedido', value: 1 },
+      { label: 'Orden en vía', value: 2 },
+      { label: 'Orden Entregada', value: 3 },
+      { label: 'Vencida', value: 5 },
+      { label: 'Pagada', value: 6 },
+      { label: 'Anulada', value: 4 }
+    ],
+    allestatus: [
+      { label: 'Por Confirmar', value: 0 },
+      { label: 'Preparando su pedido', value: 1 },
+      { label: 'Orden en vía', value: 2 },
+      { label: 'Orden Entregada', value: 3 },
+      { label: 'Vencida', value: 5 },
+      { label: 'Pagada', value: 6 },
+      { label: 'Anulada', value: 4 }
+    ],
     tipoServicio: [
       { label: 'Pick-up', value: 0 },
       { label: 'Delivery', value: 1 },

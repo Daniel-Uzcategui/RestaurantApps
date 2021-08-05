@@ -222,7 +222,7 @@ export default {
   padding-top: 15px
   padding-bottom: 15px
   font-weight: bold
-  font-size: 12px;
+  font-size: 12px
   border-style: solid
   border-width: 0
   border-bottom-width: 1px

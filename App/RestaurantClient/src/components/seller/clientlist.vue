@@ -161,7 +161,9 @@ export default {
       }).catch((e) => { console.error(e, 'Error'); this.branchLoading = false })
     },
     branch (e) {
+      console.log('Branch Agregado', this.client)
       this.$emit('branchInput', this.getBranchValues(e))
+      this.$emit('clientInput', this.client)
     }
   },
   created () {

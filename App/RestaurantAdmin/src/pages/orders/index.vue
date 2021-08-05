@@ -113,7 +113,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options', 'dateRange', 'tipoServicio']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('localization', ['localizations']),
     dateRango: {
@@ -148,7 +148,7 @@ export default {
           if (typeof obj.typePayment !== 'undefined') {
             tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
           } else { tipoPago = '' }
-          statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
+          statusOrder = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : ''
           // tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
           let mtoTotal = obj.paid
           OrderClient.push({
@@ -249,13 +249,6 @@ export default {
         { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
-      ],
-      estatus_options: [
-        { label: 'Por Confirmar', value: 0 },
-        { label: 'Preparando su pedido', value: 1 },
-        { label: 'Orden en vía', value: 2 },
-        { label: 'Orden Entregada', value: 3 },
-        { label: 'Anulada', value: 4 }
       ]
     }
   }
