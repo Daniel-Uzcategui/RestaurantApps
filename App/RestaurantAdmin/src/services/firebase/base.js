@@ -102,26 +102,32 @@ export const routerBeforeEach = async (router, store) => {
       // let users = store.getters['user/users']
       // let getUsrs = store.getters['user/currentUser']
       // let getUsr = users.find(x => x.id === getUsrs.id)
-      let getUsr = store.getters['user/roles']
-      console.log({ getUsr: getUsr })
-      if (getUsr !== null) {
-        if (typeof to.meta.nombre !== 'undefined') {
-          if ((getUsr.rol && getUsr.rol.includes('Admin')) || (from.name !== 'Login' && getUsr.rol && getUsr.rol.includes(to.name))) {
-            console.log('Tiene acceso')
-          } else {
-            next(from.path)
-            console.log('No tiene acceso')
-            Notify.create({
-              message: `No tiene acceso`,
-              color: 'negative'
-            })
-            return
-          }
-        }
-      }
-      await ensureAuthIsInitialized(store)
+
+      let authinit = await ensureAuthIsInitialized(store)
+      console.log(authinit, 'returned', isAuthenticated(store))
       if (to.matched.some(record => record.meta.requiresAuth)) {
         if (isAuthenticated(store)) {
+          let getUsr = store.getters['user/roles']
+          if (getUsr === null) {
+            let currentUser = store.getters['user/currentUser']
+            store.dispatch('user/bindRoles', currentUser?.id)
+          }
+          // console.log({ getUsr: getUsr, store, cu: currentUser?.id })
+          if (getUsr !== null) {
+            if (typeof to.meta.nombre !== 'undefined') {
+              if ((getUsr.rol && getUsr.rol.includes('Admin')) || (from.name !== 'Login' && getUsr.rol && getUsr.rol.includes(to.name))) {
+                console.log('Tiene acceso')
+              } else {
+                next(from.path)
+                console.log('No tiene acceso')
+                Notify.create({
+                  message: `No tiene acceso`,
+                  color: 'negative'
+                })
+                return
+              }
+            }
+          }
           next()
         } else {
           next('/auth/login')

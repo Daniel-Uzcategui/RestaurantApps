@@ -114,7 +114,8 @@
       >
       </q-btn>
       <p v-if="!isRegistration" class="q-mb-md text-center">
-          <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link>
+         <q-btn flat text-color="primary" no-caps to="/auth/forgotPassword" label="Olvido de contraseña" />
+          <!-- <router-link class="text-primary" to="forgotPassword">Olvido de contraseña</router-link> -->
       </p>
      <q-dialog v-model="viewTermsDialog" full-height="full-height" persistent="persistent" >
              <terms></terms>
@@ -211,10 +212,10 @@ export default {
     }
   },
   created () {
-    // this.logoutUser()
+    this.logoutUser()
   },
   mounted () {
-    this.bindusers()
+    // this.bindusers()
   },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser', 'logoutUser']),

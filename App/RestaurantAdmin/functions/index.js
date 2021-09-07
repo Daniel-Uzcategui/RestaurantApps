@@ -62,6 +62,33 @@ exports.CheckCart = functions.firestore
     const userData = doc.data()
     var pointsCat = userData.pointsCat
     let cupon = 0
+    let message = []
+    if (newValue.address) {
+      let reference = db.collection('ambiente').doc(context.params.ambiente).collection('address').doc(newValue.address)
+      let addressDoc = await reference.get()
+      let address = addressDoc.data()
+      address = JSON.parse(address.location)
+      let lat = address[0].position.lat
+      let lng = address[0].position.lng
+      message.push(
+        {
+          'type': 'text',
+          'value': `*Chopzi* \nnueva orden para delivery!`
+        }
+      )
+      message.push(
+        {
+          'type': 'location',
+          'lng': lng.toString(),
+          'lat': lat.toString()
+        }
+      )
+    } else {
+      message.push({
+        'type': 'text',
+        'value': `*Chopzi* \nnueva orden npara Pickup!`
+      })
+    }
     for (let prod in cart) {
       if (cart[prod].prodType === 0) {
         let sub = 0
@@ -155,6 +182,7 @@ exports.CheckCart = functions.firestore
         }
       }
     }
+
     let newData = {
       cart: newcart,
       paid: newValue.delivery ? roundNumber(sumPaid + newValue.delivery - cupon) : roundNumber(sumPaid - cupon),
@@ -167,7 +195,7 @@ exports.CheckCart = functions.firestore
     }, {
       merge: true
     })
-    sendMessageAdmin(context.params.ambiente, 'nueva orden!')
+    return sendMessageAdmin(context.params.ambiente, message)
   })
 function roundNumber (num) {
   return parseFloat(num.toFixed(2))
@@ -358,8 +386,8 @@ async function sendMessageAdmin (ambiente, message) {
   const doc = await userRef.get()
   const userData = doc.data()
   if (typeof userData.fcm !== 'undefined') {
-    const pre = await getPreManifest(ambiente)
-    return sendNotif(pre, userRef, userData, message)
+    // const pre = await getPreManifest(ambiente)
+    return sendNotif(userData, message)
   }
 }
 // async function sendMessage (user, message) {
@@ -387,43 +415,54 @@ async function sendMessageAdmin (ambiente, message) {
 //     return res.send(sendNotif(pre, userRef, userData, body))
 //   }
 // })
-async function sendNotif (pre, userRef, userData, body) {
-  await admin.firestore().collection('mail').add({
-    to: userData.email,
-    message: {
-      subject: pre.name,
-      text: body,
-      html: ''
-    }
-  })
-  await admin.messaging().sendToDevice(userData.fcm, { 'notification': {
-    'title': pre.name,
-    'body': body,
-    // 'click_action': 'http://chopzi.com/#/',
-    'icon': pre.icon
-  } }).then(async function (response) {
-    var userfcm = userData.fcm
-    if (response.failureCount) {
-      let toDelete = []
-      for (let i in response.results) {
-        var result = response.results[i]
-        if (result.error) {
-          toDelete.push(userfcm[i])
-        }
-      }
-      for (let i of toDelete) {
-        let index = userfcm.findIndex(x => x === i)
-        userfcm.splice(index, 1)
-      }
-    }
-    return [userRef.set({ fcm: userfcm }, { merge: true }), response]
-  })
-    .catch(function (error) {
-      console.log('Error sending message:', error)
-      return [false, error]
-    })
+async function sendNotif (userData, message) {
+  // await admin.firestore().collection('mail').add({
+  //   to: userData.email,
+  //   message: {
+  //     subject: pre.name,
+  //     text: body,
+  //     html: ''
+  //   }
+  // })
+  // await admin.messaging().sendToDevice(userData.fcm, { 'notification': {
+  //   'title': pre.name,
+  //   'body': body,
+  //   // 'click_action': 'http://chopzi.com/#/',
+  //   'icon': pre.icon
+  // } }).then(async function (response) {
+  //   var userfcm = userData.fcm
+  //   if (response.failureCount) {
+  //     let toDelete = []
+  //     for (let i in response.results) {
+  //       var result = response.results[i]
+  //       if (result.error) {
+  //         toDelete.push(userfcm[i])
+  //       }
+  //     }
+  //     for (let i of toDelete) {
+  //       let index = userfcm.findIndex(x => x === i)
+  //       userfcm.splice(index, 1)
+  //     }
+  //   }
+  //   return [userRef.set({ fcm: userfcm }, { merge: true }), response]
+  // })
+  //   .catch(function (error) {
+  //     console.log('Error sending message:', error)
+  //     return [false, error]
+  //   })
   try {
-    let time = Math.floor(Date.now() / 1000)
+    message.push({
+      'type': 'text',
+      'value': `*Cliente* ${userData.nombre + ' ' + userData.apellido} ${userData.phone}`
+    })
+    let dateNow = Date.now()
+    // dateNow.setSeconds(dateNow.getSeconds() + 10)
+    let time = Math.floor(dateNow / 1000)
+    let msgTime = time
+    for (let msg of message) {
+      msgTime = msgTime + 3
+      msg.time = msgTime
+    }
     time = time.toString()
     let postData = {
       'app': {
@@ -433,13 +472,7 @@ async function sendNotif (pre, userRef, userData, body) {
           'recipient': {
             'id': userData.phone
           },
-          'message': [
-            {
-              'time': time,
-              'type': 'text',
-              'value': 'Nueva orden!'
-            }
-          ]
+          message
         }
       }
     }

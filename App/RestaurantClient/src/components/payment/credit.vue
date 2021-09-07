@@ -56,7 +56,7 @@
         </div>
     <div class="column items-center">
         <div class="col-12">
-          <q-btn v-if="$q.screen.gt.sm" rounded color="primary" class="q-ma-md q-mr-lg" @click="payment"  >Pagar</q-btn>
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment"  >Pagar</q-btn>
         </div>
     </div>
     </div>

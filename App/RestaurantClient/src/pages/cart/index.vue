@@ -166,7 +166,6 @@
                            <div class="column items-center">
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                          cb{{ordCompraBranch}}  cc{{ordCompraClient}}
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
                           </div>
                          </q-card-section>
@@ -490,7 +489,7 @@ export default {
       if (!cupon?.length) {
         return
       }
-      if (cupons?.some(item => item.name === cupon)) {
+      if (cupons?.some(item => item.name === cupon.toUpperCase())) {
         this.loadingState = false
         return this.$q.notify({ message: 'Cupón ya aplicado', color: 'red', position: 'top' })
       }
@@ -499,7 +498,7 @@ export default {
         const url = window.location.origin + '/getcoupon'
         // const url = 'https://us-central1-restaurant-testnet.cloudfunctions.net/GetCoupon'
         // const url = 'http://localhost:5001/restaurant-testnet/us-central1/GetCoupon'
-        res = await this.$axios.post(url, { ambiente: localStorage.getItem('amb'), cupon })
+        res = await this.$axios.post(url, { ambiente: localStorage.getItem('amb'), cupon: cupon.toUpperCase() })
         // res = {
         //   'empty': false,
         //   'exclude': {

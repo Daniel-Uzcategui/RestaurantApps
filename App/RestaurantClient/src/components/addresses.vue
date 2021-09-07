@@ -272,13 +272,13 @@ export default {
       // this.municipio = obj.municipio
       // this.calle = obj.calle
       // this.domicilio = obj.domicilio
-      this.addressIn = obj.address ? obj.address : {}
-      this.addressOpt = obj.address ? Object.keys(obj.address) : []
+      this.addressIn = obj && obj.address ? obj.address : {}
+      this.addressOpt = obj && obj.address ? Object.keys(obj.address) : []
       this.alias = obj.alias
       this.contact = obj.contact
       this.phone = obj.phone
       // this.urb = obj.urb
-      this.markers = JSON.parse(obj.location)
+      this.markers = obj && obj.location ? JSON.parse(obj.location) : []
       this.puntoRef = obj.puntoRef
       this.id = obj.id
     },

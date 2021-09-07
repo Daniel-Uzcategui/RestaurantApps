@@ -1,5 +1,5 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
+  <q-page v-if="typeof order !== 'undefined'" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
        <q-card-section  class="q-cardtop  header" >
@@ -35,7 +35,7 @@
         <div v-if="order.cuponTotal" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Cupones</p>
            <p>- $ {{order.cuponTotal}}</p>
-           <span v-for="(cupon, index) of order.cupons" :key="index">{{cupon.name}} </span>
+           <span v-for="(cupon, index) of order.cupons" :key="index" >{{ cupon.name }} </span>
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Costo Delivery</p>
@@ -50,7 +50,7 @@
            <p>{{getRates(order.paid).toLocaleString()}}</p>
         </div>
          <div class="flex-break q-py-md "></div>
-         <view-client class="header-cell q-ma-sm col-md-12 col-lg-4 col-sm-12 col-xs-12" :client="order.buyOrderClient" :branch="order.buyOrderBranch"/>
+         <view-client v-if="order.buyOrderBranch" class="header-cell q-ma-sm col-md-12 col-lg-4 col-sm-12 col-xs-12" :client="order.buyOrderClient" :branch="order.buyOrderBranch" />
          <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-md-4 col-xs-12">
           <q-input filled rounded outlined label="Sede" :value="this.getLocalization(order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
@@ -92,7 +92,7 @@
         </div>
         <div class="flex-break q-py-md "></div>
          <div class="header-cell q-ma-sm col-md-4 col-xs-12" >
-          <q-select options-selected-class="text-blue" filled rounded :value="order.status"
+          <q-select options-selected-class="text-blue" filled rounded :value="orderStatus"
             @input="(e) => { checkOrder(e)
             }"
             map-options
@@ -107,13 +107,6 @@
             </template>
           </q-select>
         </div>
-        <!-- <div class="header-cell q-ma-sm col-4" v-if="order.status > 2">
-          <q-select options-selected-class="text-blue" filled rounded :value="order.status"
-            map-options
-            standout="bg-teal "
-            :options="estatusOptions"
-            label="Estatus" disable/>
-        </div> -->
         <div class="header-cell q-ma-sm col-3 col-md-4 col-xs-12">
           <q-select options-selected-class="text-blue" filled rounded :value="order.typePayment" @input="(e) => { saved(e, this.$route.query.Order_Id, 'typePayment'); addPay = true }" standout="bg-teal "
             :options="typePayment_options" map-options emit-value label="Tipo de Pago">
@@ -121,6 +114,10 @@
               <q-btn v-if="order.soportePago" round dense flat icon="search" @click.stop @click="addPay = true" />
             </template>
           </q-select>
+        </div>
+        <div v-if="order.buyOrderBranch" class="header-cell q-ma-sm col-3 col-md-4 col-xs-12">
+          <q-input type="number" filled rounded :value="order.creditDays" @input="(e) => {saved(parseInt(e), this.$route.query.Order_Id, 'creditDays')}"
+          label="Dias de crédito" />
         </div>
         <div v-if="order.tipEnvio !== '3'" class="header-cell q-ma-sm col-3">
           <label>Comanda</label><br>
@@ -405,6 +402,16 @@ export default {
     ...mapGetters('address', ['address']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['rates']),
+    orderStatus () {
+      if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
+        let dateIn = this.getLogDate(this.order)
+        let differenceDates = (new Date()).getTime() - dateIn.getTime()
+        let daysDif = differenceDates / (1000 * 60 * 60 * 24)
+        return daysDif > this.order.creditDays ? 5 : this.order.status
+      } else {
+        return this.order.status
+      }
+    },
     estatusOptions () {
       if (this.order.tipEnvio === '3') {
         return this.estatus_optionsOrd
@@ -452,7 +459,7 @@ export default {
   created () {
     this.bindMenu()
     this.bindClients()
-    this.bindAddress().then(e => this.getAddress(this.order.address))
+    this.bindAddress().then(e => this.getAddress(this.order?.address))
     this.bindLocalizations()
     this.bindPromos()
     this.bindRates()
@@ -465,6 +472,13 @@ export default {
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindRates']),
+    getLogDate (obj) {
+      let ret = obj.statusLog?.find(x => x.status === 3)
+      if (typeof ret === 'undefined') {
+        return new Date()
+      }
+      return ret.dateIn.toDate()
+    },
     copyToClip () {
       let position = this.addressLocation[0].position
       let toClip = 'https://www.google.com/maps/dir/?api=1&destination=' + position.lat + ',' + position.lng

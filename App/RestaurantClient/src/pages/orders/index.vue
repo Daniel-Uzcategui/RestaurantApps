@@ -32,7 +32,7 @@
                      </q-item-section>
                      <q-item-section class="text-h6 text-left">
                         <q-item-label lines="2" >{{formatDate(items.dateIn)}}</q-item-label>
-                        <q-item-label lines="2" >{{estatus_options[items.status]['label']}}</q-item-label>
+                        <q-item-label v-if="typeof items.status === 'number'" lines="2" >{{estatus_options[items.status]['label']}}</q-item-label>
                         <q-item-label lines="2"  v-if="typeof items.factura === 'undefined'">
                            Nro. Pedido:
                            <q-spinner color="primary" />
@@ -46,7 +46,7 @@
          </q-card-section>
       </q-card>
       <q-dialog
-         v-if="carrito.length"
+         v-if="carrito.length && ordenDet !== {}"
          content-class="full-width q-pa-lg"
          square
          v-model="dialog"
@@ -181,7 +181,9 @@ export default {
         { label: 'Preparando su pedido', value: 1 },
         { label: 'Orden en vía', value: 2 },
         { label: 'Orden Entregada', value: 3 },
-        { label: 'Anulada', value: 4 }
+        { label: 'Anulada', value: 4 },
+        { label: 'Vencida', value: 5 },
+        { label: 'Pagada', value: 6 }
       ]
     }
   },
