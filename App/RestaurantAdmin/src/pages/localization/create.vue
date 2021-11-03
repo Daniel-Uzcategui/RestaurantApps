@@ -90,7 +90,7 @@ import Vue from 'vue'
 /* eslint-disable no-undef */
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
+    key: 'AIzaSyCM_ORgfn8E1W6pFQQ-2HTAuZ9KcundblI',
     libraries: 'places'
   }
 })

@@ -41,7 +41,7 @@ import * as GmapVue from 'gmap-vue'
 
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
+    key: 'AIzaSyCM_ORgfn8E1W6pFQQ-2HTAuZ9KcundblI',
     libraries: 'places'
   }
 })
