@@ -1,14 +1,9 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp()
-// const acc = require('./acc.json')
-// const template = require('./template/email.js')
-// admin.initializeApp({
-//   credential: admin.credential.cert(
-//     acc
-//   )
-// })
 const db = admin.firestore()
+
+exports.onWrite = require('./triggers/test/onWrite/index')
 
 exports.CheckCart = functions.firestore
   .document('/ambiente/{ambiente}/orders/{ordersId}')

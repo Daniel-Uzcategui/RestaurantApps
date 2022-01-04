@@ -197,6 +197,8 @@
                       :definitions="definitions" :toolbar="toolbar"
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
                       v-model="props.row.descripcion"
+                      ref="editor_ref"
+                      @paste.native="evt => pasteCapture(evt)"
                       min-height="5rem"
                       :content-style="{color: props.row.descripcioncolor}"
 
@@ -593,6 +595,25 @@ export default {
   methods: {
     conss (e, y) {
       console.log(e, y)
+    },
+    pasteCapture (evt) {
+      // Let inputs do their thing, so we don't break pasting of links.
+      if (evt.target.nodeName === 'INPUT') return
+      let text, onPasteStripFormattingIEPaste
+      evt.preventDefault()
+      if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
+        text = evt.originalEvent.clipboardData.getData('text/plain')
+        this.$refs.editor_ref.runCmd('insertText', text)
+      } else if (evt.clipboardData && evt.clipboardData.getData) {
+        text = evt.clipboardData.getData('text/plain')
+        this.$refs.editor_ref.runCmd('insertText', text)
+      } else if (window.clipboardData && window.clipboardData.getData) {
+        if (!onPasteStripFormattingIEPaste) {
+          onPasteStripFormattingIEPaste = true
+          this.$refs.editor_ref.runCmd('ms-pasteTextOnly', text)
+        }
+        onPasteStripFormattingIEPaste = false
+      }
     },
     async croppaPic () {
       let file = this.$refs.croppa.getChosenFile()
