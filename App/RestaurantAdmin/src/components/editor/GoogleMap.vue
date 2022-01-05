@@ -146,7 +146,7 @@ export default {
 }
 </script>
 
-<style lang="sass" >
+<style lang="stylus" >
 .pac-container
  z-index: 99999999 !important
 </style>

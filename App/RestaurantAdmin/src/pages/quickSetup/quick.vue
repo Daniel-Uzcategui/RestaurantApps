@@ -132,7 +132,7 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
+<style lang="stylus" scoped>
 .separate
  padding-left: 70%
 .flex-break

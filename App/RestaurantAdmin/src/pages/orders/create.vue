@@ -98,7 +98,7 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
+<style lang="stylus" scoped>
 .flex-break
   flex: 1 0 100% !important
   height: 0 !important

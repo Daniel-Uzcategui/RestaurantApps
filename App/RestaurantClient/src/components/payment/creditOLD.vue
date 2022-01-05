@@ -223,7 +223,7 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
+<style lang="stylus" scoped>
 .card-form
     background: #fff
     box-shadow: 0px 30px 60px 0 rgba(90, 116, 148, 0.4)

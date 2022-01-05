@@ -14,7 +14,7 @@
         </div>
          <div class="header-cell col-8">
           <label>Dirección</label>
-         <q-input filled :value="localization.address" filled type="textarea" placeholder="Dirección"  />
+         <q-input filled :value="localization.address" type="textarea" placeholder="Dirección"  />
       </div>
      </div>
 </template>
@@ -34,7 +34,7 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
+<style lang="stylus" scoped>
 .flex-break
   flex: 1 0 100% !important
   height: 0 !important

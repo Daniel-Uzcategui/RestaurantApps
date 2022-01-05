@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="stylus" scoped>
     .main_line
       font-size: 75px
       letter-spacing: 5px

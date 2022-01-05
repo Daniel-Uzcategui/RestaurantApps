@@ -274,7 +274,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="stylus" scoped>
 .row:not(.q-field__append) > div
   padding: 8px
   background: rgba(227,242,253,.6)
