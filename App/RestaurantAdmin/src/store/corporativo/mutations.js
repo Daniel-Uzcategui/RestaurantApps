@@ -12,6 +12,3 @@ export function addClientMt (state, payload) {
 export function deleteClientMt (state, payload) {
   state.clients = payload
 }
-export function setIdCliente (state, payload) {
-  state.idClientSel = payload
-}
