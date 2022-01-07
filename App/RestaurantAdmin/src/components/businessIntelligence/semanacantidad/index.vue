@@ -37,7 +37,7 @@ export default {
       if (e === null) {
         return this.bindOrders().catch(e => console.error(e))
       }
-      console.log(e, 'DateRange')
+      // // console.log(e, 'DateRange')
       let end = new Date(e.to)
       end.setDate(end.getDate() + 1)
       this.bindOrders(
@@ -77,7 +77,7 @@ export default {
       let chardatasemana = []
       this.chardataTotalVenta = [ ]
       objsemana = this.obtenerDiaXSemana(dateStart, dateEnd)
-      console.log('valores semanales', objsemana)
+      // console.log('valores semanales', objsemana)
       acumd = this.contardia(objsemana.Domingo)
       acuml = this.contardia(objsemana.Lunes)
       acumm = this.contardia(objsemana.Martes)
@@ -93,12 +93,12 @@ export default {
       chardatasemana.push(['Sabados', acums])
       chardatasemana.push(['Domindos', acumd])
       this.chardataTotalVenta = chardatasemana
-      console.log('arreglo', this.chardataTotalVenta)
+      // console.log('arreglo', this.chardataTotalVenta)
       return chardatasemana
     },
     obtenerDiaXSemana (dateStart, dateEnd) {
-      let numeroDia = new Date('01 apr 2021 10:00:00 GMT').getDay()
-      console.log(numeroDia)
+      // let numeroDia = new Date('01 apr 2021 10:00:00 GMT').getDay()
+      // console.log(numeroDia)
       let domingo = []
       let lunes = []
       let martes = []
@@ -107,7 +107,7 @@ export default {
       let viernes = []
       let sabado = []
       let ventaAcum
-      let k = 0
+      // let k = 0
       let contd = 0, contl = 0, contm = 0, contmi = 0, contj = 0, contv = 0, conts = 0
       dateStart = new Date(dateStart)
       dateEnd = new Date(dateEnd)
@@ -115,16 +115,16 @@ export default {
       let contdias = Math.round(diasdif / (1000 * 60 * 60 * 24))
       // dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
       dateEnd = date.formatDate(dateEnd, 'YYYY-MM-DD')
-      console.log('cantidad dia', contdias)
+      // console.log('cantidad dia', contdias)
       for (let j = 0; j < contdias + 1; j++) {
         // obj = this.orders[j]
-        console.log('elvalor de j', j, 'k', k)
+        // console.log('elvalor de j', j, 'k', k)
 
         // dateStart = date.formatDate(dateStart, 'YYYY-MM-DD')
-        console.log('dia dela semana ', dateStart)
+        // console.log('dia dela semana ', dateStart)
         ventaAcum = this.TotalVentas(dateStart, dateEnd)
-        console.log('acumulado de venta ', ventaAcum)
-        console.log('acumulado de venta ', new Date(date.formatDate(dateStart, 'YYYY-MM-DD')).getDay())
+        // console.log('acumulado de venta ', ventaAcum)
+        // console.log('acumulado de venta ', new Date(date.formatDate(dateStart, 'YYYY-MM-DD')).getDay())
         if ((new Date(dateStart).getDay() === 0)) {
           domingo.push(ventaAcum)
           contd = contd + 1
@@ -153,7 +153,7 @@ export default {
           sabado.push(ventaAcum)
           conts = conts + 1
         }
-        k++
+        // k++
         dateStart = this.sumarDias(dateStart, 1)
       } // fin del for j
 
@@ -167,7 +167,7 @@ export default {
         Sabado: sabado
 
       }
-      console.log('registros de los dias', semana)
+      // console.log('registros de los dias', semana)
       return semana
     },
     TotalVentas (dateStart, dateEnd) {
@@ -181,18 +181,18 @@ export default {
         obj = this.orders[i]
         objdateIn = obj.dateIn.toDate()
 
-        console.log(objdateIn, '--', dateStart, 'estatus', obj.status, 'paid', obj.paid)
+        // console.log(objdateIn, '--', dateStart, 'estatus', obj.status, 'paid', obj.paid)
         if (obj.status === 3) {
           if (date.formatDate(dateStart, 'YYYY-MM-DD') === date.formatDate(objdateIn, 'YYYY-MM-DD')) {
-            console.log('entre2')
-            console.log(acum)
-            console.log(obj.paid)
+            // console.log('entre2')
+            // console.log(acum)
+            // console.log(obj.paid)
             acum = obj.paid + acum
             cont = cont + 1
-            console.log(cont)
+            // console.log(cont)
           }
         }
-        console.log('resultado', acum)
+        // console.log('resultado', acum)
 
         contacum = {
           cont: cont,

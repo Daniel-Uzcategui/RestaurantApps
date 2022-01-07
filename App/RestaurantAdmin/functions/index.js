@@ -1,7 +1,42 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const axios = require('axios')
 admin.initializeApp()
 const db = admin.firestore()
+async function rewardAmount (context, newValue) {
+  let cfgData
+  let cfgRew
+  if (newValue.tipEnvio === '1') {
+    const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
+    const cfg = await configRef.get()
+    cfgData = cfg.data()
+    if (!cfg.exists) {
+      console.log('No such document!')
+    } else {
+      // sumPaid = sumPaid + parseInt(cfgData.price)
+      if (typeof cfgData.rewards === 'undefined') {
+        cfgRew = 10
+      } else {
+        cfgRew = cfgData.rewards
+      }
+    }
+  }
+  if (typeof cfgData === 'undefined') {
+    const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
+    const cfg = await configRef.get()
+    cfgData = cfg.data()
+    if (!cfg.exists) {
+      console.log('No such document!')
+    } else {
+      if (typeof cfgData.rewards === 'undefined') {
+        cfgRew = 10
+      } else {
+        cfgRew = cfgData.rewards
+      }
+    }
+  }
+  return cfgRew
+}
 
 exports.onWrite = require('./triggers/test/onWrite/index')
 
@@ -16,51 +51,51 @@ exports.CheckCart = functions.firestore
     var sumProd = 0
     var sumExtras = 0
     var cfgRew
-    var cfgData
-    if (newValue.tipEnvio === '1') {
-      const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
-      const cfg = await configRef.get()
-      cfgData = cfg.data()
-      if (!cfg.exists) {
-        console.log('No such document!')
-      } else {
-        // sumPaid = sumPaid + parseInt(cfgData.price)
-        if (typeof cfgData.rewards === 'undefined') {
-          cfgRew = 10
-        } else {
-          cfgRew = cfgData.rewards
-        }
-      }
-    }
-    if (typeof cfgData === 'undefined') {
-      const configRef = db.collection('ambiente').doc(context.params.ambiente).collection('config').doc('paymentServ')
-      const cfg = await configRef.get()
-      cfgData = cfg.data()
-      if (!cfg.exists) {
-        console.log('No such document!')
-      } else {
-        if (typeof cfgData.rewards === 'undefined') {
-          cfgRew = 10
-        } else {
-          cfgRew = cfgData.rewards
-        }
-      }
-    }
+    cfgRew = await rewardAmount(context, newValue) // Find if there is a configuration for rewards if not set it to 10
     var userRef = db.collection('ambiente').doc(context.params.ambiente).collection('users').doc(newValue.customer_id)
     const doc = await userRef.get()
     const userData = doc.data()
     var pointsCat = userData.pointsCat
     let cupon = 0
+    let message = []
+    if (newValue.address) {
+      let reference = db.collection('ambiente').doc(context.params.ambiente).collection('address').doc(newValue.address)
+      let addressDoc = await reference.get()
+      let address = addressDoc.data()
+      address = JSON.parse(address.location)
+      let lat = address[0].position.lat
+      let lng = address[0].position.lng
+      message.push(
+        {
+          'type': 'text',
+          'value': `*Chopzi* \nnueva orden para delivery!`
+        }
+      )
+      message.push(
+        {
+          'type': 'location',
+          'lng': lng.toString(),
+          'lat': lat.toString()
+        }
+      )
+    } else {
+      message.push({
+        'type': 'text',
+        'value': `*Chopzi* \nnueva orden npara Pickup!`
+      })
+    }
     for (let prod in cart) {
       if (cart[prod].prodType === 0) {
         let sub = 0
         let extra = 0
         let paid = 0
+        // Update product stock start
         var reference = db.collection('ambiente').doc(context.params.ambiente).collection('menu').doc(cart[prod].prodId)
         var decrement = admin.firestore.FieldValue.increment(-cart[prod].quantity)
         reference.update({
           [`stock.${sede}`]: decrement
         })
+        // End
         var menu = await reference.get()
         var menuDoc = menu.data()
         var discount = menuDoc.discount || 0
@@ -105,8 +140,7 @@ exports.CheckCart = functions.firestore
           paid = paid + price
           extra = extra + price
         }
-        //  // chequear cupon y aplicar descuento
-        if (newValue.cupons && newValue.cupons.length) {
+        if (newValue.cupons && newValue.cupons.length) { // Check coupon and apply discount
           for (let i of newValue.cupons) {
             let excluyente = i.includeAll && !i.exclude?.products?.include?.(cart[prod].prodId) && !i.exclude?.categories?.some?.(item => cart[prod].category?.includes(item))
             let incluyente = !i.includeAll && (i.include?.products?.include?.(cart[prod].prodId) || i.include?.categories?.some?.(item => cart[prod].category?.includes(item)))
@@ -143,6 +177,7 @@ exports.CheckCart = functions.firestore
         }
       }
     }
+
     let newData = {
       cart: newcart,
       paid: newValue.delivery ? roundNumber(sumPaid + newValue.delivery - cupon) : roundNumber(sumPaid - cupon),
@@ -155,6 +190,7 @@ exports.CheckCart = functions.firestore
     }, {
       merge: true
     })
+    return sendMessageAdmin(context.params.ambiente, message)
   })
 function roundNumber (num) {
   return parseFloat(num.toFixed(2))
@@ -336,49 +372,114 @@ exports.RewardsPoints = functions.firestore
       }
     }
   })
-
-exports.sendMessage = functions.https.onRequest(async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*')
-  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
-  res.set('Access-Control-Allow-Headers', '*')
-  console.log(req.body.user, req.body.message)
-  let ambiente = 'chopzi'
-  let body = req.body.message
-  let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(req.body.user)
+async function sendMessageAdmin (ambiente, message) {
+  let ambienteRef = db.collection('ambiente').doc(ambiente)
+  const docAmb = await ambienteRef.get()
+  const ambData = docAmb.data()
+  let user = ambData.userAdmin.id
+  let userRef = db.collection('ambiente').doc('chopzi').collection('users').doc(user)
   const doc = await userRef.get()
   const userData = doc.data()
   if (typeof userData.fcm !== 'undefined') {
-    const pre = await getPreManifest(ambiente)
-    return res.send(sendNotif(pre, userRef, userData, body))
+    // const pre = await getPreManifest(ambiente)
+    return sendNotif(userData, message)
   }
-})
-async function sendNotif (pre, userRef, userData, body) {
-  return admin.messaging().sendToDevice(userData.fcm, { 'notification': {
-    'title': pre.name,
-    'body': body,
-    'click_action': 'http://localhost:8080/#/orders/index',
-    'icon': pre.icon
-  } }).then(async function (response) {
-    var userfcm = userData.fcm
-    if (response.failureCount) {
-      let toDelete = []
-      for (let i in response.results) {
-        var result = response.results[i]
-        if (result.error) {
-          toDelete.push(userfcm[i])
+}
+// async function sendMessage (user, message) {
+//   let ambiente = 'chopzi'
+//   let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(user)
+//   const doc = await userRef.get()
+//   const userData = doc.data()
+//   if (typeof userData.fcm !== 'undefined') {
+//     const pre = await getPreManifest(ambiente)
+//     return sendNotif(pre, userRef, userData, message)
+//   }
+// }
+// exports.sendMessage = functions.https.onRequest(async (req, res) => {
+//   res.set('Access-Control-Allow-Origin', '*')
+//   res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
+//   res.set('Access-Control-Allow-Headers', '*')
+//   console.log(req.body.user, req.body.message)
+//   let ambiente = 'chopzi'
+//   let body = req.body.message
+//   let userRef = db.collection('ambiente').doc(ambiente).collection('users').doc(req.body.user)
+//   const doc = await userRef.get()
+//   const userData = doc.data()
+//   if (typeof userData.fcm !== 'undefined') {
+//     const pre = await getPreManifest(ambiente)
+//     return res.send(sendNotif(pre, userRef, userData, body))
+//   }
+// })
+async function sendNotif (userData, message) {
+  // await admin.firestore().collection('mail').add({
+  //   to: userData.email,
+  //   message: {
+  //     subject: pre.name,
+  //     text: body,
+  //     html: ''
+  //   }
+  // })
+  // await admin.messaging().sendToDevice(userData.fcm, { 'notification': {
+  //   'title': pre.name,
+  //   'body': body,
+  //   // 'click_action': 'http://chopzi.com/#/',
+  //   'icon': pre.icon
+  // } }).then(async function (response) {
+  //   var userfcm = userData.fcm
+  //   if (response.failureCount) {
+  //     let toDelete = []
+  //     for (let i in response.results) {
+  //       var result = response.results[i]
+  //       if (result.error) {
+  //         toDelete.push(userfcm[i])
+  //       }
+  //     }
+  //     for (let i of toDelete) {
+  //       let index = userfcm.findIndex(x => x === i)
+  //       userfcm.splice(index, 1)
+  //     }
+  //   }
+  //   return [userRef.set({ fcm: userfcm }, { merge: true }), response]
+  // })
+  //   .catch(function (error) {
+  //     console.log('Error sending message:', error)
+  //     return [false, error]
+  //   })
+  try {
+    message.push({
+      'type': 'text',
+      'value': `*Cliente* ${userData.nombre + ' ' + userData.apellido} ${userData.phone}`
+    })
+    let dateNow = Date.now()
+    // dateNow.setSeconds(dateNow.getSeconds() + 10)
+    let time = Math.floor(dateNow / 1000)
+    let msgTime = time
+    for (let msg of message) {
+      msgTime = msgTime + 3
+      msg.time = msgTime
+    }
+    time = time.toString()
+    let postData = {
+      'app': {
+        'id': '584241329457',
+        'time': time,
+        'data': {
+          'recipient': {
+            'id': userData.phone
+          },
+          message
         }
       }
-      for (let i of toDelete) {
-        let index = userfcm.findIndex(x => x === i)
-        userfcm.splice(index, 1)
-      }
     }
-    return [userRef.set({ fcm: userfcm }, { merge: true }), response]
-  })
-    .catch(function (error) {
-      console.log('Error sending message:', error)
-      return [false, error]
-    })
+    let options = {
+      url: 'https://whapi.io/api/send',
+      method: 'post',
+      data: postData
+    }
+    await axios(options)
+  } catch (err) {
+    console.error(err)
+  }
 }
 async function getPreManifest (ambiente) {
   const reqRef = db.doc(`ambiente/${ambiente}/environment/manifest`)

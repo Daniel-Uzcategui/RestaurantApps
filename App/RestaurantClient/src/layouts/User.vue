@@ -725,7 +725,9 @@ export default {
       //   const favicon = document.getElementById('favicon')
       //   favicon.setAttribute('href', e.icons.favicon)
       // }
+      console.log({ e }, 'MANIFESTO')
       if (e && e.name) {
+        console.log({ e }, 'MANIFESTO')
         this.metamani = {
           title: e.name,
           meta: {

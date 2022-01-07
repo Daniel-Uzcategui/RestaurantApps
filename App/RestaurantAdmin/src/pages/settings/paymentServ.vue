@@ -380,9 +380,11 @@ export default {
   flex: 1 0 100% !important
   height: 0 !important
 .header-btn
-  position: absolute; right: 10px !important
+  position: absolute
+  right: 10px !important
 .header-btn-back
-  position: absolute; right:120px !important
+  position: absolute
+  right: 120px !important
 .header
  padding-bottom: 50px
 

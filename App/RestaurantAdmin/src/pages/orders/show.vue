@@ -1,5 +1,5 @@
 <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
+  <q-page v-if="typeof order !== 'undefined'" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
      <div class="q-gutter-md">
       <q-card class="q-cardGlass">
        <q-card-section  class="q-cardtop  header" >
@@ -9,11 +9,11 @@
           </div>
        </q-card-section>
          <div class='filled'></div>
-        <q-card-section>
+        <q-card-section class="q-mr-lg">
        <div v-if="typeof order !== 'undefined'">
        <div class="row header-container">
          <div class="header-cell q-ma-sm col-2">
-           <p class="text-bold">Cliente</p>
+           <p class="text-bold">{{order && order.tipEnvio == '3' ? 'Vendedor' : 'Cliente' }}</p>
            <p>{{getClientValue('nombre')}} {{getClientValue('apellido')}}</p>
         </div>
         <div class="header-cell q-ma-sm col-1">
@@ -35,7 +35,7 @@
         <div v-if="order.cuponTotal" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Cupones</p>
            <p>- $ {{order.cuponTotal}}</p>
-           <span v-for="(cupon, index) of order.cupons" :key="index">{{cupon.name}} </span>
+           <span v-for="(cupon, index) of order.cupons" :key="index" >{{ cupon.name }} </span>
         </div>
         <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
           <p class="text-bold">Costo Delivery</p>
@@ -50,10 +50,12 @@
            <p>{{getRates(order.paid).toLocaleString()}}</p>
         </div>
          <div class="flex-break q-py-md "></div>
-         <div class="header-cell q-ma-sm col-4">
+         <view-client v-if="order.buyOrderBranch" class="header-cell q-ma-sm col-md-12 col-lg-4 col-sm-12 col-xs-12" :client="order.buyOrderClient" :branch="order.buyOrderBranch" />
+         <div class="flex-break q-py-md "></div>
+         <div class="header-cell q-ma-sm col-md-4 col-xs-12">
           <q-input filled rounded outlined label="Sede" :value="this.getLocalization(order.sede)"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disable />
         </div>
-        <div style="min-width: 300px" class="header-cell q-ma-sm col-4">
+        <div style="min-width: 300px" class="header-cell q-ma-sm col-md-4 col-xs-12">
         <q-input filled rounded outlined label="Fecha de Entrega" v-if="order && order.orderWhen && order.orderWhen.orderWhen == '1'" v-model="orderDate" >
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
@@ -80,37 +82,44 @@
           </q-input>
           <q-input filled rounded outlined label="Fecha de Entrega" v-if="!(order && order.orderWhen && order.orderWhen.orderWhen == '1')" :value=" order && order.orderWhen && order.orderWhen.orderWhen == '1' ? new Date(order.orderWhen.orderDate.seconds * 1000) : 'De inmediato'"  type="text" disabled />
         </div>
-        <div class="header-cell q-ma-sm col-4">
-          <q-input filled rounded outlined label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" placeholder="Sede de la Orden" disabled />
+        <div class="header-cell q-ma-sm col-4 col-xs-12 col-md-4">
+          <q-input filled rounded outlined label="Tipo Servicio" :value=" order && typeof order.tipEnvio !== 'undefined' ? getTypeService(order.tipEnvio) : 'NA'"  type="text" float-label="Float Label" disabled />
         </div>
-        <q-btn label="Copiar URL de google maps" class="col-2 q-ma-md" no-caps color="blue" rounded icon="place" v-if="addressLocation" @click="copyToClip()" />
-        <q-btn label="abrir localización en google maps" class="col-2 q-ma-md" no-caps color="green" rounded icon="place" v-if="addressLocation" @click="openGmap()" />
-        <div class="header-cell q-ma-sm col-4" v-if="order.tipEnvio==2">
+        <q-btn label="Copiar URL de google maps" class="col-md-2 col-sm-5 col-xs-12 q-ma-md" no-caps color="blue" rounded icon="place" v-if="addressLocation" @click="copyToClip()" />
+        <q-btn label="abrir localización en google maps" class="col-md-2 col-sm-5 col-xs-12 q-ma-md" no-caps color="green" rounded icon="place" v-if="addressLocation" @click="openGmap()" />
+        <div class="header-cell q-ma-sm col-md-4 col-xs-12" v-if="order.tipEnvio==2">
           <q-input filled rounded outlined label="Mesa" :value="order.table"  @input="(e) => saved(e, this.$route.query.Order_Id, 'table')" type="text" float-label="Float Label" placeholder="Mesa de la Orden" />
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell q-ma-sm col-4" v-if="order.status < 3">
-          <q-select options-selected-class="text-blue" filled rounded :value="order.status"
+         <div class="header-cell q-ma-sm col-md-4 col-xs-12" >
+          <q-select options-selected-class="text-blue" filled rounded :value="orderStatus"
             @input="(e) => { checkOrder(e)
             }"
             map-options
             emit-value
             standout="bg-teal "
-            :options="estatus_options"
-            label="Estatus" />
+            :options="estatusOptions"
+            label="Estatus"
+            :disable="order.status === '4'"
+            >
+            <template v-slot:append>
+              <q-btn v-if="order.statusLog" round dense flat icon="search" @click.stop @click="showLog = true" />
+            </template>
+          </q-select>
         </div>
-        <div class="header-cell q-ma-sm col-4" v-if="order.status > 2">
-          <q-select options-selected-class="text-blue" filled rounded :value="order.status"
-            map-options
-            standout="bg-teal "
-            :options="estatus_options"
-            label="Estatus" disable/>
+        <div class="header-cell q-ma-sm col-3 col-md-4 col-xs-12">
+          <q-select options-selected-class="text-blue" filled rounded :value="order.typePayment" @input="(e) => { saved(e, this.$route.query.Order_Id, 'typePayment'); addPay = true }" standout="bg-teal "
+            :options="typePayment_options" map-options emit-value label="Tipo de Pago">
+          <template v-slot:append>
+              <q-btn v-if="order.soportePago" round dense flat icon="search" @click.stop @click="addPay = true" />
+            </template>
+          </q-select>
         </div>
-        <div class="header-cell q-ma-sm col-3">
-          <q-select options-selected-class="text-blue" filled rounded :value="order.typePayment" @input="(e) => saved(e, this.$route.query.Order_Id, 'typePayment')" standout="bg-teal "
-            :options="typePayment_options" map-options emit-value label="Tipo de Pago" />
+        <div v-if="order.buyOrderBranch" class="header-cell q-ma-sm col-3 col-md-4 col-xs-12">
+          <q-input type="number" filled rounded :value="order.creditDays" @input="(e) => {saved(parseInt(e), this.$route.query.Order_Id, 'creditDays')}"
+          label="Dias de crédito" />
         </div>
-        <div class="header-cell q-ma-sm col-3">
+        <div v-if="order.tipEnvio !== '3'" class="header-cell q-ma-sm col-3">
           <label>Comanda</label><br>
           <i class="fa fa-search" @click="photoDiag=true"></i>
         </div>
@@ -297,6 +306,7 @@
       <q-card-section v-if="puntoRef" class="text-left text-h7">
         {{'Punto de referencia:' + puntoRef}}
       </q-card-section>
+      {{order.buyOrderClient}}
       <q-card-section class="text-h7">
         <q-item><q-item-section>{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section> <q-item-section side>TOTAL {{order.paid}}</q-item-section></q-item>
       </q-card-section>
@@ -335,29 +345,42 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="showLog">
+      <log-estatus :log="order.statusLog" />
+    </q-dialog>
+    <q-dialog v-model="selectRider">
+      <select-or-create-rider @close="selectRider = false" @riderInput="(e) => checkOrder(2, e)" />
+    </q-dialog>
+    <q-dialog v-model="addPay">
+      <add-payment :soportePago="order.soportePago" @sumbit="(e) => saved(e, $route.query.Order_Id, 'soportePago').then(() => { addPay = false })" />
+    </q-dialog>
 </q-page>
 </template>
 <script>
+import logEstatus from '../../components/order/logEstatus.vue'
 import { mapGetters, mapActions } from 'vuex'
 import jsPDF from 'jspdf'
 import domtoimage from 'dom-to-image-more'
 import { copyToClipboard } from 'quasar'
+import selectOrCreateRider from '../../components/order/selectOrCreateRider.vue'
+import viewClient from '../../components/order/viewClient.vue'
+import addPayment from '../../components/order/addPayment.vue'
 export default {
   components: {
-    Viewer: require('../../components/Viewer.vue').default
+    Viewer: require('../../components/Viewer.vue').default,
+    logEstatus,
+    selectOrCreateRider,
+    addPayment,
+    viewClient
   },
   data () {
     return {
+      selectRider: false,
+      addPay: false,
+      showLog: false,
       addressLocation: null,
       phone: null,
       photoDiag: false,
-      estatus_options: [
-        { label: 'Por Confirmar', value: 0 },
-        { label: 'Preparando su pedido', value: 1 },
-        { label: 'Orden en vía', value: 2 },
-        { label: 'Orden Entregada', value: 3 },
-        { label: 'Anulada', value: 4 }
-      ],
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
@@ -365,11 +388,6 @@ export default {
         { name: 'discount', align: 'center', label: 'discount', field: 'discount' }
       ],
       visibleColumns: ['name', 'quantity', 'price'],
-      tipo_servicio: [
-        { label: 'Pick-up', value: 0 },
-        { label: 'Delivery', value: 1 },
-        { label: 'En-Local', value: 2 }
-      ],
       puntoRef: '',
       addressDelivery: '',
       validationError: false,
@@ -377,12 +395,29 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
     ...mapGetters('menu', ['menu', 'item', 'promos']),
     ...mapGetters('client', ['clients']),
+    ...mapGetters('user', ['currentUser']),
     ...mapGetters('address', ['address']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['rates']),
+    orderStatus () {
+      if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
+        let dateIn = this.getLogDate(this.order)
+        let differenceDates = (new Date()).getTime() - dateIn.getTime()
+        let daysDif = differenceDates / (1000 * 60 * 60 * 24)
+        return daysDif > this.order.creditDays ? 5 : this.order.status
+      } else {
+        return this.order.status
+      }
+    },
+    estatusOptions () {
+      if (this.order.tipEnvio === '3') {
+        return this.estatus_optionsOrd
+      }
+      return this.estatus_options
+    },
     order () {
       return this.orders.find(obj => {
         return obj.id === this.$route.query.Order_Id
@@ -424,7 +459,7 @@ export default {
   created () {
     this.bindMenu()
     this.bindClients()
-    this.bindAddress().then(e => this.getAddress(this.order.address))
+    this.bindAddress().then(e => this.getAddress(this.order?.address))
     this.bindLocalizations()
     this.bindPromos()
     this.bindRates()
@@ -437,6 +472,13 @@ export default {
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindRates']),
+    getLogDate (obj) {
+      let ret = obj.statusLog?.find(x => x.status === 3)
+      if (typeof ret === 'undefined') {
+        return new Date()
+      }
+      return ret.dateIn.toDate()
+    },
     copyToClip () {
       let position = this.addressLocation[0].position
       let toClip = 'https://www.google.com/maps/dir/?api=1&destination=' + position.lat + ',' + position.lng
@@ -470,7 +512,7 @@ export default {
     },
     getTypeService (e) {
       e = parseInt(e)
-      let tip = this.tipo_servicio.find(x => x.value === e)
+      let tip = this.tipoServicio.find(x => x.value === e)
       if (typeof tip === 'undefined') {
         return null
       }
@@ -519,9 +561,9 @@ export default {
           console.error('oops, something went wrong!', error)
         })
     },
-    saved (value, id, key) {
+    async saved (value, id, key) {
       //  console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
-      this.saveOrder({ value, id, key })
+      return this.saveOrder({ value, id, key })
     },
     getProducts (value, type) {
       if (type) {
@@ -541,15 +583,39 @@ export default {
         return 'No disponible'
       }
     },
-    checkOrder (e) {
+    checkOrder (e, rider) {
       switch (e) {
-        case 3:
-          this.$q.dialog({
-            title: 'Alerta!',
-            message: 'Al colocar la orden como entregada se liberan los puntos de fidelidad al cliente, esto no se puede reversar '
-          }).onOk(() => {
+        case 2:
+          if (this.selectRider === true) {
             this.saved(e, this.$route.query.Order_Id, 'status')
+            this.statusLog(e, rider)
+            this.selectRider = false
+            break
+          }
+          this.selectRider = true
+          break
+        case 3:
+          // if (this.order.tipEnvio !== '3') {
+          //   this.$q.dialog({
+          //     title: 'Alerta!',
+          //     message: 'Al colocar la orden como entregada se liberan los puntos de fidelidad al cliente, esto no se puede reversar '
+          //   }).onOk(() => {
+          //     this.saved(e, this.$route.query.Order_Id, 'status')
+          //     this.statusLog(e, this.rider)
+          //   })
+          // } else {
+          this.$q.dialog({
+            title: 'Receptor',
+            message: 'Nombre de la persona que recibió la entrega',
+            prompt: {
+              model: '',
+              type: 'text' // optional
+            }
+          }).onOk(data => {
+            this.saved(e, this.$route.query.Order_Id, 'status')
+            this.statusLog(e, undefined, data)
           })
+          // }
           break
         case 4:
           this.$q.dialog({
@@ -557,11 +623,24 @@ export default {
             message: 'Al colocar la orden como anulada se acutalizará el stock, esto no se puede reversar '
           }).onOk(() => {
             this.saved(e, this.$route.query.Order_Id, 'status')
+            this.statusLog(e)
           })
           break
         default:
           this.saved(e, this.$route.query.Order_Id, 'status')
+          this.statusLog(e)
       }
+    },
+    statusLog (e, rider, receptor) {
+      let log = this.order.statusLog || []
+      let newData = { user: this.currentUser.id, status: e, dateIn: new Date() }
+      if (typeof rider !== 'undefined') {
+        newData.rider = rider
+      }
+      if (typeof receptor !== 'undefined') {
+        newData.receptor = receptor
+      }
+      this.saved([...log, newData], this.$route.query.Order_Id, 'statusLog')
     },
     getAddress (value) {
       let objaddress
@@ -569,6 +648,9 @@ export default {
         return obj.id === value
       })
       console.log({ objaddress, add: this.address })
+      if (typeof objaddress === 'undefined') {
+        return
+      }
       this.addressLocation = JSON.parse(objaddress?.location)
       this.puntoRef = typeof objaddress !== 'undefined' ? objaddress.puntoRef : 'No disponible'
       if (typeof objaddress !== 'undefined') {
@@ -602,9 +684,11 @@ export default {
   flex: 1 0 100% !important
   height: 0 !important
 .header-btn
-  position: absolute; right: 10px !important
+  position: absolute
+  right: 10px !important
 .header-btn-back
-  position: absolute; right:120px !important
+  position: absolute
+  right: 120px !important
 .header
  padding-bottom: 50px
 .header-cell

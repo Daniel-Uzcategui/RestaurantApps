@@ -102,20 +102,23 @@
                       <div class="q-pt-md">Seleccionar Tipo de Servicio</div>
                       <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado el Servicio</p>
                       <q-list class="q-pa-sm" v-if="config">
-                          <q-item>
-                            <q-radio v-show="config.statusDelivery" v-if="getLocBySede('Delivery')" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery`"/>
+                          <q-item v-if="getLocBySede('Delivery')">
+                            <q-radio v-show="config.statusDelivery" class="q-pa-sm" dense v-model="tipEnvio" val=1 :label="`Delivery`"/>
                           </q-item>
-                          <q-item>
-                            <q-radio v-show="config.statusPickup"   v-if="getLocBySede('PickUP')"  class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
+                          <q-item v-if="getLocBySede('PickUP')">
+                            <q-radio v-show="config.statusPickup" class="q-pa-sm" dense v-model="tipEnvio" val=0 label="Pick-up" />
                           </q-item>
-                          <q-item>
-                            <q-radio v-show="config.statusInlocal"  v-if="getLocBySede('Inlocal')"  class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
+                          <q-item v-if="getLocBySede('Inlocal')">
+                            <q-radio v-show="config.statusInlocal" class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
+                        </q-item>
+                        <q-item v-if="getLocBySede('Seller')">
+                            <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
                       </q-list>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 350px">
-                       <q-card class="q-pa-xl q-cardGlass" style="border-radius: 28px">
-                         <q-card-section>
+                       <q-card v-show="typeof tipEnvio !== 'undefined'" class="q-pa-xl q-cardGlass" style="border-radius: 28px">
+                         <q-card-section v-if="tipEnvio !== '3'">
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
                            <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado en la fecha</p>
                             <div class="q-gutter-sm">
@@ -150,15 +153,20 @@
                               </q-input>
                             </div>
                          </q-card-section>
-                         <q-card-section v-show="tipEnvio != 0 && tipEnvio != 2">
+                         <q-card-section v-else>
+                           <div class="text-h5">Escoja o agregue un cliente</div>
+                           <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
+                         </q-card-section>
+                         <q-card-section v-show="!['0', '2', '3'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
                           <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
                          <q-card-section>
-                           <div>
+                           <div class="column items-center">
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
                           </div>
                          </q-card-section>
                        </q-card>
@@ -314,6 +322,7 @@ import { QUploaderBase, date } from 'quasar'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 import ClassicList from '../../components/cart/classicList/classicList.vue'
 import Addresses from '../../components/addresses.vue'
+import clientList from '../../components/seller/clientlist.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
@@ -322,6 +331,7 @@ export default {
     payCreditCorp: payCreditCorp,
     // Addresses,
     debitPayment,
+    clientList,
     creditPayment,
     photoUpload,
     ClassicList,
@@ -407,6 +417,8 @@ export default {
   },
   data () {
     return {
+      ordCompraClient: null,
+      ordCompraBranch: null,
       canCloseHours: false,
       loadingConfig: true,
       cupons: [],
@@ -424,7 +436,7 @@ export default {
       CheckTDD: false,
       CheckTDC: false,
       confirm: false,
-      tipEnvio: window.location.hostname === 'chopzi.com' ? '0' : null,
+      tipEnvio: window.location.hostname === 'chopzi.com' ? '0' : undefined,
       lbDelivery: 'Deli',
       addId: null,
       validAddress: true,
@@ -477,7 +489,7 @@ export default {
       if (!cupon?.length) {
         return
       }
-      if (cupons?.some(item => item.name === cupon)) {
+      if (cupons?.some(item => item.name === cupon.toUpperCase())) {
         this.loadingState = false
         return this.$q.notify({ message: 'Cupón ya aplicado', color: 'red', position: 'top' })
       }
@@ -486,7 +498,7 @@ export default {
         const url = window.location.origin + '/getcoupon'
         // const url = 'https://us-central1-restaurant-testnet.cloudfunctions.net/GetCoupon'
         // const url = 'http://localhost:5001/restaurant-testnet/us-central1/GetCoupon'
-        res = await this.$axios.post(url, { ambiente: localStorage.getItem('amb'), cupon })
+        res = await this.$axios.post(url, { ambiente: localStorage.getItem('amb'), cupon: cupon.toUpperCase() })
         // res = {
         //   'empty': false,
         //   'exclude': {
@@ -673,6 +685,7 @@ export default {
     },
     getLocBySede (tip) {
       var locs = this.localizations.find(x => x.id === this.sede)
+      console.log(this.sede)
       if (typeof locs === 'undefined') { return false }
       return locs[tip]
     },
@@ -761,6 +774,15 @@ export default {
           break
         default:
           break
+      }
+      // Add shipping and billing address for Seller buyOrder
+      if (this.tipEnvio === '3') {
+        order = {
+          ...order,
+          buyOrderClient: this.ordCompraClient,
+          buyOrderBranch: this.ordCompraBranch.id,
+          address: this.ordCompraBranch.shippingAddress
+        }
       }
       this.addOrder({ ...order }).then(e => {
         // console.log(order)

@@ -1,6 +1,5 @@
 import Axios from 'axios'
 import firebaseService from '../services/firebase'
-
 export default async ({ router, store, Vue }) => {
   if (process.env.environments.ENV_TYPE !== 'DEV') {
     console.log = () => {}

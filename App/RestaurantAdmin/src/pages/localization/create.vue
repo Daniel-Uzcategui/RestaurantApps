@@ -90,7 +90,7 @@ import Vue from 'vue'
 /* eslint-disable no-undef */
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyAKdg_8yzT05nhZDrFRu4viy2-K-4KXIJQ',
+    key: 'AIzaSyCM_ORgfn8E1W6pFQQ-2HTAuZ9KcundblI',
     libraries: 'places'
   }
 })
@@ -180,13 +180,15 @@ export default {
   flex: 1 0 100% !important
   height: 0 !important
 .header-btn
-  position: absolute; right: 10px !important
+  position: absolute
+  right: 10px !important
 .filled
   padding-top: 50px
 .header-cell
   padding-left: 30px
 .header-btn-back
-  position: absolute; right:120px !important
+  position: absolute
+  right:120px !important
 .header
  padding-bottom: 50px
 .div-typeServices

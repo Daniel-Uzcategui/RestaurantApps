@@ -120,13 +120,7 @@ export default {
     }
   },
   async created () {
-    const online = window.navigator.onLine
-    this.$q.loading.show({
-      message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
-      backgroundColor: online ? 'grey' : 'red-6',
-      spinner: online ? QSpinnerGears : QSpinnerRadio,
-      customClass: 'loader'
-    })
+
   },
   async mounted () {
     this.bindEnv().then(e => {
@@ -137,24 +131,32 @@ export default {
       // Hide the loading screen if currentUser
       // is available before the page renders
       // console.log(this.currentUser)
-      this.bindRoles(currentUser.id).then(e => {
-        console.log('ROLES binded', e)
-        if (e && e.firstAccess) {
-          this.$router.push({ path: '/guide/intro' })
-          try {
-            this.updateLocalUserData({
-              ...e,
-              firstAccess: false
-            })
-          } catch (err) {
-            console.error(err)
+      const online = window.navigator.onLine
+      try {
+        this.$q.loading.show({
+          message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
+          backgroundColor: online ? 'grey' : 'red-6',
+          spinner: online ? QSpinnerGears : QSpinnerRadio,
+          customClass: 'loader'
+        })
+        this.bindRoles(currentUser.id).then(e => {
+          this.$q.loading.hide()
+          console.log('ROLES binded', e)
+          if (e && e.firstAccess) {
+            this.$router.push({ path: '/guide/intro' })
+            try {
+              this.updateLocalUserData({
+                ...e,
+                firstAccess: false
+              })
+            } catch (err) {
+              console.error(err)
+            }
           }
-        }
-        if (!(e && e.rol)) {
-          this.$router.push({ path: '/auth/login' })
-        }
-      }).catch(e => console.error(e))
-      this.$q.loading.hide()
+        })
+      } catch (error) {
+        this.$q.loading.hide()
+      }
       if (currentUser && currentUser.firstAccess) {
         this.$router.push({ path: '/guide/intro' })
         try {
@@ -290,6 +292,14 @@ export default {
             //   // separator: true,
 
             // },
+            {
+              label: 'Cupones',
+              caption: '',
+              icon: 'fas fa-ad',
+              handler: () => this.$router.push({ path: '/menu/coupons' })
+              // separator: true,
+
+            },
             {
               label: 'Promociones',
               caption: '',
@@ -484,28 +494,28 @@ export default {
     }
   },
   watch: {
-    currentUser (e) {
-      this.$q.loading.hide()
-      this.setupNotif()
-      console.log('User Data available', { e })
-      this.bindRoles(e.id).then(e => {
-        console.log('ROLES binded', e)
-        if (e && e.firstAccess) {
-          this.$router.push({ path: '/guide/intro' })
-          try {
-            this.updateLocalUserData({
-              ...e,
-              firstAccess: false
-            })
-          } catch (err) {
-            console.error(err)
-          }
-        }
-        if (!(e && e.rol)) {
-          this.$router.push({ path: '/auth/login' })
-        }
-      }).catch(e => console.error(e))
-    }
+    // currentUser (e) {
+    //   this.$q.loading.hide()
+    //   this.setupNotif()
+    //   console.log('User Data available', { e })
+    //   this.bindRoles(e.id).then(e => {
+    //     console.log('ROLES binded', e)
+    //     if (e && e.firstAccess) {
+    //       this.$router.push({ path: '/guide/intro' })
+    //       try {
+    //         this.updateLocalUserData({
+    //           ...e,
+    //           firstAccess: false
+    //         })
+    //       } catch (err) {
+    //         console.error(err)
+    //       }
+    //     }
+    //     // if (!(e && e.rol)) {
+    //     //   this.$router.push({ path: '/auth/login' })
+    //     // }
+    //   }).catch(e => console.error(e))
+    // }
     // orders (e) {
     //   if (e.length === 0) {
     //     return

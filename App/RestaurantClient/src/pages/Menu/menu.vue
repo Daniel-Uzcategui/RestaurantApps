@@ -1,14 +1,19 @@
 <template>
-   <div @click="click()" :class="global_class" class="" :style="global_style">
-      <q-input filled v-if="!displayType && !(typeof this.sede === 'undefined' || this.sede === null)" class="q-cardGlass q-pa-lg q-mt-xl q-mr-lg q-ml-lg" v-model="searchBar" @input="search" rounded outlined label="Buscar" >
-         <template v-slot:prepend>
-            <q-icon name="fas fa-search" />
-         </template>
-      </q-input>
+   <div @click="click()" :class="global_class" :style="global_style">
       <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
-      <q-card :class="$q.screen.gt.xs ? 'q-mr-lg q-ml-lg': ''" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+      <q-card flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+      <q-card-section
+      class="column items-center"
+          v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
+      >
+        <q-input filled
+          v-model="searchBar" @input="search" rounded outlined label="Buscar" >
+          <template v-slot:prepend>
+              <q-icon name="fas fa-search" />
+          </template>
+        </q-input>
+      </q-card-section>
           <!-- :rewards="rewards" -->
-          <!-- {{displayType}} display -->
          <menu-filter
           :promo="promo"
           :selectedFilter="selectedFilter"
@@ -35,7 +40,7 @@
                v-if="displayType == 1"
                class="wrapel "
                >
-               <div class="wrapel" :class="$q.dark.isActive ? 'background-color q-cardGlass' : 'background-color'" content-class="wrapel"  v-for="tabs in filtercat"
+               <div class="wrapel" v-show="filteredMenuCat(tabs.id).length" :class="$q.dark.isActive ? 'background-color q-cardGlass' : 'background-color'" content-class="wrapel"  v-for="tabs in filtercat"
                   :key="tabs.id">
                   <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
                   <q-card-section class="q-pa-none q-ma-none" v-if="!promo">
@@ -150,7 +155,7 @@
                   </q-item>
                </q-list>
                <div v-if="selectedCat === null">
-               <div v-for="(tabs, indx) in filtercat" :key="indx" >
+               <div v-show="filteredMenuCat(tabs.id).length" v-for="(tabs, indx) in filtercat" :key="indx" >
                  <p class="text-bold text-grey q-ma-md">{{tabs.name}}</p>
                <q-list separator>
                   <q-item v-ripple

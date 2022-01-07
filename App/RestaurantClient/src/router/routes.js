@@ -7,6 +7,8 @@ import IndexOrd from 'pages/orders/index.vue'
 import Cart from 'pages/cart/index.vue'
 import FindUs from 'pages/findus.vue'
 import Debit from 'components/payment/debit.vue'
+import Test from 'components/seller/clientlist.vue'
+import Test2 from 'components/seller/addressClient.vue'
 import ForgotPassword from 'pages/ForgotPassword.vue'
 import Dashboard from 'pages/user/dashboard.vue'
 import Rewards from 'pages/user/Rewards.vue'
@@ -85,6 +87,22 @@ const routes = [
         path: 'rewards',
         name: 'Rewards',
         component: Rewards,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'test',
+        name: 'test',
+        component: Test,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'test2',
+        name: 'test2',
+        component: Test2,
         meta: {
           requiresAuth: true
         }

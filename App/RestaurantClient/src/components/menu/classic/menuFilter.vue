@@ -1,7 +1,7 @@
 <template>
   <q-card-section>
-    <div class="row header-title relative-position">
-        <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg && menucfg.dispName ? menu.dispName : '' : (filterFindName)}}</div>
+    <div class="row q-pl-lg q-pr-lg relative-position">
+        <div class="fontsize-18 self-center">{{rewards ? 'Recompensas': promo ? 'Promociones' : (selectedFilter === '' || typeof selectedFilter === 'undefined') ? (menucfg && menucfg.dispName === '') || typeof menucfg === 'undefined' ? 'Catálogo' : menucfg && menucfg.dispName ? menucfg.dispName : '' : (filterFindName)}}</div>
         <q-btn flat class="fontsize-13 self-center" v-if="filters.length && (rewards ? false : promo ? false : true)" @click="$emit('nextFilter')" icon="fas fa-chevron-circle-right" />
         <q-btn flat class="fontsize-13 self-center absolute-bottom-right" @click="$emit('nextDisp')" icon="fas fa-grip-horizontal"/>
     </div>

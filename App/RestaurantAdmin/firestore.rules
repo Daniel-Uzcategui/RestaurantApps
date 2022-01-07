@@ -1,12 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents/ambiente/{ambiente} {
-    // match /{document=**} {
-    //  allow read, write: if true;
-    // }
+    //match /{document=**} {
+    //	allow read, write: if isUserSuperAdmin(request.auth.uid);
+    //}
     function isUserAdmin(user) {
       return get(/databases/$(database)/documents/ambiente/$(ambiente)/users/$(user)).data.typeAccess == "Admin"
     }
+    //function isUserSuperAdmin(user) {
+    //  return get(/databases/$(database)/documents/ambiente/chopzi/users/$(user)).data.typeAccess == "Admin"
+   // }
     match /environment/{doc} {
       allow read: if request.auth.uid != null;
       allow create: if isUserAdmin(request.auth.uid);
@@ -29,6 +32,16 @@ service cloud.firestore {
       allow read: if true;
       allow create: if true;
       allow update: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
+    }
+    match /clients/{doc} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
+        match /branches/{doc} {
+        allow read: if true;
+        allow create: if true;
+        allow update: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
+      }
     }
     // match /users/{usr} {
     //  allow read: if request.auth.uid == resource.data.id || isUserAdmin(request.auth.uid);
@@ -85,6 +98,11 @@ service cloud.firestore {
       allow update: if isUserAdmin(request.auth.uid);
     }
     match /groupComp/{grpcmp} {
+      allow read: if true;
+      allow create: if isUserAdmin(request.auth.uid);
+      allow update: if isUserAdmin(request.auth.uid);
+    }
+    match /riders/{rider} {
       allow read: if true;
       allow create: if isUserAdmin(request.auth.uid);
       allow update: if isUserAdmin(request.auth.uid);

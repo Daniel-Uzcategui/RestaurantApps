@@ -113,7 +113,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options', 'dateRange']),
+    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
     ...mapGetters('client', ['clients']),
     ...mapGetters('localization', ['localizations']),
     dateRango: {
@@ -128,26 +128,18 @@ export default {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago, sedeforOrder
       let fullname, statusOrder, typeService, nameSede
-      for (i = 0; i < this.orders.length; i++) {
-        obj = null
-        if (typeof this.$route.query.status !== 'undefined') {
-          if (this.$route.query.status === this.orders[i].status) {
-            obj = this.orders[i]
-          }
-        } else {
-          obj = this.orders[i]
-        }
-        if (obj !== null) {
+      for (i = 0; i < this.ordersClient.length; i++) {
+        obj = this.ordersClient[i]
+        if (!(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
           clientforOrder = this.clientOrders(obj.customer_id)
           sedeforOrder = this.sedeOrders(obj.sede)
           fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
           nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
-          typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
+          typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
           if (typeof obj.typePayment !== 'undefined') {
             tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
           } else { tipoPago = '' }
-          statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
-          // tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
+          statusOrder = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : ''
           let mtoTotal = obj.paid
           OrderClient.push({
             'id': obj.id,
@@ -189,6 +181,13 @@ export default {
     }
   },
   methods: {
+    // getLogDate (obj) {
+    //   let ret = obj.statusLog?.find(x => x.status === 3)
+    //   if (typeof ret === 'undefined') {
+    //     return new Date()
+    //   }
+    //   return ret.dateIn.toDate()
+    // },
     clientOrders (value) {
       return this.clients.find(obj => {
         return obj.id === value
@@ -225,7 +224,7 @@ export default {
       }
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.orders.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.ordersClient.length}`
     },
     ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange']),
     ...mapActions('localization', ['bindLocalizations']),
@@ -247,18 +246,6 @@ export default {
         { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
-      ],
-      estatus_options: [
-        { label: 'Por Confirmar', value: 0 },
-        { label: 'Preparando su pedido', value: 1 },
-        { label: 'Orden en vía', value: 2 },
-        { label: 'Orden Entregada', value: 3 },
-        { label: 'Anulada', value: 4 }
-      ],
-      tipo_servicio: [
-        { label: 'Pick-up', value: 0 },
-        { label: 'Delivery', value: 1 },
-        { label: 'En-Local', value: 2 }
       ]
     }
   }

@@ -1,6 +1,5 @@
 <template>
   <div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'">
-    {{coupons}}
    <q-table
       style="border-radius: 28px"
       :dense="$q.screen.lt.md"
