@@ -26,7 +26,7 @@ export const bindClients = firestoreAction(({ bindFirestoreRef }) => {
 
 export const bindClients2 = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindClients')
-  return bindFirestoreRef('clients2', firestore().collection('clients'))
+  return bindFirestoreRef('clients2', firestore().collection('clients').where('softDelete', '==', 0))
 })
 export const setIdCliente = async function ({ commit }, payload) {
   console.log('id de la categoria', payload)
@@ -36,3 +36,33 @@ export const bindOnlyVendedor = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindOnlyClients')
   return bindFirestoreRef('vendedor', firestore().collection('users').where('typeAccess', '==', 'Vendedor').orderBy('email'))
 })
+export const setValue = async function (state, payload) {
+  let result
+
+  result = firestore().collection('clients')
+    .doc(payload.id)
+    .set({
+      name: payload.name
+    }, { merge: true })
+  return result
+}
+export const setValueborar = async function (state, payload) {
+  let result
+
+  result = firestore().collection('clients')
+    .doc(payload.id)
+    .set({
+      softDelete: 1
+    }, { merge: true })
+  return result
+}
+export const setValuenew = async function (state, payload) {
+  let result
+
+  result = firestore().collection('clients')
+    .add({
+      name: payload.name,
+      softDelete: 0
+    })
+  return result
+}
