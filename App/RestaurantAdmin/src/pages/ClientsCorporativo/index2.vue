@@ -11,7 +11,7 @@
           <q-select label="Nacionalidad"  id="sortBy3" v-model="prefijo" :options="options2" >
 
             </q-select>
-             <q-input label="Rif" v-model="numerorif"> </q-input>
+             <q-input label="Rif" v-model="numerorif" :rules="[val => !!val || 'Solo numeros', validarnumeros]"> </q-input>
 
              <q-select label="Tipo Pago"  id="sortBy1" v-model="tipopago" :options="options" >
              </q-select>
@@ -135,6 +135,10 @@ export default {
       })
       this.inicializar()
     },
+    validarnumeros (val) {
+      const numeroPattern = /^\d{9}$/
+      return numeroPattern.test(val) || 'Invalid Rif'
+    },
     inicializar () {
       this.nombresurculsal = ''
       this.razon = ''
@@ -205,7 +209,7 @@ export default {
     this.bindcorporativo({ id: this.idClientSel })
   },
   watch: {
-    corporativo () {
+    vendedor () {
       this.mostrar()
     }
   }
