@@ -59,7 +59,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-            <q-btn flat label="Guardar" rounded class="text-bold" no-caps color="white" icon="save" style="background-color: #2196f3;"  @click="guardarnew(clinew)" v-close-popup/>
+            <q-btn flat label="Guardar" rounded class="text-bold" no-caps color="white" icon="edit" style="background-color: #2196f3;"  @click="guardarnew(clinew)" v-close-popup/>
             <q-btn flat label="Cancelar" rounded color="white" v-close-popup/>
         </q-card-actions>
       </q-card>

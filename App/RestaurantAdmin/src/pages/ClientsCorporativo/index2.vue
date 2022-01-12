@@ -1,7 +1,7 @@
 <template>
     <div style="overflow:hidden">
       <div class="row justify-center items-center">
-        <h3> Sucursales</h3>
+        <h3> Sucursales  {{clientenombre.name}}</h3>
       </div>
     <div class="row justify-center items-center">
     <q-card class="q-pa-s q-cardGlass" style="border-radius: 30px;">
@@ -20,9 +20,9 @@
               <q-input label="Dias de Credito" v-model="diacredito"> </q-input>
       </q-card-section>
        <div class="center">
-          <q-btn color="primary" text-color="white" label="Guardar" @click="guardar(nombresurculsal,razon,prefijo,numerorif,tipopago,selle,idselle,diacredito)"/>
+          <q-btn flat label="Guardar" rounded class="text-bold" no-caps color="white" icon="save" style="background-color: #2196f3;" @click="guardar(nombresurculsal,razon,prefijo,numerorif,tipopago,selle,idselle,diacredito)"/>
           &nbsp;&nbsp;
-          <q-btn color="primary" text-color="white" label="Cancelar" />
+          <q-btn flat label="Cancelar" rounded color="white" @click="cancelar()"/>
            </div>
     </q-card>
 
@@ -60,12 +60,12 @@
       >
        <template v-slot:body-cell-boton1 ="props" id=1>
          <q-td :props="props" class="q-pa-md q-gutter-sm">
-            <q-btn  color="primary" label="Editar" @click="editar(props.row)" />
+            <q-btn  q-btn dense round flat color="grey" icon="edit" @click="editar(props.row)" />
            </q-td>
        </template>
         <template v-slot:body-cell-boton2 ="props" id=2>
          <q-td :props="props" class="q-pa-md q-gutter-sm">
-            <q-btn  color="primary" label="Quitar" @click="borrar(props.row)"  />
+            <q-btn   q-btn dense round flat color="grey" icon="delete" @click="borrar(props.row)"  />
            </q-td>
        </template>
      </q-table >
@@ -85,6 +85,7 @@ export default {
       selle: '',
       idselle: '',
       tipopago: '',
+      clientenombre: '',
       diacredito: 0,
       model2: '',
       prefijo: '',
@@ -105,7 +106,7 @@ export default {
   },
   methods: {
     ...mapActions('corporativos', ['bindcorporativo', 'setValuenew', 'setValueborrar', 'setValueEditados']),
-    ...mapActions('client', ['bindOnlyVendedor']),
+    ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
     mostrar () {
       let obj
       console.log('los valores de corportivo', this.corporativo)
@@ -114,6 +115,7 @@ export default {
         obj = this.vendedor[i]
         this.Vendedores.push(obj.nombre)
       }
+      this.clientenombre = this.clients2.find(x => x.id === this.idClientSel)
     },
     guardar (nombre, razon, prefijo, numerorif, tipopago, selle, idselle, diacredito) {
       console.log('los valores del prefijo', prefijo)
@@ -135,23 +137,34 @@ export default {
       })
       this.inicializar()
     },
+    cancelar () {
+      this.inicializar()
+    },
     validarnumeros (val) {
-      const numeroPattern = /^\d{9}$/
+      const numeroPattern = /^[0-9]{1,}$/
       return numeroPattern.test(val) || 'Invalid Rif'
     },
     inicializar () {
       this.nombresurculsal = ''
       this.razon = ''
       this.prefijo = ''
-      this.numerorif = ''
+      this.numerorif = '0'
       this.tipopago = ''
       this.selle = ''
       this.diacredito = 0
     },
     borrar (objeto) {
-      console.log('estos son los valores', objeto)
-      this.setValueborrar({ idcliente: this.idClientSel,
-        id: objeto.id })
+      this.$q.dialog({
+        title: 'Eliminar Sucursal',
+        message: '¿Desea Eliminar la Sucursal ?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        console.log('estos son los valores', objeto)
+        this.setValueborrar({ idcliente: this.idClientSel,
+          id: objeto.id })
+      }).onCancel(() => {
+      })
     },
     editar (objeto) {
       console.log('los valores', objeto)
@@ -205,11 +218,12 @@ export default {
 
   },
   mounted () {
+    this.bindClients2()
     this.bindOnlyVendedor()
     this.bindcorporativo({ id: this.idClientSel })
   },
   watch: {
-    vendedor () {
+    clients2 () {
       this.mostrar()
     }
   }
