@@ -1,21 +1,21 @@
 <template>
-<div v-if="!isDiag" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
-   <div>
+<div :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
+   <div class="row justify-center">
    <q-table
+      class="col-12 col-lg-6 col-md-12"
       :data="clients2"
       :columns="columns"
-      title="Categorias"
+      title="Clientes Corporativos"
       row-key="id"
       :rows-per-page-options="[20, 30, 0]"
-      dense
       flat
       rounded
       ref="table"
-      style="border-radius: 28px;"
+      style="border-radius: 28px"
       no-data-label="No se encontraron registros"
       rows-per-page-label="Registros por página"
     >
-    <template v-if="$q.screen.gt.xs || isDiag" v-slot:top>
+    <template v-slot:top>
       <p class="text-h5 text-bold q-ma-md">
       Clientes Corporativos
       </p>
@@ -68,8 +68,8 @@
 </template>
 <script>
 const columns = [
-  { name: 'name', style: 'width: 250px;', align: 'center', label: 'NOMBRE', field: 'name', sortable: true },
-  { name: 'actions', style: 'max-width: 150px;', align: 'center', label: 'Acción', field: '' }
+  { name: 'name', align: 'center', label: 'Nombre', field: 'name', sortable: true },
+  { name: 'actions', align: 'center', label: 'Acción', field: '' }
 ]
 import { mapActions, mapGetters } from 'vuex'
 export default {
