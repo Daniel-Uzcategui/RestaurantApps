@@ -33,8 +33,7 @@ export const setValueborrar = async function (state, payload) {
 }
 export const setValueEditados = function (state, payload) {
   console.log('registro', payload)
-
-  firestore().collection('clients')
+  return firestore().collection('clients')
     .doc(payload.idcliente).collection('branches').doc(payload.id)
     .set({
       name: payload.datos.name,
