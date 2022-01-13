@@ -324,7 +324,7 @@ const routes = [{
             import ('layouts/User.vue'),
   children: [{
     path: 'index',
-    name: 'listClientsCorp',
+    name: 'listClients',
     component: () =>
                     import ('pages/ClientsCorporativo/index.vue'),
     meta: {
@@ -341,7 +341,7 @@ const routes = [{
             import ('layouts/User.vue'),
   children: [{
     path: 'index2',
-    name: 'listClientsBranches',
+    name: 'listClients',
     component: () =>
                     import ('pages/ClientsCorporativo/index2.vue'),
     meta: {

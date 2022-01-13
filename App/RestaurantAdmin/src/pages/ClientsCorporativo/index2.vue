@@ -1,54 +1,75 @@
 <template>
-    <div>
-       <q-btn flat label="Regresar" icon="chevron_left" class="q-ma-md" no-caps to="/corporativo/index" />
-         <q-dialog @hide="clieEditar = false" v-model="forma">
-           <div class="q-diag-glassMorph q-pa-xs row justify-start">
-         <q-form
-      @submit="guardar"
-      @reset="cancelar" greedy >
-         <q-input class="col-12 col-sm-6 q-pa-xs" label="Nombre Sucursal" :rules="[val => val.length > 0 || 'Nombre no puede quedar en blanco']" v-model="nombresurculsal"/>
-         <q-input class="col-12 col-sm-6 q-pa-xs" label="Razón Social" :rules="[val => val.length > 0 || 'Razón Social no puede quedar en blanco']"  v-model="razon"/>
-          <q-select class="col-12 col-sm-3 q-pa-xs" label="Prefijo Rif" :rules="[val => val.length > 0 || 'No puede quedar en blanco']"  id="sortBy3" v-model="prefijo" :options="options2" />
-             <q-input class="col-12 col-sm-6 q-pa-xs" label="Rif" v-model="numerorif" :rules="[val => !!val || 'Solo numeros', validarnumeros]"/>
-             <q-select class="col-12 col-sm-6 q-pa-xs" label="Tipo Pago"  id="sortBy1" :rules="[val => typeof val === 'number' || 'No puede quedar en blanco']" v-model="tipopago" map-options emit-value :options="options" />
-              <q-select class="col-12 col-sm-6 q-pa-xs" label="Vendedor" id="sortBy2"  v-model="selle" :options="Vendedores" @input="obtenervendedor()"/>
-              <q-input class="col-12 col-sm-6 q-pa-xs" label="Dias de Credito" v-model="diacredito"/>
-              <div class="col-12 row justify-center">
+    <div style="overflow:hidden">
+      <div class="row justify-center items-center">
+        <h3> Sucursales  {{clientenombre.name}}</h3>
+      </div>
+    <div class="row justify-center items-center">
+    <q-card class="q-pa-s q-cardGlass" style="border-radius: 30px;">
+       <q-card-section>
+         <q-input label="Nombre Sucursal" v-model="nombresurculsal"> </q-input>
+         <q-input label="Razón Social" v-model="razon"> </q-input>
+          <q-select label="Nacionalidad"  id="sortBy3" v-model="prefijo" :options="options2" >
 
-              <q-btn label="Cancelar" rounded color="red" class="q-ma-md text-bold" no-caps type="reset"/>
-              <q-btn v-if="clieEditar" no-caps rounded class="q-ma-md text-bold" label="Guardar" color="blue" icon="save"  type="submit" v-close-popup/>
-              <q-btn v-else label="Crear" rounded class="q-ma-md text-bold" no-caps color="green"  type="submit"/>
+            </q-select>
+             <q-input label="Rif" v-model="numerorif" :rules="[val => !!val || 'Solo numeros', validarnumeros]"> </q-input>
 
+             <q-select label="Tipo Pago"  id="sortBy1" v-model="tipopago" :options="options" >
+             </q-select>
+              <q-select label="Vendedores" id="sortBy2"  v-model="selle" :options="Vendedores" @input="obtenervendedor()">
+              </q-select>
+              <q-input label="Dias de Credito" v-model="diacredito"> </q-input>
+      </q-card-section>
+       <div class="center">
+          <q-btn flat label="Guardar" rounded class="text-bold" no-caps color="white" icon="save" style="background-color: #2196f3;" @click="guardar(nombresurculsal,razon,prefijo,numerorif,tipopago,selle,idselle,diacredito)"/>
+          &nbsp;&nbsp;
+          <q-btn flat label="Cancelar" rounded color="white" @click="cancelar()"/>
            </div>
-         </q-form>
-         </div>
-              </q-dialog>
-          <div class="center q-ma-md col-12 row justicy-center">
-                <q-table  class="q-mt-md full-width" :title="'Sucursales ' + clientenombre.name"
-                    style="border-radius: 28px"
-                      :data="corporativo"
-                      :columns="columns"
+    </q-card>
 
-                      no-data-label="No se encontraron registros"
+    </div>
+     <q-dialog v-model="clieEditar" transition-show="rotate" transition-hide="rotate">
+      <q-card>
+        <q-card-section>
+           <q-input label="Nombre Sucursal" v-model="nombresurculsal"> </q-input>
+         <q-input label="Razón Social" v-model="razon"> </q-input>
+          <q-select label="Nacionalidad"  id="sortBy3" v-model="prefijo" :options="options2" >
 
-                      >
-                      <template v-slot:top-right >
-                        <div class="row justify-start">
-                          <q-btn label="Crear Nuevo" rounded class="q-ma-md text-bold" no-caps color="green" icon="add" @click="forma=!forma"/>
-                        </div>
-                      </template>
-                      <template v-slot:body-cell-boton1 ="props" id=1>
-                        <q-td :props="props" class="q-pa-md q-gutter-sm">
-                            <q-btn  q-btn dense round flat color="grey" icon="edit" @click="editar(props.row)" />
-                          </q-td>
-                      </template>
-                        <template v-slot:body-cell-boton2 ="props" id=2>
-                        <q-td :props="props" class="q-pa-md q-gutter-sm">
-                            <q-btn   q-btn dense round flat color="grey" icon="delete" @click="borrar(props.row)"  />
-                          </q-td>
-                      </template>
-                    </q-table >
-           </div>
+            </q-select>
+             <q-input label="Rif" v-model="numerorif"> </q-input>
+
+             <q-select label="Tipo Pago"  id="sortBy1" v-model="tipopago" :options="options" >
+             </q-select>
+              <q-select label="Vendedores" id="sortBy2"  v-model="selle" :options="Vendedores" @input="obtenervendedor()">
+              </q-select>
+              <q-input label="Dias de Credito" v-model="diacredito"> </q-input>
+        </q-card-section>
+
+        <q-card-actions align="right">
+            <q-btn flat label="Accept" color="primary"  @click="guardarEditado(idsuculsal,nombresurculsal,razon,prefijo,numerorif,tipopago,idselle,selle,diacredito)" v-close-popup/>
+            <q-btn flat label="Cancelar" color="primary" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div class="row justify-center items-center">>
+    <q-table  class="column  justify-center items-center " title="Sucursales"
+      :data="corporativo"
+      :columns="columns"
+
+      no-data-label="No se encontraron registros"
+
+      >
+       <template v-slot:body-cell-boton1 ="props" id=1>
+         <q-td :props="props" class="q-pa-md q-gutter-sm">
+            <q-btn  q-btn dense round flat color="grey" icon="edit" @click="editar(props.row)" />
+           </q-td>
+       </template>
+        <template v-slot:body-cell-boton2 ="props" id=2>
+         <q-td :props="props" class="q-pa-md q-gutter-sm">
+            <q-btn   q-btn dense round flat color="grey" icon="delete" @click="borrar(props.row)"  />
+           </q-td>
+       </template>
+     </q-table >
+    </div>
     </div>
 </template>
 <script>
@@ -58,18 +79,17 @@ export default {
     return {
       nombresurculsal: '',
       clieEditar: false,
-      forma: false,
       numerorif: '',
       idsuculsal: '',
       razon: '',
       selle: '',
       idselle: '',
-      tipopago: null,
+      tipopago: '',
       clientenombre: '',
       diacredito: 0,
       model2: '',
       prefijo: '',
-      options: [{ label: 'Contado', value: 0 }, { label: 'Credito', value: 1 }],
+      options: ['Contado', 'Credito'],
       options2: ['J', 'V', 'E', 'G'],
       Vendedores: [],
       columns: [
@@ -78,7 +98,7 @@ export default {
         { name: 'Razon', required: false, label: 'Razon Social', field: row => row?.RazonSocial, align: 'left', sortable: true },
         { name: 'Vendedor', required: false, label: 'Vendedor', field: row => row.Vendedor?.name, align: 'left', sortable: true },
         { name: 'creditDays', required: false, label: 'Dias Credito', field: row => row?.creditDays, align: 'left', sortable: true },
-        { name: 'tipoPago', required: false, label: 'Tipo Pago', field: row => typeof row?.tipoPago === 'number' ? this.options[row.tipoPago].label : 'NA', align: 'left', sortable: true },
+        { name: 'tipoPago', required: false, label: 'Tipo Pago', field: row => row?.tipoPago, align: 'left', sortable: true },
         { name: 'boton1', required: false, label: '', align: 'left', sortable: true },
         { name: 'boton2', required: false, label: '', align: 'left', sortable: true }
       ]
@@ -97,15 +117,11 @@ export default {
       }
       this.clientenombre = this.clients2.find(x => x.id === this.idClientSel)
     },
-    guardar () {
-      const { nombresurculsal, razon, prefijo, numerorif, tipopago, selle, idselle, diacredito, clieEditar } = this
-      if (clieEditar) {
-        return this.guardarEditado()
-      }
+    guardar (nombre, razon, prefijo, numerorif, tipopago, selle, idselle, diacredito) {
       console.log('los valores del prefijo', prefijo)
       this.setValuenew({
         id: this.idClientSel,
-        name: nombresurculsal,
+        name: nombre,
         RazonSocial: razon,
         Rif: {
           prefijo: prefijo,
@@ -118,17 +134,10 @@ export default {
         creditDays: diacredito,
         tipoPago: tipopago
 
-      }).then(() => {
-        this.$q.notify({ message: 'Cliente Guardado', color: 'green' })
-      }).catch(() => {
-        this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
       this.inicializar()
     },
     cancelar () {
-      if (this.clieEditar) {
-        this.clieEditar = !this.clieEditar
-      }
       this.inicializar()
     },
     validarnumeros (val) {
@@ -140,7 +149,7 @@ export default {
       this.razon = ''
       this.prefijo = ''
       this.numerorif = '0'
-      this.tipopago = null
+      this.tipopago = ''
       this.selle = ''
       this.diacredito = 0
     },
@@ -153,9 +162,7 @@ export default {
       }).onOk(() => {
         console.log('estos son los valores', objeto)
         this.setValueborrar({ idcliente: this.idClientSel,
-          id: objeto.id }).catch(() => {
-          this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
-        })
+          id: objeto.id })
       }).onCancel(() => {
       })
     },
@@ -171,10 +178,8 @@ export default {
       this.diacredito = objeto?.creditDays
       this.idselle = objeto.Vendedor?.id
       this.clieEditar = true
-      this.forma = true
     },
-    guardarEditado () {
-      const { idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, idselle, selle, diacredito } = this
+    guardarEditado (idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, idselle, selle, diacredito) {
       this.setValueEditados({
         idcliente: this.idClientSel,
         id: idsuculsal,
@@ -193,10 +198,6 @@ export default {
           creditDays: diacredito,
           tipoPago: tipopago
         }
-      }).then(() => {
-        this.$q.notify({ message: 'Cambios Guardados', color: 'green' })
-      }).catch(() => {
-        this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
       this.inicializar()
     },
