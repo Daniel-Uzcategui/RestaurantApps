@@ -39,10 +39,9 @@
         <q-btn no-caps round color="green" push icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" >
+        <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" >
            <q-td v-if="$q.screen.lt.md"  auto-width>
              <q-checkbox />
-            <q-icon name="person" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
           </q-td>
            <q-td
             v-for="col in props.cols"

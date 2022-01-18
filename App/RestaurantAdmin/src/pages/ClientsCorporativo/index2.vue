@@ -141,10 +141,10 @@ export default {
 
       }).then(() => {
         this.$q.notify({ message: 'Cliente Guardado', color: 'green' })
+        this.inicializar()
       }).catch(() => {
         this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
-      this.inicializar()
     },
     cancelar () {
       if (this.clieEditar) {
