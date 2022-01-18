@@ -45,6 +45,7 @@
               <q-checkbox v-if="config && config.statusPickup"  dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
               <q-checkbox v-if="config && config.statusDelivery" dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
               <q-checkbox v-if="config && config.statusInlocal" dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
+              <q-checkbox dense label="Orden de Compra" color="red" class="typeServices" :value="localization.statusSeller" @input="(e) => beforeSaved(e, this.$route.query.Localization_Id, 'statusSeller')" />
             </div>
         </div>
         <div v-if="config && config.statusInlocal">
@@ -166,8 +167,22 @@ export default {
   },
   methods: {
     ...mapActions('localization', ['saveLocation']),
-    ...mapActions('config', ['bindConfigs']),
+    ...mapActions('config', ['bindConfigs', 'saveConfig']),
+    beforeSaved (value, id, key) {
+      if (!value) {
+        return this.saved(value, id, key)
+      }
+      this.$q.dialog({
+        message: '¿Desea activar orden de compra? Esto activará las funcionalidades de reporteria y configuración para clientes corporativos, esta funcionalidad necesita que configure un usuario como tipo vendedor, diríjase a configuracion Usuarios y cambie el tipo de aplicacion del usuario cual desea como vendedor ',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.saved(value, id, key)
+        this.saveConfig({ value: 1, id: 'paymentServ', key }).catch(e => console.log(e))
+      })
+    },
     saved (value, id, key) {
+      console.log(value, id, key)
       if (value.length === 0) {
         this.messageError = []
         if (key === 'name') {

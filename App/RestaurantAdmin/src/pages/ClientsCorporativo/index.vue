@@ -21,6 +21,16 @@
       </p>
         <q-btn-group flat push >
           <q-btn flat push no-caps label="Agregar" icon="add" @click="nuevo"/>
+          <q-btn icon="settings" flat>
+        <q-menu>
+          <q-list style="min-width: 100px">
+            <q-item @click="qdiagVendedor()" clickable v-close-popup>
+              <q-item-section v-if="!priceActiveVal()">Desactivar modo solo vendedores</q-item-section>
+              <q-item-section v-else>Activar modo solo vendedores</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
         </q-btn-group>
         </template>
          <template v-slot:body-cell-actions="props">
@@ -86,15 +96,51 @@ export default {
 
     }
   },
+  created () {
+    this.bindConfigs().then((e) => {
+      let cfg = e.find(obj => {
+        return obj.id === 'paymentServ'
+      })
+      if (typeof cfg === 'undefined' || typeof cfg.statusSeller === 'undefined') {
+        this.$q.dialog({
+          message: 'La funcionalidad corporativo esta deshabilitada, desea activarla?',
+          persistent: true,
+          cancel: true
+        }).onOk(() => {
+          this.saveConfig({ value: 1, id: 'paymentServ', key: 'statusSeller' }).catch(e => console.log(e))
+        })
+      }
+    })
+  },
   methods: {
-    ...mapActions('client', ['bindClients2', 'setIdCliente', 'setValue', 'setValueborar', 'setValuenew']),
-
+    ...mapActions('client', ['bindClients2', 'setIdCliente', 'setValue', 'setValue2', 'setValueborar', 'setValuenew']),
+    ...mapActions('config', ['bindConfigs', 'saveConfig']),
+    ...mapActions('menu', ['setValue2']),
+    priceActiveVal () {
+      return this.menucfg?.priceActive ?? false
+    },
+    qdiagVendedor () {
+      let activo = this.priceActiveVal()
+      this.$q.dialog({
+        message: !activo ? '¿Desea desactivar el modo solo vendedores?' : 'El modo solo vendedor muestra los precios de los productos solo a usuarios vendedores, el catálogo seguirá estando disponible al público, ¿Desea activarlo?',
+        cancel: true
+      }).onOk(() => {
+        this.setValue2({
+          collection: 'config',
+          payload: {
+            id: 'menu',
+            key: 'priceActive',
+            value: !activo
+          }
+        })
+      })
+    },
     mostrar () {
       console.log('los valores de la colletions clients', this.clients2)
     },
 
     ClienteRoute (id) {
-      console.log('el id del cleinte corporativo', id)
+      console.log('el id del cliente corporativo', id)
       this.setIdCliente(id)
       console.log('el nuevo valor de la mutacion es:', this.idClientSel)
       this.$router.push({ path: '/corporativo/branches/index2' })
@@ -130,8 +176,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('client', ['clients2', 'idClientSel'])
-
+    ...mapGetters('client', ['clients2', 'idClientSel']),
+    ...mapGetters('config', ['configs']),
+    config () {
+      return this.configs.find(obj => {
+        return obj.id === 'paymentServ'
+      })
+    },
+    menucfg () {
+      return this.configs.find(obj => {
+        return obj.id === 'menu'
+      })
+    }
   },
   mounted () {
     this.bindClients2()

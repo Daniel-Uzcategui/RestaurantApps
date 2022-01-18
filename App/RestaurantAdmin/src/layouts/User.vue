@@ -353,7 +353,7 @@ export default {
         }, {
           title: 'Corporativo',
           caption: '',
-          icon: 'fa fa-user',
+          icon: 'business',
           link: '#/corporativo/index'
           // separator: true,
 

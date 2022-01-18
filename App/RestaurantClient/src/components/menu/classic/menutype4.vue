@@ -25,7 +25,7 @@
 
                         <q-card-section class="text-center col">
                         <div class="text-h6 text-bold title">{{item.name}}</div>
-                        <div class="text-h5 text-grey text-bold">
+                        <div v-if="item.price !== undefined" class="text-h5 text-grey text-bold">
                            <div>
                               <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                                  <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false">$ {{parseFloat(item.price).toFixed(2)}}
@@ -47,7 +47,7 @@
                            </div>
                         </q-card-section>
                         <q-card-section class="col" align="center">
-                           <q-btn :size="$q.screen.gt.xs ? 'md' : 'xs'" @click="$emit('productSelect', item)" unelevated class="text-bold no-shadow" text-color="black" label="Añadir al carrito" color="grey-3" rounded></q-btn>
+                           <q-btn v-if="item.price !== undefined" :size="$q.screen.gt.xs ? 'md' : 'xs'" @click="$emit('productSelect', item)" unelevated class="text-bold no-shadow" text-color="black" label="Añadir al carrito" color="grey-3" rounded></q-btn>
                         </q-card-section>
                      <q-tooltip :hide-delay="650" v-if="!item.checkAvail[1] && !item.checkAvail[0]">*No Disponible*</q-tooltip>
                      <q-tooltip :hide-delay="650" v-if="item.checkAvail[1] && !item.checkAvail[0]">*Máx en el Carrito*</q-tooltip>

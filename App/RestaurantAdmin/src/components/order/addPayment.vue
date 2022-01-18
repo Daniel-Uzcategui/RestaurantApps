@@ -5,7 +5,7 @@
       <q-input filled v-model="doc.nroDoc" label="Nro Documento"
       lazy-rules :rules="[ val => val && val.length > 0 || 'Porfavor colocar un valor']"
       />
-        <q-input type="number" filled v-model.number="doc.amount" label="Monto"
+        <q-input filled v-model.number="doc.amount" label="Monto"
       lazy-rules :rules="[ val => val > 0 || 'Porfavor colocar un valor']"
       />
       <q-date filled type="number" v-model="doc.date" lazy-rules

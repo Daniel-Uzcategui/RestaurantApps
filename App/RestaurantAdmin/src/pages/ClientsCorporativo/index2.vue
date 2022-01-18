@@ -6,25 +6,29 @@
          <q-form
       @submit="guardar"
       @reset="cancelar" greedy >
-         <q-input class="col-12 col-sm-6 q-pa-xs" label="Nombre Sucursal" :rules="[val => val.length > 0 || 'Nombre no puede quedar en blanco']" v-model="nombresurculsal"/>
-         <q-input class="col-12 col-sm-6 q-pa-xs" label="Razón Social" :rules="[val => val.length > 0 || 'Razón Social no puede quedar en blanco']"  v-model="razon"/>
-          <q-select class="col-12 col-sm-3 q-pa-xs" label="Prefijo Rif" :rules="[val => val.length > 0 || 'No puede quedar en blanco']"  id="sortBy3" v-model="prefijo" :options="options2" />
+         <q-input class="col-12 col-sm-6 q-pa-xs" label="Nombre Sucursal" :rules="[val => evalString(val) || 'Nombre no puede quedar en blanco']" v-model="nombresurculsal"/>
+         <q-input class="col-12 col-sm-6 q-pa-xs" label="Razón Social" :rules="[val => evalString(val) || 'Razón Social no puede quedar en blanco']"  v-model="razon"/>
+          <q-select class="col-12 col-sm-3 q-pa-xs" label="Prefijo Rif" :rules="[val => evalString(val) || 'No puede quedar en blanco']"  id="sortBy3" v-model="prefijo" :options="options2" />
              <q-input class="col-12 col-sm-6 q-pa-xs" label="Rif" v-model="numerorif" :rules="[val => !!val || 'Solo numeros', validarnumeros]"/>
              <q-select class="col-12 col-sm-6 q-pa-xs" label="Tipo Pago"  id="sortBy1" :rules="[val => typeof val === 'number' || 'No puede quedar en blanco']" v-model="tipopago" map-options emit-value :options="options" />
               <q-select class="col-12 col-sm-6 q-pa-xs" label="Vendedor" id="sortBy2"  v-model="selle" :options="Vendedores" @input="obtenervendedor()"/>
-              <q-input class="col-12 col-sm-6 q-pa-xs" label="Dias de Credito" v-model="diacredito"/>
-              <div class="col-12 row justify-center">
+              <q-input class="col-12 col-sm-6 q-pa-xs" label="Dias de Credito" v-if="tipopago === 1" v-model="diacredito"/>
+                 <q-input class="col-12 col-sm-6 q-pa-xs" label="Direccion de envio" :rules="[val => val !== 'Agregue dirección' || 'Agregue una direccion']" :value="shippingAddress === null ? 'Agregue dirección': 'Agregado'" readonly >
+                    <template v-slot:append>
+                <q-btn :rules="[val => false || 'No puede quedar en blanco']" :icon="adShippingDone ? 'done' : 'add'" @click="adShipping = true" />
+                    </template>
+                 </q-input>
+              <div class="col-12 row justify-center q-mt-md">
 
-              <q-btn label="Cancelar" rounded color="red" class="q-ma-md text-bold" no-caps type="reset"/>
-              <q-btn v-if="clieEditar" no-caps rounded class="q-ma-md text-bold" label="Guardar" color="blue" icon="save"  type="submit" v-close-popup/>
+              <q-btn label="Cancelar" rounded color="red" class="q-ma-md text-bold" no-caps type="reset" v-close-popup/>
+              <q-btn v-if="clieEditar" no-caps rounded class="q-ma-md text-bold" label="Guardar" color="blue" icon="save"  type="submit" />
               <q-btn v-else label="Crear" rounded class="q-ma-md text-bold" no-caps color="green"  type="submit"/>
-
            </div>
          </q-form>
          </div>
               </q-dialog>
           <div class="center q-ma-md col-12 row justicy-center">
-                <q-table  class="q-mt-md full-width" :title="'Sucursales ' + clientenombre.name"
+                <q-table  class="q-mt-md full-width" :title="'Sucursales ' + getname(clientenombre)"
                     style="border-radius: 28px"
                       :data="corporativo"
                       :columns="columns"
@@ -49,16 +53,24 @@
                       </template>
                     </q-table >
            </div>
+           <q-dialog v-model="adShipping">
+            <address-client @input="(e)=> {shippingAddress = e; adShipping = false; adShippingDone = true}" :clientId="idClientSel"/>
+          </q-dialog>
     </div>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import addressClient from '../../components/seller/addressClient.vue'
 export default {
+  components: { addressClient },
   data () {
     return {
       nombresurculsal: '',
       clieEditar: false,
       forma: false,
+      shippingAddress: null,
+      adShippingDone: false,
+      adShipping: false,
       numerorif: '',
       idsuculsal: '',
       razon: '',
@@ -74,7 +86,7 @@ export default {
       Vendedores: [],
       columns: [
         { name: 'Nombre', required: false, label: 'Nombre', align: 'left', field: row => row?.name, sortable: true },
-        { name: 'Rif', required: false, label: 'Rif', field: row => row.Rif?.prefijo + '-' + row.Rif?.numero, align: 'left', sortable: true },
+        { name: 'Rif', required: false, label: 'Rif', field: row => row.Rif?.prefijo && row.Rif?.numero ? row.Rif?.prefijo + '-' + row.Rif?.numero : null, align: 'left', sortable: true },
         { name: 'Razon', required: false, label: 'Razon Social', field: row => row?.RazonSocial, align: 'left', sortable: true },
         { name: 'Vendedor', required: false, label: 'Vendedor', field: row => row.Vendedor?.name, align: 'left', sortable: true },
         { name: 'creditDays', required: false, label: 'Dias Credito', field: row => row?.creditDays, align: 'left', sortable: true },
@@ -87,6 +99,13 @@ export default {
   methods: {
     ...mapActions('corporativos', ['bindcorporativo', 'setValuenew', 'setValueborrar', 'setValueEditados']),
     ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
+    getname (ob) {
+      return ob?.name ? ob.name : ' '
+    },
+    evalString (val) {
+      let value = val ?? ''
+      return value.length > 0
+    },
     mostrar () {
       let obj
       console.log('los valores de corportivo', this.corporativo)
@@ -102,11 +121,13 @@ export default {
       if (clieEditar) {
         return this.guardarEditado()
       }
+      // adShippingDone
       console.log('los valores del prefijo', prefijo)
       this.setValuenew({
         id: this.idClientSel,
         name: nombresurculsal,
         RazonSocial: razon,
+        shippingAddress: this.shippingAddress,
         Rif: {
           prefijo: prefijo,
           numero: numerorif
@@ -143,6 +164,9 @@ export default {
       this.tipopago = null
       this.selle = ''
       this.diacredito = 0
+      this.shippingAddress = null
+      this.adShippingDone = false
+      this.forma = false
     },
     borrar (objeto) {
       this.$q.dialog({
@@ -165,6 +189,7 @@ export default {
       this.nombresurculsal = objeto?.name
       this.razon = objeto?.RazonSocial
       this.prefijo = objeto.Rif?.prefijo
+      this.shippingAddress = objeto?.shippingAddress
       this.numerorif = objeto.Rif?.numero
       this.tipopago = objeto?.tipoPago
       this.selle = objeto.Vendedor?.name
@@ -174,12 +199,12 @@ export default {
       this.forma = true
     },
     guardarEditado () {
-      const { idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, idselle, selle, diacredito } = this
+      const { idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, idselle, selle, diacredito, shippingAddress } = this
       this.setValueEditados({
         idcliente: this.idClientSel,
         id: idsuculsal,
         datos: {
-
+          shippingAddress: shippingAddress,
           name: nombresurculsal,
           RazonSocial: razon,
           Rif: {

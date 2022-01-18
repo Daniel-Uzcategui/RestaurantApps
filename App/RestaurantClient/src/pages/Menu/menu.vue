@@ -52,7 +52,7 @@
                         <slide class="row justify-center" v-for="(item, key) in filteredMenuCat(tabs.id)" :key="item.id" >
                            <div v-if="typeof item.not === 'undefined'">
                               <div  style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col relative-position" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                                 <q-card v-ripple @click="dgbg = {'background-color':tabs.color};checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
+                                 <q-card v-ripple @click="dgbg = {'background-color':tabs.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':tabs.color},{'color': tabs.textcolor}]">
                                     <div class="container-photo">
                                        <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                                     </div>
@@ -61,7 +61,7 @@
                                           <q-item-label lines="5">{{item.name}} </q-item-label>
                                        </div>
                                     </div>
-                                    <div class="price-content" >
+                                    <div v-if="item.price !== undefined" class="price-content" >
                                        <div v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                                          <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
@@ -94,7 +94,7 @@
               @hook:mounted="selectedCat=filtercat[0]"
               :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
-              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (display = true, getMenuItem(e.id, 0)) : false}" />
+              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (displayPermit(), getMenuItem(e.id, 0)) : false}" />
             </div>
             <div v-if="displayType == 3">
               <menutype-4
@@ -105,7 +105,7 @@
               :sede="sede"
               :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
-              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (display = true, getMenuItem(e.id, 0)) : false}" />
+              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (displayPermit(), getMenuItem(e.id, 0)) : false}" />
             </div>
             <div v-if="displayType == 2">
             <div class="column items-center">
@@ -127,14 +127,14 @@
             <div style="max-width: 600px">
                <q-list v-if="selectedCat !== null"  separator>
                   <q-item v-ripple
-                     @click.native="dgbg = {'background-color':selectedCat.color};checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     @click.native="dgbg = {'background-color':selectedCat.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(selectedCat !== null ? selectedCat.id : filtercat ? filtercat[0] ? filtercat[0].id : '' : '')" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
                         <q-item-section>
                           <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
                         </q-item-section>
-                        <q-item-section v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
+                        <q-item-section v-if="item && item.price !== undefined && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                           <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
                           </q-item-label>
                           <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
@@ -159,7 +159,7 @@
                  <p class="text-bold text-grey q-ma-md">{{tabs.name}}</p>
                <q-list separator>
                   <q-item v-ripple
-                     @click.native="dgbg = {'background-color':tabs.color};checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 0)) : false"
+                     @click.native="dgbg = {'background-color':tabs.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0)) : false"
                      v-for="item in filteredMenuCat(tabs.id)" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -282,7 +282,7 @@
                   :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
                   <slide class="row justify-center" :name="key" v-for="(item, key) in promoData" :key="item.id" >
                      <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
+                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
                            <div class="container-photo">
                               <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
                            </div>
@@ -316,7 +316,7 @@
                <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
                <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
                   :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]"
-                  @click="dgbg = {'background-color':selectedCat.color}; checkAvail(item.id, item.prodType)[0] ? (display = true, getMenuItem(item.id, 1)) : false"
+                  @click="dgbg = {'background-color':selectedCat.color}; checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 1)) : false"
                   v-for="item in promoData" :key="item.id" >
                   <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
                      <div class="menuitem row">
@@ -708,7 +708,7 @@ export default {
       if (this.selectedProduct && this.selectedProduct !== '') {
         try {
           this.getMenuItem(this.selectedProduct, parseInt(this.selectedProdType))
-          this.display = true
+          this.displayPermit()
         } catch (e) {
           console.error(e)
           this.$q.notify({
@@ -742,6 +742,7 @@ export default {
       }
     },
     filteredMenuCat (e) {
+      let canShowPrice = this.displayPermitValue()
       let filtered = []
       const { viewRewards, rewards } = this
       function filter (x) {
@@ -754,6 +755,9 @@ export default {
         filtered = this.filteredMenu.filter(x => filter(x))
         for (let item of filtered) {
           item.checkAvail = this.checkAvail(item.id, item.prodType)
+          if (!canShowPrice) {
+            delete item.price
+          }
         }
       } else {
         filtered = [{ id: 'kkfkff', not: true }]
@@ -859,6 +863,19 @@ export default {
         }
         return [1, exists]
       }
+    },
+    displayPermitValue () {
+      let permit = this.menucfg?.priceActive ?? true
+      if (permit) {
+        return permit
+      }
+      if (this.currentUser.rol.includes('Vendedor')) {
+        return true
+      }
+    },
+    displayPermit () {
+      let permit = this.displayPermitValue()
+      this.display = permit
     },
     getMenuItem (id, type, reward) {
       reward = typeof reward === 'undefined' ? 0 : reward

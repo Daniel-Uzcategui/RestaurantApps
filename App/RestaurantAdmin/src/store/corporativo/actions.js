@@ -36,12 +36,7 @@ export const setValueEditados = function (state, payload) {
   return firestore().collection('clients')
     .doc(payload.idcliente).collection('branches').doc(payload.id)
     .set({
-      name: payload.datos.name,
-      RazonSocial: payload.datos.RazonSocial,
-      Rif: payload.datos.Rif,
-      Vendedor: payload.datos.Vendedor,
-      creditDays: payload.datos.creditDays,
-      tipoPago: payload.datos.tipoPago,
+      ...JSON.parse(JSON.stringify(payload.datos)),
       softDelete: 0
     }, { merge: true }).then(() => {
       console.log('se actualizo')

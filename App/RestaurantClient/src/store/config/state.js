@@ -5,7 +5,7 @@ export default function () {
     chat: {},
     rates: [],
     themecfg: {},
-    menucfg: { menuactive: true, iconsactive: true, dispName: '', displayType: 0 },
+    menucfg: { menuactive: true, iconsactive: true, dispName: '', displayType: 0, priceActive: true },
     menuDispType: null,
     manifest: null
   }

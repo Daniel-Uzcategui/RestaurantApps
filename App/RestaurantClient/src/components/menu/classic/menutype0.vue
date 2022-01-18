@@ -29,7 +29,7 @@
                                  <q-item-label class="text-bold title" lines="5">{{item.name}} </q-item-label>
                               </div>
                            </div>
-                           <div>
+                           <div v-if="item.price !== undefined">
                               <div class="menuprice col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                                  <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
                                  <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
