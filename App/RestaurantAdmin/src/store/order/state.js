@@ -45,6 +45,7 @@ export default function () {
       { label: 'Transferencia Bancaria', value: 7 },
       { label: 'Pago móvil', value: 8 },
       { label: 'Tarjeta Venezolana', value: 9 }
-    ]
+    ],
+    ordercorporativo: []
   }
 }

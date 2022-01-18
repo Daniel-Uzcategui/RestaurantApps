@@ -1,10 +1,13 @@
 /// ////// START Clients from users Action ////////
 import { firestoreAction } from 'vuexfire'
-import { firestore } from '../../services/firebase/db.js'
+import { firestore, fireAdmin } from '../../services/firebase/db.js'
 
 export const bindcorporativo = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindClients')
-  return bindFirestoreRef('corporativo', firestore().collection('clients').doc(payload.id).collection('branches').where('softDelete', '==', 0))
+  console.log('el cliente', payload.id)
+  if (payload.id !== '') {
+    return bindFirestoreRef('corporativo', firestore().collection('clients').doc(payload.id).collection('branches').where('softDelete', '==', 0))
+  }
 })
 export const setValuenew = async function (state, payload) {
   let result
@@ -48,4 +51,12 @@ export const setValueEditados = function (state, payload) {
     }).catch((e) => {
       console.log('error update de banches!')
     })
+}
+export const getbranches = async function (state, payload) {
+  let result
+
+  result = await fireAdmin().collection('ambiente').doc(payload.ambiente).collection('clients')
+    .doc(payload.idcliente).collection('branches')
+    .get()
+  return result
 }

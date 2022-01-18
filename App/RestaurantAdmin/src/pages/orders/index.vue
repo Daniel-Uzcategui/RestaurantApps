@@ -1,11 +1,16 @@
  <template>
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'" >
+     <div class="desktop-only">
+    <q-card class="my-card " >
+     <q-input label="" v-model="filtrado" filled  />
+     </q-card>
+  </div>
     <div>
       <q-table flat square
       class="table"
       style="border-radius: 28px"
       title="Ordenes"
-      :data="OrderClient"
+      :data="ordersfilter"
       :columns="columns"
       :grid="$q.screen.lt.md"
       row-key="id"
@@ -34,7 +39,7 @@
         <q-btn no-caps round color="green" push icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })">
+        <q-tr :props="props" class="cursor-pointer" >
            <q-td v-if="$q.screen.lt.md"  auto-width>
              <q-checkbox />
             <q-icon name="person" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
@@ -114,7 +119,7 @@ function wrapCsvValue (val, formatFn) {
 export default {
   computed: {
     ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
-    ...mapGetters('client', ['clients']),
+    ...mapGetters('client', ['clients', 'clients2']),
     ...mapGetters('localization', ['localizations']),
     dateRango: {
       get () {
@@ -131,15 +136,30 @@ export default {
       for (i = 0; i < this.ordersClient.length; i++) {
         obj = this.ordersClient[i]
         if (!(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
-          clientforOrder = this.clientOrders(obj.customer_id)
-          sedeforOrder = this.sedeOrders(obj.sede)
-          fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
-          nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
-          typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
-          if (typeof obj.typePayment !== 'undefined') {
-            tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
-          } else { tipoPago = '' }
-          statusOrder = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : ''
+          if (obj.tipEnvio === '3') {
+            clientforOrder = this.clientOrders2(obj.buyOrderClient)
+            sedeforOrder = this.sedeOrders(obj.sede)
+            fullname = clientforOrder?.name
+            nameSede = sedeforOrder?.name
+            typeService = this.buscartiposervicio(obj)
+            console.log('los tipos de servicios', typeService)
+            if (typeof obj.typePayment !== 'undefined') {
+              tipoPago = this.buscartipopago(obj)
+              console.log('los tipos de pagos', tipoPago)
+            } else { tipoPago = '' }
+            statusOrder = this.buscarstatus(obj)
+          } else {
+            clientforOrder = this.clientOrders(obj.customer_id)
+            sedeforOrder = this.sedeOrders(obj.sede)
+            fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+            nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
+            typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
+            if (typeof obj.typePayment !== 'undefined') {
+              tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
+            } else { tipoPago = '' }
+            statusOrder = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : ''
+          }
+
           let mtoTotal = obj.paid
           OrderClient.push({
             'id': obj.id,
@@ -157,14 +177,36 @@ export default {
         }
       }
       return OrderClient
+    },
+    filtrado: {
+      get () {
+        return this.texto
+      },
+      set (value) {
+        console.log(value)
+        value = value.toLowerCase()
+
+        this.ordersfilter = this.OrderClient.filter(function (item) {
+          console.log('este valor de item', item)
+          if (item.nombre !== undefined) {
+            return item.nombre.toLowerCase().indexOf(value) !== -1
+          }
+        })
+        this.texto = value
+        console.log('nuevos valores', this.ordersfilter)
+      }
     }
   },
   created () {
     this.bindOrders().catch(e => console.error(e))
     this.bindClients().catch(e => console.error(e))
     this.bindLocalizations().catch(e => console.error(e))
+    this.bindClients2().catch(e => console.error(e))
   },
   watch: {
+    orders () {
+      this.mostrar()
+    },
     dateRange (e) {
       if (e === null) {
         return this.bindOrders().catch(e => console.error(e))
@@ -193,10 +235,44 @@ export default {
         return obj.id === value
       })
     },
+    clientOrders2 (value) {
+      return this.clients2.find(obj => {
+        return obj.id === value
+      })
+    },
+    buscartiposervicio (objeto) {
+      let obj
+      //   console.log('el tipo de servicio ', objeto.tipEnvio)
+      // console.log('los valores de servicios', this.tipoServicio)
+      obj = this.tipoServicio.find(x => x.value === parseInt(objeto.tipEnvio))
+      //  console.log('resultado de la busquedad', obj)
+      if (obj !== undefined) {
+        return obj.label
+      }
+    },
+    buscartipopago (objeto) {
+      let obj
+      console.log('el tipo de pago', objeto.typePayment)
+      obj = this.typePayment_options.find(x => x.value === objeto.typePayment)
+
+      if (obj !== undefined) {
+        return obj.label
+      }
+    },
+    buscarstatus (objeto) {
+      let obj
+      obj = this.allestatus.find(x => x.value === objeto.status)
+      if (obj !== undefined) {
+        return obj.label
+      }
+    },
     sedeOrders (value) {
       return this.localizations.find(obj => {
         return obj.id === value
       })
+    },
+    mostrar () {
+      this.ordersfilter = this.OrderClient
     },
     exportTable () {
       // naive encoding to csv format
@@ -228,7 +304,7 @@ export default {
     },
     ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('client', ['bindClients']),
+    ...mapActions('client', ['bindClients', 'bindClients2']),
     deleted () {
       this.deleteOrder(this.selected)
     }
@@ -236,6 +312,9 @@ export default {
   data () {
     return {
       selected: [],
+      OrderClient2: [],
+      ordersfilter: [],
+      texto: '',
       columns: [
         { name: 'nameSede', required: true, label: 'Sede', align: 'left', field: 'nameSede', sortable: true },
         { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
