@@ -9,6 +9,9 @@ import 'firebase/storage'
  *
  * @return {Interface} returns Firestore
  */
+export const fireAdmin = () => {
+  return firebase.firestore()
+}
 export const firestore = () => {
   let local = localStorage.getItem('amb')
   if (local !== null) {

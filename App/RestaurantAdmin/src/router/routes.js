@@ -336,6 +336,50 @@ const routes = [{
   ]
 },
 {
+  path: '/corporativo/order',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [{
+    path: 'orders',
+    name: 'listClientsCorp2',
+    component: () =>
+                    import ('pages/ClientsCorporativo/orders/orders.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'Corporativo Order'
+    }
+  }
+
+  ]
+},
+{
+  path: '/corporativo/order',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [{
+    path: 'orders',
+    name: 'listClientsCorp2',
+    component: () =>
+                    import ('pages/ClientsCorporativo/orders/orders.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'Corporativo Order'
+    }
+  },
+  {
+    path: 'orders2',
+    name: 'listClientsCorp3',
+    component: () =>
+                    import ('pages/ClientsCorporativo/branches/orders.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'Branches Order'
+    }
+  }
+
+  ]
+},
+{
   path: '/corporativo/branches',
   component: () =>
             import ('layouts/User.vue'),

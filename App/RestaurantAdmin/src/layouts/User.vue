@@ -354,10 +354,22 @@ export default {
           title: 'Corporativo',
           caption: '',
           icon: 'business',
-          link: '#/corporativo/index'
           // separator: true,
+          tree: [
+            {
+              label: 'Cliente',
+              handler: (node) => this.$router.push({ path: '/corporativo/index' })
+            }, {
+              label: 'Reporte Cliente',
+              handler: (node) => this.$router.push({ path: '/corporativo/order/orders' })
+              // separator: true,
 
-        },
+            }, {
+              label: 'Reporte Sucursales',
+              handler: (node) => this.$router.push({ path: '/corporativo/order/orders2' })
+              // separator: true,
+
+            }] },
 
         {
           title: 'Configuración',

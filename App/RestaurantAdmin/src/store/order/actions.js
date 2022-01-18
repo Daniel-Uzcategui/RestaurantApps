@@ -53,3 +53,13 @@ export const addOrder = firestoreAction((state, payload) => {
 export const alterRange = async function ({ commit }, payload) {
   commit('order/alterRange', payload, { root: true })
 }
+export const reportBindOrderscorporativo = firestoreAction(({ bindFirestoreRef }, payload) => {
+  console.log('bindorders')
+  if (payload?.start && payload?.end) {
+    console.log('renge')
+    return bindFirestoreRef('ordercorporativo', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', payload.start).where('dateIn', '<', payload.end).where('tipEnvio', '==', '3'))
+  }
+  let hoy = new Date()
+  hoy.setDate(hoy.getDate() - 30)
+  return bindFirestoreRef('ordercorporativo', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '3').where('dateIn', '>=', hoy))
+})
