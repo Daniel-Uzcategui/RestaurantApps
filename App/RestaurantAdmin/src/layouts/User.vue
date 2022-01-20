@@ -357,18 +357,8 @@ export default {
           // separator: true,
           tree: [
             {
-              label: 'Cliente',
+              label: 'Clientes',
               handler: (node) => this.$router.push({ path: '/corporativo/index' })
-            }, {
-              label: 'Reporte Cliente',
-              handler: (node) => this.$router.push({ path: '/corporativo/order/orders' })
-              // separator: true,
-
-            }, {
-              label: 'Reporte Sucursales',
-              handler: (node) => this.$router.push({ path: '/corporativo/order/orders2' })
-              // separator: true,
-
             }] },
 
         {

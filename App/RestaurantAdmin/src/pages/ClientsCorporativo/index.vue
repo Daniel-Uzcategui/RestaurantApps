@@ -3,7 +3,7 @@
    <div class="row justify-center">
    <q-table
       class="col-12 col-lg-6 col-md-12"
-      :data="clients2"
+      :data="clients2Filtered"
       :columns="columns"
       title="Clientes Corporativos"
       row-key="id"
@@ -31,6 +31,7 @@
           </q-list>
         </q-menu>
       </q-btn>
+        <q-input class="" filled outlined v-model="search" label="Filtro" />
         </q-btn-group>
         </template>
          <template v-slot:body-cell-actions="props">
@@ -92,8 +93,8 @@ export default {
       cliedit: '',
       idclie: '',
       elcat: [],
-      columns
-
+      columns,
+      search: ''
     }
   },
   created () {
@@ -169,7 +170,11 @@ export default {
         name: nombre })
     },
     guardarnew (nombre) {
-      this.setValuenew({ name: nombre })
+      this.setValuenew({ name: nombre }).then(() => {
+        this.$q.notify({ message: 'Cliente Guardado', color: 'green', position: 'top' })
+      }).catch(() => {
+        this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red', position: 'top' })
+      })
     },
     nuevo () {
       this.clienuevo = true
@@ -178,6 +183,9 @@ export default {
   computed: {
     ...mapGetters('client', ['clients2', 'idClientSel']),
     ...mapGetters('config', ['configs']),
+    clients2Filtered () {
+      return this.clients2.filter(x => x.name.toLowerCase().includes(this.search.toLowerCase()))
+    },
     config () {
       return this.configs.find(obj => {
         return obj.id === 'paymentServ'
