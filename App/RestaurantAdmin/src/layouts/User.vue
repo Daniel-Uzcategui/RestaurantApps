@@ -363,7 +363,7 @@ export default {
           // separator: true,
           tree: [
             {
-              label: 'Cliente',
+              label: 'Clientes',
               handler: (node) => this.$router.push({ path: '/corporativo/index' })
             }] },
 

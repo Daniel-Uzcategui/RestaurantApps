@@ -30,15 +30,45 @@
           <div class="center q-ma-md col-12 row justicy-center">
                 <q-table  class="q-mt-md full-width" :title="'Sucursales ' + getname(clientenombre)"
                     style="border-radius: 28px"
-                      :data="corporativo"
+                      :data="clients2Filtered"
                       :columns="columns"
-
+                      :grid="$q.screen.lt.md"
                       no-data-label="No se encontraron registros"
 
                       >
+                      <template v-slot:item="props">
+                        <!-- template for mobile view only -->
+                        <div
+                          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                          :style="props.selected ? 'transform: scale(0.95);' : ''"
+                        >
+                          <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                            <q-card-section>
+                              {{props.row.name}}
+                            </q-card-section>
+                            <q-separator />
+                            <q-list dense>
+                              <q-item v-show="col.name !== 'Nombre'" v-for="col in props.cols.filter(col => col.name !== 'desc')" :key="col.name">
+                                <q-item-section>
+                                  <q-item-label>{{ col.label }}</q-item-label>
+                                </q-item-section>
+                                <q-item-section side>
+                                  <q-item-label caption>{{ col.value }}</q-item-label>
+                                </q-item-section>
+                              </q-item>
+                            </q-list>
+                            <q-separator />
+                            <div class="row bg-secondary">
+                              <q-btn class="col-6" q-btn dense round flat icon="edit" @click="editar(props.row)" />
+                              <q-btn class="col-6"  q-btn dense round flat icon="delete" @click="borrar(props.row)"  />
+                            </div>
+                          </q-card>
+                        </div>
+                      </template>
                       <template v-slot:top-right >
                         <div class="row justify-start">
-                          <q-btn label="Crear Nuevo" rounded class="q-ma-md text-bold" no-caps color="green" icon="add" @click="forma=!forma"/>
+                          <q-btn label="Crear Nuevo" rounded class="q-ma-md text-bold" no-caps color="green" icon="add" @click="initforma()"/>
+                          <q-input class="" filled outlined v-model="search" label="Filtro" />
                         </div>
                       </template>
                       <template v-slot:body-cell-boton1 ="props" id=1>
@@ -67,6 +97,7 @@ export default {
     return {
       nombresurculsal: '',
       clieEditar: false,
+      search: '',
       forma: false,
       shippingAddress: null,
       adShippingDone: false,
@@ -99,6 +130,25 @@ export default {
   methods: {
     ...mapActions('corporativos', ['bindcorporativo', 'setValuenew', 'setValueborrar', 'setValueEditados']),
     ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
+    initforma () {
+      if (!this.corporativo.length) {
+        this.forma = true
+        return
+      }
+      let objeto = this.corporativo[0]
+      console.log('los valores', objeto)
+      this.idsuculsal = objeto.id
+      this.nombresurculsal = objeto?.name
+      this.razon = objeto?.RazonSocial
+      this.prefijo = objeto.Rif?.prefijo
+      this.shippingAddress = objeto?.shippingAddress
+      this.numerorif = objeto.Rif?.numero
+      this.tipopago = objeto?.tipoPago
+      this.selle = objeto.Vendedor?.name
+      this.diacredito = objeto?.creditDays
+      this.idselle = objeto.Vendedor?.id
+      this.forma = true
+    },
     getname (ob) {
       return ob?.name ? ob.name : ' '
     },
@@ -238,8 +288,10 @@ export default {
   },
   computed: {
     ...mapGetters('client', ['clients2', 'idClientSel', 'vendedor']),
-    ...mapGetters('corporativos', ['corporativo'])
-
+    ...mapGetters('corporativos', ['corporativo']),
+    clients2Filtered () {
+      return this.corporativo.filter(x => x.name.toLowerCase().includes(this.search.toLowerCase()))
+    }
   },
   mounted () {
     this.bindClients2()

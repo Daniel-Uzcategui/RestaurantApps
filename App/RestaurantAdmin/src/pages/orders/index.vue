@@ -1,6 +1,6 @@
  <template>
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'" >
-     <div class="desktop-only">
+     <div>
     <q-card class="my-card " >
      <q-input label="Buscar Cliente" v-model="filtrado" filled  />
      </q-card>
