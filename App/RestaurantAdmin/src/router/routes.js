@@ -434,6 +434,21 @@ const routes = [{
   ]
 },
 {
+  path: '/vendedor',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [{
+    path: 'index',
+    name: 'listOrders',
+    component: () =>
+                import ('pages/clients/Vendedores/index.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'Vendedores'
+    }
+  }]
+},
+{
   path: '/payments',
   component: () =>
             import ('layouts/User.vue'),

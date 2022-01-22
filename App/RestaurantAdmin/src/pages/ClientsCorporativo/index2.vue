@@ -247,6 +247,9 @@ export default {
     this.bindcorporativo({ id: this.idClientSel })
   },
   watch: {
+    corporativo () {
+
+    },
     clients2 () {
       this.mostrar()
     }

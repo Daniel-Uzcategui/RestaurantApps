@@ -34,7 +34,7 @@ export const setIdCliente = async function ({ commit }, payload) {
 }
 export const bindOnlyVendedor = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindOnlyClients')
-  return bindFirestoreRef('vendedor', firestore().collection('users').where('typeAccess', '==', 'Vendedor').orderBy('email'))
+  return bindFirestoreRef('vendedor', firestore().collection('users').orderBy('email'))
 })
 export const setValue = async function (state, payload) {
   let result

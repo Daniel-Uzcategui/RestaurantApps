@@ -9,6 +9,12 @@ export const bindcorporativo = firestoreAction(({ bindFirestoreRef }, payload) =
     return bindFirestoreRef('corporativo', firestore().collection('clients').doc(payload.id).collection('branches').where('softDelete', '==', 0))
   }
 })
+export const bindonlybranches = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindClients')
+  console.log('el cliente')
+
+  return bindFirestoreRef('branches', fireAdmin().collectionGroup('branches'))
+})
 export const setValuenew = async function (state, payload) {
   let result
   console.log('valores a agregar', payload)
@@ -47,11 +53,18 @@ export const setValueEditados = function (state, payload) {
       console.log('error update de banches!')
     })
 }
-export const getbranches = async function (state, payload) {
-  let result
+export const getbranches = function (state, payload) {
+  let result2
+  let resullt = []
 
-  result = await fireAdmin().collection('ambiente').doc(payload.ambiente).collection('clients')
+  result2 = fireAdmin().collection('ambiente').doc(payload.ambiente).collection('clients')
     .doc(payload.idcliente).collection('branches')
     .get()
-  return result
+  result2.then(doc => {
+    doc.forEach(doc2 => {
+      resullt.push({ id: doc2.id, data: doc2.data() })
+    })
+    console.log('aaaaaaaaaaaaaa', resullt)
+  })
+  return resullt
 }

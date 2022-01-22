@@ -16,6 +16,16 @@ export const reportBindOrders = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindorders')
   return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc'))
 })
+export const reportBindOrders2 = firestoreAction(({ bindFirestoreRef }, payload) => {
+  console.log('bindorders')
+  if (payload?.start && payload?.end) {
+    console.log('renge')
+    return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc').where('customer_id', '!=', 'aaaaa').where('dateIn', '>=', payload.start).where('dateIn', '<', payload.end))
+  }
+  let hoy = new Date()
+  hoy.setDate(hoy.getDate() - 30)
+  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc').where('customer_id', '!=', 'aaaaa').where('dateIn', '>=', hoy))
+})
 
 export const saveOrder = firestoreAction((state, payload) => {
   return firestore()

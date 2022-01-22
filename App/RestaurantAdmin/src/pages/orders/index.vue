@@ -2,7 +2,7 @@
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'" >
      <div class="desktop-only">
     <q-card class="my-card " >
-     <q-input label="" v-model="filtrado" filled  />
+     <q-input label="Buscar Cliente" v-model="filtrado" filled  />
      </q-card>
   </div>
     <div>
@@ -117,9 +117,11 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
+    ...mapGetters('corporativos', ['branches']),
     ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
     ...mapGetters('client', ['clients', 'clients2']),
     ...mapGetters('localization', ['localizations']),
+
     dateRango: {
       get () {
         return this.dateRange
@@ -130,15 +132,17 @@ export default {
     },
     OrderClient () {
       let OrderClient = []
-      let i, obj, clientforOrder, tipoPago, sedeforOrder
+      let i, obj, clientforOrder, tipoPago, sedeforOrder, sucursalforOrder
       let fullname, statusOrder, typeService, nameSede
       for (i = 0; i < this.ordersClient.length; i++) {
         obj = this.ordersClient[i]
         if (!(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
           if (obj.tipEnvio === '3') {
             clientforOrder = this.clientOrders2(obj.buyOrderClient)
+            sucursalforOrder = this.buscarsurcursal2(obj)
+            console.log('valores retornados', sucursalforOrder)
             sedeforOrder = this.sedeOrders(obj.sede)
-            fullname = clientforOrder?.name
+            fullname = clientforOrder?.name + '-' + sucursalforOrder?.name
             nameSede = sedeforOrder?.name
             typeService = this.buscartiposervicio(obj)
             console.log('los tipos de servicios', typeService)
@@ -197,12 +201,16 @@ export default {
     }
   },
   created () {
+    this.bindonlybranches().catch(e => console.error(e))
     this.bindOrders().catch(e => console.error(e))
     this.bindClients().catch(e => console.error(e))
     this.bindLocalizations().catch(e => console.error(e))
     this.bindClients2().catch(e => console.error(e))
   },
   watch: {
+    branches () {
+      console.log('los branches', this.branches)
+    },
     orders () {
       this.mostrar()
     },
@@ -249,6 +257,19 @@ export default {
         return obj.label
       }
     },
+    buscarsurcursal2 (objeto) {
+      let obj
+      obj = this.buscarsurcursal(objeto)
+      return obj
+    },
+    buscarsurcursal (objeto) {
+      console.log('entra objeto', objeto)
+
+      let reg = this.branches.find(x => x.id === objeto.buyOrderBranch)
+      console.log('resultado de busquedad', reg)
+      return reg
+    },
+
     buscartipopago (objeto) {
       let obj
       console.log('el tipo de pago', objeto.typePayment)
@@ -301,9 +322,11 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.ordersClient.length}`
     },
+    ...mapActions('corporativos', ['bindonlybranches']),
     ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('client', ['bindClients', 'bindClients2']),
+
     deleted () {
       this.deleteOrder(this.selected)
     }
@@ -311,6 +334,8 @@ export default {
   data () {
     return {
       selected: [],
+      arrecleinte: [],
+      arreglobranches: [],
       OrderClient2: [],
       ordersfilter: [],
       texto: '',

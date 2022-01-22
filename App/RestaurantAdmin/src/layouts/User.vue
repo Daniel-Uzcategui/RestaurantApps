@@ -327,6 +327,12 @@ export default {
           // separator: true,
 
         }, */
+        { title: 'Venta por Vendedor',
+          caption: '',
+          icon: 'room_service',
+          link: '#/vendedor/index'
+
+        },
         {
           title: 'Pagos',
           caption: '',
@@ -359,16 +365,6 @@ export default {
             {
               label: 'Cliente',
               handler: (node) => this.$router.push({ path: '/corporativo/index' })
-            }, {
-              label: 'Reporte Cliente',
-              handler: (node) => this.$router.push({ path: '/corporativo/order/orders' })
-              // separator: true,
-
-            }, {
-              label: 'Reporte Sucursales',
-              handler: (node) => this.$router.push({ path: '/corporativo/order/orders2' })
-              // separator: true,
-
             }] },
 
         {
