@@ -129,18 +129,32 @@ export default {
                 if (obj?.status === 3) {
                   montototal = montototal + obj.paid
                 }
+                if (i === this.aux.length) {
+                  auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+                  sede = this.localizations.find(x => x.id === obj.sede)
+                  this.ArreVendores.push({
+                    id: obj.id,
+                    idcustomer: obj.customer_id,
+                    sede: sede?.name,
+                    name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
+                    email: auxvendedor?.email,
+                    monto: montototal
+                  })
+                }
               } else {
-                montototal = montototal + obj.paid
-                auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
-                sede = this.localizations.find(x => x.id === obj.sede)
-                this.ArreVendores.push({
-                  id: obj.id,
-                  idcustomer: obj.customer_id,
-                  sede: sede?.name,
-                  name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
-                  email: auxvendedor?.email,
-                  monto: montototal
-                })
+                if (obj?.status === 3) {
+                  montototal = montototal + obj.paid
+                  auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+                  sede = this.localizations.find(x => x.id === obj.sede)
+                  this.ArreVendores.push({
+                    id: obj.id,
+                    idcustomer: obj.customer_id,
+                    sede: sede?.name,
+                    name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
+                    email: auxvendedor?.email,
+                    monto: montototal
+                  })
+                }
                 montototal = 0
               }
             }
@@ -181,7 +195,7 @@ export default {
     listar (objeto) {
       console.log('el objeto', objeto)
       this.ver = true
-      this.detalle = this.orders.filter(x => x.customer_id === objeto.idcustomer)
+      this.detalle = this.orders.filter(x => ((x.customer_id === objeto.idcustomer) && (x.status === 3)))
       console.log('los detalles', this.detalle)
     }
   },
