@@ -9,7 +9,7 @@
 
                       >
 <template v-slot:top-right>
-  <q-input label="Buscar Cliente" v-model="filtrado" filled  />
+  <q-input label="Buscar Vendedor" v-model="filtrado" filled  />
         <div class="q-mr-sm">
       <q-badge v-if="dateRange !== null " color="blue-grey">
         {{ dateRange.from }} - {{ dateRange.to }}
