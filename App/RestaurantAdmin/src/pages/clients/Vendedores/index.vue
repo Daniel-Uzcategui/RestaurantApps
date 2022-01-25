@@ -252,6 +252,7 @@ export default {
       let obj, sede, clientes
       console.log('el objeto', objeto)
       this.ver = true
+      this.detalle2 = []
       this.detalle = this.orders.filter(x => ((x.customer_id === objeto.idcustomer) && (x.status === 3)))
       for (let i = 0; i < this.detalle.length; i++) {
         obj = this.detalle[i]
