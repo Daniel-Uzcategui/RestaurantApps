@@ -1,6 +1,9 @@
 <template>
     <div>
-      <q-table :loading="loading"  class="q-mt-md full-width" :title="'Total Venta X Vendedor'"
+    <q-card class="my-card " >
+     <q-input label="Buscar Cliente" v-model="filtrado" filled  />
+    </q-card>
+      <q-table  class="q-mt-md full-width" :title="'Total Venta X Vendedor'"
                     style="border-radius: 28px"
                       :data="ordersfilter"
                       :columns="columns"
@@ -9,7 +12,6 @@
 
                       >
 <template v-slot:top-right>
-  <q-input label="Buscar Cliente" v-model="filtrado" filled  />
         <div class="q-mr-sm">
       <q-badge v-if="dateRange !== null " color="blue-grey">
         {{ dateRange.from }} - {{ dateRange.to }}
@@ -67,7 +69,6 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      loading: false,
       ArreVendores: [],
       detalle: [],
       detalle2: [],
@@ -91,38 +92,16 @@ export default {
       ]
     }
   },
-  async mounted () {
-    this.loading = true
-    if (!this.clients2.length) {
-      await this.bindClients2()
-    }
-    if (!this.localizations.length) {
-      await this.bindLocalizations()
-    }
-    if (!this.vendedor.length) {
-      await this.bindOnlyVendedor()
-    }
-    if (!this.orders.length) {
-      await this.bindOrders(this.getDateRange())
-    }
-    return (() => { this.loading = false; this.mostrar() })()
+  mounted () {
+    this.bindClients2()
+    this.bindLocalizations()
+    this.bindOnlyVendedor()
+    this.bindOrders()
   },
   methods: {
     ...mapActions('order', ['bindOrders', 'alterRange']),
     ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
     ...mapActions('localization', ['bindLocalizations']),
-    getDateRange () {
-      if (this.dateRange === null) {
-        return null
-      }
-      let e = this.dateRange
-      let end = new Date(e.to)
-      end.setDate(end.getDate() + 1)
-      return {
-        start: new Date(e.from),
-        end: end
-      }
-    },
     mostrar () {
       let obj, obj2, obj3, sede
       let montototal = 0
@@ -307,13 +286,11 @@ export default {
       console.log('sedes', this.localizations)
     },
     dateRange (e) {
-      this.loading = true
       if (e === null) {
-        return this.bindOrders().then(() => {
-          this.loading = false
-        }).catch(e => console.error(e))
+        return this.bindOrders().catch(e => console.error(e))
       }
       console.log(e, 'DateRange')
+      this.ArreVendores = []
       let end = new Date(e.to)
       end.setDate(end.getDate() + 1)
       this.bindOrders(
@@ -321,9 +298,7 @@ export default {
           start: new Date(e.from),
           end: end
         }
-      ).then(() => {
-        this.loading = false
-      }).catch(e => console.error(e))
+      ).catch(e => console.error(e))
     },
     vendedor () {
       console.log('vendedores', this.vendedor)
