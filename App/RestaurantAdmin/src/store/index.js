@@ -39,6 +39,15 @@ export default function (/* { ssrContext } */) {
       config,
       editor
     },
+    actions: {
+      reset (store) {
+        store.dispatch('order/unBindOrders')
+        store.dispatch('client/unBindClients')
+        store.dispatch('localization/unBindLocalizations')
+        store.dispatch('corporativo/unBindCorp')
+        store.dispatch('user/unBindUsers')
+      }
+    },
     mutations: {
       ...vuexfireMutations
     },

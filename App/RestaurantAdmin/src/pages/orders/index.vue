@@ -1,13 +1,11 @@
  <template>
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'" >
      <div>
-    <q-card class="my-card " >
-     <q-input label="Buscar Cliente" v-model="filtrado" filled  />
-     </q-card>
   </div>
     <div>
       <q-table flat square
       class="table"
+      :loading="loading"
       style="border-radius: 28px"
       title="Ordenes"
       :data="ordersfilter"
@@ -18,6 +16,7 @@
       rows-per-page-label=" "
       >
       <template v-slot:top-right>
+        <q-input label="Buscar Cliente" v-model="filtrado" filled  />
         <div class="q-mr-sm">
       <q-badge v-if="dateRange !== null " color="blue-grey">
         {{ dateRange.from }} - {{ dateRange.to }}
@@ -200,12 +199,24 @@ export default {
       }
     }
   },
-  created () {
-    this.bindonlybranches().catch(e => console.error(e))
-    this.bindOrders().catch(e => console.error(e))
-    this.bindClients().catch(e => console.error(e))
-    this.bindLocalizations().catch(e => console.error(e))
-    this.bindClients2().catch(e => console.error(e))
+  async mounted () {
+    this.loading = true
+    if (!this.branches.length) {
+      await this.bindonlybranches().catch(e => console.error(e))
+    }
+    if (!this.clients.length) {
+      await this.bindClients().catch(e => console.error(e))
+    }
+    if (!this.localizations.length) {
+      await this.bindLocalizations().catch(e => console.error(e))
+    }
+    if (!this.clients2.length) {
+      await this.bindClients2().catch(e => console.error(e))
+    }
+    if (!this.orders.length) {
+      await this.bindOrders(this.getDateRange()).catch(e => console.error(e))
+    }
+    return (() => { this.loading = false; this.mostrar() })()
   },
   watch: {
     branches () {
@@ -215,8 +226,11 @@ export default {
       this.mostrar()
     },
     dateRange (e) {
+      this.loading = true
       if (e === null) {
-        return this.bindOrders().catch(e => console.error(e))
+        return this.bindOrders().then(() => {
+          this.loading = false
+        }).catch(e => console.error(e))
       }
       console.log(e, 'DateRange')
       let end = new Date(e.to)
@@ -226,10 +240,24 @@ export default {
           start: new Date(e.from),
           end: end
         }
-      ).catch(e => console.error(e))
+      ).then(() => {
+        this.loading = false
+      }).catch(e => console.error(e))
     }
   },
   methods: {
+    getDateRange () {
+      if (this.dateRange === null) {
+        return null
+      }
+      let e = this.dateRange
+      let end = new Date(e.to)
+      end.setDate(end.getDate() + 1)
+      return {
+        start: new Date(e.from),
+        end: end
+      }
+    },
     // getLogDate (obj) {
     //   let ret = obj.statusLog?.find(x => x.status === 3)
     //   if (typeof ret === 'undefined') {
@@ -333,6 +361,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       selected: [],
       arrecleinte: [],
       arreglobranches: [],
@@ -357,5 +386,4 @@ export default {
 <style lang="stylus">
  .table
   width: 100%
-  margin-bottom: 50%
 </style>

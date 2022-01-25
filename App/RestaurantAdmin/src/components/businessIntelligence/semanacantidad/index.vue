@@ -24,7 +24,7 @@ export default {
   },
 
   created () {
-    this.bindOrders().catch(e => console.error(e))
+    // this.bindOrders().catch(e => console.error(e))
   },
   mounted () {
     this.GraficaVentaCantidadSemanal()

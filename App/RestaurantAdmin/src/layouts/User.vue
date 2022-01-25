@@ -18,7 +18,7 @@
             </q-toolbar-title>
             <div>
                <q-btn icon="fas fa-user" no-caps class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" />
-               <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="logoutUser()" >  </q-btn>
+               <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="this.reset(); logoutUser()" >  </q-btn>
                <q-dialog v-model="editUserDialog" persistent="persistent" @before-hide="setBlur">
                   <user-settings></user-settings>
                </q-dialog>
@@ -208,7 +208,11 @@ export default {
           title: 'Ambientes',
           caption: '',
           icon: 'language',
-          link: '#/ambientes'
+          handler: () => {
+            this.$router.push({ path: '/ambientes' })
+            this.reset()
+          }
+          // link: '#/ambientes'
         },
         {
           title: 'Dashboard',
@@ -327,12 +331,6 @@ export default {
           // separator: true,
 
         }, */
-        { title: 'Venta por Vendedor',
-          caption: '',
-          icon: 'room_service',
-          link: '#/vendedor/index'
-
-        },
         {
           title: 'Pagos',
           caption: '',
@@ -362,6 +360,9 @@ export default {
           icon: 'business',
           // separator: true,
           tree: [
+            { label: 'Venta por Vendedor',
+              handler: (node) => this.$router.push({ path: '/vendedor/index' })
+            },
             {
               label: 'Clientes',
               handler: (node) => this.$router.push({ path: '/corporativo/index' })
@@ -445,6 +446,7 @@ export default {
     ...mapActions('order', ['bindOrders']),
     ...mapActions('config', ['bindEnv']),
     ...mapActions('menu', ['setValue']),
+    ...mapActions(['reset']),
     ...mapActions('user', ['updateUserData', 'bindRoles', 'updateLocalUserData']),
     setupNotif () {
       if (!('PushManager' in window)) {

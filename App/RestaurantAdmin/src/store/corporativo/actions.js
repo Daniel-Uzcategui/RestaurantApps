@@ -3,14 +3,16 @@ import { firestoreAction } from 'vuexfire'
 import { firestore, fireAdmin } from '../../services/firebase/db.js'
 
 export const bindcorporativo = firestoreAction(({ bindFirestoreRef }, payload) => {
-  console.log('bindClients')
   console.log('el cliente', payload.id)
   if (payload.id !== '') {
     return bindFirestoreRef('corporativo', firestore().collection('clients').doc(payload.id).collection('branches').where('softDelete', '==', 0))
   }
 })
+export const unBindCorp = firestoreAction(({ unbindFirestoreRef }) => {
+  unbindFirestoreRef('branches')
+  return unbindFirestoreRef('corporativo')
+})
 export const bindonlybranches = firestoreAction(({ bindFirestoreRef }) => {
-  console.log('bindClients')
   console.log('el cliente')
 
   return bindFirestoreRef('branches', fireAdmin().collectionGroup('branches'))

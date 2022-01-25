@@ -88,6 +88,11 @@ export const bindAmbiente = firestoreAction(({ bindFirestoreRef }, userid) => {
   console.log('bindAmbiente')
   return bindFirestoreRef('ambientes', firestoreMain().collection(`users/${userid}/ambientes`))
 })
+export const unBindUsers = firestoreAction(({ unbindFirestoreRef }) => {
+  unbindFirestoreRef('roles')
+  unbindFirestoreRef('ambientes')
+  return unbindFirestoreRef('users')
+})
 export const bindRoles = firestoreAction(({ bindFirestoreRef }, userid) => {
   console.log('bindRoles', userid)
   return bindFirestoreRef('roles', userRef('users', userid))

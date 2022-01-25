@@ -37,10 +37,10 @@
       />
       </div>
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
-          <q-btn flat push no-caps label="Agregar" icon="add" @click="addrow"/>
-          <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
+          <q-btn push no-caps label="Agregar" color="blue" icon="add" @click="addrow"/>
+          <q-btn push color="blue" no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
-          <q-btn flat icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
+          <q-btn push color="blue" icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>

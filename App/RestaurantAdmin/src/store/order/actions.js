@@ -11,7 +11,10 @@ export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
   hoy.setDate(hoy.getDate() - 30)
   return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', hoy))
 })
-
+export const unBindOrders = firestoreAction(({ unbindFirestoreRef }) => {
+  console.log('unbinding')
+  return unbindFirestoreRef('orders')
+})
 export const reportBindOrders = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindorders')
   return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc'))

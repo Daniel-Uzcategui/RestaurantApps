@@ -1,7 +1,12 @@
 <template>
   <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
-    <div class="row justify-center">
-      <div v-if="totalOrders(0) > 0"  :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center col-xs-6 col-sm-6 col-md-4 col-lg-3"  >
+    <div>
+    <transition-group
+  name="list-complete" tag="div"
+ class="row justify-center">
+     <ordertable class="col-12 list-complete-item" key="ord0" />
+
+      <div v-if="totalOrders(0) > 0" key="ord1"  :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center col-xs-6 col-sm-6 col-md-4 col-lg-3"  >
       <q-card flat class="notifCard q-cardGlass  q-ma-sm" horizontal>
       <q-card-section class="notifCardSection q-cardtop row justify-center">
         <div class="text-h5 row justify-between col-12">
@@ -19,7 +24,7 @@
       </q-card-section>
         </q-card>
       </div>
-      <div v-if="totalOrders(1) > 0" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
+      <div v-if="totalOrders(1) > 0" key="ord2" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
       <q-card flat class="notifCard q-cardGlass  q-ma-sm" horizontal>
       <q-card-section  class="notifCardSection q-cardtop row justify-center">
         <div class="text-h5 row justify-between col-12">
@@ -38,7 +43,7 @@
       </q-card-section>
         </q-card>
       </div>
-      <div v-if="totalOrders(2) > 0" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
+      <div v-if="totalOrders(2) > 0" key="ord3" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3" >
       <q-card flat class="notifCard q-cardGlass  q-ma-sm" horizontal>
       <q-card-section  class="notifCardSection q-cardtop row justify-center">
         <div class="text-h5 row justify-between col-12">
@@ -58,7 +63,7 @@
       </q-card-section>
         </q-card>
       </div>
-      <div v-if="totalOrders(3) > 0"  :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+      <div v-if="totalOrders(3) > 0" key="ord4" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
             <q-card flat  class="notifCard q-cardGlass  q-ma-sm" horizontal>
               <q-card-section  class="notifCardSection q-cardtop row justify-center">
               <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
@@ -74,7 +79,7 @@
            </q-card-section>
           </q-card>
       </div>
-      <div v-if="totalOrders(4) > 0"  :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+      <div v-if="totalOrders(4) > 0" key="ord5" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
             <q-card flat  class="notifCard q-cardGlass  q-ma-sm" horizontal>
               <q-card-section  class="notifCardSection q-cardtop row justify-center">
               <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
@@ -90,7 +95,7 @@
            </q-card-section>
           </q-card>
       </div>
-      <div v-if="totalOrders(5) > 0"  :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+      <div v-if="totalOrders(5) > 0" key="ord6" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
             <q-card flat  class="notifCard q-cardGlass  q-ma-sm" horizontal>
               <q-card-section  class="notifCardSection q-cardtop row justify-center">
               <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
@@ -106,7 +111,7 @@
            </q-card-section>
           </q-card>
       </div>
-      <div v-if="totalOrders(6) > 0"  :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
+      <div v-if="totalOrders(6) > 0" key="ord7" :class="$q.screen.lt.xs ? 'q-ma-md' : ''" class="list-complete-item text-center header-cell col-xs-6 col-sm-6 col-md-4 col-lg-3">
             <q-card flat  class="notifCard q-cardGlass  q-ma-sm" horizontal>
               <q-card-section  class="notifCardSection q-cardtop row justify-center">
               <div class="text-h5 row justify-between col-12"><i class="fas fa-bell-slash col-3" aria-hidden="true"></i>
@@ -122,11 +127,11 @@
            </q-card-section>
           </q-card>
       </div>
-      <div class="flex-break"></div>
-      <orderVentaT :colors="['#b00', '#666']" key="orderventa" class="graphs col-xs-12 col-sm-12 col-md-12 col-lg-6" />
-    <cantidadsemanal key="cantidadsemanal" class="graphs col-xs-12 col-sm-12 col-md-12 col-lg-6" />
-    <productos key="productos" class="graphs col-xs-12 col-sm-12 col-md-12 col-lg-12" />
-     <ordertable class="col-12" />
+      <div class="flex-break" key="ord8"></div>
+      <orderVentaT v-show="ordersClient.length" :colors="['#b00', '#666']" key="orderventa" class="list-complete-item graphs col-xs-12 col-sm-12 col-md-12 col-lg-6" />
+    <cantidadsemanal v-show="ordersClient.length" key="cantidadsemanal" class="list-complete-item graphs col-xs-12 col-sm-12 col-md-12 col-lg-6" />
+    <productos v-show="ordersClient.length" key="productos" class="list-complete-item graphs col-xs-12 col-sm-12 col-md-12 col-lg-12" />
+    </transition-group>
     </div>
   </q-page>
 </template>
@@ -147,7 +152,7 @@ export default {
     ...mapGetters('client', ['clients'])
   },
   mounted () {
-    this.bindOrders().catch(e => console.error(e))
+    // this.bindOrders().catch(e => console.error(e))
   },
   methods: {
     totalOrders (value) {
@@ -178,4 +183,16 @@ export default {
   width: 30%
 .notifCard
   border-radius: 28px
+.list-complete-item {
+  transition: all 1s;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
+}
+
 </style>

@@ -23,7 +23,11 @@ export const bindClients = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindClients')
   return bindFirestoreRef('clients', firestore().collection('users').orderBy('email'))
 })
-
+export const unBindClients = firestoreAction(({ unbindFirestoreRef }) => {
+  unbindFirestoreRef('clients')
+  unbindFirestoreRef('vendedor')
+  return unbindFirestoreRef('clients2')
+})
 export const bindClients2 = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindClients')
   return bindFirestoreRef('clients2', firestore().collection('clients').where('softDelete', '==', 0))

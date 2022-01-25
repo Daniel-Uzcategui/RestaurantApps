@@ -5,6 +5,7 @@
     clickable
     tag="a"
     :href="link"
+    @click="handler()"
   >
     <q-item-section
       v-if="icon"
@@ -43,7 +44,10 @@ export default {
       type: String,
       required: true
     },
-
+    handler: {
+      type: Function,
+      default: () => {}
+    },
     caption: {
       type: String,
       default: ''

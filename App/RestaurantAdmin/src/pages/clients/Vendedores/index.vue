@@ -1,9 +1,6 @@
 <template>
     <div>
-    <q-card class="my-card " >
-     <q-input label="Buscar Cliente" v-model="filtrado" filled  />
-    </q-card>
-      <q-table  class="q-mt-md full-width" :title="'Total Venta X Vendedor'"
+      <q-table :loading="loading"  class="q-mt-md full-width" :title="'Total Venta X Vendedor'"
                     style="border-radius: 28px"
                       :data="ordersfilter"
                       :columns="columns"
@@ -12,6 +9,7 @@
 
                       >
 <template v-slot:top-right>
+  <q-input label="Buscar Cliente" v-model="filtrado" filled  />
         <div class="q-mr-sm">
       <q-badge v-if="dateRange !== null " color="blue-grey">
         {{ dateRange.from }} - {{ dateRange.to }}
@@ -69,6 +67,7 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      loading: false,
       ArreVendores: [],
       detalle: [],
       ver: false,
@@ -89,15 +88,35 @@ export default {
       ]
     }
   },
-  mounted () {
-    this.bindLocalizations()
-    this.bindOnlyVendedor()
-    this.bindOrders()
+  async mounted () {
+    this.loading = true
+    if (!this.localizations.length) {
+      await this.bindLocalizations()
+    }
+    if (!this.vendedor.length) {
+      await this.bindOnlyVendedor()
+    }
+    if (!this.orders.length) {
+      await this.bindOrders(this.getDateRange())
+    }
+    return (() => { this.loading = false; this.mostrar() })()
   },
   methods: {
     ...mapActions('order', ['bindOrders', 'alterRange']),
     ...mapActions('client', ['bindOnlyVendedor']),
     ...mapActions('localization', ['bindLocalizations']),
+    getDateRange () {
+      if (this.dateRange === null) {
+        return null
+      }
+      let e = this.dateRange
+      let end = new Date(e.to)
+      end.setDate(end.getDate() + 1)
+      return {
+        start: new Date(e.from),
+        end: end
+      }
+    },
     mostrar () {
       let obj, obj2, obj3, sede
       let montototal = 0
@@ -142,7 +161,7 @@ export default {
                   })
                 }
               } else {
-                if (obj?.status === 3) {
+                if (obj?.status === 3 || obj) {
                   montototal = montototal + obj.paid
                   auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
                   sede = this.localizations.find(x => x.id === obj.sede)
@@ -179,15 +198,15 @@ export default {
           }
         }
       }
-      this.ArreVendores.sort((a, b) => {
-        if (a.dateIn < b.dateIn) {
-          return -1
-        } else if (a.customer_id > b.customer_id) {
-          return 1
-        } else {
-          return 0
-        }
-      })
+      // this.ArreVendores.sort((a, b) => {
+      //   if (a.dateIn < b.dateIn) {
+      //     return -1
+      //   } else if (a.customer_id > b.customer_id) {
+      //     return 1
+      //   } else {
+      //     return 0
+      //   }
+      // })
       this.ordersfilter = this.ArreVendores
       console.log('el arreglo', this.ArreVendores)
       return this.ArreVendores
@@ -237,11 +256,13 @@ export default {
       console.log('sedes', this.localizations)
     },
     dateRange (e) {
+      this.loading = true
       if (e === null) {
-        return this.bindOrders().catch(e => console.error(e))
+        return this.bindOrders().then(() => {
+          this.loading = false
+        }).catch(e => console.error(e))
       }
       console.log(e, 'DateRange')
-      this.ArreVendores = []
       let end = new Date(e.to)
       end.setDate(end.getDate() + 1)
       this.bindOrders(
@@ -249,7 +270,9 @@ export default {
           start: new Date(e.from),
           end: end
         }
-      ).catch(e => console.error(e))
+      ).then(() => {
+        this.loading = false
+      }).catch(e => console.error(e))
     },
     vendedor () {
       console.log('vendedores', this.vendedor)

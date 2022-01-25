@@ -16,7 +16,7 @@ export default {
     ...mapGetters('order', ['orders']) },
 
   created () {
-    this.bindOrders().catch(e => console.error(e))
+    // this.bindOrders().catch(e => console.error(e))
   },
   mounted () {
     this.graficarproducto()
