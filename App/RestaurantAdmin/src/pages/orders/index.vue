@@ -321,6 +321,7 @@ export default {
     },
     mostrar () {
       this.ordersfilter = this.OrderClient
+      console.log(this.branches, 'BRANCHES')
     },
     exportTable () {
       // naive encoding to csv format
