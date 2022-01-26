@@ -15,13 +15,15 @@ export const unBindCorp = firestoreAction(({ unbindFirestoreRef }) => {
 export const bindonlybranches = firestoreAction(({ bindFirestoreRef }) => {
   console.log('el cliente')
 
-  return bindFirestoreRef('branches', fireAdmin().collectionGroup('branches'))
+  return bindFirestoreRef('branches', fireAdmin().collectionGroup('branches').where('ambiente', '==', localStorage.getItem('amb')))
 })
 export const setValuenew = async function (state, payload) {
   let result
   console.log('valores a agregar', payload)
+  const newLocal = localStorage.getItem('amb')
   result = await firestore().collection('clients').doc(payload.id).collection('branches')
     .add({
+      ambiente: newLocal,
       name: payload.name,
       RazonSocial: payload.RazonSocial,
       Rif: payload.Rif,
@@ -42,7 +44,7 @@ export const setValueborrar = async function (state, payload) {
     }, { merge: true })
   return result
 }
-export const setValueEditados = function (state, payload) {
+export const setValueEditados = async function (state, payload) {
   console.log('registro', payload)
   return firestore().collection('clients')
     .doc(payload.idcliente).collection('branches').doc(payload.id)
@@ -55,11 +57,11 @@ export const setValueEditados = function (state, payload) {
       console.log('error update de banches!')
     })
 }
-export const getbranches = function (state, payload) {
+export const getbranches = async function (state, payload) {
   let result2
   let resullt = []
 
-  result2 = fireAdmin().collection('ambiente').doc(payload.ambiente).collection('clients')
+  result2 = await fireAdmin().collection('ambiente').doc(payload.ambiente).collection('clients')
     .doc(payload.idcliente).collection('branches')
     .get()
   result2.then(doc => {

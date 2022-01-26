@@ -2,7 +2,7 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 
-export const saveClient = firestoreAction((state, payload) => {
+export const saveClient = firestoreAction(async (state, payload) => {
   return firestore()
     .collection('users')
     .doc(payload.id)
@@ -43,7 +43,7 @@ export const bindOnlyVendedor = firestoreAction(({ bindFirestoreRef }) => {
 export const setValue = async function (state, payload) {
   let result
 
-  result = firestore().collection('clients')
+  result = await firestore().collection('clients')
     .doc(payload.id)
     .set({
       name: payload.name
@@ -53,7 +53,7 @@ export const setValue = async function (state, payload) {
 export const setValueborar = async function (state, payload) {
   let result
 
-  result = firestore().collection('clients')
+  result = await firestore().collection('clients')
     .doc(payload.id)
     .set({
       softDelete: 1
@@ -63,7 +63,7 @@ export const setValueborar = async function (state, payload) {
 export const setValuenew = async function (state, payload) {
   let result
 
-  result = firestore().collection('clients')
+  result = await firestore().collection('clients')
     .add({
       name: payload.name,
       softDelete: 0

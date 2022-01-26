@@ -278,13 +278,23 @@ export default {
         obj = this.detalle[i]
         sede = this.localizations.find(x => x.id === obj.sede)
         clientes = this.clients2.find(x => x.id === obj.buyOrderClient)
+        console.log(obj.buyOrderClient, clientes)
         this.detalle2.push({
+<<<<<<< HEAD
           id: obj?.id,
           factura: obj?.factura,
           dateIn: obj?.dateIn,
           paid: obj?.paid,
           sede: sede?.name,
           cliente: clientes?.name
+=======
+          id: obj.id,
+          factura: obj.factura,
+          dateIn: obj.dateIn,
+          paid: obj.paid,
+          sede: sede.name,
+          cliente: clientes?.name || 'Nombre no encontrado'
+>>>>>>> 039efb9467b85fc342c1f5f5d3cd8a4bd2841547
         })
       }
       console.log('los detalles', this.detalle)
