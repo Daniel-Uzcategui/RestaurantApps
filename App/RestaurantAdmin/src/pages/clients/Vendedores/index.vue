@@ -137,7 +137,7 @@ export default {
       console.log('estas son todas las ordenes', this.orders)
       for (let i = 0; i < this.orders.length; i++) {
         obj3 = this.orders[i]
-        if (obj3.tipEnvio === '3') {
+        if (obj3.tipEnvio === '3' && (obj3.status === 3)) {
           this.aux.push(obj3)
         }
       }
@@ -160,11 +160,9 @@ export default {
             obj2 = this.aux[k]
             if (obj2 !== undefined) {
               if (obj.customer_id === obj2.customer_id) {
-                if (obj?.status === 3) {
-                  montototal = montototal + obj.paid
-                  cantidad = cantidad + 1
-                }
-                console.log('el valor de i', i)
+                montototal = montototal + obj.paid
+                cantidad = cantidad + 1
+
                 if (i === (this.aux.length - 1)) {
                   auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
                   sede = this.localizations.find(x => x.id === obj.sede)
@@ -198,8 +196,9 @@ export default {
                 cantidad = 0
               }
             } else {
+              console.log('aca', 'el valor de cantidad es', cantidad, 'el valor de i es ', i, 'y tamaño del arreglo es ', this.aux.length, 'el objeto es:', obj.status)
               if ((cantidad > 0) || ((i + 1) === this.aux.length)) {
-                if (obj.status === 3) {
+                if ((obj.status === 3)) {
                   montototal = montototal + obj.paid
                   cantidad = cantidad + 1
                   sede = this.localizations.find(x => x.id === obj.sede)
@@ -214,6 +213,22 @@ export default {
                     monto: montototal,
                     cantidad: cantidad
                   })
+                } else {
+                  let encontrado = this.ArreVendores.find(x => x.id === obj.id)
+                  if (encontrado === undefined) {
+                    sede = this.localizations.find(x => x.id === obj.sede)
+                    auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+                    this.ArreVendores.push({
+                      id: obj.id,
+                      idcustomer: obj.customer_id,
+                      dateIn: obj?.dateIn,
+                      sede: sede?.name,
+                      name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
+                      email: auxvendedor?.email,
+                      monto: montototal,
+                      cantidad: cantidad
+                    })
+                  }
                 }
               }
             }
@@ -258,18 +273,18 @@ export default {
       console.log('el objeto', objeto)
       this.ver = true
       this.detalle2 = []
-      this.detalle = this.orders.filter(x => ((x.customer_id === objeto.idcustomer) && (x.status === 3)))
+      this.detalle = this.orders.filter(x => ((x.customer_id === objeto.idcustomer) && (x.status === 3) && (x.tipEnvio === '3')))
       for (let i = 0; i < this.detalle.length; i++) {
         obj = this.detalle[i]
         sede = this.localizations.find(x => x.id === obj.sede)
         clientes = this.clients2.find(x => x.id === obj.buyOrderClient)
         this.detalle2.push({
-          id: obj.id,
-          factura: obj.factura,
-          dateIn: obj.dateIn,
-          paid: obj.paid,
-          sede: sede.name,
-          cliente: clientes.name
+          id: obj?.id,
+          factura: obj?.factura,
+          dateIn: obj?.dateIn,
+          paid: obj?.paid,
+          sede: sede?.name,
+          cliente: clientes?.name
         })
       }
       console.log('los detalles', this.detalle)
