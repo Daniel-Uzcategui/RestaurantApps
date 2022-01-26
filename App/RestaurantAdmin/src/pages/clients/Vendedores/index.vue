@@ -93,6 +93,10 @@ export default {
   },
   async mounted () {
     this.loading = true
+    if (!this.orders.length) {
+      await this.bindOrders(this.getDateRange())
+    }
+
     if (!this.clients2.length) {
       await this.bindClients2()
     }
@@ -102,9 +106,7 @@ export default {
     if (!this.vendedor.length) {
       await this.bindOnlyVendedor()
     }
-    if (!this.orders.length) {
-      await this.bindOrders(this.getDateRange())
-    }
+
     return (() => { this.loading = false; this.mostrar() })()
   },
   methods: {
@@ -128,6 +130,10 @@ export default {
       let montototal = 0
       let cantidad = 0
       let auxvendedor = ''
+      this.aux = []
+      this.ordersfilter = []
+      this.ArreVendores = []
+
       console.log('estas son todas las ordenes', this.orders)
       for (let i = 0; i < this.orders.length; i++) {
         obj3 = this.orders[i]
@@ -192,24 +198,23 @@ export default {
                 cantidad = 0
               }
             } else {
-              if ((cantidad > 0) || (i === this.aux.length)) {
+              if ((cantidad > 0) || ((i + 1) === this.aux.length)) {
                 if (obj.status === 3) {
                   montototal = montototal + obj.paid
                   cantidad = cantidad + 1
+                  sede = this.localizations.find(x => x.id === obj.sede)
+                  auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+                  this.ArreVendores.push({
+                    id: obj.id,
+                    idcustomer: obj.customer_id,
+                    dateIn: obj?.dateIn,
+                    sede: sede?.name,
+                    name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
+                    email: auxvendedor?.email,
+                    monto: montototal,
+                    cantidad: cantidad
+                  })
                 }
-
-                sede = this.localizations.find(x => x.id === obj.sede)
-                auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
-                this.ArreVendores.push({
-                  id: obj.id,
-                  idcustomer: obj.customer_id,
-                  dateIn: obj?.dateIn,
-                  sede: sede?.name,
-                  name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
-                  email: auxvendedor?.email,
-                  monto: montototal,
-                  cantidad: cantidad
-                })
               }
             }
           } else {
@@ -273,9 +278,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('client', ['vendedor', 'clients2']),
-    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
+
     dateRango: {
       get () {
         return this.dateRange
@@ -305,8 +311,12 @@ export default {
 
   },
   watch: {
+    orders () {
+      console.log('ordenes', this.orders, 'cantidad ordenes', this.orders.length)
+      this.mostrar()
+    },
     localizations () {
-      console.log('sedes', this.localizations)
+      console.log('sedes', this.localizations, 'cantidad sedes', this.localizations.length)
     },
     dateRange (e) {
       this.loading = true
@@ -329,10 +339,8 @@ export default {
     },
     vendedor () {
       console.log('vendedores', this.vendedor)
-    },
-    orders () {
-      this.mostrar()
     }
+
   }
 
 }
