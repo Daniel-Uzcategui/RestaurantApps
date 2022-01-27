@@ -46,7 +46,7 @@
          </q-card-section>
       </q-card>
       <q-dialog
-         v-if="carrito.length && ordenDet !== {}"
+         v-if="carrito && Object.keys(carrito).length && ordenDet !== {}"
          content-class="full-width q-pa-lg"
          square
          v-model="dialog"
@@ -87,8 +87,8 @@
             <q-card-section class="column items-center">
                <q-card bordered class="q-cardGlass q-pa-lg q-ma-xs" style="border-radius: 28px; min-width: 40vmin">
                   <q-card-section>
-                     <p v-if="carrito.length == 0" class="text-h4 text-center">No hay productos en esta orden</p>
-                     <div v-if="carrito.length" >
+                     <p v-if="carrito && Object.keys(carrito).length == 0" class="text-h4 text-center">No hay productos en esta orden</p>
+                     <div v-if="carrito && Object.keys(carrito).length" >
                         <div class="text-h7 text-left">
                            <div class="row" >
                               <p class="col-6"> Subtotal </p>
@@ -204,6 +204,7 @@ export default {
           customer_id: x.customer_id,
           dateIn: x.dateIn,
           factura: x.factura,
+          productos: x.productos,
           paid: x.paid,
           sede: x.sede,
           cuponTotal: x.cuponTotal,
@@ -292,14 +293,17 @@ export default {
     },
     totalItComp (its) {
       var sum = 0
-      its.forEach(x => {
-        if (typeof x.quantity === 'undefined') {
-          sum = sum + x.price
-        } else {
-          sum = sum + (x.price * x.quantity)
-        }
+      let item = its ?? {}
+      Object.keys(item).forEach(x => {
+        let qty = item[x].quantity ?? 1
+        sum = sum + (item[x].price * qty)
+        sum = parseFloat(sum.toFixed(2))
+        // if (typeof x.quantity === 'undefined') {
+        //   sum = sum + x.price
+        // } else {
+        //   sum = sum + (x.price * x.quantity)
+        // }
       })
-      return sum
     },
     ...mapActions('address', ['bindAddress']),
     ...mapActions('order', ['bindOrders', 'saveOrder']),
@@ -323,7 +327,8 @@ export default {
     },
     carritoDialog (e) {
       this.dialog = true
-      this.carrito = e.cart
+      console.log(e)
+      this.carrito = e.productos
       this.ordenDet = e
       console.log({ th: this.ordenDet })
     },

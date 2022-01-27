@@ -176,8 +176,8 @@ export default {
       default: () => []
     },
     value: {
-      type: Array,
-      default: () => []
+      type: Object,
+      default: () => {}
     },
     readOnly: {
       type: Boolean,
@@ -233,16 +233,17 @@ export default {
     },
     totalItComp () {
       var sum = 0
-      this.value.forEach(x => {
-        var free = this.getComponent(x.component, 'free')
+      Object.keys(this.value).forEach(x => {
+        let y = this.value[x]
+        var free = this.getComponent(y.component, 'free')
         if (!free) {
-          if (typeof x.quantity === 'undefined') {
-            sum = sum + x.price
+          if (typeof y.quantity === 'undefined') {
+            sum = sum + y.price
           } else {
-            sum = sum + (x.price * x.quantity)
+            sum = sum + (y.price * y.quantity)
           }
         } else {
-          x.price = 0
+          y.price = 0
         }
       })
       return sum

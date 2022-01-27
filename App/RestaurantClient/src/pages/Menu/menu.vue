@@ -471,7 +471,7 @@ export default {
       const { cats, filteredMenu } = this
       return cats.filter(x => {
         for (let i of filteredMenu) {
-          let solve = i.categoria.includes(x.id)
+          let solve = i.categoria[x.id]
           if (solve) {
             return true
           }
@@ -602,7 +602,7 @@ export default {
     },
     categorias () {
       if (!this.displayType) {
-        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
+        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria[this.filtercat[0]['id']]) : []
         this.selectedCat = this.filtercat[0]
       }
     },
@@ -611,7 +611,7 @@ export default {
     },
     filtercat () {
       if (this.displayType === 0 || this.displayType === 3) {
-        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
+        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria[this.filtercat[0]['id']]) : []
         this.selectedCat = this.filtercat[0]
       }
     },
@@ -648,7 +648,7 @@ export default {
       }
       // cat
       if (!this.displayType) {
-        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
+        this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria[this.filtercat[0]['id']]) : []
         this.selectedCat = this.filtercat[0]
       }
       if (this.selCat !== '') {
@@ -730,13 +730,13 @@ export default {
       if (typeof this.filterop[index + 1] === 'undefined') {
         this.setFilter(this.filterop[0])
         if (!this.displayType) {
-          this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
+          this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria[this.filtercat[0]['id']]) : []
           this.selectedCat = this.filtercat[0]
         }
       } else {
         this.setFilter(this.filterop[index + 1])
         if (!this.displayType) {
-          this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria.includes(this.filtercat[0]['id'])) : []
+          this.filteredMenu = this.origMenu ? this.origMenu.filter((e) => e && e.categoria && e.categoria[this.filtercat[0]['id']]) : []
           this.selectedCat = this.filtercat[0]
         }
       }
@@ -747,9 +747,9 @@ export default {
       const { viewRewards, rewards } = this
       function filter (x) {
         if (viewRewards) {
-          return x && x.categoria && x.categoria.includes(e) && rewards[0].products.includes(x.id)
+          return x && x.categoria && x.categoria[e] && rewards[0].products.includes(x.id)
         }
-        return x && x.categoria && x.categoria.includes(e)
+        return x && x.categoria && x.categoria[e]
       }
       if (Array.isArray(this.filteredMenu)) {
         filtered = this.filteredMenu.filter(x => filter(x))
@@ -770,7 +770,7 @@ export default {
           return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
         })
         this.filteredMenu = this.filteredMenu.filter(x => {
-          return x && x.categoria && x.categoria.includes(this.selectedCat.id)
+          return x && x.categoria && x.categoria[this.selectedCat.id]
         })
       } else {
         this.filteredMenu = this.origMenu.filter(x => {

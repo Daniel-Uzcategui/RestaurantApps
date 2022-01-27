@@ -340,7 +340,7 @@ export default {
   computed: {
     ...mapGetters('order', ['orders']),
     ...mapGetters('transactions', ['transactions']),
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'item']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
@@ -759,7 +759,9 @@ export default {
       let deliveryview = this.deliveryPrice
       console.log({ orderWhen })
       console.log({ deliveryview })
-      let order = { photo: this.photoSRC, orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      let customer = this.currentUser
+      let cartManage = this.cartMan()
+      let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.sede, cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (typeof details !== 'undefined' && typeof details.id === 'undefined') { order = { ...order, paypal: details } }
       if (typeof details !== 'undefined' && typeof details.id !== 'undefined') { order = { ...order, onlinePay: details } }
       if (this.cupons?.length) {
@@ -796,6 +798,22 @@ export default {
         this.$router.push({ path: '/orders/index' })
         this.$q.loading.hide()
       }).catch(() => this.$q.loading.hide())
+    },
+    cartMan () {
+      let productos = {}
+      for (let prods of this.cart) {
+        let categorias = {}
+        for (let cats of prods.category) {
+          let categoria = this.categorias.find(x => x.id === cats)
+          categorias[cats] = categoria
+        }
+        let items = {}
+        for (let item of prods.items) {
+          items[item.item] = item
+        }
+        productos[prods.prodId] = { ...prods, category: categorias, items: items }
+      }
+      return productos
     },
     getTotalCarrito () {
       var sumProd = 0

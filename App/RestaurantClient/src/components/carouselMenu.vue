@@ -215,7 +215,7 @@ export default {
     // this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
     this.filteredMenu = this.origMenu
     if (!this.displayType) {
-      this.filteredMenu = this.origMenu.filter((e) => e.categoria.includes(this.filtercat()[0]['id']))
+      this.filteredMenu = this.origMenu.filter((e) => e.categoria[this.filtercat()[0]['id']])
       this.selectedCat = this.filtercat()[0]
     }
   },

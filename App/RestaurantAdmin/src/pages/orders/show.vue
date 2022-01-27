@@ -169,6 +169,9 @@
           row-key="id"
           no-data-label="No se encontraron registros"
       >
+      <template v-slot:top-right>
+         <q-btn color="white" text-color="black" label="Editar compra" />
+      </template>
       <template v-slot:body="props">
         <q-tr :props="props">
            <q-td key="name" :props="props">
@@ -189,7 +192,7 @@
           </q-td>
           <q-td key="quantity" :props="props">
               <q-input filled rounded outlined
-                @input="(e) => saved(e, props.row.quantity, props.row.id, 'quantity')"
+                @input="(e) => consolee(e, props.row.quantity, props.row.id, 'quantity')"
                 :value="props.row.quantity"
                 dense
 
@@ -208,7 +211,7 @@
               />
           </q-td>
         </q-tr>
-        <q-tr :props="props" v-if="props.row.items">
+        <q-tr :props="props" v-if="props.row.items && props.row.items.length">
           <q-td colspan="100%">
             <div class="text-bold">Opciones</div>
             <q-list class="text-center">
@@ -466,6 +469,9 @@ export default {
     console.log(this.rates)
   },
   methods: {
+    consolee (e, b, c, s) {
+      console.log(e, b, c, s)
+    },
     ...mapActions('order', ['saveOrder']),
     ...mapActions('menu', ['bindMenu', 'bindPromos']),
     ...mapActions('client', ['bindClients']),

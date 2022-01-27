@@ -433,6 +433,7 @@ export default {
     addToCart (rew) {
       if (this.displayVal.prodType === 0) {
         var toCart = {
+          photo: this.displayVal.photosmall || this.displayVal.photo,
           prodId: this.displayVal.id,
           name: this.displayVal.name,
           prodPrice: this.displayVal.price,
