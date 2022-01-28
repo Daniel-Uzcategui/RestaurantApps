@@ -137,10 +137,11 @@ export default {
         obj = this.ordersClient[i]
         if (!(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
           if (obj.tipEnvio === '3') {
-            clientforOrder = this.clientOrders2(obj.buyOrderClient)
-            sucursalforOrder = this.buscarsurcursal2(obj)
+            console.log(obj)
+            clientforOrder = obj.buyOrder.Client
+            sucursalforOrder = obj.buyOrder.Branch
             console.log('valores retornados', sucursalforOrder)
-            sedeforOrder = this.sedeOrders(obj.sede)
+            sedeforOrder = obj.sede
             fullname = clientforOrder?.name + '-' + sucursalforOrder?.name
             nameSede = sedeforOrder?.name
             typeService = this.buscartiposervicio(obj)
@@ -151,8 +152,8 @@ export default {
             } else { tipoPago = '' }
             statusOrder = this.buscarstatus(obj)
           } else {
-            clientforOrder = this.clientOrders(obj.customer_id)
-            sedeforOrder = this.sedeOrders(obj.sede)
+            clientforOrder = obj.customer
+            sedeforOrder = obj.sede
             fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
             nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
             typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
@@ -201,31 +202,31 @@ export default {
   },
   async mounted () {
     this.loading = true
-    if (!this.branches.length) {
-      await this.bindonlybranches().catch(e => console.error(e))
-    }
-    if (!this.clients.length) {
-      await this.bindClients().catch(e => console.error(e))
-    }
-    if (!this.localizations.length) {
-      await this.bindLocalizations().catch(e => console.error(e))
-    }
-    if (!this.clients2.length) {
-      await this.bindClients2().catch(e => console.error(e))
-    }
+    // if (!this.branches.length) {
+    //   await this.bindonlybranches().catch(e => console.error(e))
+    // }
+    // if (!this.clients.length) {
+    //   await this.bindClients().catch(e => console.error(e))
+    // }
+    // if (!this.localizations.length) {
+    //   await this.bindLocalizations().catch(e => console.error(e))
+    // }
+    // if (!this.clients2.length) {
+    //   await this.bindClients2().catch(e => console.error(e))
+    // }
     if (!this.orders.length) {
       await this.bindOrders(this.getDateRange()).catch(e => console.error(e))
     }
     return (() => { this.loading = false; this.mostrar() })()
   },
   watch: {
-    branches () {
-      console.log('los branches', this.branches)
-    },
+    // branches () {
+    //   console.log('los branches', this.branches)
+    // },
     orders () {
       this.mostrar()
     },
-    dateRange (e) {
+    async dateRange (e) {
       this.loading = true
       if (e === null) {
         return this.bindOrders().then(() => {
@@ -235,7 +236,7 @@ export default {
       console.log(e, 'DateRange')
       let end = new Date(e.to)
       end.setDate(end.getDate() + 1)
-      this.bindOrders(
+      await this.bindOrders(
         {
           start: new Date(e.from),
           end: end
@@ -265,16 +266,16 @@ export default {
     //   }
     //   return ret.dateIn.toDate()
     // },
-    clientOrders (value) {
-      return this.clients.find(obj => {
-        return obj.id === value
-      })
-    },
-    clientOrders2 (value) {
-      return this.clients2.find(obj => {
-        return obj.id === value
-      })
-    },
+    // clientOrders (value) {
+    //   return this.clients.find(obj => {
+    //     return obj.id === value
+    //   })
+    // },
+    // clientOrders2 (value) {
+    //   return this.clients2.find(obj => {
+    //     return obj.id === value
+    //   })
+    // },
     buscartiposervicio (objeto) {
       let obj
       //   console.log('el tipo de servicio ', objeto.tipEnvio)
@@ -314,11 +315,11 @@ export default {
         return obj.label
       }
     },
-    sedeOrders (value) {
-      return this.localizations.find(obj => {
-        return obj.id === value
-      })
-    },
+    // sedeOrders (value) {
+    //   return this.localizations.find(obj => {
+    //     return obj.id === value
+    //   })
+    // },
     mostrar () {
       this.ordersfilter = this.OrderClient
       console.log(this.branches, 'BRANCHES')
@@ -351,10 +352,10 @@ export default {
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.ordersClient.length}`
     },
-    ...mapActions('corporativos', ['bindonlybranches']),
+    // ...mapActions('corporativos', ['bindonlybranches']),
     ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange']),
-    ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('client', ['bindClients', 'bindClients2']),
+    // ...mapActions('localization', ['bindLocalizations']),
+    // ...mapActions('client', ['bindClients', 'bindClients2']),
 
     deleted () {
       this.deleteOrder(this.selected)

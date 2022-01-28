@@ -38,8 +38,8 @@
       </div>
     </div>
     <q-option-group
-      :value="value"
-      @input="(e) => $emit('input', e)"
+      :value="returnValue()"
+      @input="(e) => $emit('input', addressSelected(e))"
       :options="addressRadio"
       color="primary"
     />
@@ -155,6 +155,12 @@ export default {
     }
   },
   methods: {
+    returnValue () {
+      return this.value?.id || null
+    },
+    addressSelected (e) {
+      return this.address.find(x => x.id === e)
+    },
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
     ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
     isValidMarker () {
@@ -266,7 +272,7 @@ export default {
     setDialog () {
       this.readAddr = true
       if (this.value === null) { this.dialog = false; return }
-      const obj = this.address.find(x => x.id === this.value)
+      const obj = this.value
       // this.estado = obj.estado
       // this.ciudad = obj.ciudad
       // this.municipio = obj.municipio

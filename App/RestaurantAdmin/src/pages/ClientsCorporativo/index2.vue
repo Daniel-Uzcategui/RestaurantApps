@@ -141,7 +141,7 @@ export default {
       this.nombresurculsal = objeto?.name
       this.razon = objeto?.RazonSocial
       this.prefijo = objeto.Rif?.prefijo
-      this.shippingAddress = objeto?.shippingAddress
+      this.shippingAddress = objeto?.shippingAddressC
       this.numerorif = objeto.Rif?.numero
       this.tipopago = objeto?.tipoPago
       this.selle = objeto.Vendedor?.name
@@ -168,6 +168,7 @@ export default {
     },
     guardar () {
       const { nombresurculsal, razon, prefijo, numerorif, tipopago, selle, idselle, diacredito, clieEditar } = this
+      this.$q.loading.show()
       if (clieEditar) {
         return this.guardarEditado()
       }
@@ -175,9 +176,11 @@ export default {
       console.log('los valores del prefijo', prefijo)
       this.setValuenew({
         id: this.idClientSel,
+        client_id: this.idClientSel,
         name: nombresurculsal,
         RazonSocial: razon,
-        shippingAddress: this.shippingAddress,
+        shippingAddress: this.shippingAddress.id,
+        shippingAddressC: this.shippingAddress,
         Rif: {
           prefijo: prefijo,
           numero: numerorif
@@ -190,9 +193,11 @@ export default {
         tipoPago: tipopago
 
       }).then(() => {
+        this.$q.loading.hide()
         this.$q.notify({ message: 'Cliente Guardado', color: 'green' })
         this.inicializar()
       }).catch(() => {
+        this.$q.loading.hide()
         this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
     },
@@ -239,7 +244,7 @@ export default {
       this.nombresurculsal = objeto?.name
       this.razon = objeto?.RazonSocial
       this.prefijo = objeto.Rif?.prefijo
-      this.shippingAddress = objeto?.shippingAddress
+      this.shippingAddress = objeto?.shippingAddressC
       this.numerorif = objeto.Rif?.numero
       this.tipopago = objeto?.tipoPago
       this.selle = objeto.Vendedor?.name
@@ -254,7 +259,8 @@ export default {
         idcliente: this.idClientSel,
         id: idsuculsal,
         datos: {
-          shippingAddress: shippingAddress,
+          shippingAddress: shippingAddress.id,
+          shippingAddressC: shippingAddress,
           name: nombresurculsal,
           RazonSocial: razon,
           Rif: {
@@ -269,8 +275,10 @@ export default {
           tipoPago: tipopago
         }
       }).then(() => {
+        this.$q.loading.hide()
         this.$q.notify({ message: 'Cambios Guardados', color: 'green' })
       }).catch(() => {
+        this.$q.loading.hide()
         this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
       this.inicializar()

@@ -171,7 +171,7 @@ export default {
       value: 20,
       maximizedToggle: true,
       dialog: false,
-      carrito: [],
+      carrito: {},
       photoType: '',
       photoUpload: false,
       ordenDet: {},
@@ -328,7 +328,7 @@ export default {
     carritoDialog (e) {
       this.dialog = true
       console.log(e)
-      this.carrito = e.productos
+      this.carrito = e.productos || e.cart
       this.ordenDet = e
       console.log({ th: this.ordenDet })
     },
@@ -352,11 +352,11 @@ export default {
       var sumProd = 0
       var sumExtra = 0
       var sumProdDelivery = 0
-      this.carrito.forEach(e => {
+      for (let it in this.carrito) {
+        let e = this.carrito[it]
         sumProd = (e.prodPrice * e.quantity) + sumProd
         sumExtra = (this.totalItComp(e.items) * e.quantity) + sumExtra
-      })
-
+      }
       if (this.ordenDet.delivery) {
         sumProdDelivery = sumProd + this.ordenDet.delivery + sumExtra
       }

@@ -14,7 +14,11 @@ export const addAddress = firestoreAction((state, payload) => {
     })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
-      return docRef.id
+      return { id: docRef.id,
+        ...payload,
+        ref: docRef,
+        softDelete: 0
+      }
     })
     .catch(function (error) {
       console.error('Error adding document: ', error)

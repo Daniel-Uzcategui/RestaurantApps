@@ -100,6 +100,9 @@ export default {
     GoogleMap: GoogleMap
   },
   methods: {
+    addressSelected (e) {
+      return this.address.find(x => x.id === e)
+    },
     ...mapActions('address', ['bindAddress', 'addAddress']),
     showNotif () {
       this.$q.notify({

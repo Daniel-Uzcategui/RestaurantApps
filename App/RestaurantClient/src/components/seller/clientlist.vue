@@ -95,6 +95,12 @@ export default {
       }
       return this.branches.find(x => x.id === value)
     },
+    getBranchClient (value) {
+      if (value === '') {
+        return null
+      }
+      return this.clients.find(x => x.id === value)
+    },
     ...mapActions('seller', ['bindClients', 'bindClientBranch', 'addClient', 'addBranch']),
     resetNewClient () {
       this.newClient = {
@@ -124,7 +130,8 @@ export default {
         this.addBranch({
           data: {
             ...this.newBranch,
-            shippingAddress: this.shippingAddress,
+            shippingAddressC: this.shippingAddress,
+            shippingAddress: this.shippingAddress.id,
             // billingAddress: this.billingSameAddress ? this.shippingAddress : this.billingAdress,
             dateIn: new Date()
           },
@@ -163,7 +170,7 @@ export default {
     branch (e) {
       console.log('Branch Agregado', this.client)
       this.$emit('branchInput', this.getBranchValues(e))
-      this.$emit('clientInput', this.client)
+      this.$emit('clientInput', this.getBranchClient(this.client))
     }
   },
   created () {
