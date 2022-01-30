@@ -389,8 +389,8 @@
               no-data-label="No se encontraron registros"
             >
               <template v-slot:top-right>
-                <q-btn color="white" text-color="black" label="Editar compra">
-                </q-btn>
+               <!-- <q-btn color="white" text-color="black" label="Editar compra">
+                </q-btn> -->
               </template>
               <template v-slot:body="props">
                 <q-tr :props="props">
@@ -788,7 +788,7 @@ export default {
     // this.getAddress(this.order?.address)
     // this.bindLocalizations()
     // this.bindPromos()
-    // this.bindRates()
+    this.bindRates()
     // console.log(this.rates)
   },
   methods: {
@@ -856,7 +856,7 @@ export default {
     getRates (mto) {
       let mtoTotal = 0
       let rate = ''
-      rate = this.rates.find(obj => {
+      rate = this.rates?.find(obj => {
         return obj.currency === 'Bs'
       })
       if (mto !== 'undefined' && rate && rate.rateValue) {
