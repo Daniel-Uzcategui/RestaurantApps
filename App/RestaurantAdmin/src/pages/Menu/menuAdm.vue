@@ -87,7 +87,7 @@
                       :color="props.row.estatus ? props.row.estatus[sede] ? 'blue' : 'red' : 'red'"
                    style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? props.row.estatus[sede] ? 'toggle_on' : 'toggle_off' : 'toggle_off'" />
                   <q-item-label class="col-3 self-center text-right" :style="$q.screen.lt.md ? 'max-width: 200px' : ''" caption>{{(props.row.price).toFixed(2)}}</q-item-label>
-                  <q-btn class="col-1 self-center" flat push rounded icon="edit" @click.stop="props.expand = !props.expand; props.row.categoria ? selectedProdCat = props.row.categoria  : ''" />
+                  <q-btn class="col-1 self-center" flat push rounded icon="edit" @click.stop="props.expand = !props.expand" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -146,16 +146,14 @@
           <q-item class="column items-start" key="categoria" :props="props">
             <q-td><label class="label-expand">Categorías</label></q-td>
               <q-select options-selected-class="text-blue" filled rounded dense
-                v-model="prodCategory"
-                @input="(e) => saved(selectedProdCat, props.row.categoria, props.row.id, 'categoria')"
+                v-model="props.row.categoria"
+                @input="(e) => saved(e, props.row.categoria, props.row.id, 'categoria')"
                 use-input
                 use-chips
                 class="col-12"
                 multiple
                 input-debounce="0"
-                :options="categorias"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item"
+                :options="listcategorias"
                 map-options
                 emit-value
                 stack-label
@@ -476,26 +474,6 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['configs', 'version']),
-    prodCategory: {
-      get () {
-        let cats = this.selectedProdCat || {}
-        let cate = []
-        for (let keys of Object.keys(cats)) {
-          cate.push(cats[keys])
-        }
-        return cate
-      },
-      set (e) {
-        console.log(e)
-        let cats = {}
-        for (let cat of e) {
-          cats[cat.id] = cat
-        }
-        this.selectedProdCat = cats
-        console.log(cats, this.selectedProdCat)
-        this.$forceUpdate()
-      }
-    },
     menucfg () {
       let men = this.configs.find(e => e.id === 'menu')
       if (typeof men === 'undefined') {
@@ -549,7 +527,6 @@ export default {
   },
   data () {
     return {
-      selectedProdCat: null,
       colorText: false,
       definitions: {
         color: {
@@ -925,7 +902,7 @@ export default {
       if (typeof this.temp1.menu === 'undefined') {
         this.temp1.menu = {}
       }
-      this.temp1.menu[rand] = { id: rand, categoria: {}, isNew: true, price: 0, descripcion: '', estatus: { [`${this.sede}`]: true }, stock: { [`${this.sede}`]: 1000 }, disptype: 0 }
+      this.temp1.menu[rand] = { id: rand, isNew: true, price: 0, descripcion: '', estatus: { [`${this.sede}`]: true }, stock: { [`${this.sede}`]: 1000 }, disptype: 0 }
       this.menuTemp.unshift({ id: rand, price: 0, descripcion: '', estatus: { [`${this.sede}`]: true }, stock: { [`${this.sede}`]: 1000 }, disptype: 0 })
       this.$forceUpdate()
     },

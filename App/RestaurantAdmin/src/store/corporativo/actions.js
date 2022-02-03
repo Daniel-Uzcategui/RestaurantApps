@@ -23,9 +23,6 @@ export const setValuenew = async function (state, payload) {
   const newLocal = localStorage.getItem('amb')
   result = await firestore().collection('clients').doc(payload.id).collection('branches')
     .add({
-      client_id: payload.id,
-      shippingAddress: payload.shippingAddress,
-      shippingAddressC: payload.shippingAddressC,
       ambiente: newLocal,
       name: payload.name,
       RazonSocial: payload.RazonSocial,
