@@ -521,7 +521,7 @@ export default {
     getRates (mto) {
       let mtoTotal = 0
       let rate = ''
-      rate = this.rates.find(obj => {
+      rate = this.rates?.find(obj => {
         return obj.currency === 'Bs'
       })
       if (mto !== 'undefined' && rate && rate.rateValue) {

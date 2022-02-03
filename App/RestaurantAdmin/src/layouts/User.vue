@@ -18,7 +18,7 @@
             </q-toolbar-title>
             <div>
                <q-btn icon="fas fa-user" no-caps class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" />
-               <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="this.reset(); logoutUser()" >  </q-btn>
+               <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="reset(); logoutUser()" >  </q-btn>
                <q-dialog v-model="editUserDialog" persistent="persistent" @before-hide="setBlur">
                   <user-settings></user-settings>
                </q-dialog>
@@ -205,7 +205,7 @@ export default {
       leftDrawerOpen: false,
       nav: [
         {
-          title: 'Ambientes',
+          title: 'Mis Tiendas',
           caption: '',
           icon: 'language',
           handler: () => {

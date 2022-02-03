@@ -56,7 +56,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   computed: {
-    ...mapGetters('order', ['orders', 'typePayment_options']),
+    ...mapGetters('order', ['orders', 'tipoServicio', 'typePayment_options', 'allestatus']),
     ...mapGetters('client', ['clients']),
     OrderClient () {
       let OrderClient = []
@@ -67,9 +67,9 @@ export default {
         clientforOrder = this.clientOrders(obj.customer_id)
         fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
         tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
-        typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
+        typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
         tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
-        status = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : 'No disponible'
+        status = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : 'No disponible'
         OrderClient.push({
           'id': obj.id,
           'nombre': fullname,
@@ -131,19 +131,19 @@ export default {
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
         { name: 'paid', label: 'Monto', field: 'paid', sortable: true }
-      ],
-      estatus_options: [
-        { label: 'Por Confirmar', value: 0 },
-        { label: 'Preparando su pedido', value: 1 },
-        { label: 'Orden en vía', value: 2 },
-        { label: 'Orden Entregada', value: 3 },
-        { label: 'Anulada', value: 4 }
-      ],
-      tipo_servicio: [
-        { label: 'Pick-up', value: 0 },
-        { label: 'Delivery', value: 1 },
-        { label: 'En-Local', value: 2 }
       ]
+      // estatus_options: [
+      //   { label: 'Por Confirmar', value: 0 },
+      //   { label: 'Preparando su pedido', value: 1 },
+      //   { label: 'Orden en vía', value: 2 },
+      //   { label: 'Orden Entregada', value: 3 },
+      //   { label: 'Anulada', value: 4 }
+      // ]
+      // tipo_servicio: [
+      //   { label: 'Pick-up', value: 0 },
+      //   { label: 'Delivery', value: 1 },
+      //   { label: 'En-Local', value: 2 }
+      // ]
     }
   }
 }
@@ -151,6 +151,5 @@ export default {
 <style lang="stylus">
  .table
   width: 100%
-  margin-bottom: 50%
 
  </style>
