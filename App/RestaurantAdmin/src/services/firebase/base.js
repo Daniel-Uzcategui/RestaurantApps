@@ -62,9 +62,15 @@ export const handleOnAuthStateChanged = async (store, currentUser) => {
   store.commit('auth/setAuthState', {
     isAuthenticated: currentUser !== null,
     isReady: true,
-    uid: (currentUser ? currentUser.uid : '')
+    uid: (currentUser ? currentUser.uid : ''),
+    emailVerified: (currentUser ? currentUser.emailVerified : false)
   })
-
+  if (!currentUser.emailVerified) {
+    let user = auth().currentUser
+    user.sendEmailVerification().then(function () {
+    }).catch(error => console.log(error)
+    )
+  }
   // Get & bind the current user
   if (store.state.auth.isAuthenticated) {
     await store.dispatch('user/getCurrentUser', currentUser.uid)

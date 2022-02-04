@@ -2,5 +2,6 @@ export default {
   isAuthenticated: false,
   isReady: false,
   uid: '',
-  rol: null
+  rol: null,
+  emailVerified: false
 }

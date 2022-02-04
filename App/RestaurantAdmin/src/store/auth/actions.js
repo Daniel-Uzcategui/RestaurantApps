@@ -79,25 +79,27 @@ export const addUserToUsersCollection2 = async (state, userRef) => {
 export const loginUser = async function ({ commit }, payload) {
   const $fb = this.$fb
   const { email, password } = payload
-  let resultado = $fb.loginWithEmail(email, password)
-  if (resultado) {
-    console.log('usuario y password correcto')
-    $fb.auth().onAuthStateChanged((user) => {
-      if (user) {
-        var emailVerified = user.emailVerified
-        if (emailVerified === true) {
-          console.log('email verificado')
-          return $fb.loginWithEmail(email, password)
-        } else {
-          console.log('email no ferificado')
-        }
-      } else {
-        console.log('error')
-      }
-    })
-  } else {
-    console.log('email o correo incorrecto')
-  }
+  return $fb.loginWithEmail(email, password)
+  // if (resultado) {
+  //   console.log('usuario y password correcto')
+  //   $fb.auth().onAuthStateChanged((user) => {
+  //     if (user) {
+  //       var emailVerified = user.emailVerified
+  //       if (emailVerified === true) {
+  //         console.log('email verificado')
+  //         return resultado
+  //       } else {
+  //         console.log('email no verificado')
+  //         return resultado
+  //       }
+  //     } else {
+  //       console.log('error')
+  //       return resultado
+  //     }
+  //   })
+  // } else {
+  //   console.log('email o correo incorrecto')
+  // }
 }
 
 export const logoutUser = async function ({ commit }, payload) {

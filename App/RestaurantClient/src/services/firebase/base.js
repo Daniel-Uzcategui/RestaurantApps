@@ -67,7 +67,8 @@ export const handleOnAuthStateChanged = async (store, currentUser) => {
     isAuthenticated: currentUser !== null,
     isAnonymous: currentUser !== null ? currentUser.isAnonymous : true,
     isReady: true,
-    uid: (currentUser ? currentUser.uid : '')
+    uid: (currentUser ? currentUser.uid : ''),
+    emailVerified: (currentUser ? currentUser.emailVerified : false)
   })
   // Get & bind the current user
   if (store.state.auth.isAuthenticated && !currentUser.isAnonymous) {

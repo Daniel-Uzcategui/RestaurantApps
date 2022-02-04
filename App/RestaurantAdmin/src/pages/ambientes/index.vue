@@ -76,8 +76,14 @@ export default {
     }
   },
   mounted () {
+    if (!this.$store.state.auth.emailVerified) {
+      this.$q.dialog({
+        message: 'Le hemos enviado un correo para verificarlo',
+        persistent: true
+      })
+    }
     if (this.currentUser && this.currentUser.id) {
-      this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
+      this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e, this.currentUser), this.bindedAmb = true).catch((e) => console.error(e))
     }
   },
   methods: {
