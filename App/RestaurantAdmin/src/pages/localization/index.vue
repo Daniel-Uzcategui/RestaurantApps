@@ -256,5 +256,6 @@ export default {
 <style lang="stylus">
  .localization
   width: 100%
+  margin-bottom: 50%
 
 </style>

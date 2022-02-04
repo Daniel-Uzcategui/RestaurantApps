@@ -228,5 +228,6 @@ export default {
 <style lang="stylus">
  .headerClients
   width: 100%
+  margin-bottom: 50%
 
  </style>

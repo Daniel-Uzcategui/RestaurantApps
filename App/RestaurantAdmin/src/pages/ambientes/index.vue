@@ -2,26 +2,24 @@
   <div>
       <q-page class="items-center">
     <q-card flat square>
-            <q-card-section class="bg-primary column items-center">
+            <q-card-section class="bg-primary">
              <template>
-               <img alt="chopZI" src="~assets/chopzi-01.png" style="border-radius: 28px" class="imglogo">
+               <img alt="chopZI" src="~assets/chopzi-01.png" class="imglogo">
             </template>
-            </q-card-section>
-            <q-card-section class="fontsize-18 bg-primary text-center">
-            Mis tiendas
             </q-card-section>
     <q-card-section v-if="!bindedAmb || ambientes === null" class="row justify-center">
       <q-spinner color="primary" size="5em" />
     </q-card-section>
     <q-card-section v-else>
       <transition-group
-          class="row justify-center"
-          name="list-complete" tag="div"
+          appear
+          class="row justify-start"
+          enter-active-class="animated fadeInRight"
         >
-      <q-card key="createamb" class="list-complete-item q-ma-md cardradius bg-primary">
+      <q-card key="createamb" class="q-ma-md cardradius bg-primary">
         <q-card-section v-if="!addnew" class="column items-center">
           <q-btn flat @click="addnew = !addnew" icon="add" size="lg"/>
-            <p>Añadir Tienda</p>
+            <p>Añadir ambiente</p>
         </q-card-section>
         <q-card-section v-else>
           <form @submit.prevent.stop="createAmbiente()" class="column items-center">
@@ -31,7 +29,7 @@
           </form>
         </q-card-section>
       </q-card>
-      <q-card @click="ambRoute(amb.id)" v-for="(amb, index) in ambientes" :key="index" v-ripple class="list-complete-item q-ma-md cardradius bg-primary">
+      <q-card @click="ambRoute(amb.id)" v-for="(amb, index) in ambientes" :key="index" v-ripple class="q-ma-md cardradius bg-primary">
         <q-card-section>
           <q-item-label class="text-h5">
             {{amb.id}}
@@ -92,7 +90,7 @@ export default {
       this.$router.push({ path: '/home' })
     },
     async createAmbiente () {
-      this.$q.loading.show({ message: 'Creando Tienda' })
+      this.$q.loading.show({ message: 'Creando ambiente' })
       try {
         this.$refs.alias.validate()
         let valid2 = await this.$refs.url.validate()
@@ -104,7 +102,7 @@ export default {
             'user': this.currentUser
           }).then(e => console.log(e)).catch(e => console.log(e), this.addnew = false, this.$q.loading.hide())
           return this.$q.notify({
-            message: 'Tienda creada exitosamente',
+            message: 'Ambiente creado exitosamente',
             color: 'blue'
           })
         } else {
@@ -112,7 +110,7 @@ export default {
         }
       } catch (error) {
         console.error(error)
-        this.$q.notify({ message: 'Error creando Tienda, verifique su conexión a internet e intente más tarde' })
+        this.$q.notify({ message: 'Error creando ambiente, verifique su conexión a internet e intente más tarde' })
         this.$q.loading.hide()
       }
     },
@@ -151,12 +149,4 @@ export default {
   border-radius 28px
   width 300px
   height 190px
-.list-complete-enter, .list-complete-leave-to
-/* .list-complete-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateY(30px);
-}
-.list-complete-leave-active {
-  position: absolute;
-}
 </style>

@@ -87,18 +87,18 @@ export default {
         { label: 'Orden Entregada', value: 3 },
         { label: 'Anulada', value: 4 }
       ],
-      // typePayment_options: [
-      //   { label: 'Punto de venta', value: 0 },
-      //   { label: 'Efectivo', value: 1 },
-      //   { label: 'Zelle', value: 2 },
-      //   { label: 'Tarjeta o Paypal', value: 3 }
+      tipo_pago: [
+        { label: 'Punto de venta', value: 0 },
+        { label: 'Efectivo', value: 1 },
+        { label: 'Zelle', value: 2 },
+        { label: 'Tarjeta o Paypal', value: 3 }
 
-      // ],
-      // tipoServicio: [
-      //   { label: 'Pick-up', value: 0 },
-      //   { label: 'Delivery', value: 1 },
-      //   { label: 'In-Local', value: 2 }
-      // ],
+      ],
+      tipo_servicio: [
+        { label: 'Pick-up', value: 0 },
+        { label: 'Delivery', value: 1 },
+        { label: 'In-Local', value: 2 }
+      ],
       estatus_client: [
         { label: 'Activo', value: true },
         { label: 'Inactivo', value: false }
@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     ...mapGetters('client', ['clients']),
-    ...mapGetters('order', ['orders', 'tipoServicio', 'typePayment_options']),
+    ...mapGetters('order', ['orders']),
     ...mapGetters('address', ['address']),
     client () {
       return this.clients.find(obj => {
@@ -142,8 +142,8 @@ export default {
       for (i = 0; i < this.orders.length; i++) {
         obj = this.orders[i]
         if (obj.customer_id === value) {
-          typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
-          tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
+          typeService = typeof obj.tipEnvio !== 'undefined' ? this.tipo_servicio[obj.tipEnvio]['label'] : 'No disponible'
+          tipoPago = this.tipo_pago && this.tipo_pago[obj.typePayment] && this.tipo_pago[obj.typePayment]['label'] ? this.tipo_pago[obj.typePayment]['label'] : ''
           statusOrder = typeof obj.status !== 'undefined' ? this.estatus_options[obj.status]['label'] : ''
           tableOrder = obj.table !== 0 ? obj.table : 'No asignada'
           OrderClient.push({
