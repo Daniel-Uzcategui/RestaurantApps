@@ -6,7 +6,8 @@
       title="Usuarios"
       color="primary"
       style="border-radius: 28px"
-      :data="users"
+      :loading="loading"
+      :data="getUsers"
       :columns="columns"
       :dense="$q.screen.lt.md"
       row-key="id"
@@ -17,9 +18,11 @@
       :selected.sync="selected"
       >
       <template v-slot:top-right>
-        <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="$router.replace('/users/create')"/>
-        <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="deleted"/>
-        <q-btn flat color="white" no-caps push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn v-if="filter_id" color="accent" no-caps class="q-ma-md" push @click="filter_id = undefined" label="Eliminar filtro de usuario" />
+        <q-input label="Filtro por nombre" v-model="filter" />
+        <q-btn flat no-caps push label="Agregar" icon="add" @click="$router.replace('/users/create')"/>
+        <q-btn flat no-caps push label="Eliminar" icon="delete_outline" @click="deleted"/>
+        <q-btn flat no-caps push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -114,7 +117,7 @@
           <q-td colspan="2">
             <div class="text-left"><q-select options-selected-class="text-blue" filled map-options emit-value standout="bg-teal "
             :value="props.row.sexo"
-            @input="(e) => saved(e, props.row.typeAccess, props.row.id, 'sexo')"
+            @input="(e) => saved(e, props.row.sexo, props.row.id, 'sexo')"
             :options="sexo_options" /></div>
           </q-td>
         </q-tr>
@@ -293,19 +296,30 @@ export default {
   computed: {
     ...mapGetters('user', ['users']),
     getUsers () {
-      let userFilter = []
-      let userDetail
-      for (userDetail of this.users) {
-        if (userDetail.rol !== 'Client') {
-          userFilter.push(userDetail)
+      if (this.filter === '') {
+        if (this.filter_id) {
+          return this.users.filter(x => x.id === this.filter_id)
         }
+        return this.users
       }
-      console.log({ userFilter })
-      return userFilter
+      // let userFilter = []
+      return this.users.filter(x => (x.nombre + ' ' + x.apellido).toLowerCase().includes(this.filter))
+      // let userDetail
+      // for (userDetail of this.users) {
+      //   if (userDetail.rol !== 'Cliente') {
+      //     userFilter.push(userDetail)
+      //   }
+      // }
+      // console.log({ userFilter })
+      // return this.users
     }
   },
   mounted () {
-    this.bindusers()
+    this.bindusers().then(() => {
+      this.loading = false
+    }).catch(() => {
+      this.loading = false
+    })
     this.rolOpt = this.getPages()
   },
   methods: {
@@ -334,7 +348,7 @@ export default {
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
-        this.users.map(row => this.columns.map(col => wrapCsvValue(
+        this.getUsers.map(row => this.columns.map(col => wrapCsvValue(
           typeof col.field === 'function'
             ? col.field(row)
             : row[col.field === void 0 ? col.name : col.field],
@@ -357,7 +371,7 @@ export default {
       }
     },
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.users.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.getUsers.length}`
     },
     ...mapActions('user', ['deleteUsers', 'bindusers']),
     deleted () {
@@ -371,6 +385,7 @@ export default {
   data () {
     return {
       selected: [],
+      loading: true,
       columns: [
         { name: 'nombre', required: true, label: 'Nombre', align: 'left', field: 'nombre', sortable: true },
         { name: 'apellido', required: true, label: 'Apellido', field: 'apellido' },
@@ -378,6 +393,8 @@ export default {
         { name: 'status', required: true, label: 'Estatus', field: 'status' },
         { name: 'typeAccess', required: true, label: 'Tipo de Aplicación', field: 'typeAccess' }
       ],
+      filter: '',
+      filter_id: this.$route.query.filter || undefined,
       rolOpt: [],
       typeAccess_options: [
         { label: 'Proveedor', value: 'Proveedor' },

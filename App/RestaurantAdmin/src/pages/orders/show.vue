@@ -21,12 +21,16 @@
         <q-card-section class="q-mr-lg">
           <div v-if="typeof order !== 'undefined'">
             <div class="row header-container">
-              <div class="header-cell q-ma-sm col-2">
-                <p class="text-bold">{{userTitle()}}</p>
-                <p>
-                  {{getClientValue('nombre')}} {{getClientValue('apellido')}}
-                </p>
-              </div>
+            <div class="header-cell q-ma-sm col-2">
+              <p class="text-bold">{{userTitle()}}</p>
+                <q-btn
+                  push
+                  color="secondary"
+                  no-caps
+                  @click="$router.push({ path: '/users/index', query: { filter: getClientValue('id') } })"
+                  :label="getClientValue('nombre') + ' ' + getClientValue('apellido')"
+                />
+            </div>
               <div class="header-cell q-ma-sm col-1">
                 <p class="text-bold">Teléfono</p>
                 <p>{{getClientValue('phone')}}</p>
@@ -405,13 +409,12 @@
                     </div>
                     <q-popup-edit
                       :value="props.row.name"
-                      @show="() => showPopup(props.row, 'name')"
                     >
                       <q-input
                         filled
                         rounded
                         outlined
-                        @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                        @input="(e) => {saved(e, $route.query.Order_Id, `productos.${props.row.index}.name`)}"
                         :value="props.row.name"
                         dense
                       >
@@ -423,7 +426,7 @@
                       filled
                       rounded
                       outlined
-                      @input="(e) => consolee(e, props.row.quantity, props.row.id, 'quantity')"
+                      @input="(e) => {if (e > 0) {saved(parseInt(e), $route.query.Order_Id, `productos.${props.row.index}.quantity`)}}"
                       :value="props.row.quantity"
                       dense
                       type="number"
@@ -436,7 +439,7 @@
                       filled
                       rounded
                       outlined
-                      @input="(e) => saved(e, props.row.prodPrice, props.row.id, 'price')"
+                      @input="(e) => {if (e > -1) {saved(parseFloat(e), $route.query.Order_Id, `productos.${props.row.index}.prodPrice`)}}"
                       :value="props.row.prodPrice"
                       dense
                       type="number"
@@ -721,11 +724,6 @@ export default {
       return null
     },
     ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
-    // ...mapGetters('menu', ['menu', 'item', 'promos']),
-    // ...mapGetters('client', ['clients']),
-    // ...mapGetters('user', ['currentUser']),
-    // ...mapGetters('address', ['address']),
-    // ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['rates']),
     orderStatus () {
       if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
@@ -776,7 +774,7 @@ export default {
       console.log(this.orders, order, 'EPAAA')
       let products = order?.productos || {}
       for (let prods in products) {
-        orderArray.push(products[prods])
+        orderArray.push({ ...products[prods], index: prods })
       }
       console.log(orderArray, 'ORDEN ARRAY')
       return orderArray

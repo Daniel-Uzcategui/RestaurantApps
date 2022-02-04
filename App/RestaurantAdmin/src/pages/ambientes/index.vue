@@ -81,9 +81,11 @@ export default {
     if (this.currentUser && this.currentUser.id) {
       this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
     }
+    this.reset()
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),
+    ...mapActions(['reset']),
     async validation () {
       return this.isValidCharacterURL(this.url + this.suffix) && this.isValidCharacter(this.newname)
     },

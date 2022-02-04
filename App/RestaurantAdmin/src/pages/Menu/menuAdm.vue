@@ -517,7 +517,7 @@ export default {
         }
         if (this.category !== null) {
           return sorted.filter(x => {
-            return x && x.categoria && x.categoria.includes(this.category)
+            return x && x.categoria && x.categoria[this.category]
           })
         }
         return sorted
@@ -604,15 +604,22 @@ export default {
       noSelect: false
     }
   },
-  created () {
-    this.bindMenu().then((e) => {
-      this.menuTemp = JSON.parse(JSON.stringify(e))
-    })
-    this.bindCategorias()
-    this.bindLocalizations()
-    this.bindGroupComp()
-    this.bindItemGroup()
-    this.bindConfigs()
+  async mounted () {
+    try {
+      this.$q.loading.show()
+      await this.bindCategorias()
+      await this.bindLocalizations()
+      await this.bindGroupComp()
+      await this.bindItemGroup()
+      await this.bindConfigs()
+      await this.bindMenu().then((e) => {
+        this.menuTemp = JSON.parse(JSON.stringify(e))
+        console.log(e, JSON.parse(JSON.stringify(e)))
+      })
+      return this.$q.loading.hide()
+    } catch (error) {
+      return this.$q.loading.hide()
+    }
     // console.log({ cat: this.categorias, gr: this.groupComp })
   },
   methods: {
@@ -970,6 +977,9 @@ export default {
     }
   },
   watch: {
+    menu (e) {
+      this.menuTemp = JSON.parse(JSON.stringify(e))
+    }
     // category (e) {
     //   // console.log(e, 'jjjj')
     //   if (typeof e === 'undefined' || e === null) {

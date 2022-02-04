@@ -112,8 +112,9 @@ const serialize = (snapshot) => {
   // return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
   return { ...snapshot.data(), id: snapshot.id }
 }
-export const bindMenu = firestoreAction(({ bindFirestoreRef }) => {
+export const bindMenu = firestoreAction(async ({ bindFirestoreRef, unbindFirestoreRef }) => {
   console.log('bindingMenu')
+  await unbindFirestoreRef('menu')
   return bindFirestoreRef('menu', firestore()
     .collection('menu')
     .orderBy('softDelete', 'asc')

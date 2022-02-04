@@ -18,7 +18,8 @@
             </q-toolbar-title>
             <div>
                <q-btn icon="fas fa-user" no-caps class="text-caption" flat v-ripple @click.native="setEditUserDialog(true); setBlur()" />
-               <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="reset(); logoutUser()" >  </q-btn>
+                <q-btn flat icon="brightness_6" @click="nextTheme()" />
+               <q-btn no-caps class="text-caption" icon="fas fa-sign-out-alt" flat @click="logoutUser()" >  </q-btn>
                <q-dialog v-model="editUserDialog" persistent="persistent" @before-hide="setBlur">
                   <user-settings></user-settings>
                </q-dialog>
@@ -56,7 +57,7 @@
           <q-icon name="face"/>
         </q-item-section>
         <q-item-section>
-              <a class="text-white" flat type="a" unelevated :href="'https://' + amb + '.chopzi.com/#'" no-caps label="Vista en Cliente" target="_blank" >
+              <a :class="{'text-white': $q.dark.isActive}" flat type="a" unelevated :href="'https://' + amb + '.chopzi.com/#'" no-caps label="Vista en Cliente" target="_blank" >
           <q-item-label></q-item-label>
           <q-item-label>
               Ir a página cliente
@@ -101,7 +102,7 @@ export default {
     'ClassicLight': () => import('./themes/ClassicLight')
   },
   computed: {
-    themeUser () { return this.$route.fullPath === '/editor/index' ? 'GlassLight' : 'GlassDark' },
+    themeUser () { return this.selectedTheme || 'GlassDark' },
     ...mapGetters('user', ['currentUser', 'roles']),
     ...mapGetters('order', ['orders']),
     amb () {
@@ -190,6 +191,7 @@ export default {
   },
   data () {
     return {
+      selectedTheme: 'GlassDark',
       audio: {
         sources: [
           {
@@ -210,7 +212,6 @@ export default {
           icon: 'language',
           handler: () => {
             this.$router.push({ path: '/ambientes' })
-            this.reset()
           }
           // link: '#/ambientes'
         },
@@ -442,11 +443,20 @@ export default {
     }
   },
   methods: {
+    nextTheme () {
+      switch (this.selectedTheme) {
+        case 'GlassDark':
+          this.selectedTheme = 'ClassicLight'
+          break
+        case 'ClassicLight':
+          this.selectedTheme = 'GlassDark'
+          break
+      }
+    },
     ...mapActions('auth', ['logoutUser']),
     ...mapActions('order', ['bindOrders']),
     ...mapActions('config', ['bindEnv']),
     ...mapActions('menu', ['setValue']),
-    ...mapActions(['reset']),
     ...mapActions('user', ['updateUserData', 'bindRoles', 'updateLocalUserData']),
     setupNotif () {
       if (!('PushManager' in window)) {

@@ -3,7 +3,7 @@
      <div>
   </div>
     <div>
-      <q-table flat square
+      <q-table flat bordered
       class="table"
       :loading="loading"
       style="border-radius: 28px"
@@ -16,7 +16,7 @@
       rows-per-page-label=" "
       >
       <template v-slot:top-right>
-        <q-input label="Buscar Cliente" v-model="filtrado" filled  />
+        <q-input label="Buscar Cliente" v-model="filtrado" dark  />
         <div class="q-mr-sm">
       <q-badge v-if="dateRange !== null " color="blue-grey">
         {{ dateRange.from }} - {{ dateRange.to }}
