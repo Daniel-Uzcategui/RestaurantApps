@@ -65,11 +65,11 @@ export default {
         obj = this.orders[i]
         if (obj.status === 3) {
           //    console.log('valor', obj.cart)
-          for (item in obj.cart) {
+          for (item in obj.productos) {
             productos[j] = {
 
-              id: obj.cart[item].prodId,
-              name: obj.cart[item].name
+              id: obj.productos[item].prodId,
+              name: obj.productos[item].name
 
             }
             j++

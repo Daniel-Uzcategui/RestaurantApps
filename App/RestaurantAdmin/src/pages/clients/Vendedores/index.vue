@@ -97,15 +97,15 @@ export default {
       await this.bindOrders(this.getDateRange())
     }
 
-    if (!this.clients2.length) {
-      await this.bindClients2()
-    }
-    if (!this.localizations.length) {
-      await this.bindLocalizations()
-    }
-    if (!this.vendedor.length) {
-      await this.bindOnlyVendedor()
-    }
+    // if (!this.clients2.length) {
+    //   await this.bindClients2()
+    // }
+    // if (!this.localizations.length) {
+    //   await this.bindLocalizations()
+    // }
+    // if (!this.vendedor.length) {
+    //   await this.bindOnlyVendedor()
+    // }
 
     return (() => { this.loading = false; this.mostrar() })()
   },
@@ -164,8 +164,8 @@ export default {
                 cantidad = cantidad + 1
 
                 if (i === (this.aux.length - 1)) {
-                  auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
-                  sede = this.localizations.find(x => x.id === obj.sede)
+                  auxvendedor = obj.customer
+                  sede = obj.sede
                   this.ArreVendores.push({
                     id: obj.id,
                     idcustomer: obj.customer_id,
@@ -180,8 +180,8 @@ export default {
                 if (obj?.status === 3) {
                   montototal = montototal + obj.paid
                   cantidad = cantidad + 1
-                  auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
-                  sede = this.localizations.find(x => x.id === obj.sede)
+                  auxvendedor = obj.customer
+                  sede = obj.sede
                   this.ArreVendores.push({
                     id: obj.id,
                     idcustomer: obj.customer_id,
@@ -201,8 +201,10 @@ export default {
                 if ((obj.status === 3)) {
                   montototal = montototal + obj.paid
                   cantidad = cantidad + 1
-                  sede = this.localizations.find(x => x.id === obj.sede)
-                  auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+                  // sede = obj.sede
+                  sede = obj.sede.name
+                  // auxvendedor = obj.customer
+                  auxvendedor = obj.customer
                   this.ArreVendores.push({
                     id: obj.id,
                     idcustomer: obj.customer_id,
@@ -216,8 +218,8 @@ export default {
                 } else {
                   let encontrado = this.ArreVendores.find(x => x.id === obj.id)
                   if (encontrado === undefined) {
-                    sede = this.localizations.find(x => x.id === obj.sede)
-                    auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+                    sede = obj.sede
+                    auxvendedor = obj.customer
                     this.ArreVendores.push({
                       id: obj.id,
                       idcustomer: obj.customer_id,
@@ -239,8 +241,8 @@ export default {
             } else {
               montototal = obj.paid
               cantidad = cantidad + 1
-              sede = this.localizations.find(x => x.id === obj.sede)
-              auxvendedor = this.vendedor.find(x => x.id === obj.customer_id)
+              sede = obj.sede
+              auxvendedor = obj.customer
               this.ArreVendores.push({
                 id: obj.id,
                 idcustomer: obj.customer_id,
@@ -276,18 +278,17 @@ export default {
       this.detalle = this.orders.filter(x => ((x.customer_id === objeto.idcustomer) && (x.status === 3) && (x.tipEnvio === '3')))
       for (let i = 0; i < this.detalle.length; i++) {
         obj = this.detalle[i]
-        sede = this.localizations.find(x => x.id === obj.sede)
-        clientes = this.clients2.find(x => x.id === obj.buyOrderClient)
+        sede = obj.sede
+        // clientes = this.clients2.find(x => x.id === obj.buyOrderClient)
+        clientes = obj.buyOrder.Client
         console.log(obj.buyOrderClient, clientes)
         this.detalle2.push({
-
-          id: obj?.id,
-          factura: obj?.factura,
-          dateIn: obj?.dateIn,
-          paid: obj?.paid,
-          sede: sede?.name,
-          cliente: clientes?.name
-
+          id: obj.id,
+          factura: obj.factura,
+          dateIn: obj.dateIn,
+          paid: obj.paid,
+          sede: sede.name,
+          cliente: clientes?.name || 'Nombre no encontrado'
         })
       }
       console.log('los detalles', this.detalle)
@@ -332,10 +333,10 @@ export default {
       console.log('ordenes', this.orders, 'cantidad ordenes', this.orders.length)
       this.mostrar()
     },
-    localizations () {
-      console.log('sedes', this.localizations, 'cantidad sedes', this.localizations.length)
-    },
-    dateRange (e) {
+    // localizations () {
+    //   console.log('sedes', this.localizations, 'cantidad sedes', this.localizations.length)
+    // },
+    async dateRange (e) {
       this.loading = true
       if (e === null) {
         return this.bindOrders().then(() => {
@@ -345,18 +346,21 @@ export default {
       console.log(e, 'DateRange')
       let end = new Date(e.to)
       end.setDate(end.getDate() + 1)
-      this.bindOrders(
+      await this.bindOrders(
         {
           start: new Date(e.from),
           end: end
         }
       ).then(() => {
         this.loading = false
-      }).catch(e => console.error(e))
-    },
-    vendedor () {
-      console.log('vendedores', this.vendedor)
+      }).catch(e => {
+        this.loading = false
+        console.error(e)
+      })
     }
+    // vendedor () {
+    //   console.log('vendedores', this.vendedor)
+    // }
 
   }
 

@@ -29,12 +29,6 @@ export const createNewUser = async function ({ dispatch, commit }, data) {
   const { email, password, nombre, apellido, cedula, sexo, fecnac } = data
   const fbAuthResponse = await $fb.createUserWithEmail(email, password)
   const id = fbAuthResponse.user.uid
-  var user = $fb.auth().currentUser
-  user.sendEmailVerification().then(function () {
-    window.alert('Verification link sent to your email. Kinldy check to verify your account')
-  }).catch(error => console.log(error)
-  )
-
   let userRef = []
   // userRef.push($fb.userRef('users', id))
   userRef.push($fb.userRefMain('users', id))
@@ -53,7 +47,6 @@ export const createUser = async function ({ dispatch, commit }, data) {
     statusUbicacion, movilidad, statusdelivery,
     typeAccess, phone } = data
   const fbAuthResponse = await $fb.createUserWithEmail(email, password)
-
   const id = fbAuthResponse.user.uid
   const userRef = $fb.userRef('users', id)
   return addUserToUsersCollection2(
@@ -79,25 +72,7 @@ export const addUserToUsersCollection2 = async (state, userRef) => {
 export const loginUser = async function ({ commit }, payload) {
   const $fb = this.$fb
   const { email, password } = payload
-  let resultado = $fb.loginWithEmail(email, password)
-  if (resultado) {
-    console.log('usuario y password correcto')
-    $fb.auth().onAuthStateChanged((user) => {
-      if (user) {
-        var emailVerified = user.emailVerified
-        if (emailVerified === true) {
-          console.log('email verificado')
-          return $fb.loginWithEmail(email, password)
-        } else {
-          console.log('email no ferificado')
-        }
-      } else {
-        console.log('error')
-      }
-    })
-  } else {
-    console.log('email o correo incorrecto')
-  }
+  return $fb.loginWithEmail(email, password)
 }
 
 export const logoutUser = async function ({ commit }, payload) {
