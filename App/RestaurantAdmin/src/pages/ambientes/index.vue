@@ -73,13 +73,7 @@ export default {
     ...mapGetters('user', ['currentUser', 'ambientes'])
   },
   watch: {
-    // ambientes () {
-    //   this.$q.loading.hide()
-    //   this.$q.notify({
-    //     message: 'Ambiente creado exitosamente',
-    //     color: 'blue'
-    //   })
-    // },
+
     currentUser () {
       if (this.currentUser && this.currentUser.id) {
         this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
@@ -175,16 +169,29 @@ export default {
       }
       return true
     },
-    VerificarCorreo () {
-      auth().onAuthStateChanged((user1) => {
-        if (user1.emailVerified === true) {
-          this.ActivarUsuario = false
-        } else {
-          this.$q.notify({ message: 'No ha Verificado su Email, por favor revise su correo para Activar' })
-          this.$q.loading.hide()
-        }
+    async VerificarCorreo () {
+      let valor = await this.chequearemail()
+      console.log('este es el valor', valor)
+      if (valor) {
+        this.ActivarUsuario = true
+      }
+    },
+    chequearemail () {
+      return new Promise(resolve => {
+        auth().onAuthStateChanged(function (user) {
+          if (user) {
+            resolve(user)
+            if (user.emailVerified) {
+              console.log('usuario  validado')
+            } else {
+              console.log('usuario no validado')
+            }
+          }
+          resolve(null)
+        })
       })
     }
+
   }
 }
 </script>
