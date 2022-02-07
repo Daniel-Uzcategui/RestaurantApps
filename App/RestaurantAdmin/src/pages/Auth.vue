@@ -287,6 +287,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
   </q-page>
 </template>
 
@@ -325,6 +326,7 @@ export default {
   },
   data () {
     return {
+
       login: false,
       email: null,
       isPwd: true,
@@ -405,13 +407,22 @@ export default {
     },
     async onSubmit () {
       let validate = await this.authValidate()
-      if (validate) {
+      // this.validarUserActive(validate)
+      // this.setAuth(validate.user)
+      if (validate !== undefined) {
         return this.$router.push({ path: '/ambientes' })
       }
       return this.$q.notify({
         message: `Acceso no permitido`,
         color: 'negative'
       })
+    },
+    validarUserActive (uservalidate) {
+      console.log('el valor del usuario logeado', uservalidate)
+      if (uservalidate.user.emailVerified !== false) {
+        this.ActivarUsuario = true
+        console.log('pase')
+      }
     }
   }
   // watch: {

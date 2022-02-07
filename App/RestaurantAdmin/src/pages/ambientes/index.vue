@@ -42,11 +42,32 @@
       </transition-group>
     </q-card-section>
     </q-card>
+     <div>
+       <q-dialog v-model="ActivarUsuario"  persistent="persistent">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h5">Presione Enviar Correo para Verificación de Usuario</div>
+          <q-space />
+         </q-card-section>
+         <br>
+         <q-card-section>
+           &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            <q-btn label="Activar" flat round dense @click="VerificarCorreo()"/>
+            &nbsp; &nbsp; &nbsp;
+           <q-btn label="Enviar Correo" flat round dense @click="SendMail()"/>
+         </q-card-section>
+       <q-card-section>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    </div>
   </q-page>
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { auth } from '../../services/firebase/base'
 export default {
   computed: {
     ...mapGetters('user', ['currentUser', 'ambientes'])
@@ -63,11 +84,13 @@ export default {
       if (this.currentUser && this.currentUser.id) {
         this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
       }
+      this.VerificarCorreo()
     }
   },
   data () {
     return {
       creandoAmbiente: false,
+      ActivarUsuario: false,
       addnew: false,
       newname: '',
       url: '',
@@ -77,10 +100,7 @@ export default {
   },
   mounted () {
     if (!this.$store.state.auth.emailVerified) {
-      this.$q.dialog({
-        message: 'Le hemos enviado un correo para verificarlo',
-        persistent: true
-      })
+      this.ActivarUsuario = true
     }
     if (this.currentUser && this.currentUser.id) {
       this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e, this.currentUser), this.bindedAmb = true).catch((e) => console.error(e))
@@ -90,6 +110,14 @@ export default {
     ...mapActions('auth', ['logoutUser']),
     async validation () {
       return this.isValidCharacterURL(this.url + this.suffix) && this.isValidCharacter(this.newname)
+    },
+    SendMail () {
+      if (!this.currentUser.emailVerified) {
+        let user = auth().currentUser
+        user.sendEmailVerification().then(function () {
+        }).catch(error => console.log(error)
+        )
+      }
     },
     ambRoute (id) {
       localStorage.setItem('amb', id)
@@ -146,6 +174,16 @@ export default {
         return 'El campo solo admite números o letras'
       }
       return true
+    },
+    VerificarCorreo () {
+      auth().onAuthStateChanged((user1) => {
+        if (user1.emailVerified === true) {
+          this.ActivarUsuario = false
+        } else {
+          this.$q.notify({ message: 'No ha Verificado su Email, por favor revise su correo para Activar' })
+          this.$q.loading.hide()
+        }
+      })
     }
   }
 }

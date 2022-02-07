@@ -4,4 +4,5 @@ export default {
   uid: '',
   rol: null,
   emailVerified: false
+
 }

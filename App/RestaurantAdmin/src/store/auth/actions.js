@@ -29,11 +29,6 @@ export const createNewUser = async function ({ dispatch, commit }, data) {
   const { email, password, nombre, apellido, cedula, sexo, fecnac } = data
   const fbAuthResponse = await $fb.createUserWithEmail(email, password)
   const id = fbAuthResponse.user.uid
-  var user = $fb.auth().currentUser
-  user.sendEmailVerification().then(function () {
-    window.alert('Verification link sent to your email. Kinldy check to verify your account')
-  }).catch(error => console.log(error)
-  )
 
   let userRef = []
   // userRef.push($fb.userRef('users', id))
