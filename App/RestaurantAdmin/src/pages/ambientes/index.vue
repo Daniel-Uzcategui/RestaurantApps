@@ -110,8 +110,13 @@ export default {
       if (!this.currentUser.emailVerified) {
         let user = auth().currentUser
         user.sendEmailVerification().then(function () {
+
         }).catch(error => console.log(error)
         )
+        this.$q.notify({
+          message: `email ha sido enviado a su correo `,
+          color: 'negative'
+        })
       }
     },
     ambRoute (id) {
