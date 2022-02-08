@@ -73,12 +73,10 @@ export default {
     ...mapGetters('user', ['currentUser', 'ambientes'])
   },
   watch: {
-
     currentUser () {
       if (this.currentUser && this.currentUser.id) {
         this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
       }
-      this.VerificarCorreo()
     }
   },
   data () {
@@ -86,6 +84,7 @@ export default {
       creandoAmbiente: false,
       ActivarUsuario: false,
       addnew: false,
+
       newname: '',
       url: '',
       bindedAmb: false,
@@ -95,6 +94,8 @@ export default {
   mounted () {
     if (!this.$store.state.auth.emailVerified) {
       this.ActivarUsuario = true
+    } else {
+      this.ActivarUsuario = false
     }
     if (this.currentUser && this.currentUser.id) {
       this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e, this.currentUser), this.bindedAmb = true).catch((e) => console.error(e))
@@ -170,10 +171,18 @@ export default {
       return true
     },
     async VerificarCorreo () {
-      let valor = await this.chequearemail()
-      console.log('este es el valor', valor)
-      if (valor) {
-        this.ActivarUsuario = true
+      console.log('este es el valor que viene del storage', this.$store.state.auth.emailVerified)
+      // this.$forceUpdate()
+      this.$router.go(0)
+      console.log('este es el valor que viene del storage', this.$store.state.auth.emailVerified)
+      if (!this.$store.state.auth.emailVerified) {
+        let valor = await this.chequearemail()
+        console.log('este es el valor', valor)
+        if (valor) {
+          this.ActivarUsuario = true
+        }
+      } else {
+        this.ActivarUsuario = false
       }
     },
     chequearemail () {
