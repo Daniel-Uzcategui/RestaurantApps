@@ -221,7 +221,7 @@ export default {
     }
   },
   mounted () {
-    this.bindusers()
+    // this.bindusers()
   },
   methods: {
     ...mapActions('auth', ['createNewUser', 'loginUser', 'GoogleSignIn', 'GoogleSignInMobile', 'logoutUser']),

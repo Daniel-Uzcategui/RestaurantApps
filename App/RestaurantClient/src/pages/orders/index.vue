@@ -12,8 +12,8 @@
          <q-card-section :style="$q.screen.gt.sm ? 'margin-left: 20vmin' : ''">
             <div class="row justify-center">
                <q-spinner v-if="loading" size="lg" color="primary" />
-               <p v-if="orderSort.length === 0 && !loading" class="text-h4 text-center">No existen pasadas ordenes</p>
-               <q-list style="min-width: 300px" :class="'q-pa-' + $q.screen.name" class="col-6 q-pb-xl relative-position" separator v-for="(items, index) in orderSort" :key="index">
+               <p v-if="orders.length === 0 && !loading" class="text-h4 text-center">No existen ordenes pasadas</p>
+               <q-list style="min-width: 300px" :class="'q-pa-' + $q.screen.name" class="col-6 q-pb-xl relative-position" separator v-for="(items, index) in orders" :key="index">
                   <q-item @click="carritoDialog(items)" clickable v-ripple>
                      <q-item-section>
                         <q-icon name="fas fa-dot-circle" class="absolute-top" size="50px" :style="getcolor(items.status)" v-if="items.status == 4"/>
@@ -194,39 +194,39 @@ export default {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos']),
     ...mapGetters('editor', ['page']),
     ...mapGetters('config', ['rates']),
-    orderSort () {
-      var ord = this.orders.map(x => {
-        return {
-          userComment: typeof x.userComment === 'undefined' ? '' : x.userComment,
-          id: x.id,
-          address: x.address,
-          cart: x.cart,
-          customer_id: x.customer_id,
-          dateIn: x.dateIn,
-          factura: x.factura,
-          productos: x.productos,
-          paid: x.paid,
-          sede: x.sede,
-          cuponTotal: x.cuponTotal,
-          status: x.status,
-          table: x.table,
-          tipEnvio: x.tipEnvio,
-          typePayment: x.typePayment,
-          photo: x.photo,
-          payto: x.payto,
-          orderWhen: x.orderWhen,
-          delivery: x.delivery
-        }
-      })
-      return ord.sort((a, b) => {
-        if (typeof b.factura === 'undefined') {
-          return 999999 - a.factura
-        } else if (typeof a.factura === 'undefined') {
-          return b.factura - 999999
-        }
-        return b.factura - a.factura
-      })
-    },
+    // orderSort () {
+    //   var ord = this.orders.map(x => {
+    //     return {
+    //       userComment: typeof x.userComment === 'undefined' ? '' : x.userComment,
+    //       id: x.id,
+    //       address: x.address,
+    //       cart: x.cart,
+    //       customer_id: x.customer_id,
+    //       dateIn: x.dateIn,
+    //       factura: x.factura,
+    //       productos: x.productos,
+    //       paid: x.paid,
+    //       sede: x.sede,
+    //       cuponTotal: x.cuponTotal,
+    //       status: x.status,
+    //       table: x.table,
+    //       tipEnvio: x.tipEnvio,
+    //       typePayment: x.typePayment,
+    //       photo: x.photo,
+    //       payto: x.payto,
+    //       orderWhen: x.orderWhen,
+    //       delivery: x.delivery
+    //     }
+    //   })
+    //   return ord.sort((a, b) => {
+    //     if (typeof b.factura === 'undefined') {
+    //       return 999999 - a.factura
+    //     } else if (typeof a.factura === 'undefined') {
+    //       return b.factura - 999999
+    //     }
+    //     return b.factura - a.factura
+    //   })
+    // },
     typePay () {
       if (typeof this.ordenDet === 'undefined') {
         return ''
@@ -311,7 +311,7 @@ export default {
     ...mapActions('editor', ['bindPage']),
     ...mapActions('config', ['bindRates']),
     formatDate (e) {
-      return date.formatDate(e.seconds * 1000, 'DD-MM')
+      return date.formatDate(e?.seconds * 1000, 'DD-MM')
     },
     getAddById (id) {
       if (id === '') { return }
@@ -384,16 +384,19 @@ export default {
       })
     }
   },
-  created () {
-    this.bindOrders(this.currentUser.id).then(() => { this.loading = false })
+  async mounted () {
+    // this.init()
+    await this.bindOrders(this.currentUser.id).then(() => { this.loading = false; console.log('Epa listo') }).catch((e) => console.error(e))
     //  this.bindPage()
-    this.bindAddress(this.currentUser.id)
-    this.bindRates()
-    console.log(this.rates)
+    await this.bindAddress(this.currentUser.id)
+    await this.bindRates()
+    // console.log(this.rates)
+    // console.log(this.rates)
     //  this.bindMenu()
     //  this.bindCategorias()
     //  this.bindPromos()
     //  this.bindGroupComp()
+    return console.log('Listo created')
   }
 }
 </script>

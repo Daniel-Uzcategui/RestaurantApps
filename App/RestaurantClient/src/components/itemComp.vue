@@ -176,8 +176,8 @@ export default {
       default: () => []
     },
     value: {
-      type: Object,
-      default: () => {}
+      type: Array,
+      default: () => []
     },
     readOnly: {
       type: Boolean,

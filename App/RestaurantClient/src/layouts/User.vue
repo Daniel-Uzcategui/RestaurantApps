@@ -1087,9 +1087,9 @@ export default {
     Tawk_API () {
       // console.log('asdasdasd')
     },
-    getCartQ (e) {
-      console.log(e, 'Getcart')
-    },
+    // getCartQ (e) {
+    //   console.log(e, 'Getcart')
+    // },
     fullPath (d) {
       var css
       let obj = this.blocks

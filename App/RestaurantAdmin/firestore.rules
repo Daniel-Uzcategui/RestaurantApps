@@ -1,17 +1,16 @@
 rules_version = '2';
 service cloud.firestore {
   // match /{document=**} {
-  //   	allow read, write: if true;
+  //   	allow read: if true;
   //   }
-  match /databases/{database} {
-    function isUserAdminV(user, ambiente) {
-        return get(/databases/$(database)/documents/ambiente/$(ambiente)/users/$(user)).data.typeAccess == "Admin" || 'Vendedor'
-      }
+  match /databases/{database}/documents {
+    // function isUserAdminV(user, ambiente) {
+    //   	return get(/databases/$(database)/documents/ambiente/$(user)/users/$(ambiente.ambiente)).data.typeAccess == "Admin"
+    //   }
     match /{path=**}/branches/{branch} {
-        // Authenticated users can retrieve only their own transactions
-        allow read, write: if isUserAdminV(resource.data.user, resource.data);
+        allow read: if true
       }
-      match /documents/ambiente/{ambiente} {
+      match /ambiente/{ambiente} {
 
         function isUserAdmin(user) {
           return get(/databases/$(database)/documents/ambiente/$(ambiente)/users/$(user)).data.typeAccess == "Admin"
@@ -59,7 +58,8 @@ service cloud.firestore {
           allow read: if true;
         }
         match /orders/{ord} {
-          allow read: if request.auth.uid == resource.data.customer_id || isUserAdmin(request.auth.uid);
+          // allow read: if request.auth.uid == resource.data.customer_id || isUserAdmin(request.auth.uid);
+          allow read: if true;
           allow create: if true;
           allow update: if isUserAdmin(request.auth.uid) || (request.resource.data.diff(resource.data).affectedKeys()
             .hasOnly(['userComment']));

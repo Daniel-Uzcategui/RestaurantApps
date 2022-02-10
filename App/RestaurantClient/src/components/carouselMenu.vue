@@ -9,7 +9,7 @@
       :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
       <slide ref="slide" class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
         <div  ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
-            <q-card ref="qcardslide" v-ripple @click="checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#393939'},{'color': '#FFFFFF'}]">
+            <q-card ref="qcardslide" v-ripple @click="checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="($q.screen.gt.xs ? 'item-md' : 'item-xs') + ' ' + card_class" class="row justify-center" :style=" card_style || `background-color: #393939;color:#FFFFFF`">
               <div  ref="div4" class="container-photo">
                   <q-img img-class="clasedeimagen" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
               </div>
@@ -55,6 +55,14 @@ export default {
       default: 'Más productos'
     },
     global_class: {
+      type: String,
+      default: ''
+    },
+    card_style: {
+      type: String,
+      default: ''
+    },
+    card_class: {
       type: String,
       default: ''
     },

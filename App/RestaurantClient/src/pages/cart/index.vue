@@ -384,25 +384,25 @@ export default {
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
       return tip
     },
-    promoData () {
-      var prom = []
-      this.promos.forEach(e => {
-        var y = { prods: [] }
-        e.prods.forEach(i => {
-          var its = this.menu.find(x => x.id === i.id)
-          y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock })
-        })
-        y.name = e.name
-        y.id = e.id
-        y.price = e.price
-        y.estatus = e.estatus
-        y.descripcion = e.descripcion
-        y.prodType = 1
-        y.photo = e.photo
-        prom.push(y)
-      })
-      return prom
-    },
+    // promoData () {
+    //   var prom = []
+    //   this.promos.forEach(e => {
+    //     var y = { prods: [] }
+    //     e.prods.forEach(i => {
+    //       var its = this.menu.find(x => x.id === i.id)
+    //       y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock })
+    //     })
+    //     y.name = e.name
+    //     y.id = e.id
+    //     y.price = e.price
+    //     y.estatus = e.estatus
+    //     y.descripcion = e.descripcion
+    //     y.prodType = 1
+    //     y.photo = e.photo
+    //     prom.push(y)
+    //   })
+    //   return prom
+    // },
     meta () {
       return {
         id: this.currentUser.id,
@@ -764,7 +764,10 @@ export default {
       console.log({ deliveryview })
       let customer = this.currentUser
       let cartManage = this.cartMan()
-      let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, address: this.addId.id, addressC: this.addId, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: this.tipEnvio === '1' ? parseFloat((parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2)) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      if (this.addId && this.addId.id) {
+        order = { ...order, address: this.addId.id, addressC: this.addId }
+      }
       if (typeof details !== 'undefined' && typeof details.id === 'undefined') { order = { ...order, paypal: details } }
       if (typeof details !== 'undefined' && typeof details.id !== 'undefined') { order = { ...order, onlinePay: details } }
       if (this.cupons?.length) {
@@ -970,33 +973,33 @@ export default {
           }
         } else { return [0, exists] }
       } else {
-        var promotion = this.promoData.find(e => e.id === id)
-        for (let e in promotion.prods) {
-          product = promotion.prods[e]
-          counter = 0
-          inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-          inCart.forEach(element => {
-            counter = element.quantity + counter
-          })
-          this.cart.forEach(y => {
-            if (typeof y.prods !== 'undefined') {
-              var producto = y.prods.find(j => j.id === promotion.prods[e].id)
-              if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-              counter = (producto.quantity * y.quantity) + counter
-            }
-          })
-          exists = 0
-          if (counter) { exists = 1 }
+        // var promotion = this.promoData.find(e => e.id === id)
+        // for (let e in promotion.prods) {
+        //   product = promotion.prods[e]
+        //   counter = 0
+        //   inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
+        //   inCart.forEach(element => {
+        //     counter = element.quantity + counter
+        //   })
+        //   this.cart.forEach(y => {
+        //     if (typeof y.prods !== 'undefined') {
+        //       var producto = y.prods.find(j => j.id === promotion.prods[e].id)
+        //       if (typeof producto === 'undefined') { producto = { quantity: 0 } }
+        //       counter = (producto.quantity * y.quantity) + counter
+        //     }
+        //   })
+        //   exists = 0
+        //   if (counter) { exists = 1 }
 
-          if (typeof product !== 'undefined') {
-            if (counter > parseInt(product.stock[this.sede])) {
-              return [2, exists]
-            } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
-              return [0, exists]
-            }
-          }
-        }
-        return [1, exists]
+        //   if (typeof product !== 'undefined') {
+        //     if (counter > parseInt(product.stock[this.sede])) {
+        //       return [2, exists]
+        //     } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
+        //       return [0, exists]
+        //     }
+        //   }
+        // }
+        // return [1, exists]
       }
     },
     payment (status) {

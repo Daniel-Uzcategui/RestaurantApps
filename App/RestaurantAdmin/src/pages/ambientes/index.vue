@@ -78,6 +78,11 @@ export default {
     }
   },
   mounted () {
+    if (!this.$store.state.auth.emailVerified) {
+      this.ActivarUsuario = true
+    } else {
+      this.ActivarUsuario = false
+    }
     if (this.currentUser && this.currentUser.id) {
       this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
     }

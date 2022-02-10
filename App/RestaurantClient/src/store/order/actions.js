@@ -36,7 +36,8 @@ const serialize = (snapshot) => {
   // return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
   return { ...snapshot.data(), id: snapshot.id }
 }
-export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
-  console.log('bindorders')
-  return bindFirestoreRef('orders', firestore().collection('orders').where('customer_id', '==', payload), { reset: false, serialize: serialize, wait: true })
+export const bindOrders = firestoreAction(async ({ bindFirestoreRef, unbindFirestoreRef }, payload) => {
+  console.log('bindorders', payload)
+  const e = await bindFirestoreRef('orders', firestore().collection('orders').where('customer.id', '==', payload).orderBy('dateIn'), { reset: false, serialize: serialize, wait: true })
+  return e
 })

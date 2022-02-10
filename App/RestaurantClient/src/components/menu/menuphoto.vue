@@ -11,21 +11,37 @@
         top: -109%;
         left: -135%;"
         src="https://firebasestorage.googleapis.com/v0/b/pokeujz3w.appspot.com/o/Editor%2FPhotos%2FUnion%2016611559523208?alt=media&token=dde13ab5-c671-4ca2-8eb6-2c9a838a6236" alt="fondo">
-      <div class="diagphcont2" v-if="displayVal && displayVal.photo && !photoArray">
-        <img alt="producto" class="diagph" :style="photoStyle" contain :src="displayVal.photo" >
+      <div class="diagphcont2" style="overflow: visible !important" v-if="displayVal && displayVal.photo && !photoArray">
+        <img alt="producto" style="overflow: visible !important" class="diagph" :style="photoStyle" contain :src="displayVal.photo" >
       </div>
           <q-carousel
             v-model="slide"
-            v-if="displayVal && displayVal.photo && photoArray"
+            v-if="displayVal && displayVal.photo && photoArray && !$q.platform.is.ios"
             arrows
-            control-color="primary"
+            control-color="secondary"
             navigation
             infinite
             class="bg-transparent diagphcarousel absolute-center"
             style="overflow: visible !important;"
           >
             <q-carousel-slide style="overflow: visible !important" v-for="(photo, index) in displayVal.photomulti" :key="index" :name="index">
-              <img alt="producto" class="absolute-center imagecarousel" :style="photoStyle" contain :src="photo" >
+              <img alt="producto"  style="overflow: visible !important;" class="absolute-center imagecarousel" :style="photoStyle" contain :src="photo" >
+            </q-carousel-slide>
+          </q-carousel>
+          <q-carousel
+            v-model="slide"
+            v-if="displayVal && displayVal.photo && photoArray  && $q.platform.is.ios"
+            arrows
+            control-color="secondary"
+            navigation
+            padding
+            infinite
+            class="bg-transparent diagphcarousel absolute-center"
+          >
+            <q-carousel-slide v-for="(photo, index) in displayVal.photomulti" :key="index" :name="index">
+              <div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">
+              <q-img alt="producto"  style="overflow: visible !important;" class="rounded-borders col-12 full-heigh" :style="photoStyle" contain :src="photo" />
+        </div>
             </q-carousel-slide>
           </q-carousel>
   </div>
