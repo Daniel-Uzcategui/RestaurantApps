@@ -405,6 +405,7 @@ export default {
     },
     async onSubmit () {
       let validate = await this.authValidate()
+      console.log(validate, 'VALIDATE')
       if (validate) {
         return this.$router.push({ path: '/ambientes' })
       }

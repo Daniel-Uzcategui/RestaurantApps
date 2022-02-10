@@ -44,23 +44,31 @@
       </transition-group>
     </q-card-section>
     </q-card>
+    <q-dialog v-model="ActivarUsuario"  persistent="persistent">
+      <q-card class="q-cardGlass">
+        <q-card-section>
+          <div class="text-h5">Porfavor verifique su correo electrónico</div>
+         </q-card-section>
+         <q-card-section>
+           Si la verificación no ocurre automáticamente refresque la página
+           </q-card-section>
+          <q-separator />
+         <q-card-actions class="row justify-around">
+           <q-btn label="Enviar Correo" color="purple" rounded no-caps @click="SendMail()"/>
+         </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { auth } from '../../services/firebase/base'
 export default {
   computed: {
     ...mapGetters('user', ['currentUser', 'ambientes'])
   },
   watch: {
-    // ambientes () {
-    //   this.$q.loading.hide()
-    //   this.$q.notify({
-    //     message: 'Ambiente creado exitosamente',
-    //     color: 'blue'
-    //   })
-    // },
     currentUser () {
       if (this.currentUser && this.currentUser.id) {
         this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
@@ -70,6 +78,7 @@ export default {
   data () {
     return {
       creandoAmbiente: false,
+      ActivarUsuario: false,
       addnew: false,
       newname: '',
       url: '',
@@ -78,28 +87,63 @@ export default {
     }
   },
   mounted () {
-    if (!this.$store.state.auth.emailVerified) {
+    if (!auth().currentUser.emailVerified) {
       this.ActivarUsuario = true
     } else {
       this.ActivarUsuario = false
     }
     if (this.currentUser && this.currentUser.id) {
-      this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e), this.bindedAmb = true).catch((e) => console.error(e))
+      this.bindAmbiente(this.currentUser.id).then(e => console.log('Hello', e, this.currentUser), this.bindedAmb = true).catch((e) => console.error(e))
     }
-    this.reset()
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),
-    ...mapActions(['reset']),
     async validation () {
       return this.isValidCharacterURL(this.url + this.suffix) && this.isValidCharacter(this.newname)
+    },
+    SendMail () {
+      let notif = this.$q.notify
+      if (!this.currentUser.emailVerified) {
+        let user = auth().currentUser
+        user.sendEmailVerification().then(() => {
+          notif({
+            message: `email ha sido enviado a su correo `,
+            color: 'green'
+          })
+          this.checkAuth(this)
+        }).catch(error => {
+          if (error.code === 'auth/too-many-requests') {
+            return notif({
+              message: `Ha realizado muchas solicitudes espere unos minutos`,
+              color: 'red'
+            })
+          }
+          notif({
+            message: `Ocurrió un error, intente más tarde, verifique su conexión`,
+            color: 'red'
+          })
+          console.log(error)
+        }
+        )
+      }
+    },
+    checkAuth (that) {
+      let thet = that
+      let refreshIntervalId = setInterval(function () {
+        auth().currentUser.reload()
+        if (auth().currentUser.emailVerified) {
+          console.log('Email Verified!')
+          clearInterval(refreshIntervalId)
+          thet.ActivarUsuario = false
+        }
+      }, 1000)
     },
     ambRoute (id) {
       localStorage.setItem('amb', id)
       this.$router.push({ path: '/home' })
     },
     async createAmbiente () {
-      this.$q.loading.show({ message: 'Creando Tienda' })
+      this.$q.loading.show({ message: 'Creando ambiente' })
       try {
         this.$refs.alias.validate()
         let valid2 = await this.$refs.url.validate()
@@ -111,7 +155,7 @@ export default {
             'user': this.currentUser
           }).then(e => console.log(e)).catch(e => console.log(e), this.addnew = false, this.$q.loading.hide())
           return this.$q.notify({
-            message: 'Tienda creada exitosamente',
+            message: 'Ambiente creado exitosamente',
             color: 'blue'
           })
         } else {
@@ -119,7 +163,7 @@ export default {
         }
       } catch (error) {
         console.error(error)
-        this.$q.notify({ message: 'Error creando Tienda, verifique su conexión a internet e intente más tarde' })
+        this.$q.notify({ message: 'Error creando ambiente, verifique su conexión a internet e intente más tarde' })
         this.$q.loading.hide()
       }
     },
@@ -149,6 +193,36 @@ export default {
         return 'El campo solo admite números o letras'
       }
       return true
+    },
+    async VerificarCorreo () {
+      console.log('este es el valor que viene del storage', this.$store.state.auth.emailVerified)
+      // this.$forceUpdate()
+      this.$router.go(0)
+      console.log('este es el valor que viene del storage', this.$store.state.auth.emailVerified)
+      if (!this.$store.state.auth.emailVerified) {
+        let valor = await this.chequearemail()
+        console.log('este es el valor', valor)
+        if (valor) {
+          this.ActivarUsuario = true
+        }
+      } else {
+        this.ActivarUsuario = false
+      }
+    },
+    chequearemail () {
+      return new Promise(resolve => {
+        auth().onAuthStateChanged(function (user) {
+          if (user) {
+            resolve(user)
+            if (user.emailVerified) {
+              console.log('usuario  validado')
+            } else {
+              console.log('usuario no validado')
+            }
+          }
+          resolve(null)
+        })
+      })
     }
   }
 }

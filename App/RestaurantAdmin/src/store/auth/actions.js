@@ -10,14 +10,11 @@ export const addUserToUsersCollection = async (state, userRef) => {
   const
     { email, nombre, apellido, cedula, id, sexo, fecnac } = state,
     user = new User({ email, nombre, apellido, cedula, id, sexo, fecnac, status, admin, typeAccess, DateIn })
-  let userSet1 = await userRef[0].set({ ...user }, { merge: true })
-  let userSetDelayForTrigger = await delay(3000)
-  if (userSet1 && userSetDelayForTrigger) {
-    return 1
-  }
-}
-function delay (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return userRef.set({ ...user }, { merge: true }).then(doc => {
+    return true
+  }).catch(e => {
+    return false
+  })
 }
 export const createNewUser = async function ({ dispatch, commit }, data) {
   const $fb = this.$fb
@@ -29,9 +26,7 @@ export const createNewUser = async function ({ dispatch, commit }, data) {
   const { email, password, nombre, apellido, cedula, sexo, fecnac } = data
   const fbAuthResponse = await $fb.createUserWithEmail(email, password)
   const id = fbAuthResponse.user.uid
-  let userRef = []
-  // userRef.push($fb.userRef('users', id))
-  userRef.push($fb.userRefMain('users', id))
+  let userRef = $fb.userRefMain('users', id)
   return addUserToUsersCollection({ email, nombre, apellido, cedula, id, sexo, fecnac, status, admin, typeAccess, DateIn }, userRef)
 }
 
