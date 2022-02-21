@@ -168,7 +168,7 @@ import { copyToClipboard } from 'quasar'
 import carouselmenu from './carouselMenu.vue'
 import itemcomp from './itemComp'
 import addresses from './addresses'
-import orderdate from './orderdate'
+import orderdate from './orderDate'
 import Top from './menu/classic/qdiagtop.vue'
 export default {
   name: 'q-dialog-menu',

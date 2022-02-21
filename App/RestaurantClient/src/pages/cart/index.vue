@@ -196,10 +196,17 @@
                       @click='payment' />
                      </div>
                   </div>
-                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7">
+                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7 || pagoSel ===10 || pagoSel ===11">
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 2">
                         <div class="text-center">
                           <div class="text-h5 ">Zelle</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.zelleEmail}}</span>
+                          </div>
+                        </div>
+                        <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 10">
+                        <div class="text-center">
+                          <div class="text-h5 ">Zelle Novared</div>
                           <div class="text-caption text-center filler-bottom"></div>
                             <span class="label">{{config.zelleEmail}}</span>
                           </div>
@@ -214,6 +221,13 @@
                        <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 8">
                         <div class="text-center">
                           <div class="text-h5 ">Pago Móvil</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.pagomovil}}</span>
+                          </div>
+                        </div>
+                        <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 11">
+                        <div class="text-center">
+                          <div class="text-h5 ">Pago Móvil Novared</div>
                           <div class="text-caption text-center filler-bottom"></div>
                             <span class="label">{{config.pagomovil}}</span>
                           </div>
@@ -265,6 +279,28 @@
                      </div>
                      <div v-else>No hay tasa de cambio colocada</div>
                     </div>
+                      <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 10">
+                       <div v-if="ratesComp.length">
+                       <NovaredPayment
+                         :ordersId=currentUser.cedula
+                         :credit="true"
+                          :total="totalPrice"
+                        @payment-done='payment' />
+
+                        </div>
+                     <div v-else>No hay tasa de cambio colocada</div>
+                    </div>
+                      <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 11">
+                       <div v-if="ratesComp.length">
+                       <NovaredPagomovil
+                         :ordersId=currentUser.cedula
+                         :credit="true"
+                          :amount="getRates(totalPrice + deliveryPrice)"
+                        @payment-done='payment' />
+
+                        </div>
+                     <div v-else>No hay tasa de cambio colocada</div>
+                    </div>
                     <div class="q-pt-md col-12 column items-center">
                       <div>
                       <div v-if="tipEnvio === '1'">
@@ -311,7 +347,6 @@
       </q-dialog>
    </q-page>
 </template>
-
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 // import Addresses from '../../components/addresses.vue'
@@ -319,6 +354,8 @@ import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
 import { QUploaderBase, date } from 'quasar'
+import NovaredPayment from '../../components/payment/novared.vue'
+import NovaredPagomovil from '../../components/payment/pagomovilnovared.vue'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 import ClassicList from '../../components/cart/classicList/classicList.vue'
 import Addresses from '../../components/addresses.vue'
@@ -333,6 +370,8 @@ export default {
     debitPayment,
     clientList,
     creditPayment,
+    NovaredPayment,
+    NovaredPagomovil,
     photoUpload,
     ClassicList,
     Addresses
@@ -382,27 +421,10 @@ export default {
       if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
       if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Zelle Novared', value: 10, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredpagomovil) { tip.push({ label: 'Pago Movil Novared', value: 11, color: 'blue' }) }
       return tip
     },
-    // promoData () {
-    //   var prom = []
-    //   this.promos.forEach(e => {
-    //     var y = { prods: [] }
-    //     e.prods.forEach(i => {
-    //       var its = this.menu.find(x => x.id === i.id)
-    //       y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock })
-    //     })
-    //     y.name = e.name
-    //     y.id = e.id
-    //     y.price = e.price
-    //     y.estatus = e.estatus
-    //     y.descripcion = e.descripcion
-    //     y.prodType = 1
-    //     y.photo = e.photo
-    //     prom.push(y)
-    //   })
-    //   return prom
-    // },
     meta () {
       return {
         id: this.currentUser.id,
@@ -455,12 +477,9 @@ export default {
     }
   },
   async created () {
-    // console.log('created page')
-    // this.bindLocalizations()
     this.bindPaymentServ().then(() => {
     }).catch(e => console.error('error fetching data firebase', { e }))
-    // console.log(this.cart)
-    // console.log(this.$refs)
+
     this.bindConfigs().then(() => { this.loadingConfig = false }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
@@ -470,10 +489,9 @@ export default {
           .then(e => { this.rateDefault = [{ rateValue: e?.data?.USD?.promedio, currency: 'Bs' }] }).catch(e => console.error('error fetching data ratesApi', { e }))
       }
     }).catch(e => console.error('error fetching data firebase', { e }))
-    // console.log(this.rates)
   },
   mounted () {
-    // console.log('mounted')
+
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -496,32 +514,9 @@ export default {
       let res
       try {
         const url = window.location.origin + '/getcoupon'
-        // const url = 'https://us-central1-restaurant-testnet.cloudfunctions.net/GetCoupon'
-        // const url = 'http://localhost:5001/restaurant-testnet/us-central1/GetCoupon'
+
         res = await this.$axios.post(url, { ambiente: localStorage.getItem('amb'), cupon: cupon.toUpperCase() })
-        // res = {
-        //   'empty': false,
-        //   'exclude': {
-        //     'products': [
-        //       'dkv3J0b3JZacBjPvIpFo'
-        //     ],
-        //     'categories': [
-        //       'dkv3J0b3JZacBjPvIpFo', 'WV6hfwummfD2gKIi7iWA', 'tHI2fYnPse6SunOczMmx', 'ZixLLq4Bp1DRbzcA5nsE', 'QzXVdAhocxcDlZYxIRIk', '5blcubYNhSyLoRIUfaph', 'jcgbPgfsyQ32bbtNhs3y', 'eqDbgoHcIPzt01RgTpG8'
-        //     ]
-        //   },
-        //   'include':
-        //     {
-        //       'categories': [
-        //         'dkv3J0b3JZacBjPvIpFo'
-        //       ],
-        //       'products': [
-        //         'dkv3J0b3JZacBjPvIpFo'
-        //       ]
-        //     },
-        //   'name': 'mayospicy',
-        //   'includeAll': true,
-        //   'discount': 10
-        // }
+
         console.log({ res })
       } catch (e) {
         console.error(e)
@@ -718,12 +713,7 @@ export default {
       let timeStamp = Date.now()
       let today = date.formatDate(timeStamp, 'dddd').toLowerCase()
       let sedecfg = this.configDates
-      // // console.log('getDays')
-      // // console.log(this.configDates)
-      // // console.log(this.configurations)
-      // // console.log('sedecfg', sedecfg)
-      // // console.log(today)
-      // // console.log(this.sede)
+
       if (typeof sedecfg !== 'undefined' && typeof this.configDates !== 'undefined') {
         for (let today1 of sedecfg.days[today]) {
           let hrClose = today1.close.substr(0, 2)
@@ -973,33 +963,7 @@ export default {
           }
         } else { return [0, exists] }
       } else {
-        // var promotion = this.promoData.find(e => e.id === id)
-        // for (let e in promotion.prods) {
-        //   product = promotion.prods[e]
-        //   counter = 0
-        //   inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-        //   inCart.forEach(element => {
-        //     counter = element.quantity + counter
-        //   })
-        //   this.cart.forEach(y => {
-        //     if (typeof y.prods !== 'undefined') {
-        //       var producto = y.prods.find(j => j.id === promotion.prods[e].id)
-        //       if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-        //       counter = (producto.quantity * y.quantity) + counter
-        //     }
-        //   })
-        //   exists = 0
-        //   if (counter) { exists = 1 }
 
-        //   if (typeof product !== 'undefined') {
-        //     if (counter > parseInt(product.stock[this.sede])) {
-        //       return [2, exists]
-        //     } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
-        //       return [0, exists]
-        //     }
-        //   }
-        // }
-        // return [1, exists]
       }
     },
     payment (status) {
@@ -1094,6 +1058,7 @@ export default {
       }
     }
   }
+
 }
 </script>
 <style lang="stylus">
