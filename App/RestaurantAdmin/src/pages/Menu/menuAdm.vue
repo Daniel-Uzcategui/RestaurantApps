@@ -225,7 +225,26 @@
                           </q-dialog>
                 </q-td>
               </q-item>
-              <q-item class="row justify-center"  :props="props">
+              <q-item class="row justify-start"  :props="props">
+                <div class="col-6 col-lg-6 col-sm-12 q-pa-xs">
+                <p class="text-bold">Precio</p>
+                  <q-decimal
+                  dense
+                  filled
+                  :rules="[validate]"
+                  rounded
+                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                  v-model="props.row.price"
+                  input-style="text-align: right">
+                  </q-decimal>
+                </div>
+              </q-item>
+              <q-expansion-item
+                expand-separator
+                icon="settings"
+                label="Avanzado"
+              >
+              <q-item class="row justify-start"  :props="props">
                   <div class="col-6 q-pa-xs">
                     <p class="text-bold">Stock <span class="text-caption">(Cantidad disponible para venta) </span></p>
                     <q-input filled dense
@@ -252,19 +271,27 @@
                     />
                   </div>
               </q-item>
-              <q-item class="row justify-center"  :props="props">
-                <div class="col-6 q-pa-xs">
-                <p class="text-bold">Precio</p>
-                  <q-decimal
-                  dense
-                  filled
-                  :rules="[validate]"
-                  rounded
-                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                  v-model="props.row.price"
-                  input-style="text-align: right">
-                  </q-decimal>
-                </div>
+              <q-item class="row justify-start"  :props="props">
+                  <div class="col-6 q-pa-xs">
+                    <p class="text-bold">Código del producto</p>
+                    <q-input filled dense
+                      rounded
+                      outlined
+                      @input="(e) => saved(e, parseInt(props.row.code), props.row.id, 'code')"
+                      v-model="props.row.code"
+                    />
+                  </div>
+                  <div class="col-6 q-pa-xs">
+                    <p class="text-bold">Código de barras</p>
+                    <q-input filled dense
+                      rounded
+                      outlined
+                      @input="(e) => saved(e, parseInt(props.row.barCode), props.row.id, 'barCode')"
+                      v-model="props.row.barCode"
+                    />
+                  </div>
+              </q-item>
+              <q-item class="row justify-start"  :props="props">
                 <div class="col-6 q-pa-xs">
                   <p class="text-bold">Prioridad</p>
                   <q-input filled dense
@@ -277,14 +304,7 @@
                 </div>
               </q-item>
               <q-item class="column items-start" key="pricerange" :props="props">
-                <div class="col-12 label-expand">Solapar precio</div>
-                <div class="col-12 row justify-start">
-                  <q-input filled dense
-                  @input="(e) => saved(e, props.row.pricerange, props.row.id, 'pricerange')"
-                  v-model="props.row.pricerange"
-                  rounded
-                  class="col-8"
-                  outlined />
+                <div class="col-12 label-expand">Solapar precio
                   <q-btn class="col-4" flat color="white" push icon="help">
                     <q-tooltip anchor="center right" self="center left">
                       <strong :class="{ 'text-h5': $q.screen.gt.xs }">Este texto, sobreescribe el precio que el cliente ve en el menu, el mejor caso de uso
@@ -293,6 +313,12 @@
                     </q-tooltip>
                   </q-btn>
                 </div>
+                  <q-input filled dense
+                  @input="(e) => saved(e, props.row.pricerange, props.row.id, 'pricerange')"
+                  v-model="props.row.pricerange"
+                  rounded
+                  class="col-12"
+                  outlined />
               </q-item>
               <q-item class="row justify-center"  :props="props">
                 <div class="col-6 q-pa-xs">
@@ -301,6 +327,7 @@
                   <q-radio color="red" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="1" label="B" />
                 </div>
               </q-item>
+              </q-expansion-item>
               <q-item class="column items-center">
                 <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
               </q-item>
