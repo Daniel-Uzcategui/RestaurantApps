@@ -743,6 +743,7 @@ export default {
       return this.localizations.find(x => x.id === this.sede)
     },
     makeOrder (details) {
+      console.log('este valor del registro')
       this.$q.loading.show()
       if (this.tipEnvio !== '1') { this.addId = '' }
       let orderWhen = {
@@ -769,6 +770,12 @@ export default {
           break
         case 4:
           order = { ...order, payto: this.config.venmoAcc }
+          break
+        case 10:
+          order = { ...order, payto: this.config.zelleEmail }
+          break
+        case 11:
+          order = { ...order, payto: this.config.pagomovil }
           break
         default:
           break

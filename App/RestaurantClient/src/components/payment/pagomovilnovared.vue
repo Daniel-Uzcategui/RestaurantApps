@@ -123,8 +123,19 @@ export default {
       console.log(respuestaPay)
       this.$emit('payment-done', respuestaPay)
       if (respuestaPay) {
+        this.$q.dialog({
+          title: 'Sastifactorio',
+          message: 'La transaccion se realizo con exito'
+        })
         this.$q.loading.hide()
+        this.limpiar()
       }
+    },
+    limpiar () {
+      this.valueFields.telefono = ''
+      this.valueFields.referencia = ''
+      this.valueFields.correo = ''
+      this.monto = 0
     },
     async paymentbank () {
       try {
@@ -139,8 +150,10 @@ export default {
         let telefono = this.valueFields.telefono
         let options = { method: 'post',
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          // url: window.location.origin + '/transact',
-          url: 'http://localhost:3000/transact/',
+          url: window.location.origin + '/transact',
+          // aca esta la url que lo probe con appengine en ele local
+          // con cors y luego lo comente para colocar la url que esta en apengine por http
+          // url: 'http://localhost:3000/transact/',
           data:
           {
             'bank': 'PagomovilNovared',
@@ -153,7 +166,16 @@ export default {
           } }
         console.log(options)
         let respuesta = await this.$axios(options)
-        return respuesta
+        let resp = {
+          data: {
+            id: respuesta,
+            trx: {
+              trx_status: 'approved'
+            }
+          }
+
+        }
+        return resp
       } catch (err) {
         this.$q.loading.hide()
         console.error({ err })
