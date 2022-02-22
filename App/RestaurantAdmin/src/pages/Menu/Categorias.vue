@@ -29,72 +29,7 @@
           <q-btn flat push no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
         </q-btn-group>
       </template>
-      <!-- <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td  auto-width>
-            <q-checkbox v-model="props.selected" />
-          </q-td>
-          <q-td key="desc" :props="props">
-              <q-input filled rounded outlined  @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-                :value="props.row.name"
-                dense
-                style="min-width: 100px"
-                />
-          </q-td>
 
-          <q-td key="descripcion" :props="props">
-              <q-editor content-class="bg-blue-6"
-                @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                :value="props.row.descripcion"
-                style="max-height: 150px"
-              />
-           </q-td>
-              <q-td key="color"  :props="props">
-                <div class="column items-center">
-               <q-color
-                 default-value="#2B3742"
-                :value="props.row.color"
-                 default-view="palette"
-                :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
-                 @change="val => saved(val, props.row.color, props.row.id, 'color')"
-                 />
-                 </div>
-             </q-td>
-             <q-td key="textcolor"  :props="props">
-               <div class="column items-center" >
-               <q-color
-                 default-value="#2B3742"
-                :value="props.row.textcolor"
-                 default-view="palette"
-                 :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
-                 @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
-                 />
-                 </div>
-             </q-td>
-             <q-td key="priority" :props="props">
-              <q-input filled rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
-           </q-td>
-          <q-td key="estatus" :props="props">
-              <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="props.row.estatus ? true : false"
-                color="#3c8dbc"
-              />
-          </q-td>
-          <q-td key="categorias" :props="props">
-            <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
-            <q-popup-edit v-model.number="props.row.FechaAct">
-              <q-input filled rounded outlined
-                readonly
-                @input="(e) => saved(e, props.row.FechaAct, props.row.id, 'FechaAct')"
-                :value="props.row.FechaAct"
-                dense
-
-              />
-            </q-popup-edit>
-          </q-td>
-        </q-tr>
-      </template> -->
       <template v-slot:item="props">
         <q-list @click.native="props.selected = !props.selected" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
@@ -133,7 +68,7 @@
                       color="blue"
                     />
                 </q-item>
-                <q-item class="column items-start" key="descripcion" :props="props">
+                <!-- <q-item class="column items-start" key="descripcion" :props="props">
                   <p class="text-bold">Descripción</p>
                     <q-editor content-class="bg-blue-6"
                       rounded outlined
@@ -142,10 +77,12 @@
                       min-height="5rem"
 
                     />
-                </q-item>
-                <q-item>
-                  <p class="text-bold">Avanzado</p>
-                </q-item>
+                </q-item> -->
+                <q-expansion-item
+                  expand-separator
+                  icon="settings"
+                  label="Avanzado"
+                >
                     <q-item class="column items-start">
                         <p class="text-bold">Color de Fondo</p>
                     <q-color
@@ -172,8 +109,9 @@
                      <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
                     <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" v-model="props.row.priority"  />
                 </q-item>
+                </q-expansion-item>
 
-                <q-item class="column items-start" key="categorias" :props="props">
+                <!-- <q-item class="column items-start" key="categorias" :props="props">
                   <div class="text-pre-wrap">{{ props.row.FechaAct }}</div>
                   <q-popup-edit v-model.number="props.row.FechaAct">
                     <q-input filled dense rounded outlined
@@ -184,7 +122,7 @@
 
                     />
                   </q-popup-edit>
-                </q-item>
+                </q-item> -->
             </q-list>
           </q-dialog>
           </q-list>
@@ -246,10 +184,16 @@ export default {
   mounted () {
     this.bindCategorias().then((e) => {
       this.elcat = JSON.parse(JSON.stringify(e))
+      console.log(e, 'cats')
     })
     console.log(this.$router)
     if (this.isDiag) {
       this.showprompt()
+    }
+  },
+  watch: {
+    categorias (e) {
+      this.elcat = JSON.parse(JSON.stringify(e))
     }
   },
   methods: {

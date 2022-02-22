@@ -263,7 +263,6 @@ export default {
               icon: 'fas fa-utensils',
               handler: () => this.$router.push({ path: '/menu/menu' })
               // separator: true,
-
             },
             {
               label: 'Multi Catálogo',
@@ -304,15 +303,15 @@ export default {
               handler: () => this.$router.push({ path: '/menu/coupons' })
               // separator: true,
 
-            },
-            {
-              label: 'Promociones',
-              caption: '',
-              icon: 'fas fa-ad',
-              handler: () => this.$router.push({ path: '/menu/promo' })
-              // separator: true,
-
             }
+            // {
+            //   label: 'Promociones',
+            //   caption: '',
+            //   icon: 'fas fa-ad',
+            //   handler: () => this.$router.push({ path: '/menu/promo' })
+            //   // separator: true,
+
+            // }
 
           ]
         },
