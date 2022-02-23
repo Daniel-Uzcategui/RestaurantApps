@@ -8,9 +8,7 @@ import { firestore, Timestamp } from '../../services/firebase/db.js'
 export const addOrder = firestoreAction((state, payload) => {
   console.log({ payload })
   return firestore()
-    .collection('orders').add(
-      { ...payload, dateIn: Timestamp.now() }
-    )
+    .collection('orders').add({ ...payload, dateIn: Timestamp.now() })
     .then(function (docRef) {
       console.log('Document written with ID: ', docRef.id)
     })
@@ -23,7 +21,9 @@ export const saveOrder = firestoreAction((state, payload) => {
   return firestore()
     .collection('orders')
     .doc(payload.id)
-    .update({ [payload.key]: payload.value })
+    .update({
+      [payload.key]: payload.value
+    })
     .then(() => {
       console.log('orders updated!')
     })

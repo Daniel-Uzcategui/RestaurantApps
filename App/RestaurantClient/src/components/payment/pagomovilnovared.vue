@@ -12,7 +12,7 @@
         <div class="col-12">
          <div >
             <div class="card-input"><label  aria-label="referencia" >Referecia</label>
-                <q-input filled rounded outlined type="number" v-model="valueFields.refencia"  title="CVV"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="number" v-model="valueFields.referencia"  title="CVV"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
          <div >
@@ -22,7 +22,7 @@
         </div>
          <div >
             <div class="card-input"><label  aria-label="Monto" >Monto</label>
-                <q-input filled rounded outlined type="number" v-model="valueFields.monto"  title="Monto"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="number" v-model="total"  title="Monto"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
         <div >
@@ -61,6 +61,10 @@ export default {
     credit: {
       type: Boolean,
       default: () => false
+    },
+    total: {
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -144,23 +148,23 @@ export default {
         //   let browserAgent = this.getBrowserInfo()
         //   let trxType = 'compra'
         //  let paymentMethod = 'TDC'
-        let refencia = this.valueFields.referencia
+        let referencia = this.valueFields.referencia
         let correo = this.valueFields.correo
-        let monto = this.valueFields.monto
+        let monto = this.total
         let telefono = this.valueFields.telefono
         let options = { method: 'post',
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          url: window.location.origin + '/transact',
+          // url: window.location.origin + '/transact',
           // aca esta la url que lo probe con appengine en ele local
           // con cors y luego lo comente para colocar la url que esta en apengine por http
-          // url: 'http://localhost:3000/transact/',
+          url: 'http://localhost:3000/transact/',
           data:
           {
             'bank': 'PagomovilNovared',
             'ambiente': localStorage.getItem('amb'),
             'amt': monto,
-            'curr': 'USD',
-            'cnt': refencia,
+            'curr': 'Bolivares',
+            'cnt': referencia,
             'telefono': telefono,
             'email': correo
           } }

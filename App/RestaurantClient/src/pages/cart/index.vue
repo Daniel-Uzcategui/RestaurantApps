@@ -295,7 +295,7 @@
                        <NovaredPagomovil
                          :ordersId=currentUser.cedula
                          :credit="true"
-                          :amount="getRates(totalPrice + deliveryPrice)"
+                          :total="getRates(totalPrice + deliveryPrice)"
                         @payment-done='payment' />
 
                         </div>
@@ -743,7 +743,7 @@ export default {
       return this.localizations.find(x => x.id === this.sede)
     },
     makeOrder (details) {
-      console.log('este valor del registro')
+      console.log('este valor del registro', details)
       this.$q.loading.show()
       if (this.tipEnvio !== '1') { this.addId = '' }
       let orderWhen = {
@@ -772,14 +772,23 @@ export default {
           order = { ...order, payto: this.config.venmoAcc }
           break
         case 10:
+          let aux = order.onlinePay
+          delete order.onlinePay
+          console.log('valores de aux', aux.id.data.trx)
+          order = { ...order, onlinePay: aux.id.data.trx }
           order = { ...order, payto: this.config.zelleEmail }
           break
         case 11:
+          let aux1 = order.onlinePay
+          delete order.onlinePay
+          console.log('valores de aux', aux1.id.data.trx)
+          order = { ...order, onlinePay: aux1.id.data.trx }
           order = { ...order, payto: this.config.pagomovil }
           break
         default:
           break
       }
+      console.log('este valor del registro', order)
       // Add shipping and billing address for Seller buyOrder
       if (this.tipEnvio === '3') {
         order = {
