@@ -1,7 +1,6 @@
 export default function () {
   return {
-    orders: [
-    ],
+    orders: [],
     estatus_options: [
       { label: 'Por Confirmar', value: 0 },
       { label: 'Preparando su pedido', value: 1 },
@@ -44,7 +43,9 @@ export default function () {
       { label: 'Tarjeta Venezolana', value: 6 },
       { label: 'Transferencia Bancaria', value: 7 },
       { label: 'Pago móvil', value: 8 },
-      { label: 'Tarjeta Venezolana', value: 9 }
+      { label: 'Tarjeta Venezolana', value: 9 },
+      { label: 'Zelle Novared', value: 10 },
+      { label: 'Pago movil Novared', value: 11 }
     ],
     ordercorporativo: []
   }
