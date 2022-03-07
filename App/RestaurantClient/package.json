@@ -27,6 +27,7 @@
   "dependencies": {
     "@firebase/storage": "^0.4.0",
     "@quasar/extras": "^1.9.17",
+    "atob": "^2.1.2",
     "axios": "^0.19.2",
     "browser-image-compression": "^1.0.14",
     "caniuse-lite": "^1.0.30001205",

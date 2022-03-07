@@ -21,23 +21,130 @@
         </div>
         </div>
          <div >
-            <div class="card-input"><label  aria-label="Monto" >Monto</label>
+            <div class="card-input"><label  aria-label="Monto operacion" >Monto Operacion</label>
+                <q-input filled rounded outlined type="number" v-model="montooperacion"   @change="calcularvuelto(montooperacion)" title="Monto"  data-card-field="" autocomplete="off"/>
+        </div>
+
+        </div>
+         <div >
+            <div class="card-input"><label  aria-label="Total" >Total</label>
                 <q-input filled rounded outlined type="number" v-model="total"  title="Monto"  data-card-field="" autocomplete="off" disable/>
         </div>
+
         </div>
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
                 <q-input filled rounded outlined  v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
+          <div >
+            <div class="card-input"><label aria-label="Orden Genrada" v-show="ordengenerada !== ''">Orden Genrada</label>
+                <q-input filled rounded outlined  v-model="ordengenerada1"  title=""  data-card-field="" autocomplete="off"/>
+        </div>
+        </div>
         </div>
       </div>
 
     <div class="column items-center">
+       <div class="col-12">
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="crearorden"  >Crear Orden</q-btn>
+        </div>
         <div class="col-12">
-          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment"  >Pagar</q-btn>
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment" v-show="generado === true" >Pagar</q-btn>
+        </div>
+        <div class="col-12">
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg"  @click="Vuelto"  v-show="vuelto >0 " >Vuelto</q-btn>
         </div>
     </div>
+
+       <q-dialog v-model="datosvuelto" >
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Datos para Vuelto</div>
+        </q-card-section>
+
+        <q-card-section >
+          <q-input label="Numero de orden" v-model="ordengenerada1" disable></q-input>
+          <q-input label="Medio" v-model="tipo" disable></q-input>
+         <q-select
+
+            bottom-slots
+            v-model="banco"
+            :options="bancos"
+            label="Banco"
+
+          />
+           <q-input label="Telefono" v-model="telefono" ></q-input>
+            <q-select
+
+            v-model="nacionalidad"
+            label="Nac"
+            :options="nacionalidades"
+            style="width: 30%"
+
+          />
+             <q-input label="Documento" v-model="documento" ></q-input>
+        </q-card-section>
+
+        <q-card-actions align="right">
+            <q-btn flat label="Enviar Vuelto" rounded class="text-bold" no-caps   @click="EnviarVuelto(ordengenerada1,tipo,banco,nacionalidad,documento,telefono)" v-close-popup/>
+            <q-btn flat label="Cancelar" rounded  v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="mostrarVuelto">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Vuelto</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <div class="q-gutter-md" style="max-width: 400px">
+            <q-field square standout label="Orden Id" stack-label>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ respuestavuelto.data.trx.id }}
+                </div>
+              </template>
+            </q-field>
+            <q-field square standout label="Fecha" stack-label>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ fecha }}
+                </div>
+              </template>
+            </q-field>
+            <q-field square standout label="Status" stack-label>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ respuestavuelto.data.trx.mensaje }}
+                </div>
+              </template>
+            </q-field>
+            <q-field square standout label="Referencia" stack-label>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                  {{ respuestavuelto.data.trx.referencia }}
+                </div>
+              </template>
+            </q-field>
+            <q-field square standout label="Recibo" stack-label>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="0">
+                    <pre>
+                        {{respuestavuelto.data.trx.recibo}}
+                    </pre>
+                </div>
+              </template>
+            </q-field>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     </div>
 </div>
  </q-item>
@@ -47,7 +154,7 @@
  </div>
 </template>
 <script>
-// import { VuePaycard } from 'vue-paycard'
+// import { VuePaycard } from 'vue-paycard's
 import { mapActions } from 'vuex'
 export default {
   components: {
@@ -75,7 +182,42 @@ export default {
       keybankhash: '',
       phonePassword: '',
       responseBank: '',
+      respuestaPay: '',
+      ordengenerada: '',
+      mostrarVuelto: false,
+      fecha: new Date(),
+      ordengenerada1: '121000201_8747cd94174a255cadd950c851d67fc2',
+      banco: '',
+      datosvuelto: false,
+      telefono: '',
+      documento: '',
+      nacionalidad: '',
+      bancos: [
+        {
+          label: 'Mercantil',
+          value: '0105',
+          category: 1
+        }
+      ],
+      nacionalidades: [
+        {
+          label: 'Ve',
+          value: 'V',
+          category: 1
+        },
+        {
+          label: 'Ex',
+          value: 'E',
+          category: 2
+        }
+      ],
+      generado: false,
+      tipo: 'Tvuelto',
       cardNumberMaxLength: 19,
+      montooperacion: 0,
+      btnvuelto: false,
+      respuestavuelto: '',
+      vuelto: 0,
       valueFields: {
         referencia: '',
         correo: ' ',
@@ -123,16 +265,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions('transactions', ['addTransaction']),
+    ...mapActions('transactions', ['addTransaction', 'cambiarBase64']),
 
-    async payment () {
-      let respuestaPay = await this.paymentbank()
-      console.log(respuestaPay)
-      this.$emit('payment-done', respuestaPay)
-      if (respuestaPay) {
+    payment () {
+    //  let respuestaPay = await this.paymentbank()
+      console.log(this.respuestaPay)
+      this.$emit('payment-done', this.respuestaPay)
+      if (this.respuestaPay) {
         this.$q.dialog({
           title: 'Sastifactorio',
-          message: 'La transaccion se realizo con exito'
+          message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
         })
         this.$q.loading.hide()
         this.limpiar()
@@ -144,6 +286,88 @@ export default {
       this.valueFields.correo = ''
       this.monto = 0
     },
+    async crearorden () {
+      try {
+        let referencia = this.valueFields.referencia
+        let correo = this.valueFields.correo
+        this.vuelto = this.montooperacion - this.total
+        let monto = this.total
+        console.log('este valor de amount', this.amount)
+        let telefono = this.valueFields.telefono
+        let options = { method: 'post',
+        // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
+        // url: window.location.origin + '/transact',
+        // aca esta la url que lo probe con appengine en ele local
+        // con cors y luego lo comente para colocar la url que esta en apengine por http
+          url: 'http://localhost:3000/transact/',
+          data:
+          {
+            'bank': 'Zelle',
+            'ambiente': localStorage.getItem('amb'),
+            'amt': monto,
+            'curr': 'USD',
+            'cnt': referencia,
+            'telefono': telefono,
+            'email': correo
+          } }
+        console.log(options)
+        let respuesta = await this.$axios(options)
+        this.respuestaPay = {
+          data: {
+            id: respuesta,
+            trx: {
+              trx_status: 'approved'
+            }
+          }
+
+        }
+        console.log('valoresssssssssss', this.respuestaPay)
+        this.generado = true
+        this.ordengenerada = this.respuestaPay.data.id.data.trx
+      } catch (err) {
+        this.$q.loading.hide()
+        console.error({ err })
+        if (err.response) {
+          return this.$q.dialog(err.response.data)
+        } else {
+          return this.$q.dialog({
+            title: 'Error',
+            message: 'Error inesperado, intente más tarde'
+          })
+        }
+      }
+    },
+    async EnviarVuelto (ordengenerada1, tipo, banco, nacionalidad, documento, telefono) {
+      console.log('orden', ordengenerada1, 'tipo', tipo, 'banco', banco.value, 'nacionalidad', nacionalidad.value, 'documento', documento)
+      let options = { method: 'post',
+        // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
+        // url: window.location.origin + '/transact',
+        // aca esta la url que lo probe con appengine en ele local
+        // con cors y luego lo comente para colocar la url que esta en apengine por http
+        url: 'http://localhost:3000/transact/',
+        data:
+          {
+            bank: 'Vuelto',
+            ambiente: localStorage.getItem('amb'),
+            ordenNro: ordengenerada1,
+            tipo: tipo,
+            banco: banco.value,
+            telefono: telefono,
+            nacionalidad: nacionalidad.value,
+            documento: documento
+          } }
+      console.log(options)
+      this.respuestavuelto = await this.$axios(options)
+      console.log('esta es la data', this.respuestavuelto)
+      this.mostrarVuelto = true
+    },
+    calcularvuelto (montooperacion) {
+      console.log('ele valor es ', montooperacion)
+      this.vuelto = montooperacion - this.total
+    },
+    cambiarBase6411 (archivo) {
+      return window.atob(archivo)
+    },
     async paymentbank () {
       try {
         this.$q.loading.show()
@@ -153,6 +377,7 @@ export default {
         //  let paymentMethod = 'TDC'
         let referencia = this.valueFields.referencia
         let correo = this.valueFields.correo
+        this.vuelto = this.montooperacion - this.total
         let monto = this.total
         console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
@@ -196,6 +421,9 @@ export default {
           })
         }
       }
+    },
+    Vuelto () {
+      this.datosvuelto = true
     },
     changeNumber (e) {
       this.valueFields.cardNumber = e

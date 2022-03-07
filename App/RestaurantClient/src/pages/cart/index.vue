@@ -196,7 +196,7 @@
                       @click='payment' />
                      </div>
                   </div>
-                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7 || pagoSel ===10 || pagoSel ===11">
+                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7">
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 2">
                         <div class="text-center">
                           <div class="text-h5 ">Zelle</div>

@@ -1,5 +1,7 @@
 /// ////// Transaction Action ////////
+const atob = require('atob')
 import { firestoreAction } from 'vuexfire'
+
 import { firestore } from '../../services/firebase/db.js'
 export const bindTransactions = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindTransactions')
@@ -25,3 +27,6 @@ export const addTransaction = firestoreAction((state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
+export const cambiarBase64 = function (archivo) {
+  return atob(archivo)
+}
