@@ -12,12 +12,12 @@
         <div class="col-12">
          <div >
             <div class="card-input"><label  aria-label="referencia" >Referecia</label>
-                <q-input filled rounded outlined type="number" v-model="valueFields.referencia"  title="CVV"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="number"  @change="validar" v-model="valueFields.referencia"  title="CVV"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
          <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  @change="validar" type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
        <div >
@@ -33,116 +33,21 @@
         </div>
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined  v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  @change="validar" v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
-         <div >
-            <div class="card-input"><label aria-label="Orden Genrada" v-show="ordengenerada !== ''">Orden Genrada</label>
-                <q-input filled rounded outlined  v-model="ordengenerada1"  title=""  data-card-field="" autocomplete="off"/>
-        </div>
-        </div>
+
         </div>
       </div>
 
      <div class="column items-center">
-       <div class="col-12">
-          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="crearorden"  >Crear Orden</q-btn>
-        </div>
+
         <div class="col-12">
-          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment" v-show="generado === true" >Pagar</q-btn>
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment" :disable="estado"  >Pagar</q-btn>
         </div>
-        <div class="col-12">
-          <q-btn rounded color="primary" class="q-ma-md q-mr-lg"  @click="Vuelto"  v-show="vuelto >0 " >Vuelto</q-btn>
-        </div>
+
     </div>
-     <q-dialog v-model="datosvuelto" >
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Datos para Vuelto</div>
-        </q-card-section>
 
-        <q-card-section >
-          <q-input label="Numero de orden" v-model="ordengenerada1" disable></q-input>
-          <q-input label="Medio" v-model="tipo" disable></q-input>
-         <q-select
-
-            bottom-slots
-            v-model="banco"
-            :options="bancos"
-            label="Banco"
-
-          />
-           <q-input label="Telefono" v-model="telefono" ></q-input>
-            <q-select
-
-            v-model="nacionalidad"
-            label="Nac"
-            :options="nacionalidades"
-            style="width: 30%"
-
-          />
-             <q-input label="Documento" v-model="documento" ></q-input>
-        </q-card-section>
-
-        <q-card-actions align="right">
-            <q-btn flat label="Enviar Vuelto" rounded class="text-bold" no-caps   @click="EnviarVuelto(ordengenerada1,tipo,banco,nacionalidad,documento,telefono)" v-close-popup/>
-            <q-btn flat label="Cancelar" rounded  v-close-popup/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <q-dialog v-model="mostrarVuelto">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Vuelto</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <div class="q-gutter-md" style="max-width: 400px">
-            <q-field square standout label="Orden Id" stack-label>
-              <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
-                  {{ respuestavuelto.data.trx.id }}
-                </div>
-              </template>
-            </q-field>
-            <q-field square standout label="Fecha" stack-label>
-              <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
-                  {{ fecha }}
-                </div>
-              </template>
-            </q-field>
-            <q-field square standout label="Status" stack-label>
-              <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
-                  {{ respuestavuelto.data.trx.mensaje }}
-                </div>
-              </template>
-            </q-field>
-            <q-field square standout label="Referencia" stack-label>
-              <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
-                  {{ respuestavuelto.data.trx.referencia }}
-                </div>
-              </template>
-            </q-field>
-            <q-field square standout label="Recibo" stack-label>
-              <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
-                    <pre>
-                        {{respuestavuelto.data.trx.recibo}}
-                    </pre>
-                </div>
-              </template>
-            </q-field>
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
     </div>
 </div>
  </q-item>
@@ -172,6 +77,18 @@ export default {
       default: 0
     }
   },
+  computed: {
+    desahabilitadorefencia () {
+      return this.valueFields.referencia === ''
+    },
+    desabililitadocorreo () {
+      return this.valueFields.correo === ''
+    },
+    desahabilitadotelefono () {
+      return this.valueFields.telefono === ''
+    }
+
+  },
   data () {
     return {
       keybankhash: '',
@@ -182,6 +99,7 @@ export default {
       generado: false,
       ordengenerada: '',
       mostrarVuelto: false,
+      estado: true,
       respuestavuelto: '',
       telefono: '',
       ordengenerada1: '121000201_8747cd94174a255cadd950c851d67fc2',
@@ -262,7 +180,7 @@ export default {
     ...mapActions('transactions', ['addTransaction']),
 
     async payment () {
-      //   let respuestaPay = await this.paymentbank()
+      this.respuestaPay = await this.paymentbank()
       console.log(this.respuestaPay)
       this.$emit('payment-done', this.respuestaPay)
       if (this.respuestaPay) {
@@ -310,6 +228,14 @@ export default {
       this.respuestavuelto = await this.$axios(options)
       console.log('esta es la data', this.respuestavuelto)
       this.mostrarVuelto = true
+    },
+    validar () {
+      console.log('valores ', this.valueFields.telefono, this.valueFields.referencia, this.valueFields.correo)
+      console.log('estados', this.desahabilitadorefencia, this.desabililitadocorreo, this.desahabilitadotelefono)
+      if ((!this.desahabilitadorefencia) && (!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
+        console.log('entreeee')
+        this.estado = false
+      }
     },
     async crearorden () {
       try {

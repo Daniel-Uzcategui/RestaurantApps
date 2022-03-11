@@ -114,6 +114,9 @@
                         <q-item v-if="getLocBySede('Seller')">
                             <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
+                         <q-item v-if="getLocBySede('Encomienda')">
+                            <q-radio v-show="config.statusEncomienda" class="q-pa-sm" dense v-model="tipEnvio" val=4 label="Encomienda" />
+                        </q-item>
                       </q-list>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 350px">
@@ -157,18 +160,24 @@
                            <div class="text-h5">Escoja o agregue un cliente</div>
                            <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
                          </q-card-section>
-                         <q-card-section v-show="!['0', '2', '3'].includes(tipEnvio)" >
+                         <q-card-section v-show="!['0', '2', '3','4'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
-                          <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
+                           <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
-                         </q-card-section>
+                          </q-card-section>
+                          <q-card-section v-show="!['0', '1', '2','3'].includes(tipEnvio)" >
+                          <div class="text-h5"> Mis direcciones</div>
+                          <Address2 @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
+                          </q-card-section>
                          <q-card-section>
                            <div class="column items-center">
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
                           </div>
                          </q-card-section>
+
                        </q-card>
                      </div>
                   </div>
@@ -206,7 +215,7 @@
                         </div>
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 10">
                         <div class="text-center">
-                          <div class="text-h5 ">Dolares</div>
+                          <div class="text-h5 ">Zelle Novared</div>
                           <div class="text-caption text-center filler-bottom"></div>
                             <span class="label">{{config.zelleEmail}}</span>
                           </div>
@@ -227,7 +236,7 @@
                         </div>
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 11">
                         <div class="text-center">
-                          <div class="text-h5 ">Pago Móvil</div>
+                          <div class="text-h5 ">Pago Móvil Novared</div>
                           <div class="text-caption text-center filler-bottom"></div>
                             <span class="label">{{config.pagomovil}}</span>
                           </div>
@@ -359,6 +368,7 @@ import NovaredPagomovil from '../../components/payment/pagomovilnovared.vue'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 import ClassicList from '../../components/cart/classicList/classicList.vue'
 import Addresses from '../../components/addresses.vue'
+import Address2 from '../../components/address2.vue'
 import clientList from '../../components/seller/clientlist.vue'
 export default {
   mixins: [ QUploaderBase ],
@@ -373,8 +383,10 @@ export default {
     NovaredPayment,
     NovaredPagomovil,
     photoUpload,
+    // couriers,
     ClassicList,
-    Addresses
+    Addresses,
+    Address2
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -421,8 +433,8 @@ export default {
       if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
       if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
-      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Dolares', value: 10, color: 'blue' }) }
-      if (this.config && this.config.statusNovaredpagomovil) { tip.push({ label: 'Pago Movil Bs', value: 11, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Zelle Novared', value: 10, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredpagomovil) { tip.push({ label: 'Pago Movil Novared', value: 11, color: 'blue' }) }
       return tip
     },
     meta () {

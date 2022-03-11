@@ -44,6 +44,7 @@
       color="primary"
     />
   </div>
+
   <q-dialog
   style="z-index: 9999999"
   seamless
@@ -108,7 +109,11 @@
             showNotif()
           }
           }})">Guardar</q-btn>
+
       </q-card-actions>
+      <q-card-actions align="around">
+       <couriers/>
+  </q-card-actions>
        </q-card>
   </q-dialog>
   </div>
@@ -118,9 +123,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import GoogleMap from './GoogleMap.vue'
+import couriers from '../components/jetes/courierDatos.vue'
 export default {
   components: {
-    GoogleMap: GoogleMap
+    GoogleMap: GoogleMap,
+    couriers
   },
   props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping'],
   computed: {
@@ -394,7 +401,7 @@ export default {
           political: 'Urbanización',
           street_number: '# de Calle',
           establishment: 'Domicilio',
-          bus_station: 'Terminal de Autobuses'
+          bus_stsation: 'Terminal de Autobuses'
         }
       }
     }
