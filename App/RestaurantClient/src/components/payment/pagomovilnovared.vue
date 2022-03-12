@@ -240,7 +240,6 @@ export default {
     async crearorden () {
       try {
         let referencia = this.valueFields.referencia
-        let correo = this.valueFields.correo
         this.vuelto = this.montooperacion - this.total
         let monto = this.total
         console.log('este valor de amount', this.amount)
@@ -259,7 +258,7 @@ export default {
             'curr': 'Bolivares',
             'cnt': referencia,
             'telefono': telefono,
-            'email': correo
+            'email': this.valueFields.correo
           } }
         console.log(options)
         let respuesta = await this.$axios(options)
@@ -296,9 +295,9 @@ export default {
         //   let trxType = 'compra'
         //  let paymentMethod = 'TDC'
         let referencia = this.valueFields.referencia
-        let correo = this.valueFields.correo
         let monto = this.total
         let telefono = this.valueFields.telefono
+        let ip = '186.91.191.248'
         let options = { method: 'post',
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
           // url: window.location.origin + '/transact',
@@ -309,11 +308,13 @@ export default {
           {
             'bank': 'PagomovilNovared',
             'ambiente': localStorage.getItem('amb'),
-            'amt': monto,
-            'curr': 'Bolivares',
-            'cnt': referencia,
+            'monto': monto,
+            'moneda': 'Bolívares',
+            'formaPago': 'Pago Movil',
+            'referencia': referencia,
             'telefono': telefono,
-            'email': correo
+            'correo': this.valueFields.correo,
+            'ip': ip
           } }
         console.log(options)
         let respuesta = await this.$axios(options)
