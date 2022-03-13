@@ -233,19 +233,16 @@ export default {
     async payment () {
       this.respuestaPay = await this.paymentbank()
       console.log(this.respuestaPay)
-      let verificar = this.verificarPago(this.respuestaPay.data.id.data.trx)
-      if (verificar) {
-        this.$emit('payment-done', this.respuestaPay)
-        if (this.respuestaPay) {
-          this.$q.dialog({
-            title: 'Sastifactorio',
-            message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
-          })
-          this.$q.loading.hide()
-          this.limpiar()
-        }
-      } else {
-        console.log('no se pudo verificar')
+      // let verificar = this.verificarPago(this.respuestaPay.data.id.data.trx)
+
+      this.$emit('payment-done', this.respuestaPay)
+      if (this.respuestaPay) {
+        this.$q.dialog({
+          title: 'Sastifactorio',
+          message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
+        })
+        this.$q.loading.hide()
+        this.limpiar()
       }
     },
     async verificarPago (respuesta) {
@@ -395,11 +392,11 @@ export default {
         this.$q.loading.show()
 
         let referencia = this.valueFields.referencia
-        let correo = this.valueFields.correo
         this.vuelto = this.montooperacion - this.total
         let monto = this.total
         console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
+        let ip = '186.91.191.248'
         let options = { method: 'post',
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
           // url: window.location.origin + '/transact',
@@ -410,12 +407,13 @@ export default {
           {
             'bank': 'Dolares',
             'ambiente': localStorage.getItem('amb'),
-            'amt': monto,
-            'curr': 'USD',
-            'tipo': this.metodopago,
-            'cnt': referencia,
+            'monto': monto,
+            'moneda': 'USD',
+            'formaPago': this.metodopago.value,
+            'referencia': referencia,
             'telefono': telefono,
-            'email': correo
+            'correo': this.valueFields.correo,
+            'ip': ip
           } }
         console.log(options)
         let respuesta = await this.$axios(options)
@@ -424,7 +422,11 @@ export default {
             id: respuesta,
             trx: {
               trx_status: 'approved'
-            }
+            },
+            referencia: referencia,
+            correo: this.valueFields.correo,
+            formaPago: this.metodopago.value,
+            telefono: telefono
           }
 
         }

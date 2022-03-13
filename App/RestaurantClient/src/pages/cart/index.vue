@@ -774,15 +774,31 @@ export default {
         case 10:
           let aux = order.onlinePay
           delete order.onlinePay
-          console.log('valores de aux', aux.id.data.trx)
-          order = { ...order, onlinePay: aux.id.data.trx }
+          console.log('valores de aux', aux)
+          let reg1 = {
+            idtransaccion: aux.id.data.trx,
+            referencia: aux.referencia,
+            telefono: aux.telefono,
+            correo: aux.correo,
+            formapago: aux.formaPago
+          }
+          order = { ...order, onlinePay: reg1 }
+          console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.zelleEmail }
           break
         case 11:
           let aux1 = order.onlinePay
           delete order.onlinePay
-          console.log('valores de aux', aux1.id.data.trx)
-          order = { ...order, onlinePay: aux1.id.data.trx }
+          console.log('valores de aux', aux1)
+          let reg = {
+            idtransaccion: aux1.id.data.trx,
+            referencia: aux1.referencia,
+            telefono: aux1.telefono,
+            correo: aux1.correo,
+            formapago: aux1.formaPago
+          }
+          order = { ...order, onlinePay: reg }
+          console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.pagomovil }
           break
         default:
