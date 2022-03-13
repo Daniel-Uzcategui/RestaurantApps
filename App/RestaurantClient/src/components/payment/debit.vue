@@ -129,19 +129,19 @@ export default {
 
     async payment () {
       // eslint-disable-next-line no-unused-vars
-      let typePasswordBank = ''
+      let typePasswordBank = 'clavetelefonica'
       // eslint-disable-next-line no-unused-vars
       let encodedEncryptedData = ''
-      let respuestaAuth = await this.authbank()
-      if (respuestaAuth) {
-        this.$q.loading.hide()
-      }
-      if (respuestaAuth.status !== 200) {
-        return console.error('error in request')
-      }
-      console.log('respuestaBank:', respuestaAuth)
-      console.log('respuestaBank:', respuestaAuth.data.auth)
-      typePasswordBank = respuestaAuth.data.auth
+      // let respuestaAuth = await this.authbank()
+      // if (respuestaAuth) {
+      //   this.$q.loading.hide()
+      // }
+      // if (respuestaAuth.status !== 200) {
+      //   return console.error('error in request')
+      // }
+      // console.log('respuestaBank:', respuestaAuth)
+      // console.log('respuestaBank:', respuestaAuth.data.auth)
+      // typePasswordBank = respuestaAuth.data.auth
       if (typePasswordBank === 'clavetelefonica') {
         this.$q.dialog({
           title: 'Seguridad',

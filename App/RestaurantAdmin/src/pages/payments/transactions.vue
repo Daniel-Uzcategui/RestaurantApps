@@ -68,19 +68,18 @@ export default {
         transactionforOrders = this.transactionsTable[i]
         if (transactionforOrders.id) {
           if (transactionforOrders) {
-            cardNumber = transactionforOrders.cardNumberFirst + '****' + transactionforOrders.cardNumberLast
-            trxProcesingDate = transactionforOrders.trxProcesingDate
+            console.log(transactionforOrders, trxProcesingDate)
+            cardNumber = transactionforOrders.cardNumberFirst ? transactionforOrders.cardNumberFirst + '****' + transactionforOrders.cardNumberLast : 'N/A'
+            trxProcesingDate = transactionforOrders.DateIn?.toDate ? transactionforOrders.DateIn.toDate() : transactionforOrders.DateIn
             responseMessage = transactionforOrders.paymentStatus !== 'approved' ? transactionforOrders.paymentStatus : 'Aprobado'
             trxType = transactionforOrders.trxType
             // fullname = '' // typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
-            if (typeof transactionforOrders.payment_method !== 'undefined') {
-              tipoPago = transactionforOrders.payment_method === 'TDD' ? this.tipo_pago[0]['label'] : this.tipo_pago[1]['label']
-            }
+            tipoPago = transactionforOrders.payment_method || transactionforOrders.formaPago
             OrderClient.push({
               'id': transactionforOrders.id,
               // 'nombre': fullname,
               'typePayment': tipoPago,
-              'paid': transactionforOrders.paidAmount,
+              'paid': transactionforOrders.paidAmount || transactionforOrders.monto,
               'factura': transactionforOrders.factura,
               'cardNumber': cardNumber,
               'trxProcesingDate': trxProcesingDate,

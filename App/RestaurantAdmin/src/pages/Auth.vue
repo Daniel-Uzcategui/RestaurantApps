@@ -16,7 +16,7 @@
           EASY</span>
           <p>
         Transforma tu negocio y se parte del futuro
-        conviertiendo tu empresa en una progressive web app
+        convirtiendo tu empresa en una progressive web app
           </p>
           <q-btn label="Iniciar Sesión / Registrarse" no-caps color="purple" @click="login = !login" />
         </q-card-section>
