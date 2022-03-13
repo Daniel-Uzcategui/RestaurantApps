@@ -268,6 +268,7 @@ export default {
             trx: {
               trx_status: 'approved'
             }
+
           }
 
         }
@@ -323,7 +324,11 @@ export default {
             id: respuesta,
             trx: {
               trx_status: 'approved'
-            }
+            },
+            referencia: referencia,
+            correo: this.valueFields.correo,
+            formaPago: 'Pago Movil',
+            telefono: telefono
           }
 
         }

@@ -422,7 +422,11 @@ export default {
             id: respuesta,
             trx: {
               trx_status: 'approved'
-            }
+            },
+            referencia: referencia,
+            correo: this.valueFields.correo,
+            formaPago: this.metodopago.value,
+            telefono: telefono
           }
 
         }
