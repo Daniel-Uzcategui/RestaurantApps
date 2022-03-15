@@ -47,11 +47,11 @@
 <q-option-group color="blue" inline  filled rounded v-model="statusPaypal" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Paypal" />
         </div>
-        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <!-- <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>CreditCorp</p>
 <q-option-group color="blue" inline  filled rounded v-model="statusCreditCorp" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="CreditCorp" />
-        </div>
+        </div> -->
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
@@ -68,29 +68,29 @@
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
-        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <!-- <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Mercantil</p>
 <q-option-group color="blue" inline  filled rounded v-model="statusMercantil" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Mercantil" />
-        </div>
+        </div> -->
         </div>
         <div class="flex-break q-py-md "></div>
-        <div class="row header-container">
+        <!-- <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Zelle Novared</p>
 <q-option-group color="blue" inline  filled rounded v-model="statusNovaredzelle" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Zelle" />
         </div>
-        </div>
+        </div> -->
           <div class="flex-break q-py-md "></div>
-        <div class="row header-container">
+        <!-- <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Pago Movil Novared</p>
 <q-option-group color="blue" inline  filled rounded v-model="statusNovaredpagomovil" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Pago Movil" />
         </div>
-        </div>
-        <div v-if="statusPaypal || statusCreditCorp || statusMercantil" class="row header-container">
+        </div> -->
+        <!-- <div v-if="statusPaypal || statusCreditCorp || statusMercantil" class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones especiales API</div>
        </div>
         <div v-if="statusPaypal" class="row header-container q-pt-md q-pb-md">
@@ -110,13 +110,13 @@
           <q-input filled rounded v-model="CreditCorp" standout="bg-teal "
           outlined label="CreditCorp API" />
         </div>
-        </div>
+        </div> -->
         <!-- <div  v-if="statusMercantil" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Tarjeta crédito Mercantil</div>
        </div> -->
-       <div v-if="statusMercantil"  class="row header-container">
+       <!-- <div v-if="statusMercantil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <p>Ambiente</p>
+          <p>Mercantil</p>
 <q-option-group color="blue" inline  filled rounded v-model="Mercantil.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
@@ -140,10 +140,10 @@
           <q-input filled rounded v-model="Mercantil.claveSecreta" standout="bg-teal "
           outlined label="Clave secreta" />
         </div>
-        </div>
-        <div v-if="statusNovaredzelle"  class="row header-container">
+        </div> -->
+        <!-- <div v-if="statusNovaredzelle"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <p>Ambiente</p>
+          <p>Novared</p>
 <q-option-group color="blue" inline  filled rounded v-model="Novared.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
@@ -171,7 +171,7 @@
           <q-input filled rounded v-model="Novared.requestUser" standout="bg-teal "
           outlined label="Usuario" />
         </div>
-        </div>
+        </div> -->
          <div class="flex-break q-py-md "></div>
         <div v-if="statusZelle || statusVenmo || statuspagomovil || statustransfer" class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones textos Medios de pago</div>
@@ -194,7 +194,7 @@
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
-          <div  v-if="statuspagomovil" class="row header-container q-pt-md q-pb-md">
+          <!-- <div  v-if="statuspagomovil" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Pago móvil</div>
        </div>
        <div v-if="statuspagomovil"  class="row header-container">
@@ -202,10 +202,10 @@
           <q-input filled rounded v-model="pagomovil" standout="bg-teal "
           outlined label="Pago Movil" />
         </div>
-        </div>
-         <div v-if="statusNovaredpagomovil"  class="row header-container">
+        </div> -->
+         <!-- <div v-if="statusNovaredpagomovil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <p>Ambiente</p>
+          <p>Novared</p>
 <q-option-group color="blue" inline  filled rounded v-model="Novared.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
@@ -233,7 +233,7 @@
           <q-input filled rounded v-model="Novared.requestUser" standout="bg-teal "
           outlined label="Usuario" />
         </div>
-        </div>
+        </div> -->
 
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
@@ -262,6 +262,19 @@
           outlined label="Datos para Transferir" />
         </div>
         </div>
+         </q-card-section>
+         <q-card-section>
+           <div class="q-ma-md text-h5">
+             Servicios API pasarela de pagos
+           </div>
+           <q-btn @click="generateUUID('Dev')" label="Generar nuevo API KEY Desarrollo" no-caps color="blue" rounded>
+           </q-btn>
+           <q-input v-model="apiKeyDev" readonly />
+         </q-card-section>
+         <q-card-section>
+           <q-btn @click="generateUUID('Prod')" label="Generar nuevo API KEY Producción" no-caps color="blue" rounded>
+           </q-btn>
+           <q-input v-model="apiKeyProd" readonly />
          </q-card-section>
      </q-card>
   </div>
@@ -298,6 +311,8 @@ export default {
       statusPto: 1,
       statusRewards: 0,
       rewards: 10,
+      apiKeyDev: undefined,
+      apiKeyProd: undefined,
       statusZelle: 0,
       statusVenmo: 0,
       statusCreditCorp: 0,
@@ -340,6 +355,20 @@ export default {
   },
   methods: {
     ...mapActions('config', ['addConfig2', 'bindConfigs', 'saveConfig']),
+    generateUUID (e) {
+      var d = new Date().getTime()
+
+      if (window.performance && typeof window.performance.now === 'function') {
+        d += performance.now()
+      }
+
+      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0
+        d = Math.floor(d / 16)
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+      })
+      this['apiKey' + e] = uuid
+    },
     add () {
       this.$q.loading.show()
       const payload = {
@@ -349,6 +378,8 @@ export default {
         statusPto: this.statusPto,
         statusRewards: this.statusRewards,
         rewards: this.rewards,
+        apiKeyProd: this.apiKeyProd,
+        apiKeyDev: this.apiKeyDev,
         statusZelle: this.statusZelle,
         statusVenmo: this.statusVenmo,
         statusCreditCorp: this.statusCreditCorp,
@@ -401,6 +432,12 @@ export default {
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusVenmo
       key = 'statusVenmo'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.apiKeyDev
+      key = 'apiKeyDev'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.apiKeyProd
+      key = 'apiKeyProd'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusCreditCorp
       key = 'statusCreditCorp'

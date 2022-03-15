@@ -545,6 +545,16 @@ const routes = [{
     }
   },
   {
+    path: 'api',
+    name: 'api',
+    component: () =>
+                    import ('pages/settings/api.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'Config API'
+    }
+  },
+  {
     path: 'paymentServ',
     name: 'paymentServ',
     component: () =>
