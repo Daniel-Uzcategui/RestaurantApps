@@ -114,6 +114,10 @@
                         <q-item v-if="getLocBySede('Seller')">
                             <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
+
+                         <q-item v-if="getLocBySede('Encomienda')">
+                            <q-radio v-show="config.statusEncomienda" class="q-pa-sm" dense v-model="tipEnvio" val=4 label="Encomienda" />
+                        </q-item>
                       </q-list>
                      </div>
                      <div class="col-6 q-pt-xl" style="min-width: 350px">
@@ -157,16 +161,28 @@
                            <div class="text-h5">Escoja o agregue un cliente</div>
                            <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
                          </q-card-section>
-                         <q-card-section v-show="!['0', '2', '3'].includes(tipEnvio)" >
+                         <q-card-section v-show="!['0', '2', '3','4'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
                           <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
                          <q-card-section>
+                           <q-card-section>
+                             <q-card-section v-show="!['0', '1', '2','3'].includes(tipEnvio)" >
+                          <div class="text-h5"> Mis direcciones</div>
+
+                            <Address2
+                            @update-price="(e) => deliveryPrice = e"
+                            class="q-pt-md" @invalid-address="(e) => validAddress = e"
+                            v-model="addId"
+                             @tarifa2-done ='obtenertarifa'/>
+                         </q-card-section>
+                           </q-card-section>
                            <div class="column items-center">
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && deliveryPrice != 0  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           </div>
                          </q-card-section>
                        </q-card>
@@ -244,7 +260,7 @@
                         <q-card-section>
                             <div class="column items-center ">
                                 <div class=" column items-center" v-show='photoMessage'>
-                                  <div>
+                                  <div>make
                                   <q-btn style="border-radius: 28px;" push>
                                       <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4" >
                                       </q-avatar>
@@ -285,6 +301,7 @@
                          :ordersId=currentUser.cedula
                          :credit="true"
                           :total="totalPrice"
+                          :delivery ="deliveryPrice"
                         @payment-done='payment' />
 
                         </div>
@@ -295,7 +312,8 @@
                        <NovaredPagomovil
                          :ordersId=currentUser.cedula
                          :credit="true"
-                          :total="getRates(totalPrice + deliveryPrice)"
+                          :total="getRates(totalPrice)"
+                          :delivery ="getRates(deliveryPrice)"
                         @payment-done='payment' />
 
                         </div>
@@ -303,14 +321,14 @@
                     </div>
                     <div class="q-pt-md col-12 column items-center">
                       <div>
-                      <div v-if="tipEnvio === '1'">
+                      <div v-if="tipEnvio === '1' || tipEnvio === '4'" >
                         <div class="text-h6">SubTotal: $ {{(getTotalCarrito()[2]).toFixed(2)}}</div>
-                        <div class="text-h6">Delivery: $ {{parseFloat(deliveryPrice)}}</div>
+                        <div class="text-h6">Delivery o  Encomienda: $ {{parseFloat(deliveryPrice)}}</div>
                       </div>
-                        <div class="text-h6" >Total: $ {{(tipEnvio === '1' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
+                        <div class="text-h6" >Total: $ {{(tipEnvio === '1' || tipEnvio === '4' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
                         <div v-if="ratesComp.length">
-                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8 ||  pagoSel == 9" >Total: Bs
-                          {{ parseFloat((getRates(totalPrice + deliveryPrice)).toFixed(2)).toLocaleString()}}
+                        <div class="text-h6" v-if="pagoSel == 0  || pagoSel == 6 ||  pagoSel == 7 ||  pagoSel == 8 ||  pagoSel == 9  ||  pagoSel == 10  ||  pagoSel == 11" >Total: Bs
+                          {{ parseFloat((getRates(parseFloat(totalPrice) + parseFloat(deliveryPrice))).toFixed(2)).toLocaleString()}}
                         </div>
                         </div>
                         <div v-else>No hay tasa de cambio colocada</div>
@@ -360,6 +378,7 @@ import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 import ClassicList from '../../components/cart/classicList/classicList.vue'
 import Addresses from '../../components/addresses.vue'
 import clientList from '../../components/seller/clientlist.vue'
+import Address2 from '../../components/address2.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
@@ -374,7 +393,8 @@ export default {
     NovaredPagomovil,
     photoUpload,
     ClassicList,
-    Addresses
+    Addresses,
+    Address2
   },
   computed: {
     ...mapGetters('order', ['orders']),
@@ -473,7 +493,8 @@ export default {
       photoUpload: false,
       photoMessage: true,
       photoSRC: '',
-      allowBuy: false
+      allowBuy: false,
+      objetotarifa: {}
     }
   },
   async created () {
@@ -647,6 +668,17 @@ export default {
         this.step = 2
       }
     },
+    obtenertarifa (tarif) {
+      this.objetotarifa = tarif
+      console.log('objeto tarifa', this.objetotarifa)
+      let rate = this.ratesComp.find(obj => {
+        return obj.currency === 'Bs'
+      })
+      console.log('este es valor rate', rate.rateValue, 'el valor de tarifa.total', this.objetotarifa.tarifa.total)
+      let valor = (parseFloat(this.objetotarifa.tarifa.total) / parseFloat(rate.rateValue))
+      this.deliveryPrice = valor.toFixed(2)
+      console.log('el valor de this.deliveryPrice', valor)
+    },
     totalItComp (its) {
       var sum = 0
       its.forEach(x => {
@@ -767,9 +799,17 @@ export default {
       switch (this.pagoSel) {
         case 2:
           order = { ...order, payto: this.config.zelleEmail }
+          if (this.objetotarifa !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
           break
         case 4:
           order = { ...order, payto: this.config.venmoAcc }
+          if (this.objetotarifa !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
           break
         case 10:
           let aux = order.onlinePay
@@ -783,6 +823,11 @@ export default {
             formapago: aux.formaPago
           }
           order = { ...order, onlinePay: reg1 }
+          if (this.objetotarifa !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
+
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.zelleEmail }
           break
@@ -796,6 +841,10 @@ export default {
             telefono: aux1.telefono,
             correo: aux1.correo,
             formapago: aux1.formaPago
+          }
+          if (this.objetotarifa !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
           }
           order = { ...order, onlinePay: reg }
           console.log('los valores', order.onlinePay)

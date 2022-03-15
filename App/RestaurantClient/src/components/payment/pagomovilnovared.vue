@@ -75,8 +75,13 @@ export default {
     total: {
       type: Number,
       default: 0
+    },
+    delivery: {
+      type: Number,
+      default: 0
     }
   },
+
   computed: {
     desahabilitadorefencia () {
       return this.valueFields.referencia === ''
@@ -176,6 +181,9 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.total = (parseFloat(this.total) + parseFloat(this.delivery)).toFixed(2)
+  },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
 
@@ -241,7 +249,7 @@ export default {
       try {
         let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
-        let monto = this.total
+        let monto = parseFloat(this.total.toFixed(2))
         console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
         let options = { method: 'post',

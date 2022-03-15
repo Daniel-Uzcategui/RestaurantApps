@@ -100,19 +100,17 @@
       <q-input filled class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" /> -->
     </q-form>
     </q-card-section>
+    <h3>Datos de Encomienda</h3>
+     <tarifa
+     @tarifa-done='Tarifas'
+     />
     <q-card-actions align="around">
         <q-btn color="secondary" v-close-popup no-caps rounded >Cancelar</q-btn>
-        <q-btn color="primary" no-caps rounded @click="$refs.addrs.validate().then(e => { if (e) {
-          if (markers.length && isValidMarker()) {
-            confirm()
-            } else {
-            showNotif()
-          }
-          }})">Guardar</q-btn>
+        <q-btn color="primary" :disable="estados" no-caps rounded @click="confirm()">Guardar</q-btn>
 
       </q-card-actions>
       <q-card-actions align="around">
-       <couriers/>
+
   </q-card-actions>
        </q-card>
   </q-dialog>
@@ -123,11 +121,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import GoogleMap from './GoogleMap.vue'
-import couriers from '../components/jetes/courierDatos.vue'
+import tarifa from '../components/jetes/tarifa.vue'
 export default {
   components: {
     GoogleMap: GoogleMap,
-    couriers
+    tarifa
   },
   props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping'],
   computed: {
@@ -136,6 +134,10 @@ export default {
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['sede']),
     ...mapGetters('user', ['currentUser']),
+    deshabilitarguardar () {
+      let estados = false
+      return estados === false
+    },
     addPickup () {
       let p = this.addressRadio.find(x => x.value === this.addressPickup)
       if (p) {
@@ -194,6 +196,11 @@ export default {
       }
       return false
     },
+    Tarifas (tarifacompleta) {
+      console.log('los valores de tarifa', tarifacompleta)
+      this.Tarifita = tarifacompleta
+      this.estados = false
+    },
     getZones () {
       if (typeof this.sede === 'undefined' || this.sede === null) { return false }
       let sede = this.localizations.find(x => x.id === this.sede)
@@ -228,6 +235,7 @@ export default {
         persistent: true
       }).onOk(() => {
         this.newAddress()
+        this.$emit('tarifa2-done', this.Tarifita)
         this.dialog = false
       })
     },
@@ -316,6 +324,7 @@ export default {
     }
   },
   async mounted () {
+    // this.estados = this.deshabilitarguardar()
     this.bindLocalizations().catch(e => console.log(e))
     this.bindLocalZones().catch(e => console.log(e))
     if (this.isAnonymous) {
@@ -340,6 +349,9 @@ export default {
     loading () {
       this.$emit('stoploading', true)
     },
+    estados () {
+      console.log('cambio')
+    },
     value () {
       this.setDialog()
       if (this.isValidMarker()) {
@@ -353,6 +365,7 @@ export default {
   data () {
     return {
       gActive: false,
+      estados: true,
       contact: '',
       phone: '',
       readAddr: false,
@@ -375,6 +388,7 @@ export default {
       ciudad: null,
       municipio: null,
       calle: null,
+      Tarifita: {},
       domicilio: null,
       translationJson: {
         Venezuela: {

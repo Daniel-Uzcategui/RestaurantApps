@@ -88,10 +88,15 @@ export default {
     total: {
       type: Number,
       default: 0
+    },
+    delivery: {
+      type: Number,
+      default: 0
     }
   },
   mounted () {
     console.log('este el valor de total', this.total)
+    this.total = parseFloat(this.total) + parseFloat(this.delivery)
   },
   computed: {
     desahabilitadorefencia () {
@@ -108,6 +113,7 @@ export default {
 
   data () {
     return {
+      montoTotal: 0,
       keybankhash: '',
       phonePassword: '',
       responseBank: '',
