@@ -461,17 +461,20 @@ export default {
           this.taficacompleto = {
             tarifa: this.tarifa.data,
             tarifaOrden: {
-              courier: this.courier.value,
-              ciudad: this.ciudad.value,
+              // courier: this.courier.label,
+              courier: this.courier,
+              estado: this.estado,
+              ciudad: this.ciudad,
+              municipio: this.municipio,
+              parroquia: this.parroquia,
               cantidadPiezas: this.numeroPiezas,
               peso: this.peso,
               seguro: seguro,
               valor: this.valor,
               tipoTarifa: this.tipoServicio,
               modalidadTarifa: modalidad,
-              oficina: this.oficina.value,
-              status: 'enviar',
-              estado: true
+              oficina: this.oficina,
+              status: 'enviar'
             }
           }
           this.$emit('tarifa-done', this.taficacompleto)
