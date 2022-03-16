@@ -449,6 +449,30 @@ const routes = [{
   }]
 },
 {
+  path: '/encomienda',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [{
+    path: 'index',
+    name: 'listOrders',
+    component: () =>
+                import ('pages/jetes/orders.vue')
+
+  }]
+},
+{
+  path: '/encomienda/form',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [{
+    path: 'index',
+    name: 'listOrders',
+    component: () =>
+                import ('pages/jetes/encomienda.vue')
+
+  }]
+},
+{
   path: '/payments',
   component: () =>
             import ('layouts/User.vue'),
@@ -542,16 +566,6 @@ const routes = [{
     meta: {
       requiresAuth: true,
       nombre: 'Horarios de sedes'
-    }
-  },
-  {
-    path: 'api',
-    name: 'api',
-    component: () =>
-                    import ('pages/settings/api.vue'),
-    meta: {
-      requiresAuth: true,
-      nombre: 'Config API'
     }
   },
   {

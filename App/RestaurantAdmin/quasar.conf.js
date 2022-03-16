@@ -8,6 +8,7 @@ module.exports = function (ctx) {
     boot: [
       'serverConnection',
       'axios',
+      'apiaxios',
       'chartkick'
     ],
 

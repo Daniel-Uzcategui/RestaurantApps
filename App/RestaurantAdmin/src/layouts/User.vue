@@ -367,6 +367,16 @@ export default {
               label: 'Clientes',
               handler: (node) => this.$router.push({ path: '/corporativo/index' })
             }] },
+        {
+          title: 'Encomiendas',
+          caption: '',
+          icon: 'business',
+          // separator: true,
+          tree: [
+            { label: 'Verificar Encomiendas',
+              handler: (node) => this.$router.push({ path: '/encomienda/index' })
+            }]
+        },
 
         {
           title: 'Configuración',

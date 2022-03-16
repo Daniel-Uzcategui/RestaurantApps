@@ -7,3 +7,6 @@ export function deleteOrderMt (state, payload) {
 export function alterRange (state, payload) {
   state.dateRange = payload
 }
+export function encomienda (state, payload) {
+  state.Encomienda = payload
+}

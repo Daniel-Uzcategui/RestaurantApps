@@ -15,6 +15,7 @@ import editor from './editor'
 import seller from './seller'
 import rider from './rider'
 import corporativos from './corporativo'
+import data from './data'
 Vue.use(Vuex)
 
 /*
@@ -28,6 +29,7 @@ export default function (/* { ssrContext } */) {
       address,
       auth,
       user,
+      data,
       menu,
       client,
       rider,

@@ -47,6 +47,8 @@ export default function () {
       { label: 'Zelle Novared', value: 10 },
       { label: 'Pago movil Novared', value: 11 }
     ],
-    ordercorporativo: []
+    ordercorporativo: [],
+    orderencomienda: [],
+    Encomienda: {}
   }
 }

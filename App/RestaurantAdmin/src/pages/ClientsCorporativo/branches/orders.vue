@@ -69,6 +69,7 @@ export default {
         { name: 'status', required: true, label: 'Estatus', field: row => this.buscarstatus(row), sortable: true },
         { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: row => row.dateIn, format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true }
+
       ]
     }
   },

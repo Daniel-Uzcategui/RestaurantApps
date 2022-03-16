@@ -49,3 +49,5 @@ export const estatus_options = ({ estatus_options }) => estatus_options
 export const estatus_optionsOrd = ({ estatus_optionsOrd }) => estatus_optionsOrd
 export const allestatus = ({ allestatus }) => allestatus
 export const ordercorporativo = ({ ordercorporativo }) => ordercorporativo
+export const orderencomienda = ({ orderencomienda }) => orderencomienda
+export const Encomienda = ({ Encomienda }) => Encomienda

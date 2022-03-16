@@ -11,6 +11,10 @@ export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
   hoy.setDate(hoy.getDate() - 30)
   return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', hoy))
 })
+export const bindOrdersEnvio = firestoreAction(({ bindFirestoreRef }) => {
+  return bindFirestoreRef('orderencomienda', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '4').where('encomienda.status', '==', 'enviar'))
+})
+
 export const unBindOrders = firestoreAction(({ unbindFirestoreRef }) => {
   console.log('unbinding')
   return unbindFirestoreRef('orders')
@@ -76,3 +80,6 @@ export const reportBindOrderscorporativo = firestoreAction(({ bindFirestoreRef }
   hoy.setDate(hoy.getDate() - 30)
   return bindFirestoreRef('ordercorporativo', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '3').where('dateIn', '>=', hoy))
 })
+export const encomienda = async function ({ commit }, payload) {
+  commit('order/encomienda', payload, { root: true })
+}
