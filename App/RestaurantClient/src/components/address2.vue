@@ -289,11 +289,6 @@ export default {
       this.readAddr = true
       if (this.value === null) { this.dialog = false; return }
       const obj = this.value
-      // this.estado = obj.estado
-      // this.ciudad = obj.ciudad
-      // this.municipio = obj.municipio
-      // this.calle = obj.calle
-      // this.domicilio = obj.domicilio
       this.addressIn = obj && obj.address ? obj.address : {}
       this.addressOpt = obj && obj.address ? Object.keys(obj.address) : []
       this.alias = obj.alias

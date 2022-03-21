@@ -166,22 +166,21 @@
                           <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
-                         <q-card-section>
-                           <q-card-section>
+                          <q-card-section>
                              <q-card-section v-show="!['0', '1', '2','3'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
 
                             <Address2
-                            @update-price="(e) => deliveryPrice = e"
-                            class="q-pt-md" @invalid-address="(e) => validAddress = e"
-                            v-model="addId"
+                           @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
                              @tarifa2-done ='obtenertarifa'/>
                          </q-card-section>
+                         <q-card-section>
                            </q-card-section>
                            <div class="column items-center">
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
+                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1  && deliveryPrice != 0 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && deliveryPrice != 0  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           </div>
                          </q-card-section>

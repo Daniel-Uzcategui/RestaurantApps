@@ -70,12 +70,22 @@ export async function generateGuia ({ commit, state }, data) {
 }
 
 export async function getTarifa ({ commit, state }, data) {
-  await api.get(`/get/calcularTarifa?courier=${data.courier}&ciudad=${data.ciudad}&cantidadPiezas=${data.cantidadPiezas}&peso=${data.peso}&seguro=${data.seguro}&valor=${data.valor}&tipoTarifa=${data.tipoTarifa}&modalidadTarifa=${data.modalidadTarifa}&oficina=${data.oficina}`, state.configHeader)
-    .then((response) => {
-      commit('loadTarifa', { data: response.data, error: null })
-    }).catch(error => {
-      commit('loadTarifa', { data: null, error: error })
-    })
+  console.log('modalidad', data.modalidadTarifa)
+  if (data.modalidadTarifa === 'oficina') {
+    await api.get(`/get/calcularTarifa?courier=${data.courier}&ciudad=${data.ciudad}&cantidadPiezas=${data.cantidadPiezas}&peso=${data.peso}&seguro=${data.seguro}&valor=${data.valor}&tipoTarifa=${data.tipoTarifa}&modalidadTarifa=${data.modalidadTarifa}&oficina=${data.oficina}`, state.configHeader)
+      .then((response) => {
+        commit('loadTarifa', { data: response.data, error: null })
+      }).catch(error => {
+        commit('loadTarifa', { data: null, error: error })
+      })
+  } else {
+    await api.get(`/get/calcularTarifa?courier=${data.courier}&ciudad=${data.ciudad}&cantidadPiezas=${data.cantidadPiezas}&peso=${data.peso}&seguro=${data.seguro}&valor=${data.valor}&tipoTarifa=${data.tipoTarifa}&modalidadTarifa=${data.modalidadTarifa}&oficina=${''}`, state.configHeader)
+      .then((response) => {
+        commit('loadTarifa', { data: response.data, error: null })
+      }).catch(error => {
+        commit('loadTarifa', { data: null, error: error })
+      })
+  }
 }
 
 export async function getTracking ({ commit, state }, data) {

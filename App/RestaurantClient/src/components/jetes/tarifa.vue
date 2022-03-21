@@ -437,7 +437,7 @@ export default {
     },
     async calcularTarifa () {
       let seguro = this.dataSelected.seguro ? 1 : 0
-      let modalidad = this.dataSelected.retirarOficina ? 'oficina' : 'puerta'
+      let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
       this.generandoTarifa = true
       this.alertaMsg = ''
       try {

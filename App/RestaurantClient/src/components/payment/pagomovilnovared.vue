@@ -20,12 +20,7 @@
                 <q-input filled rounded outlined  @change="validar" type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
-       <div >
-            <div class="card-input"><label  aria-label="Monto operacion" >Monto Operacion</label>
-                <q-input filled rounded outlined type="number" v-model="montooperacion"   @change="calcularvuelto(montooperacion)" title="Monto"  data-card-field="" autocomplete="off"/>
-        </div>
 
-        </div>
          <div >
             <div class="card-input"><label  aria-label="Monto" >Monto</label>
                 <q-input filled rounded outlined type="number" v-model="total"  title="Monto"  data-card-field="" autocomplete="off"/>
