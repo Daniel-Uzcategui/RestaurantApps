@@ -171,7 +171,7 @@
                           <div class="text-h5"> Mis direcciones</div>
 
                             <Address2
-                           @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
+                           @update-price="(e) => deliveryPrice = e" :cart="cart" class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
                              @tarifa2-done ='obtenertarifa'/>
                          </q-card-section>
                          <q-card-section>

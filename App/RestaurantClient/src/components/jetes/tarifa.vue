@@ -329,6 +329,7 @@ export default {
       this.$store.dispatch('data/loadOficinas', this.ciudad)
     },
     actualizarOficina () {
+      this.$store.dispatch('data/loadOficinas', this.ciudad)
       this.$store.commit('data/updateOficina', this.oficina)
     },
     generarGuia () {
@@ -441,6 +442,7 @@ export default {
       this.generandoTarifa = true
       this.alertaMsg = ''
       try {
+        console.log('los valores currier', this.courier.value, 'ciudad', this.ciudad.value, 'modalidad', modalidad, 'numero pieza', this.numeroPiezas, 'peso', this.peso, 'valor', this.valor, 'seguro', seguro, 'tipo tarifa', this.tipoServicio)
         await this.$store.dispatch('data/getTarifa', {
           courier: this.courier.value,
           ciudad: this.ciudad.value,

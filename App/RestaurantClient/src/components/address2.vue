@@ -38,13 +38,15 @@
       </div>
     </div>
     <q-option-group
-      :value="returnValue()"
+      :value="valorSeleccionado = returnValue()"
       @input="(e) => $emit('input', addressSelected(e))"
       :options="addressRadio"
-      color="primary"
-    />
+      color="primary">
+    </q-option-group>
+    <div>
+      <q-btn color="primary" rounded icon="search"  @click="DatosEncomienda(valorSeleccionado, cart)"/>
+    </div>
   </div>
-
   <q-dialog
   style="z-index: 9999999"
   seamless
@@ -100,13 +102,10 @@
       <q-input filled class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" /> -->
     </q-form>
     </q-card-section>
-    <h3>Datos de Encomienda</h3>
-     <tarifa
-     @tarifa-done='Tarifas'
-     />
+
     <q-card-actions align="around">
         <q-btn color="secondary" v-close-popup no-caps rounded >Cancelar</q-btn>
-        <q-btn color="primary" :disable="estados" no-caps rounded @click="confirm()">Guardar</q-btn>
+        <q-btn color="primary"  no-caps rounded @click="confirm()">Guardar</q-btn>
 
       </q-card-actions>
       <q-card-actions align="around">
@@ -115,25 +114,150 @@
        </q-card>
   </q-dialog>
   </div>
+   <q-dialog
+    style="z-index: 9999999"
+
+      v-model="mostarDatos"
+      persistent
+    >
+       <q-card
+         style="width: 80%;
+          height: 80%;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;">
+          <q-card-section class="q-pt-none q-pa-md">
+              <div class="col-2">
+                 <q-select v-model="tipoServicio" :options="tipoServicios"  label="Tipo Servicio" />
+               </div>
+               <div class="col-2">
+                  <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
+               </div>
+                   <div class="col-12"></div>
+                <div class="col-2">
+                    <q-input v-model="destinatario" label="Destinatario" />
+                </div>
+                <div class="col-2">
+                    <q-input v-model="contacto" label="Contacto" />
+                </div>
+                <div class="col-2">
+                    <q-input v-model="cirif" label="CI/RIF" />
+                </div>
+                <div class="col-2">
+                    <q-input v-model="telefono" type="tel" label="Telefono" />
+                </div>
+               <div class="col-2">
+                    <q-toggle v-model="retirarOficina" label="Retirar en la Oficina" :disable="isLiberty ? true:false" />
+                </div>
+                 <div class="col-2" v-show="retirarOficina">
+                    <q-select v-model="oficina" :options="oficinasList" label="Oficina" @blur="actualizarOficina()" :disable="isLiberty ? true : false"/>
+                </div>
+                <div class="col-12"></div>
+                                <div class="col-2">
+                    <q-input v-model="numeroPiezas" disable type="number" label="Número de Piezas" />
+                </div>
+                <div class="col-2">
+                    <q-input v-model="peso" disable type="number" label="Peso" />
+                </div>
+
+                <div class="col-2">
+                    <q-input v-model="valor" type="number" disable label="Valor" />
+                </div>
+                <div class="col-2">
+                    <q-toggle v-model="seguro" label="Seguro" />
+                </div>
+          </q-card-section>
+          <q-card-section class="q-pt-none q-pa-md">
+            <q-btn color="secondary"  v-close-popup no-caps rounded @click="calcularTarifa" >Aceptar</q-btn>
+          </q-card-section>
+       </q-card>
+    </q-dialog>
+    <q-dialog v-model="tarifaModal">
+            <q-card>
+                <q-card-section>
+                <div class="text-h6">Tarifa Aproximada</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none">
+                <div class="row" v-if="tarifa.ok">
+                    <div class="col-2 q-px-sm" >
+                        <q-input v-model="tarifa.data.combustible" hint="Combustible" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                    <div class="col-1 q-px-sm" >
+                        <q-input v-model="tarifa.data.flete" hint="Flete" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                    <div class="col-2 q-px-sm" >
+                        <q-input v-model="tarifa.data.franqueo_postal" hint="Franqueo Postal" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                    <div class="col-1 q-px-sm" >
+                        <q-input v-model="tarifa.data.iva" hint="Iva" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                    <div class="col-2 q-px-sm" >
+                        <q-input v-model="tarifa.data.seguro" hint="Seguro" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                    <div class="col-2 q-px-sm" >
+                        <q-input v-model="tarifa.data.subtotal" hint="SubTotal" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                    <div class="col-2 q-px-sm">
+                        <q-input v-model="tarifa.data.total" hint="TOTAL" :dense="dense" disable class="text-weight-bold"/>
+                    </div>
+                </div>
+            </q-card-section>
+
+            <q-card-actions align="right">
+                <q-btn flat label="OK" color="primary" v-close-popup />
+            </q-card-actions>
+            </q-card>
+        </q-dialog>
+     <q-dialog v-model="alerta">
+            <q-card>
+                <q-card-section>
+                <div class="text-h6">Error</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none">
+                {{alertaMsg}}
+            </q-card-section>
+
+            <q-card-actions align="right">
+                <q-btn flat label="OK" color="primary" v-close-popup />
+            </q-card-actions>
+            </q-card>
+        </q-dialog>
 </div>
+
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import GoogleMap from './GoogleMap.vue'
-import tarifa from '../components/jetes/tarifa.vue'
+// import tarifa from '../components/jetes/tarifa.vue'
 export default {
   components: {
-    GoogleMap: GoogleMap,
-    tarifa
+    GoogleMap: GoogleMap
+
   },
-  props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping'],
+  props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping', 'cart'],
   computed: {
     ...mapGetters('localization', ['localZones', 'localizations']),
     ...mapGetters('address', ['address']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['sede']),
     ...mapGetters('user', ['currentUser']),
+    ...mapState('data', [
+      'couriersList',
+      'estadosList',
+      'ciudadesList',
+      'municipiosList',
+      'parroquiasList',
+      'oficinasList',
+      'errorList',
+      'dataSelected',
+      'guia',
+      'tarifa',
+      'tracking',
+      'pdfGuia'
+    ]),
     deshabilitarguardar () {
       let estados = false
       return estados === false
@@ -154,6 +278,7 @@ export default {
         return ''
       }
     },
+
     addressRadio () {
       return this.address.map(x => {
         return {
@@ -170,8 +295,50 @@ export default {
     addressSelected (e) {
       return this.address.find(x => x.id === e)
     },
+
+    async DatosEncomienda (id, cart) {
+      let obj
+      let cantidad = 0
+      let monto = 0
+      console.log('este valor cual es', id, 'los valores de cart', cart)
+      this.addressAux = this.address.find(x => x.id === id)
+      console.log(this.addressAux)
+      for (let i = 0; i < cart.length; i++) {
+        obj = cart[i]
+        monto = monto + (obj.prodPrice * obj.quantity)
+        cantidad = cantidad + obj.quantity
+        if (obj?.peso === undefined) {
+          this.peso = this.peso + (this.pesoDefault * obj.quantity)
+        } else {
+          this.peso = this.peso + (obj?.peso * obj.quantity)
+        }
+      }
+      this.numeroPiezas = cantidad
+      this.valor = monto
+      let corriers = await this.loadCouriers2()
+      let cont = 1
+      console.log(' aca entre', corriers.data)
+      let obj2
+      for (let i = 0; i < corriers.data.length; i++) {
+        obj2 = corriers.data[i]
+        console.log('obj2', obj2)
+        this.couriersList2.push({ label: obj2.nombre,
+          value: obj2._id,
+          category: cont })
+        cont++
+      }
+      this.contacto = this.currentUser.nombre
+      this.telefono = this.addressAux.phone
+      this.destinatario = this.currentUser.nombre
+      this.cirif = this.currentUser.cedula
+      console.log('otroooo', this.couriersList2)
+      console.log('datos del current use', this.currentUser)
+      this.mostarDatos = true
+    },
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
+    ...mapActions('data', ['loadEstados2', 'loadCiudades2', 'loadCouriers2']),
     ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
+    ...mapGetters('user', ['currentUser']),
     isValidMarker () {
       if (this.getZones().length === 0 && this.markers.length !== 0) {
         return true
@@ -195,6 +362,57 @@ export default {
         }
       }
       return false
+    },
+    async calcularTarifa () {
+      let seguro = this.seguro ? 1 : 0
+      let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
+      // this.generandoTarifa = true
+      console.log('los valores currier', this.courier, 'ciudad', this.ciudad, 'modalidad', modalidad, 'numero pieza', this.numeroPiezas, 'peso', this.peso, 'valor', this.valor, 'seguro', seguro, 'tipo tarifa', this.tipoServicio, 'oficina', this.oficina)
+      this.alertaMsg = ''
+      try {
+        await this.$store.dispatch('data/getTarifa', {
+          courier: this.courier.value,
+          ciudad: this.ciudad.value,
+          cantidadPiezas: 2,
+          peso: 2,
+          seguro: seguro,
+          valor: 50,
+          tipoTarifa: this.tipoServicio.value,
+          modalidadTarifa: modalidad,
+          oficina: this.oficina.value
+        })
+
+        if (this.tarifa.error) {
+          this.alerta = true
+          this.alertaMsg = this.tarifa.error
+        } else {
+          this.tarifaModal = true
+          this.taficacompleto = {
+            tarifa: this.tarifa.data,
+            tarifaOrden: {
+            // courier: this.courier.label,
+              courier: this.courier,
+              estado: this.estado,
+              ciudad: this.ciudad,
+              cantidadPiezas: this.numeroPiezas,
+              peso: this.peso,
+              seguro: seguro,
+              valor: this.valor,
+              tipoTarifa: this.tipoServicio,
+              modalidadTarifa: modalidad,
+              oficina: this.oficina,
+              status: 'enviar'
+            }
+          }
+        // this.$emit('tarifa-done', this.taficacompleto)
+        }
+      } catch (error) {
+        console.error(error)
+        this.alerta = true
+        this.alertaMsg = error
+      } finally {
+        this.generandoTarifa = false
+      }
     },
     Tarifas (tarifacompleta) {
       console.log('los valores de tarifa', tarifacompleta)
@@ -226,7 +444,62 @@ export default {
         ]
       })
     },
+    async actualizarCourier () {
+      if (this.courier.label === 'Liberty') {
+        this.isLiberty = true
+        this.retirarOficina = false
+      } else {
+        this.isLiberty = false
+        this.retirarOficina = true
+      }
 
+      //  this.$store.commit('data/loadCouriers')
+      this.$store.commit('data/updateCourier', this.courier)
+      this.$store.commit('data/initEstados')
+      this.$store.commit('data/initCiudades')
+      this.$store.commit('data/initMunicipios')
+      this.$store.commit('data/initParroquias')
+      this.$store.commit('data/initOficinas')
+      //  this.estado = null
+      this.$store.dispatch('data/loadEstados', this.courier)
+      let listEstado = await this.loadEstados2(this.courier.value)
+      this.estadojete = listEstado.data.find(x => x.nombre === this.addressAux.address.administrative_area_level_1)
+      this.actualizarEstado()
+    },
+    async  actualizarEstado () {
+      this.$store.commit('data/updateEstado', { label: this.estadojete.name,
+        value: this.estadojete._id,
+        category: this.estadojete.codigo })
+      this.$store.commit('data/initCiudades')
+      this.$store.commit('data/initMunicipios')
+      this.$store.commit('data/initParroquias')
+      this.$store.commit('data/initOficinas')
+      let ciudadList = await this.loadCiudades2(this.estadojete._id)
+      this.ciudadList = ciudadList.data.find(x => x.nombre === this.addressAux.address.locality)
+      this.ciudad = { label: this.ciudadList.nombre,
+        value: this.ciudadList._id,
+        category: this.ciudadList.codigo }
+      this.$store.dispatch('data/loadCiudades', this.ciudad)
+      console.log('las ciudad del estado de Daniel', this.ciudadList)
+      this.actualizarCiudad()
+    },
+    actualizarCiudad () {
+      this.$store.commit('data/updateCiudad', this.ciudad)
+      this.$store.commit('data/initMunicipios')
+      this.$store.commit('data/initParroquias')
+      this.$store.commit('data/initOficinas')
+      this.municipio = null
+      this.$store.dispatch('data/loadMunicipios', { label: this.ciudadList.nombre,
+        value: this.ciudadList._id,
+        category: this.ciudadList.codigo })
+      console.log('las cuidades')
+      this.$store.dispatch('data/loadOficinas', { label: this.ciudadList.nombre,
+        value: this.ciudadList._id,
+        category: this.ciudadList.codigo })
+    },
+    actualizarOficina () {
+      this.$store.commit('data/updateOficina', this.oficina)
+    },
     confirm () {
       this.$q.dialog({
         title: 'Confirmar',
@@ -359,6 +632,43 @@ export default {
   },
   data () {
     return {
+      tipoServicio: '',
+      tipoServicios: [
+        {
+          label: 'Cobro a Destino',
+          value: 'cod',
+          category: 1
+        },
+        {
+          label: 'Contado',
+          value: 'nacional',
+          category: 2
+        }
+      ],
+      courier: '',
+      isLiberty: false,
+      retirarOficina: false,
+      seguro: false,
+      ciudadList: [],
+      oficina: '',
+      couriersList2: [],
+      valorSeleccionado: '',
+      numeroPiezas: 0,
+      pesoDefault: 1,
+      alerta: false,
+      alertaMsg: '',
+      peso: 0,
+      valor: 0,
+      tarifaModal: false,
+      taficacompleto: {},
+      destinatario: '',
+      contacto: '',
+      telefono: '',
+      dense: false,
+      cirif: '',
+      mostarDatos: false,
+      addressAux: '',
+      estadojete: '',
       gActive: false,
       estados: true,
       contact: '',
