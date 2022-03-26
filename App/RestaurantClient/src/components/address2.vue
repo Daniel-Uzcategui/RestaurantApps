@@ -43,10 +43,38 @@
       :options="addressRadio"
       color="primary">
     </q-option-group>
-    <div>
-      <q-btn color="primary" rounded icon="search"  @click="DatosEncomienda(valorSeleccionado, cart)"/>
-    </div>
+
   </div>
+  <div >
+   <q-label v-show="deshabilitarguardar">
+    Tarifa de Envio: {{tarifa.data.total}}
+    </q-label>
+  </div>
+  <div class="col-2"  v-show="deshabilitarguardar">
+     <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
+  </div>
+  <div class="col-2" v-show="deshabilitarguardar">
+     <q-select v-model="tipoServicio" :options="tipoServicios"  label="Tipo Servicio" />
+  </div>
+  <div class="col-2" v-show="deshabilitarguardar">
+   <q-toggle v-model="retirarOficina" label="Retirar en la Oficina" :disable="isLiberty ? true:false" />
+  </div>
+  <div class="col-2" v-show="retirarOficina">
+    <q-select v-model="oficina" :options="oficinasList" label="Oficina" @blur="actualizarOficina()" :disable="isLiberty ? true : false"/>
+  </div>
+    <div class="col-2" v-show="deshabilitarguardar">
+      <q-toggle v-model="seguro" label="Seguro" />
+    </div>
+     <div class="col-2"  v-show="deshabilitarguardar">
+        <q-input v-model="destinatario" label="Destinatario" />
+    </div>
+    <div class="col-2"  v-show="deshabilitarguardar">
+        <q-input v-model="cirif" label="CI/RIF" />
+     </div>
+     <div  v-show="deshabilitarguardar">
+       <br>
+     <q-btn label="Confimar" @click="calcularTarifa"> </q-btn>
+     </div>
   <q-dialog
   style="z-index: 9999999"
   seamless
@@ -92,14 +120,7 @@
         <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" readonly v-for="(addr, index) in addressOpt" :key="index" v-model="addressIn[addr]" :label="translateLabel(addr)" />
         <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="textarea" v-model="puntoRef" label="Punto de referencia y/o detalles" />
       </div>
-      <!-- <q-input filled class="q-pa-sm" filled type="text" v-model="alias" label="Alias" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-      <q-input filled class="q-pa-sm" filled type="text" v-model="estado" label="Estado" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-      <q-input filled class="q-pa-sm" filled type="text" v-model="ciudad" label="Ciudad" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-      <q-input filled class="q-pa-sm" filled type="text" v-model="municipio" label="Municipio" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-      <q-input filled class="q-pa-sm" filled type="text" v-model="urb" label="Urbanización" :rules="[ val => val && val.length > 0 || 'Campo Requerido']" />
-      <q-input filled class="q-pa-sm" filled type="text" v-model="calle" label="Calle" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-      <q-input filled class="q-pa-sm" filled type="text" v-model="domicilio" label="Domicilio" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-      <q-input filled class="q-pa-sm"  filled type="textarea" v-model="puntoRef" label="Punto de referencia" /> -->
+
     </q-form>
     </q-card-section>
 
@@ -237,7 +258,7 @@ export default {
     GoogleMap: GoogleMap
 
   },
-  props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping', 'cart'],
+  props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping', 'cart', 'rate'],
   computed: {
     ...mapGetters('localization', ['localZones', 'localizations']),
     ...mapGetters('address', ['address']),
@@ -259,8 +280,8 @@ export default {
       'pdfGuia'
     ]),
     deshabilitarguardar () {
-      let estados = false
-      return estados === false
+      console.log('el valor de totallllllllllllllll')
+      return this.tarifa.data.total !== undefined
     },
     addPickup () {
       let p = this.addressRadio.find(x => x.value === this.addressPickup)
@@ -293,19 +314,36 @@ export default {
       return this.value?.id || null
     },
     addressSelected (e) {
-      return this.address.find(x => x.id === e)
+      let id
+      id = this.address.find(x => x.id === e)
+      this.DatosEncomienda(id.id, this.cart)
+      return id
     },
 
     async DatosEncomienda (id, cart) {
       let obj
       let cantidad = 0
       let monto = 0
+      this.numeroPiezas = 0
+      let corriers = []
+      this.couriersList2 = []
+      this.peso = 0
+      this.valor = 0
+      this.retirarOficina = false
+      this.seguro = false
+      this.tipoServicio = {
+        label: 'Cobro a Destino',
+        value: 'cod',
+        category: 1
+      }
       console.log('este valor cual es', id, 'los valores de cart', cart)
+      console.log('los valores de la tasa', this.rate.rateValue)
       this.addressAux = this.address.find(x => x.id === id)
       console.log(this.addressAux)
       for (let i = 0; i < cart.length; i++) {
         obj = cart[i]
-        monto = monto + (obj.prodPrice * obj.quantity)
+        console.log('entreeeeeeeee al ciclo')
+        monto = parseFloat(parseFloat(monto) + (parseFloat(obj.prodPrice) * parseFloat(obj.quantity)))
         cantidad = cantidad + obj.quantity
         if (obj?.peso === undefined) {
           this.peso = this.peso + (this.pesoDefault * obj.quantity)
@@ -314,26 +352,34 @@ export default {
         }
       }
       this.numeroPiezas = cantidad
-      this.valor = monto
-      let corriers = await this.loadCouriers2()
+      this.valor = (parseFloat(monto) * parseFloat(this.rate.rateValue)).toFixed(2)
+      corriers = await this.loadCouriers2()
       let cont = 1
-      console.log(' aca entre', corriers.data)
       let obj2
+      let reg = { label: '',
+        value: '',
+        category: 0 }
+      // console.log('los curriers', corriers, 'y su lenth', corriers.data.length)
+      //  this.corriers2 = corriers.data
       for (let i = 0; i < corriers.data.length; i++) {
         obj2 = corriers.data[i]
-        console.log('obj2', obj2)
-        this.couriersList2.push({ label: obj2.nombre,
+        reg = { label: obj2.nombre,
           value: obj2._id,
-          category: cont })
+          category: cont }
+        this.couriersList2.push(reg)
         cont++
       }
+      console.log('loa valores del curiers', corriers.data[0])
+      this.actualizarCourier({ label: corriers.data[0].nombre,
+        value: corriers.data[0]._id,
+        category: 1 })
+      //  }
       this.contacto = this.currentUser.nombre
       this.telefono = this.addressAux.phone
       this.destinatario = this.currentUser.nombre
       this.cirif = this.currentUser.cedula
-      console.log('otroooo', this.couriersList2)
-      console.log('datos del current use', this.currentUser)
-      this.mostarDatos = true
+
+      // this.mostarDatos = true
     },
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
     ...mapActions('data', ['loadEstados2', 'loadCiudades2', 'loadCouriers2']),
@@ -367,16 +413,19 @@ export default {
       let seguro = this.seguro ? 1 : 0
       let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
       // this.generandoTarifa = true
+      this.ciudad = { label: this.ciudadList.nombre,
+        value: this.ciudadList._id,
+        category: this.ciudadList.codigo }
       console.log('los valores currier', this.courier, 'ciudad', this.ciudad, 'modalidad', modalidad, 'numero pieza', this.numeroPiezas, 'peso', this.peso, 'valor', this.valor, 'seguro', seguro, 'tipo tarifa', this.tipoServicio, 'oficina', this.oficina)
       this.alertaMsg = ''
       try {
         await this.$store.dispatch('data/getTarifa', {
           courier: this.courier.value,
           ciudad: this.ciudad.value,
-          cantidadPiezas: 2,
-          peso: 2,
+          cantidadPiezas: this.numeroPiezas,
+          peso: this.peso,
           seguro: seguro,
-          valor: 50,
+          valor: this.valor,
           tipoTarifa: this.tipoServicio.value,
           modalidadTarifa: modalidad,
           oficina: this.oficina.value
@@ -444,27 +493,38 @@ export default {
         ]
       })
     },
-    async actualizarCourier () {
-      if (this.courier.label === 'Liberty') {
-        this.isLiberty = true
-        this.retirarOficina = false
-      } else {
-        this.isLiberty = false
-        this.retirarOficina = true
-      }
+    async actualizarCourier (currieraux) {
+      console.log('el curriel pasado al procedimiento', currieraux)
+      if (currieraux.label === 'zoom') {
+        console.log('entreeeee')
+        this.courier = currieraux
+        console.log('los curiers pasados', this.courier)
+        if (this.courier.label === 'Liberty') {
+          this.isLiberty = true
+          this.retirarOficina = false
+        } else {
+          this.isLiberty = false
+          // this.retirarOficina = true
+        }
 
-      //  this.$store.commit('data/loadCouriers')
-      this.$store.commit('data/updateCourier', this.courier)
-      this.$store.commit('data/initEstados')
-      this.$store.commit('data/initCiudades')
-      this.$store.commit('data/initMunicipios')
-      this.$store.commit('data/initParroquias')
-      this.$store.commit('data/initOficinas')
-      //  this.estado = null
-      this.$store.dispatch('data/loadEstados', this.courier)
-      let listEstado = await this.loadEstados2(this.courier.value)
-      this.estadojete = listEstado.data.find(x => x.nombre === this.addressAux.address.administrative_area_level_1)
-      this.actualizarEstado()
+        //  this.$store.commit('data/loadCouriers')
+        this.$store.commit('data/updateCourier', this.courier)
+        this.$store.commit('data/initEstados')
+        this.$store.commit('data/initCiudades')
+        this.$store.commit('data/initMunicipios')
+        this.$store.commit('data/initParroquias')
+        this.$store.commit('data/initOficinas')
+        //  this.estado = null
+        this.$store.dispatch('data/loadEstados', this.courier)
+        let listEstado = await this.loadEstados2(this.courier.value)
+        console.log('los estado', listEstado, 'y el estado seleccionado es:', this.addressAux.address.administrative_area_level_1.toUpperCase())
+        this.estadojete = listEstado.data.find(x => x.nombre.toUpperCase() === this.addressAux.address.administrative_area_level_1.toUpperCase())
+        console.log('objeto estado', this.estadojete)
+        // this.estados
+        if (this.estadojete) {
+          this.actualizarEstado()
+        }
+      }
     },
     async  actualizarEstado () {
       this.$store.commit('data/updateEstado', { label: this.estadojete.name,
@@ -475,7 +535,7 @@ export default {
       this.$store.commit('data/initParroquias')
       this.$store.commit('data/initOficinas')
       let ciudadList = await this.loadCiudades2(this.estadojete._id)
-      this.ciudadList = ciudadList.data.find(x => x.nombre === this.addressAux.address.locality)
+      this.ciudadList = ciudadList.data.find(x => x.nombre.toUpperCase() === this.addressAux.address.locality.toUpperCase())
       this.ciudad = { label: this.ciudadList.nombre,
         value: this.ciudadList._id,
         category: this.ciudadList.codigo }
@@ -483,8 +543,10 @@ export default {
       console.log('las ciudad del estado de Daniel', this.ciudadList)
       this.actualizarCiudad()
     },
-    actualizarCiudad () {
-      this.$store.commit('data/updateCiudad', this.ciudad)
+    async  actualizarCiudad () {
+      this.$store.commit('data/updateCiudad', { label: this.ciudadList.nombre,
+        value: this.ciudadList._id,
+        category: this.ciudadList.codigo })
       this.$store.commit('data/initMunicipios')
       this.$store.commit('data/initParroquias')
       this.$store.commit('data/initOficinas')
@@ -496,9 +558,12 @@ export default {
       this.$store.dispatch('data/loadOficinas', { label: this.ciudadList.nombre,
         value: this.ciudadList._id,
         category: this.ciudadList.codigo })
+      await this.actualizarOficina()
+      this.calcularTarifa()
     },
     actualizarOficina () {
       this.$store.commit('data/updateOficina', this.oficina)
+      console.log('la oficinas', this.lis)
     },
     confirm () {
       this.$q.dialog({
@@ -649,6 +714,7 @@ export default {
       isLiberty: false,
       retirarOficina: false,
       seguro: false,
+      corriers2: [],
       ciudadList: [],
       oficina: '',
       couriersList2: [],

@@ -12,6 +12,7 @@ export async function loadCouriers2 ({ commit }) {
   return valor
 }
 export async function loadEstados ({ commit }, data) {
+  console.log('el courier', data.value)
   await api.get(`/get/estados?courier=${data.value}`)
     .then((response) => {
       commit('loadEstados', { data: response.data, error: null })
