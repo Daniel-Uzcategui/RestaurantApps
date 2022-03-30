@@ -265,6 +265,7 @@ export default {
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['sede']),
     ...mapGetters('user', ['currentUser']),
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
     ...mapState('data', [
       'couriersList',
       'estadosList',
@@ -346,7 +347,7 @@ export default {
         monto = parseFloat(parseFloat(monto) + (parseFloat(obj.prodPrice) * parseFloat(obj.quantity)))
         cantidad = cantidad + obj.quantity
         if (obj?.peso === undefined) {
-          this.peso = this.peso + (this.pesoDefault * obj.quantity)
+          this.peso = this.peso + (this.paymentServ.pesoDefault * obj.quantity)
         } else {
           this.peso = this.peso + (obj?.peso * obj.quantity)
         }
@@ -384,7 +385,7 @@ export default {
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
     ...mapActions('data', ['loadEstados2', 'loadCiudades2', 'loadCouriers2']),
     ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
-    ...mapGetters('user', ['currentUser']),
+    ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     isValidMarker () {
       if (this.getZones().length === 0 && this.markers.length !== 0) {
         return true
@@ -450,10 +451,15 @@ export default {
               tipoTarifa: this.tipoServicio,
               modalidadTarifa: modalidad,
               oficina: this.oficina,
-              status: 'enviar'
+              status: 'enviar',
+              destinatario: this.destinatario,
+              contacto: this.contacto,
+              telefono: this.telefono,
+              cirif: this.cirif
+
             }
           }
-        // this.$emit('tarifa-done', this.taficacompleto)
+          this.$emit('tarifa2-done', this.taficacompleto)
         }
       } catch (error) {
         console.error(error)
@@ -522,6 +528,9 @@ export default {
         console.log('objeto estado', this.estadojete)
         // this.estados
         if (this.estadojete) {
+          this.estado = { label: this.estadojete.nombre,
+            value: this.estadojete._id,
+            category: this.estadojete.codigo }
           this.actualizarEstado()
         }
       }
@@ -657,6 +666,7 @@ export default {
     }
   },
   async mounted () {
+    this.bindPaymentServ()
     // this.estados = this.deshabilitarguardar()
     this.bindLocalizations().catch(e => console.log(e))
     this.bindLocalZones().catch(e => console.log(e))
@@ -720,7 +730,6 @@ export default {
       couriersList2: [],
       valorSeleccionado: '',
       numeroPiezas: 0,
-      pesoDefault: 1,
       alerta: false,
       alertaMsg: '',
       peso: 0,

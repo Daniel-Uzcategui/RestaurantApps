@@ -183,7 +183,7 @@
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
                            <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1  && deliveryPrice != 0 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && deliveryPrice != 0  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && continuar != false  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           </div>
                          </q-card-section>
                        </q-card>
@@ -462,6 +462,7 @@ export default {
     return {
       ordCompraClient: null,
       ordCompraBranch: null,
+      continuar: false,
       canCloseHours: false,
       loadingConfig: true,
       cupons: [],
@@ -672,13 +673,18 @@ export default {
     obtenertarifa (tarif) {
       this.objetotarifa = tarif
       console.log('objeto tarifa', this.objetotarifa)
-      let rate = this.ratesComp.find(obj => {
-        return obj.currency === 'Bs'
-      })
-      console.log('este es valor rate', rate.rateValue, 'el valor de tarifa.total', this.objetotarifa.tarifa.total)
-      let valor = (parseFloat(this.objetotarifa.tarifa.total) / parseFloat(rate.rateValue))
-      this.deliveryPrice = valor.toFixed(2)
-      console.log('el valor de this.deliveryPrice', valor)
+      if (this.objetotarifa.tipoTarifa === 'nacional') {
+        let rate = this.ratesComp.find(obj => {
+          return obj.currency === 'Bs'
+        })
+        console.log('este es valor rate', rate.rateValue, 'el valor de tarifa.total', this.objetotarifa.tarifa.total)
+        let valor = (parseFloat(this.objetotarifa.tarifa.total) / parseFloat(rate.rateValue))
+        this.deliveryPrice = valor.toFixed(2)
+        console.log('el valor de this.deliveryPrice', valor)
+      } else {
+        this.deliveryPrice = 0
+      }
+      this.continuar = true
     },
     totalItComp (its) {
       var sum = 0
