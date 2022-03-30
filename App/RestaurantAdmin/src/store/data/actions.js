@@ -52,6 +52,10 @@ export async function loadOficinas ({ commit }, data) {
       commit('loadOficinas', { data: null, error: error })
     })
 }
+export async function loadOficinas2 ({ commit }, data) {
+  let valor = await api.get(`/get/oficinas?ciudad=${data.value}`)
+  return valor
+}
 
 export async function generateGuia ({ commit, state }, data) {
   console.log(data)
@@ -79,7 +83,7 @@ export async function getTarifa ({ commit, state }, data) {
 }
 
 export async function getTracking ({ commit, state }, data) {
-  await api.get(`/get/tracking?courier=${data.courier}&numero_guia=${data.numero_guia}`, state.configHeader)
+  await api.get(`/get/tracking?courier=${data.courier}&guia_id=${data.guia_id}&numero_guia=${data.numero_guia}`, state.configHeader)
     .then((response) => {
       commit('generatedTracking', { data: response.data, error: null })
     }).catch(error => {

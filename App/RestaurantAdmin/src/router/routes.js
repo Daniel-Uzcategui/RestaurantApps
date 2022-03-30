@@ -473,6 +473,18 @@ const routes = [{
   }]
 },
 {
+  path: '/tracking',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [{
+    path: 'index',
+    name: 'listOrders',
+    component: () =>
+                import ('pages/jetes/tracking.vue')
+
+  }]
+},
+{
   path: '/payments',
   component: () =>
             import ('layouts/User.vue'),

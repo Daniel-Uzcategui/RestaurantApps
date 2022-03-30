@@ -375,7 +375,11 @@ export default {
           tree: [
             { label: 'Verificar Encomiendas',
               handler: (node) => this.$router.push({ path: '/encomienda/index' })
-            }]
+            },
+            { label: 'Tracking',
+              handler: (node) => this.$router.push({ path: '/tracking/index' })
+            }
+          ]
         },
 
         {

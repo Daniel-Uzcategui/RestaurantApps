@@ -3,22 +3,22 @@
         <div class="row">
             <q-form class="q-gutter-md formulario row">
                 <div class="col-2">
-                    <q-select v-model="courier" :options="couriersList" disable label="Couriers" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
+                    <q-select v-model="courier" :options="couriersList"  label="Couriers" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
                 </div>
                 <div class="col-2">
-                    <q-select v-model= "estado" :options="estadosList" disable label="Estado" @blur="actualizarEstado()"  @change="actualizarEstado()" />
+                    <q-select v-model= "estado" :options="estadosList"  label="Estado" @blur="actualizarEstado()"  @change="actualizarEstado()" />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="ciudad" :options="ciudadesList" disable label="Ciudad" @blur="actualizarCiudad()"   />
+                    <q-select v-model="ciudad" :options="ciudadesList"  label="Ciudad" @blur="actualizarCiudad()"   />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="municipio" :options="municipiosList" disable label="Municipio" @blur="actualizarMunicipio()" />
+                    <q-select v-model="municipio" :options="municipiosList"  label="Municipio" @blur="actualizarMunicipio()" />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="parroquia" :options="parroquiasList" disable label="Parroquia" @blur="actualizarParroquia()" />
+                    <q-select v-model="parroquia" :options="parroquiasList"  label="Parroquia" @blur="actualizarParroquia()" />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="oficina" :options="oficinasList" disable label="Oficina" @blur="actualizarOficina()" />
+                    <q-select v-model="oficina" :options="oficinasList"  label="Oficina" @blur="actualizarOficina()" />
                 </div>
                 <div class="col-12"></div>
                 <div class="col-2">
@@ -58,13 +58,13 @@
                     <q-input v-model="valor" type="number" disable label="Valor" />
                 </div>
                 <div class="col-2">
-                    <q-input v-model="tipoServicio" disable label="Tipo de Servicio" />
+                  <q-select v-model="tipoServicio" :options="tipoServicioList" disable label="Tipo de Servicio"  />
                 </div>
                 <div class="col-2">
-                    <q-toggle v-model="retirarOficina" disable label="Retirar en la Oficina"  />
+                    <q-toggle v-model="retirarOficina"  label="Retirar en la Oficina"  />
                 </div>
                 <div class="col-2">
-                    <q-toggle v-model="seguro" disable label="Seguro" />
+                    <q-toggle v-model="seguro"  label="Seguro" />
                 </div>
             </q-form>
         </div>
@@ -251,8 +251,8 @@
 </template>
 <script>
 // import { defineComponent, ref } from 'vue'
-import validarDatos from '../../middleware/validateData'
-import { mapState } from 'vuex'
+// import validarDatos from '../../middleware/validateData'
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'couriers',
   components: {
@@ -265,9 +265,9 @@ export default {
       couriersList: [],
       estadosList: [],
       ciudadesList: [],
-      municipiosList: [],
-      parroquiasList: [],
       oficinasList: [],
+      tipoServicioList: [],
+      idorden: '',
       loading: true,
       alerta: false,
       tarifaModal: false,
@@ -308,6 +308,8 @@ export default {
   },
   computed: {
     ...mapState('data', [
+      'municipiosList',
+      'parroquiasList',
       'errorList',
       'dataSelected',
       'guia',
@@ -320,31 +322,72 @@ export default {
     //   }
 
   },
-  mounted () {
+  async mounted () {
     this.getCouriers()
     this.$store.commit('data/initTracking')
     console.log('los valores pasados por props', this.propsEcomienda)
     this.couriersList.push(this.propsEcomienda.courier)
     this.estadosList.push(this.propsEcomienda.estado)
     this.ciudadesList.push(this.propsEcomienda.ciudad)
-    this.municipiosList.push(this.propsEcomienda.municipio)
-    this.parroquiasList.push(this.propsEcomienda.parroquia)
-    this.oficinasList.push(this.propsEcomienda.oficina)
+
+    this.tipoServicioList.push(this.propsEcomienda.tipoTarifa)
     this.courier = this.couriersList[0]
     this.estado = this.estadosList[0]
     this.ciudad = this.ciudadesList[0]
-    this.municipio = this.municipiosList[0]
-    this.parroquia = this.parroquiasList[0]
-    this.oficina = this.oficinasList[0]
+    if (this.propsEcomienda.oficina !== '') {
+      this.oficinasList.push(this.propsEcomienda.oficina)
+      this.oficina = this.oficinasList[0]
+    } else {
+      let ciudad2 = await this.loadOficinas2(this.ciudad)
+      console.log('oficinas', ciudad2)
+      for (let i = 0; i < ciudad2.data.length; i++) {
+        this.oficinasList.push({ label: ciudad2.data[i].nombre,
+          value: ciudad2.data[i]._id,
+          category: ciudad2.data[i].codigo })
+      }
+      this.oficina = {
+        label: '',
+        value: '',
+        category: ''
+      }
+    }
+    // this.municipio = this.municipiosList[0]
+    // this.parroquia = this.parroquiasList[0]
+
+    this.tipoServicio = this.tipoServicioList[0]
     this.numeroPiezas = this.propsEcomienda.cantidadPiezas
     this.peso = this.propsEcomienda.peso
-    this.tipoServicio = this.propsEcomienda.tipoTarifa
-    this.seguro = this.propsEcomienda.seguro
+    // this.tipoServicio = this.propsEcomienda.tipoTarifa.value
+
+    if (this.propsEcomienda.seguro === 1) {
+      this.seguro = true
+    } else {
+      this.seguro = false
+    }
     this.valor = this.propsEcomienda.valor
-    this.retirarOficina = this.propsEcomienda.modalidadTarifa
+    if (this.propsEcomienda.modalidadTarifa === 'puerta') {
+      this.retirarOficina = false
+    } else {
+      this.retirarOficina = true
+    }
+
+    this.idorden = this.propsEcomienda.idorden
+    this.destinatario = this.propsEcomienda.destinatario
+    this.contacto = this.propsEcomienda.contacto
+    this.cirif = this.propsEcomienda.cirif
+    this.telefono = this.propsEcomienda.telefono
+    this.$store.dispatch('data/loadMunicipios', this.ciudad)
+    // this.actualizarCourier()
+    // this.actualizarEstado()
+    // this.actualizarCiudad()
+    // this.actualizarMunicipio()
+
+    // this.direccion = this.propsEcomienda.direccion
   },
 
   methods: {
+    ...mapActions('order', ['setencomienda']),
+    ...mapActions('data', ['loadOficinas2']),
     async getCouriers () {
       try {
         this.loading = true
@@ -399,14 +442,14 @@ export default {
     actualizarParroquia () {
       this.$store.commit('data/updateParroquia', this.parroquia)
       this.$store.commit('data/initOficinas')
-      this.oficina = null
+      // this.oficina = null
       this.$store.dispatch('data/loadOficinas', this.ciudad)
     },
     actualizarOficina () {
       this.$store.commit('data/updateOficina', this.oficina)
     },
     generarGuia () {
-      validarDatos(this)
+      // validarDatos(this)
       if (!this.errorValidacion) {
         this.cargarDatos()
         this.solicitarGuia()
@@ -430,6 +473,16 @@ export default {
       }
       this.solicitarPdfGuia()
     },
+    async  guardarguia () {
+      let guia = {
+        idorden: this.idorden,
+        courier: this.courier.value,
+        guia_id: this.guia.data._id,
+        numero_guia: this.guia.data.guia
+      }
+      console.log(guia)
+      await this.setencomienda(guia)
+    },
     cargarDatos () {
       this.$store.commit('data/updateOtherData', {
         destinatario: this.destinatario,
@@ -451,32 +504,35 @@ export default {
     },
 
     async solicitarGuia () {
+      let seguro = this.seguro ? 1 : 0
+      let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
       try {
         this.alertaMsg = ''
         this.generandoGuia = true
         await this.$store.dispatch('data/generateGuia', {
-          courier: this.dataSelected.courier.value,
-          estado: this.dataSelected.estado.value,
-          ciudad: this.dataSelected.ciudad.value,
-          municipio: this.dataSelected.municipio.value,
-          parroquia: this.dataSelected.parroquia.value,
-          destinatario: this.dataSelected.destinatario,
-          contacto: this.dataSelected.contacto,
-          cirif: this.dataSelected.cirif,
-          telefono: this.dataSelected.telefono,
-          direccion: this.dataSelected.direccion,
-          inmueble: this.dataSelected.inmueble,
-          descripcionPaquete: this.dataSelected.descripcionPaquete,
-          referencia: this.dataSelected.referencia,
-          numeroPiezas: this.dataSelected.numeroPiezas,
-          peso: this.dataSelected.peso,
-          tipoEnvio: this.dataSelected.tipoEnvio,
+          courier: this.courier.value,
+          estado: this.estado.value,
+          ciudad: this.ciudad.value,
+          municipio: this.municipio.value,
+          parroquia: this.parroquia.value,
+          destinatario: this.destinatario,
+          contacto: this.contacto,
+          cirif: this.cirif,
+          telefono: this.telefono,
+          direccion: this.direccion,
+          inmueble: this.inmueble,
+          descripcionPaquete: this.descripcionPaquete,
+          referencia: this.referencia,
+          numeroPiezas: this.numeroPiezas,
+          peso: this.peso,
+          tipoEnvio: this.tipoEnvio,
           valor: this.dataSelected.valor,
-          tipoServicio: this.dataSelected.tipoServicio,
-          retirarOficina: this.dataSelected.retirarOficina,
-          oficina: this.dataSelected.oficina.value,
-          seguro: this.dataSelected.seguro
+          tipoServicio: this.tipoServicio.value,
+          retirarOficina: modalidad,
+          oficina: this.oficina.value,
+          seguro: seguro
         })
+        await this.guardarguia()
         if (this.guia.error) {
           this.alerta = true
           this.alertaMsg = this.guia.error
@@ -493,8 +549,10 @@ export default {
       try {
         this.alertaMsg = ''
         this.generandoTracking = true
+        console.log('valores para tracking', this.courier.value, this.guia.data._id, this.guia.data.guia)
         await this.$store.dispatch('data/getTracking', {
-          courier: this.dataSelected.courier.value,
+          courier: this.courier.value,
+          guia_id: this.guia.data._id,
           numero_guia: this.guia.data.guia
         })
         if (this.tracking.error) {
@@ -516,15 +574,15 @@ export default {
       this.alertaMsg = ''
       try {
         await this.$store.dispatch('data/getTarifa', {
-          courier: this.dataSelected.courier.value,
-          ciudad: this.dataSelected.ciudad.value,
+          courier: this.courier.value,
+          ciudad: this.ciudad.value,
           cantidadPiezas: this.dataSelected.numeroPiezas,
           peso: this.dataSelected.peso,
           seguro: seguro,
           valor: this.dataSelected.valor,
           tipoTarifa: this.dataSelected.tipoServicio,
           modalidadTarifa: modalidad,
-          oficina: this.dataSelected.oficina.value
+          oficina: this.oficina.value
         })
         if (this.tarifa.error) {
           this.alerta = true
@@ -545,7 +603,7 @@ export default {
         this.alertaMsg = ''
         this.generandoPdfGuia = true
         await this.$store.dispatch('data/generatePdfGuia', {
-          courier: this.dataSelected.courier.value,
+          courier: this.courier.value,
           guia_id: this.guia.data._id,
           numero_guia: this.guia.data.guia
         })

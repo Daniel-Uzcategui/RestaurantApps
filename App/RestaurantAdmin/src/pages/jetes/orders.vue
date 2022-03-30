@@ -49,7 +49,9 @@ export default {
     },
     encomienda2 (datos) {
       console.log('los datos', datos)
-      this.encomienda(datos.encomienda)
+      let encomiendaAxu = datos.encomienda
+      encomiendaAxu = { ...encomiendaAxu, idorden: datos.id }
+      this.encomienda(encomiendaAxu)
       console.log('esta es la encomienda', this.Encomienda)
     }
   },
