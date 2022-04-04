@@ -433,12 +433,16 @@ export default {
       value = this.statusVenmo
       key = 'statusVenmo'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.apiKeyDev
-      key = 'apiKeyDev'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.apiKeyProd
-      key = 'apiKeyProd'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      if (this.apiKeyDev) {
+        value = this.apiKeyDev
+        key = 'apiKeyDev'
+        this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      }
+      if (this.apiKeyProd) {
+        value = this.apiKeyProd
+        key = 'apiKeyProd'
+        this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      }
       value = this.statusCreditCorp
       key = 'statusCreditCorp'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))

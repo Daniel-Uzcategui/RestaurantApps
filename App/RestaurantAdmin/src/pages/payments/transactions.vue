@@ -1,10 +1,10 @@
  <template>
-  <q-page :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
+  <div :class="$q.screen.gt.xs ? 'q-pa-lg' : ''" >
     <div>
       <q-table class="table" flat square
       style="border-radius: 28px"
       title="Transacciones por medios de pago"
-      :data="OrderClient"
+      :data="OrderClient.OrderClient"
       :columns="columns"
       :grid="$q.screen.lt.md"
       row-key="id"
@@ -12,7 +12,9 @@
       rows-per-page-label="Registros por página"
       >
       <template v-slot:top-right>
+        <slot name="top-right"></slot>
         <q-btn flat color="white" push label="Exportar a csv" icon="archive" @click="exportTable"/>
+        <q-btn flat color="white" push label="Ver las transacciones de Prueba" :icon="prod ? '' : 'check'" @click="devshow"/>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" >
@@ -27,7 +29,7 @@
       </template>
     </q-table>
  </div>
-</q-page>
+</div>
 </template>
 
 <script>
@@ -94,15 +96,25 @@ export default {
           }
         }
       }
-      return OrderClient
+      return { OrderClient, transactions: this.transactions }
     }
   },
-  created () {
-    this.bindOrders().catch(e => console.error(e))
-    this.bindClients().catch(e => console.error(e))
-    this.bindtransactions().then(() => this.afterBindig())
+  async mounted () {
+    await this.bindOrders().catch(e => console.error(e))
+    await this.bindClients().catch(e => console.error(e))
+    await this.bindtransactions(this.prod).then((e) => {
+      this.transactionsTable = e
+      this.$forceUpdate()
+    })
   },
   methods: {
+    async devshow () {
+      this.prod = this.prod ? 0 : 1
+      await this.bindtransactions(this.prod).then((e) => {
+        this.transactionsTable = e
+        this.$forceUpdate()
+      })
+    },
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -138,6 +150,7 @@ export default {
   data () {
     return {
       selected: [],
+      prod: 1,
       transactionsTable: [],
       columns: [
         { name: 'typePayment', align: 'center', label: 'Tipo de Pagos', field: 'typePayment', sortable: true },
