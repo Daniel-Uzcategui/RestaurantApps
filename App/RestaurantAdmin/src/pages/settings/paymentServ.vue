@@ -65,6 +65,7 @@
 <q-option-group color="blue" inline  filled rounded v-model="statustransfer" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Transferencia Bancaria" />
         </div>
+
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
@@ -75,13 +76,13 @@
         </div> -->
         </div>
         <div class="flex-break q-py-md "></div>
-        <!-- <div class="row header-container">
-        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <p>Zelle Novared</p>
-<q-option-group color="blue" inline  filled rounded v-model="statusNovaredzelle" map-options emit-value standout="bg-teal "
-          outlined :options="estatus_options" label="Zelle" />
+       <div class="row header-container">
+          <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
+          <p>Encomienda</p>
+          <q-option-group color="blue" inline  filled rounded v-model="statusEncomienda" map-options emit-value standout="bg-teal "
+          outlined :options="estatus_options" label="Encomiendas" />
         </div>
-        </div> -->
+        </div>
           <div class="flex-break q-py-md "></div>
         <!-- <div class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
@@ -183,6 +184,16 @@
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input filled rounded v-model="zelleEmail" standout="bg-teal "
           outlined label="Email Zelle" />
+        </div>
+        </div>
+
+        <div v-if="statusEncomienda" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Encomienda</div>
+       </div>
+       <div v-if="statusEncomienda" class="row header-container">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="pesoDefault" standout="bg-teal "
+          outlined label="Peso Default" />
         </div>
         </div>
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
@@ -319,6 +330,7 @@ export default {
       statusMercantil: 0,
       statusNovaredzelle: 0,
       statusNovaredpagomovil: 0,
+      statusEncomienda: 0,
       Novared: {
         ApiKey: '',
         idComercio: '',
@@ -346,6 +358,7 @@ export default {
       CreditCorp: '',
       transfer: '',
       pagomovil: '',
+      pesoDefault: 0,
       price: 0,
       estatus_options: [
         { label: 'Activo', value: 1 },
@@ -390,12 +403,14 @@ export default {
         Novared: this.Novared,
         statusNovaredzelle: this.statusNovaredzelle,
         statusNovaredpagomovil: this.statusNovaredpagomovil,
+        statusEncomienda: this.statusEncomienda,
         statusPaypal: this.statusPaypal,
         PaypalApi: this.PaypalApi,
         zelleEmail: this.zelleEmail,
         venmoAcc: this.venmoAcc,
         CreditCorp: this.CreditCorp,
         transfer: this.transfer,
+        pesoDefaul: this.pesoDefault,
         pagomovil: this.pagomovil,
         source: 'paymentServ'
       }
@@ -449,6 +464,9 @@ export default {
       value = this.statusNovaredzelle
       key = 'statusNovaredzelle'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.statusEncomienda
+      key = 'statusEncomienda'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusNovaredpagomovil
       key = 'statusNovaredpagomovil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
@@ -475,6 +493,9 @@ export default {
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'venmoAcc'
       value = this.venmoAcc
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      key = 'pesoDefault'
+      value = this.pesoDefault
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'zelleEmail'
       value = this.zelleEmail
