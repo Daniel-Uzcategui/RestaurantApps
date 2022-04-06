@@ -2,13 +2,20 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/storage'
-
+import admin from 'firebase-admin'
+// const admin = require('firebase-admin')
 /**
  * Firestore
  * https: //firebase.google.com/docs/reference/js/firebase.firestore.Firestore.html
  *
  * @return {Interface} returns Firestore
  */
+export const Admin = () => {
+  return admin()
+}
+export const db = () => {
+  return admin.firestore()
+}
 export const firestore = () => {
   let local = localStorage.getItem('amb')
   if (local !== null) {

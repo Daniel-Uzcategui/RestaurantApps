@@ -12,7 +12,7 @@
         <div class="col-12">
          <div >
             <div class="card-input"><label  aria-label="referencia" >Referecia</label>
-                <q-input filled rounded outlined type="number" v-model="valueFields.referencia" @change="validar" title="CVV"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  v-model="valueFields.referencia"  title="CVV"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
          <div class="col-12">
@@ -234,7 +234,6 @@ export default {
     async payment () {
       this.respuestaPay = await this.paymentbank()
       console.log(this.respuestaPay)
-      // let verificar = this.verificarPago(this.respuestaPay.data.id.data.trx)
 
       this.$emit('payment-done', this.respuestaPay)
       if (this.respuestaPay) {
@@ -406,7 +405,8 @@ export default {
           url: 'http://localhost:3000/transact/',
           data:
           {
-            'bank': 'Dolares',
+            'bank': 'TransactVerify',
+            'token': '286748b0-c542-47a0-8fff-ca08cc9965a9',
             'ambiente': localStorage.getItem('amb'),
             'monto': monto,
             'moneda': 'USD',

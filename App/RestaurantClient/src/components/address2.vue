@@ -45,11 +45,7 @@
     </q-option-group>
 
   </div>
-  <div >
-   <q-label v-show="deshabilitarguardar">
-    Tarifa de Envio: {{tarifa.data.total}}
-    </q-label>
-  </div>
+
   <div class="col-2"  v-show="deshabilitarguardar">
      <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
   </div>
@@ -57,13 +53,13 @@
      <q-select v-model="tipoServicio" :options="tipoServicios"  label="Tipo Servicio" />
   </div>
   <div class="col-2" v-show="deshabilitarguardar">
-   <q-toggle v-model="retirarOficina" label="Retirar en la Oficina" :disable="isLiberty ? true:false" />
+   <q-toggle v-model="retirarOficina" label="Retirar en la Oficina" @input="recalcular2()" :disable="isLiberty ? true:false" />
   </div>
   <div class="col-2" v-show="retirarOficina">
-    <q-select v-model="oficina" :options="oficinasList" label="Oficina" @blur="actualizarOficina()" :disable="isLiberty ? true : false"/>
+    <q-select v-model="oficina" :options="oficinasList" label="Oficina" @blur="actualizarOficina()" @input="recalcular()" :disable="isLiberty ? true : false"/>
   </div>
     <div class="col-2" v-show="deshabilitarguardar">
-      <q-toggle v-model="seguro" label="Seguro" />
+      <q-toggle v-model="seguro" label="Seguro" @input="recalcular()"/>
     </div>
      <div class="col-2"  v-show="deshabilitarguardar">
         <q-input v-model="destinatario" label="Destinatario" />
@@ -71,10 +67,14 @@
     <div class="col-2"  v-show="deshabilitarguardar">
         <q-input v-model="cirif" label="CI/RIF" />
      </div>
-     <div  v-show="deshabilitarguardar">
-       <br>
-     <q-btn label="Confimar" @click="calcularTarifa"> </q-btn>
-     </div>
+      <div >
+        <br>
+        <br>
+   <q-label v-show="deshabilitarguardar">
+    Tarifa de Envio: {{tarifa.data.total}} Bs.
+    </q-label>
+  </div>
+
   <q-dialog
   style="z-index: 9999999"
   seamless
@@ -331,6 +331,8 @@ export default {
       this.peso = 0
       this.valor = 0
       this.retirarOficina = false
+      this.oficina = ''
+      this.oficinasList = []
       this.seguro = false
       this.tipoServicio = {
         label: 'Cobro a Destino',
@@ -410,6 +412,17 @@ export default {
       }
       return false
     },
+    recalcular () {
+      console.log('este es el valor de retirar a oficina', this.retirarOficina)
+
+      this.calcularTarifa()
+    },
+    recalcular2 () {
+      console.log('este es el valor de retirar a oficina', this.retirarOficina)
+      if (!this.retirarOficina) {
+        this.calcularTarifa()
+      }
+    },
     async calcularTarifa () {
       let seguro = this.seguro ? 1 : 0
       let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
@@ -436,7 +449,7 @@ export default {
           this.alerta = true
           this.alertaMsg = this.tarifa.error
         } else {
-          this.tarifaModal = true
+        //  this.tarifaModal = true
           this.taficacompleto = {
             tarifa: this.tarifa.data,
             tarifaOrden: {
@@ -568,11 +581,11 @@ export default {
         value: this.ciudadList._id,
         category: this.ciudadList.codigo })
       await this.actualizarOficina()
-      this.calcularTarifa()
     },
     actualizarOficina () {
       this.$store.commit('data/updateOficina', this.oficina)
-      console.log('la oficinas', this.lis)
+      console.log('la oficinas', this.oficina)
+      this.calcularTarifa()
     },
     confirm () {
       this.$q.dialog({
