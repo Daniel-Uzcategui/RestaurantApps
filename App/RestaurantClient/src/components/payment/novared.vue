@@ -10,11 +10,6 @@
     <div class="col-12">
  <div class="row">
         <div class="col-12">
-         <div >
-            <div class="card-input"><label  aria-label="referencia" >Referecia</label>
-                <q-input filled rounded outlined  v-model="valueFields.referencia"  title="CVV"  data-card-field="" autocomplete="off"/>
-        </div>
-        </div>
          <div class="col-12">
         <div>
            <q-select
@@ -33,12 +28,6 @@
         </div>
         </div>
 
-         <div >
-            <div class="card-input"><label  aria-label="Total" >Total</label>
-                <q-input filled rounded outlined type="number" v-model="total"  title="Monto"  data-card-field="" autocomplete="off" disable/>
-        </div>
-
-        </div>
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
                 <q-input filled rounded outlined  v-model="valueFields.telefono"  title="Telefono"  @change="validar" data-card-field="" autocomplete="off"/>
@@ -294,7 +283,7 @@ export default {
     validar () {
       console.log('valores ', this.valueFields.telefono, this.valueFields.referencia, this.valueFields.correo)
       console.log('estados', this.desahabilitadorefencia, this.desabililitadocorreo, this.desahabilitadotelefono)
-      if ((!this.desahabilitadorefencia) && (!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
+      if ((!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
         console.log('entreeee')
         this.estado = false
       }
@@ -418,13 +407,14 @@ export default {
           } }
         console.log(options)
         let respuesta = await this.$axios(options)
+        console.log('estaaaaaaaaaaaa', respuesta)
         let resp = {
           data: {
             id: respuesta,
             trx: {
               trx_status: 'approved'
             },
-            referencia: referencia,
+            referencia: respuesta.data.refgenerada,
             correo: this.valueFields.correo,
             formaPago: this.metodopago.value,
             telefono: telefono

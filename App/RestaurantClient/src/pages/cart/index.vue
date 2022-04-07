@@ -830,16 +830,17 @@ export default {
             formapago: aux.formaPago
           }
           order = { ...order, onlinePay: reg1 }
-          if (this.objetotarifa !== undefined) {
-            order = { ...order, tarifa: this.objetotarifa.tarifa }
-            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          console.log('objeto tarifa', this.objetotarifa)
+          if (this.objetotarifa?.tarifa !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa?.tarifa }
+            order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
           }
 
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.zelleEmail }
           break
         case 11:
-          let aux1 = order.onlinePay
+          let aux1 = order?.onlinePay
           delete order.onlinePay
           console.log('valores de aux', aux1)
           let reg = {
@@ -849,9 +850,9 @@ export default {
             correo: aux1.correo,
             formapago: aux1.formaPago
           }
-          if (this.objetotarifa !== undefined) {
-            order = { ...order, tarifa: this.objetotarifa.tarifa }
-            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          if (this.objetotarifa?.tarifa !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa?.tarifa }
+            order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
           }
           order = { ...order, onlinePay: reg }
           console.log('los valores', order.onlinePay)
