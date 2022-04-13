@@ -51,8 +51,8 @@
                 <div class="col-2">
                     <q-input v-model="peso" type="number" disable label="Peso" />
                 </div>
-                <div class="col-2">
-                    <q-input v-model="tipoEnvio" label="Tipo de Envio" />
+                 <div class="col-2">
+                  <q-select v-model="tipoEnvio" :options="tipoEnvios"  label="Tipo Envio"  />
                 </div>
                 <div class="col-2">
                     <q-input v-model="valor" type="number" disable label="Valor" />
@@ -262,6 +262,16 @@ export default {
   },
   data () {
     return {
+      tipoEnvios: [
+        {
+          label: 'Mercancia',
+          value: 'M'
+        },
+        {
+          label: 'Documentos',
+          value: 'D'
+        }
+      ],
       couriersList: [],
       estadosList: [],
       ciudadesList: [],
@@ -495,7 +505,7 @@ export default {
         referencia: this.referencia,
         numeroPiezas: this.numeroPiezas,
         peso: this.peso,
-        tipoEnvio: this.tipoEnvio,
+        tipoEnvio: this.tipoEnvio.value,
         valor: this.valor,
         tipoServicio: this.tipoServicio,
         retirarOficina: this.retirarOficina,
@@ -504,8 +514,19 @@ export default {
     },
 
     async solicitarGuia () {
-      let seguro = this.seguro ? 1 : 0
-      let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
+      let mun, parr
+      // let seguro = this.seguro ? 1 : 0
+      //  let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
+      if (this.municipio.value === undefined) {
+        mun = ''
+      } else {
+        mun = this.municipio.value
+      }
+      if (this.parroquia.value === undefined) {
+        parr = ''
+      } else {
+        parr = this.parroquia.value
+      }
       try {
         this.alertaMsg = ''
         this.generandoGuia = true
@@ -513,8 +534,8 @@ export default {
           courier: this.courier.value,
           estado: this.estado.value,
           ciudad: this.ciudad.value,
-          municipio: this.municipio.value,
-          parroquia: this.parroquia.value,
+          municipio: mun,
+          parroquia: parr,
           destinatario: this.destinatario,
           contacto: this.contacto,
           cirif: this.cirif,
@@ -525,12 +546,12 @@ export default {
           referencia: this.referencia,
           numeroPiezas: this.numeroPiezas,
           peso: this.peso,
-          tipoEnvio: this.tipoEnvio,
+          tipoEnvio: this.tipoEnvio.value,
           valor: this.dataSelected.valor,
           tipoServicio: this.tipoServicio.value,
-          retirarOficina: modalidad,
+          retirarOficina: this.retirarOficina,
           oficina: this.oficina.value,
-          seguro: seguro
+          seguro: this.seguro
         })
         await this.guardarguia()
         if (this.guia.error) {
