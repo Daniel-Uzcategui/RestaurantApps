@@ -18,10 +18,16 @@
             v-model="metodopago"
             :options="metodospagos"
             label="Metodo"
+            @input="actualizar()"
 
           />
         </div>
          </div>
+           <div >
+            <div class="card-input"><label  aria-label="Referencia" >Referencia</label>
+                <q-input filled rounded outlined disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off"/>
+        </div>
+        </div>
          <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
                 <q-input filled rounded outlined type="email" v-model="valueFields.correo"  @change="validar" title="Correo"  data-card-field="" autocomplete="off"/>
@@ -55,7 +61,7 @@
 </template>
 <script>
 // import { VuePaycard } from 'vue-paycard's
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
     //  VuePaycard
@@ -79,6 +85,12 @@ export default {
     }
   },
   mounted () {
+    this.bindPaymentServ()
+    this.operacion = this.obtenerprimeraletra(this.metodospagos[0].value)
+    this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
+    this.serie = this.obtenerSerie(this.paymentServ.referencia)
+    this.referenciacompleta = this.operacion + this.ambientes + this.paymentServ.Novared.idComercio + 'caja04' + this.serie
+    console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
     this.total = parseFloat(this.total) + parseFloat(this.delivery)
   },
@@ -91,7 +103,8 @@ export default {
     },
     desahabilitadotelefono () {
       return this.valueFields.telefono === ''
-    }
+    },
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates'])
 
   },
 
@@ -105,6 +118,10 @@ export default {
       ordengenerada: '',
       mostrarVuelto: false,
       estado: true,
+      operacion: '',
+      referenciacompleta: '',
+      ambientes: '',
+      serie: '',
       metodopago: '',
       metodospagos: [
         {
@@ -219,7 +236,7 @@ export default {
   },
   methods: {
     ...mapActions('transactions', ['addTransaction', 'cambiarBase64']),
-
+    ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     async payment () {
       this.respuestaPay = await this.paymentbank()
       console.log(this.respuestaPay)
@@ -233,6 +250,12 @@ export default {
         this.$q.loading.hide()
         this.limpiar()
       }
+    },
+    actualizar () {
+      this.operacion = this.obtenerprimeraletra(this.metodopago.value)
+      this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
+      this.serie = this.obtenerSerie(this.paymentServ.referencia)
+      this.referenciacompleta = this.operacion + this.ambientes + this.paymentServ.Novared.idComercio + 'caja04' + this.serie
     },
     async verificarPago (respuesta) {
       try {
@@ -345,6 +368,19 @@ export default {
         }
       }
     },
+    obtenerprimeraletra (palabra) {
+      return palabra[0]
+    },
+    obtenerSerie (numero) {
+      let numeroAumentado = Number(numero) + 1
+      let length = numeroAumentado.toString().length
+      // let width = 9 - length
+      // let numeroConvertido = NumeroString12(numeroAumentado, width)
+      let numerostring = numeroAumentado.toString()
+      var zero = '0'
+      let numeroConvertido = (zero.repeat(8 - length)) + numerostring
+      return numeroConvertido
+    },
     async EnviarVuelto (ordengenerada1, tipo, banco, nacionalidad, documento, telefono) {
       console.log('orden', ordengenerada1, 'tipo', tipo, 'banco', banco.value, 'nacionalidad', nacionalidad.value, 'documento', documento)
       let options = { method: 'post',
@@ -380,7 +416,7 @@ export default {
       try {
         this.$q.loading.show()
 
-        let referencia = this.valueFields.referencia
+        // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
         let monto = this.total
         console.log('este valor de amount', this.amount)
@@ -400,7 +436,7 @@ export default {
             'monto': monto,
             'moneda': 'USD',
             'formaPago': this.metodopago.value,
-            'referencia': referencia,
+            'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': this.valueFields.correo,
             'ip': ip

@@ -185,7 +185,7 @@
                            @update-price="(e) => deliveryPrice = e" :cart="cart" :rate ="ratesComp.find(obj => {
         return obj.currency === 'Bs'
       })" class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
-                             @tarifa2-done ='obtenertarifa'/>
+                             @tarifa2-done ='obtenertarifa'  @noselect ='noseleccionado'/>
                          </q-card-section>
                          <q-card-section>
                            </q-card-section>
@@ -422,6 +422,9 @@ export default {
       }
       return this.rateDefault
     },
+    deshabilitarcontinuar () {
+      return this.continuar !== false
+    },
     checkCartType () {
       let a = 0
       let b = 0
@@ -526,7 +529,6 @@ export default {
     }).catch(e => console.error('error fetching data firebase', { e }))
   },
   mounted () {
-
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -573,6 +575,11 @@ export default {
       if (item.quantity < 1) {
         this.modCartVal({ id: index, key: 'quantity', value: 1 })
       }
+    },
+    noseleccionado (valor) {
+      this.continuar = false
+      console.log('el valor seleccionado', this.continuar)
+      return this.continuar
     },
     modEventUp (item, index) {
       if (this.checkAvail(item.prodId, item.prodType, index)[0] === 1) {
@@ -1142,6 +1149,9 @@ export default {
     }
   },
   watch: {
+    continuar () {
+      console.log('cambio')
+    },
     configDates () {
       this.getDays()
     },
