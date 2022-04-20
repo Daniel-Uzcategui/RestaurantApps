@@ -129,14 +129,24 @@
                               <q-radio v-model="orderWhen" val=0 label="Lo más pronto posible" />
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
                             </div>
-                            <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">Micasa
+                            <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
+                              <!-- <q-date :options="dateOptions" v-model="orderDate" mask="YYYY-MM-DD HH:mm">
+                                        <div class="row items-center justify-end">
+                                          <q-btn v-close-popup @click="openHours = !openHours" label="Close" color="primary" flat />
+                                        </div>
+                                      </q-date>
+                                      <q-time :options="optionsFnTime2" v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
+                                        <div class="row items-center justify-end">
+                                          <q-btn v-if="canCloseHours" @click="canCloseHours = false; openHours = false" v-close-popup label="Close" color="primary" flat />
+                                        </div>
+                                      </q-time> -->
                               <q-input filled readonly v-model="orderDate" hint="Seleccione Fecha y hora, esta hora es estimada para un mejor seguimiento contáctenos">
                                 <template v-slot:prepend>
                                   <q-icon @click="openDate = !openDate" name="event" class="cursor-pointer">
                                     <q-dialog persistent v-model="openDate" transition-show="scale" transition-hide="scale">
                                       <q-date :options="dateOptions" v-model="orderDate" mask="YYYY-MM-DD HH:mm">
                                         <div class="row items-center justify-end">
-                                          <q-btn v-close-popup @click="openHours = !openHours" label="Close" color="primary" flat />
+                                          <q-btn v-close-popup :disable="orderDate === null" @click="openHours = !openHours" label="Close" color="primary" flat />
                                         </div>
                                       </q-date>
                                     </q-dialog>
@@ -167,11 +177,12 @@
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
                           <q-card-section>
-                             <q-card-section v-show="!['0', '1', '2','3'].includes(tipEnvio)" >
+                             <q-card-section v-if="!['0', '1', '2','3'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
 
                             <Address2
-                           @update-price="(e) => deliveryPrice = e" :cart="cart" :rate ="this.ratesComp.find(obj => {
+                            v-if="!['0', '1', '2','3'].includes(tipEnvio)"
+                           @update-price="(e) => deliveryPrice = e" :cart="cart" :rate ="ratesComp.find(obj => {
         return obj.currency === 'Bs'
       })" class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
                              @tarifa2-done ='obtenertarifa'/>
@@ -182,7 +193,7 @@
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
-                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1  && deliveryPrice != 0 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && deliveryPrice != 0 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && continuar != false  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           </div>
                          </q-card-section>
@@ -261,7 +272,7 @@
                         <q-card-section>
                             <div class="column items-center ">
                                 <div class=" column items-center" v-show='photoMessage'>
-                                  <div>make
+                                  <div>
                                   <q-btn style="border-radius: 28px;" push>
                                       <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4" >
                                       </q-avatar>
@@ -470,7 +481,7 @@ export default {
       openHours: false,
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       cupon: '',
-      rateDefault: null,
+      rateDefault: [],
       loadingState: false,
       orderDate: null,
       orderWhen: window.location.hostname === 'chopzi.com' ? '0' : null,
@@ -507,6 +518,7 @@ export default {
     this.bindOrders(this.currentUser.id)
     this.bindTransactions()
     await this.bindRates().then(async e => {
+      console.log(e, 'BINDRATES')
       if (!e.length) {
         await this.$axios.get('https://s3.amazonaws.com/dolartoday/data.json')
           .then(e => { this.rateDefault = [{ rateValue: e?.data?.USD?.promedio, currency: 'Bs' }] }).catch(e => console.error('error fetching data ratesApi', { e }))
@@ -610,39 +622,66 @@ export default {
       }
       return new Date(date + ' 23:59:59') >= new Date()
     },
+    optionsFnTime3 (hr, min, sec) {
+      if (hr < 6 || hr > 15 || hr % 2 !== 0) {
+        return false
+      }
+      if (min !== null && (min <= 25 || min >= 58)) {
+        return false
+      }
+      if (sec !== null && sec % 25 !== 0) {
+        return false
+      }
+      return true
+    },
     optionsFnTime2 (hr, min) {
       console.log({ hr, min })
-      if (typeof this.configDates === 'undefined') {
-        if (!this.hourOptions(hr)) {
-          return false
+      try {
+        if (this.configDates === undefined) {
+          // if (!this.hourOptions(hr)) {
+          //   return false
+          // }
+          // if (!this.minuteOptions(min)) {
+          //   return false
+          // }
+          return true
         }
-        if (!this.minuteOptions(min)) {
-          return false
+        let sedecfg = this.configDates
+        let today = new Date(this.orderDate).toLocaleString('en-us', { weekday: 'long' }).toLowerCase()
+        if (sedecfg && sedecfg.days && typeof sedecfg.days[today] === 'undefined') {
+          // if (!this.hourOptions(hr)) {
+          //   return false
+          // }
+          // if (!this.minuteOptions(min)) {
+          //   return false
+          // }
+          return true
         }
+        // console.log('sedecfg', this.configDates)
+        // alert(this.configDates)
+        if (min === null) {
+          for (let i of sedecfg.days[today]) {
+            let open = parseInt(i.open.slice(0, 2))
+            let close = parseInt(i.close.slice(0, 2))
+            if (hr >= open && hr <= close) {
+              return true
+            }
+          }
+        } else {
+          for (let i of sedecfg.days[today]) {
+            let openhr = parseInt(i.open.slice(0, 2))
+            let openmin = parseInt(i.open.slice(2, 4))
+            let closehr = parseInt(i.close.slice(0, 2))
+            let closemin = parseInt(i.close.slice(2, 4))
+            if (hr >= openhr && hr <= closehr && (hr === openhr ? min >= openmin : true) && (hr === closehr ? min <= closemin : true)) {
+              return true
+            }
+          }
+        }
+        return false
+      } catch (error) {
         return true
       }
-      let sedecfg = this.configDates
-      let today = new Date(this.orderDate).toLocaleString('en-us', { weekday: 'long' }).toLowerCase()
-      if (min === null) {
-        for (let i of sedecfg.days[today]) {
-          let open = parseInt(i.open.slice(0, 2))
-          let close = parseInt(i.close.slice(0, 2))
-          if (hr >= open && hr <= close) {
-            return true
-          }
-        }
-      } else {
-        for (let i of sedecfg.days[today]) {
-          let openhr = parseInt(i.open.slice(0, 2))
-          let openmin = parseInt(i.open.slice(2, 4))
-          let closehr = parseInt(i.close.slice(0, 2))
-          let closemin = parseInt(i.close.slice(2, 4))
-          if (hr >= openhr && hr <= closehr && (hr === openhr ? min >= openmin : true) && (hr === closehr ? min <= closemin : true)) {
-            return true
-          }
-        }
-      }
-      return false
     },
     optionsFnTime (hrClose, minClose, hrOpen, minOpen) {
       let open = new Date()

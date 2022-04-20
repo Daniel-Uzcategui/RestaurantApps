@@ -2,8 +2,8 @@
 export const saveLocationAc = async function ({ commit }, payload) {
   return commit('saveLocationMt', payload)
 }
-import admin from 'firebase-admin'
 import { firestoreAction } from 'vuexfire'
+import firebase from 'firebase/app'
 import { firestore, Timestamp } from '../../services/firebase/db.js'
 export const addOrder = firestoreAction((state, payload) => {
   console.log({ payload })
@@ -42,10 +42,9 @@ export const bindOrders = firestoreAction(async ({ bindFirestoreRef, unbindFires
   return e
 })
 export const ObtenerSecuencia = async function ({ commit }, payload) {
-  const db = admin.firestore()
-  const configRef = db.collection('ambiente').doc(payload.amb).collection('config').doc('paymentServ')
+  const configRef = firestore().collection('config').doc('paymentServ')
   const res = await configRef.update({
-    referencia: admin.firestore.FieldValue.increment(1)
+    referencia: firebase.firestore.FieldValue.increment(1)
   })
   console.log(res)
 }

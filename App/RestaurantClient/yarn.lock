@@ -2975,11 +2975,6 @@ caniuse-lite@^1.0.30001165:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001166.tgz#ca73e8747acfd16a4fd6c4b784f1b995f9698cf8"
   integrity sha512-nCL4LzYK7F4mL0TjEMeYavafOGnBa98vTudH5c8lW9izUjnB99InG6pmC1ElAI1p0GlyZajv4ltUdFXvOHIl1A==
 
-caniuse-lite@^1.0.30001205:
-  version "1.0.30001205"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001205.tgz#d79bf6a6fb13196b4bb46e5143a22ca0242e0ef8"
-  integrity sha512-TL1GrS5V6LElbitPazidkBMD9sa448bQDDLrumDqaggmKFcuU2JW1wTOHJPukAcOMtEmLcmDJEzfRrf+GjM0Og==
-
 canvas-exif-orientation@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/canvas-exif-orientation/-/canvas-exif-orientation-0.4.0.tgz#b487f3701998a9e879eb104010b2a58115368b6b"

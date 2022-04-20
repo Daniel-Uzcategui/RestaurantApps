@@ -70,9 +70,9 @@
       <div >
         <br>
         <br>
-   <q-label v-show="deshabilitarguardar">
+   <p v-show="deshabilitarguardar">
     Tarifa de Envio: {{tarifa.data.total}} Bs.
-    </q-label>
+    </p>
   </div>
 
   <q-dialog
@@ -681,17 +681,17 @@ export default {
   async mounted () {
     this.bindPaymentServ()
     // this.estados = this.deshabilitarguardar()
-    this.bindLocalizations().catch(e => console.log(e))
-    this.bindLocalZones().catch(e => console.log(e))
+    // this.bindLocalizations().catch(e => console.log(e))
+    // this.bindLocalZones().catch(e => console.log(e))
     if (this.isAnonymous) {
       this.loading = false
     }
-    if (this.currentUser !== null) {
-      var binded = await this.bindAddress(this.currentUser.id).catch(e => { console.log(e); this.loading = false })
-      if (binded) {
-        this.loading = false
-      }
-    }
+    // if (this.currentUser !== null) {
+    //   var binded = await this.bindAddress(this.currentUser.id).catch(e => { console.log(e); this.loading = false })
+    //   if (binded) {
+    //     this.loading = false
+    //   }
+    // }
     if (this.address.length) {
       this.loading = false
     }
