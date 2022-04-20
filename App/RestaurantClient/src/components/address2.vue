@@ -45,7 +45,9 @@
     </q-option-group>
 
   </div>
-
+ <div v-if="loading2">
+      <q-spinner color="primary" size="6em" />
+  </div>
   <div class="col-2"  v-show="deshabilitarguardar">
      <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
   </div>
@@ -58,6 +60,7 @@
   <div class="col-2" v-show="retirarOficina">
     <q-select v-model="oficina" :options="oficinasList" label="Oficina" @blur="actualizarOficina()" @input="recalcular()" :disable="isLiberty ? true : false"/>
   </div>
+
     <div class="col-2" v-show="deshabilitarguardar">
       <q-toggle v-model="seguro" label="Seguro" @input="recalcular()"/>
     </div>
@@ -280,6 +283,7 @@ export default {
       'tracking',
       'pdfGuia'
     ]),
+
     deshabilitarguardar () {
       console.log('el valor de totallllllllllllllll')
       return this.tarifa.data.total !== undefined
@@ -324,6 +328,7 @@ export default {
     async DatosEncomienda (id, cart) {
       let obj
       let cantidad = 0
+
       let monto = 0
       this.numeroPiezas = 0
       let corriers = []
@@ -339,6 +344,7 @@ export default {
         value: 'cod',
         category: 1
       }
+      this.loading2 = true
       console.log('este valor cual es', id, 'los valores de cart', cart)
       console.log('los valores de la tasa', this.rate.rateValue)
       this.addressAux = this.address.find(x => x.id === id)
@@ -379,6 +385,8 @@ export default {
       //  }
       this.contacto = this.currentUser.nombre
       this.telefono = this.addressAux.phone
+      this.localizacion = this.addressAux.address.locality
+      this.puntorefer = this.addressAux.puntoRef
       this.destinatario = this.currentUser.nombre
       this.cirif = this.currentUser.cedula
 
@@ -414,18 +422,27 @@ export default {
     },
     recalcular () {
       console.log('este es el valor de retirar a oficina', this.retirarOficina)
-
+      this.loading = true
       this.calcularTarifa()
+      this.loading = false
     },
     recalcular2 () {
       console.log('este es el valor de retirar a oficina', this.retirarOficina)
       if (!this.retirarOficina) {
+        this.loading = true
         this.calcularTarifa()
+        this.loading = false
       }
     },
     async calcularTarifa () {
       let seguro = this.seguro ? 1 : 0
       let modalidad = this.retirarOficina ? 'oficina' : 'puerta'
+      let ofic
+      if (this.oficina.value === undefined) {
+        ofic = ''
+      } else {
+        ofic = this.oficina.value
+      }
       // this.generandoTarifa = true
       this.ciudad = { label: this.ciudadList.nombre,
         value: this.ciudadList._id,
@@ -442,7 +459,7 @@ export default {
           valor: this.valor,
           tipoTarifa: this.tipoServicio.value,
           modalidadTarifa: modalidad,
-          oficina: this.oficina.value
+          oficina: ofic
         })
 
         if (this.tarifa.error) {
@@ -468,6 +485,8 @@ export default {
               destinatario: this.destinatario,
               contacto: this.contacto,
               telefono: this.telefono,
+              puntoreferencia: this.puntorefer,
+              localizacion: this.localizacion,
               cirif: this.cirif
 
             }
@@ -480,6 +499,7 @@ export default {
         this.alertaMsg = error
       } finally {
         this.generandoTarifa = false
+        this.loading2 = false
       }
     },
     Tarifas (tarifacompleta) {
@@ -595,7 +615,7 @@ export default {
         persistent: true
       }).onOk(() => {
         this.newAddress()
-        this.$emit('tarifa2-done', this.Tarifita)
+        //  this.$emit('tarifa2-done', this.Tarifita)
         this.dialog = false
       })
     },
@@ -644,6 +664,10 @@ export default {
         puntoRef: this.puntoRef,
         location: JSON.stringify(this.markers) })
       this.$emit('input', null)
+      this.$emit('noselect', false)
+      this.tarifa.data.total = undefined
+      // let continuar = false
+      // this.$router.reload()
     },
     setDialog () {
       this.readAddr = true
@@ -737,6 +761,7 @@ export default {
       isLiberty: false,
       retirarOficina: false,
       seguro: false,
+      loading2: false,
       corriers2: [],
       ciudadList: [],
       oficina: '',
@@ -756,6 +781,8 @@ export default {
       cirif: '',
       mostarDatos: false,
       addressAux: '',
+      localizacion: '',
+      puntorefer: '',
       estadojete: '',
       gActive: false,
       estados: true,

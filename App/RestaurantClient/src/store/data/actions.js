@@ -89,7 +89,7 @@ export async function getTarifa ({ commit, state }, data) {
         commit('loadTarifa', { data: null, error: error })
       })
   } else {
-    await api.get(`/get/calcularTarifa?courier=${data.courier}&ciudad=${data.ciudad}&cantidadPiezas=${data.cantidadPiezas}&peso=${data.peso}&seguro=${data.seguro}&valor=${data.valor}&tipoTarifa=${data.tipoTarifa}&modalidadTarifa=${data.modalidadTarifa}&oficina=${''}`, state.configHeader)
+    await api.get(`/get/calcularTarifa?courier=${data.courier}&ciudad=${data.ciudad}&cantidadPiezas=${data.cantidadPiezas}&peso=${data.peso}&seguro=${data.seguro}&valor=${data.valor}&tipoTarifa=${data.tipoTarifa}&modalidadTarifa=${data.modalidadTarifa}`, state.configHeader)
       .then((response) => {
         commit('loadTarifa', { data: response.data, error: null })
       }).catch(error => {
