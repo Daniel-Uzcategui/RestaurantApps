@@ -8,6 +8,7 @@
                 <div class="col-2">
                     <q-select v-model= "estado" :options="estadosList"  label="Estado" @blur="actualizarEstado()"  @change="actualizarEstado()" />
                 </div>
+
                 <div class="col-2">
                     <q-select v-model="ciudad" :options="ciudadesList"  label="Ciudad" @blur="actualizarCiudad()"   />
                 </div>
@@ -20,6 +21,9 @@
                 <div class="col-2">
                     <q-select v-model="oficina" :options="oficinasList"  label="Oficina" @blur="actualizarOficina()" />
                 </div>
+                 <div v-if="loading2">
+                  <q-spinner color="primary" size="15em" />
+              </div>
                 <div class="col-12"></div>
                 <div class="col-2">
                     <q-input v-model="destinatario" label="Destinatario" />
@@ -252,7 +256,7 @@
 <script>
 // import { defineComponent, ref } from 'vue'
 // import validarDatos from '../../middleware/validateData'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'couriers',
   components: {
@@ -278,6 +282,7 @@ export default {
       oficinasList: [],
       tipoServicioList: [],
       idorden: '',
+      loading2: false,
       loading: true,
       alerta: false,
       tarifaModal: false,
@@ -317,6 +322,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('order', ['orderencomienda']),
     ...mapState('data', [
       'municipiosList',
       'parroquiasList',
@@ -327,12 +333,17 @@ export default {
       'tracking',
       'pdfGuia'
     ])
+
     //   alerta(){
     //       return this.guia.error || this.tarifa.error || this.tracking.error || this.pdfGuia.error ? true : false
     //   }
 
   },
   async mounted () {
+    if (!this.orderencomienda.length) {
+      await this.bindOrdersEnvio()
+    }
+
     this.getCouriers()
     this.$store.commit('data/initTracking')
     console.log('los valores pasados por props', this.propsEcomienda)
@@ -365,10 +376,13 @@ export default {
     // this.parroquia = this.parroquiasList[0]
 
     this.tipoServicio = this.tipoServicioList[0]
-    this.numeroPiezas = this.propsEcomienda.cantidadPiezas
-    this.peso = this.propsEcomienda.peso
+    this.numeroPiezas = this.propsEcomienda?.cantidadPiezas
+    this.peso = this.propsEcomienda?.peso
+    this.direccion = this.propsEcomienda?.localizacion
+    this.inmueble = this.propsEcomienda?.puntoreferencia
+    // this.tipoServicio =this.tipoServicioList[0].value
     // this.tipoServicio = this.propsEcomienda.tipoTarifa.value
-
+    this.tipoEnvio = this.tipoEnvios[0].value
     if (this.propsEcomienda.seguro === 1) {
       this.seguro = true
     } else {
@@ -380,8 +394,20 @@ export default {
     } else {
       this.retirarOficina = true
     }
-
+    console.log('las ordenes', this.orderencomienda)
     this.idorden = this.propsEcomienda.idorden
+    let arreglo = await this.orderencomienda.find(x => x?.id === this.idorden)
+    console.log('aaaaaaa', arreglo)
+    arreglo.cart.forEach(key => {
+      console.log(key)
+      this.descripcionPaquete = key.name + 'X' + key.quantity + ''
+    })
+    /* Object.keys(arreglo.cart).forEach(key => {
+      console.log(key)
+    }) */
+    /* for (let i = 0; i < arreglo.cart.length; i++) {
+
+    } */
     this.destinatario = this.propsEcomienda.destinatario
     this.contacto = this.propsEcomienda.contacto
     this.cirif = this.propsEcomienda.cirif
@@ -396,7 +422,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('order', ['setencomienda']),
+    ...mapActions('order', ['bindOrdersEnvio', 'setencomienda']),
     ...mapActions('data', ['loadOficinas2']),
     async getCouriers () {
       try {
@@ -527,6 +553,7 @@ export default {
       } else {
         parr = this.parroquia.value
       }
+      this.loading2 = true
       try {
         this.alertaMsg = ''
         this.generandoGuia = true
@@ -564,6 +591,7 @@ export default {
         this.alertaMsg = error
       } finally {
         this.generandoGuia = false
+        this.loading2 = false
       }
     },
     async solicitartracking () {
