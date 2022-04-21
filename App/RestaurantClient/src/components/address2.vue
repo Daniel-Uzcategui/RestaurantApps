@@ -617,6 +617,7 @@ export default {
       }).onOk(() => {
         console.log('el id', this.id)
         this.newAddress()
+        console.log('el objeto', this.objeto)
         // this.addressSelected()
         //  this.tarifa.data.total = undefined
         this.dialog = false
@@ -638,34 +639,29 @@ export default {
     translateLabel (e) {
       return this.addressIn && this.addressIn.country && this.translationJson[this.addressIn.country] && this.translationJson[this.addressIn.country][e] ? this.translationJson[this.addressIn.country][e] : e
     },
-    newAddress () {
-      this.dialogType === 'new' ? this.addAddress({
-        // estado: this.estado,
-        // ciudad: this.ciudad,
-        // municipio: this.municipio,
-        // calle: this.calle,
-        // domicilio: this.domicilio,
-        user: this.currentUser.id,
-        alias: this.alias,
-        address: this.addressIn,
-        contact: this.contact,
-        phone: this.phone,
-        // urb: this.urb,
-        puntoRef: this.puntoRef,
-        location: JSON.stringify(this.markers) }) : this.updateAddress({
-        // estado: this.estado,
-        // ciudad: this.ciudad,
-        // urb: this.urb,
-        // municipio: this.municipio,
-        // calle: this.calle,
-        // domicilio: this.domicilio,
-        address: this.addressIn,
-        id: this.id,
-        contact: this.contact,
-        phone: this.phone,
-        alias: this.alias,
-        puntoRef: this.puntoRef,
-        location: JSON.stringify(this.markers) })
+    async newAddress () {
+      if (this.dialogType === 'new') {
+        this.objeto = await this.addAddress({
+
+          user: this.currentUser.id,
+          alias: this.alias,
+          address: this.addressIn,
+          contact: this.contact,
+          phone: this.phone,
+          // urb: this.urb,
+          puntoRef: this.puntoRef,
+          location: JSON.stringify(this.markers) })
+      } else {
+        this.updateAddress({
+
+          address: this.addressIn,
+          id: this.id,
+          contact: this.contact,
+          phone: this.phone,
+          alias: this.alias,
+          puntoRef: this.puntoRef,
+          location: JSON.stringify(this.markers) })
+      }
       this.$emit('input', null)
       this.$emit('noselect', false)
       this.tarifa.data.total = undefined
@@ -765,6 +761,7 @@ export default {
       retirarOficina: false,
       seguro: false,
       loading2: false,
+      objeto: '',
       corriers2: [],
       ciudadList: [],
       idselecionado: '',
