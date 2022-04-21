@@ -7,6 +7,7 @@ import firebase from 'firebase/app'
 import { firestore, Timestamp } from '../../services/firebase/db.js'
 export const addOrder = firestoreAction((state, payload) => {
   console.log({ payload })
+  Object.keys(payload).forEach(key => payload[key] === undefined ? delete payload[key] : {})
   return firestore()
     .collection('orders').add({ ...payload, dateIn: Timestamp.now() })
     .then(function (docRef) {
