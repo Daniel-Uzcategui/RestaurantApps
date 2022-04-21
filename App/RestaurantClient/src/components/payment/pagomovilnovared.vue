@@ -10,22 +10,12 @@
     <div class="col-12">
  <div class="row">
         <div class="col-12">
-         <div >
-            <div class="card-input"><label  aria-label="referencia" >Referecia</label>
-                <q-input filled rounded outlined type="number"  @change="validar" v-model="valueFields.referencia"  title="CVV"  data-card-field="" autocomplete="off"/>
-        </div>
-        </div>
-         <div >
+                  <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
                 <q-input filled rounded outlined  @change="validar" type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
-         <div >
-            <div class="card-input"><label  aria-label="Monto" >Monto</label>
-                <q-input filled rounded outlined type="number" v-model="total"  title="Monto"  data-card-field="" autocomplete="off"/>
-        </div>
-        </div>
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
                 <q-input filled rounded outlined  @change="validar" v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
@@ -53,7 +43,7 @@
 </template>
 <script>
 // import { VuePaycard } from 'vue-paycard'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
     //  VuePaycard
@@ -78,6 +68,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
     desahabilitadorefencia () {
       return this.valueFields.referencia === ''
     },
@@ -95,6 +86,7 @@ export default {
       phonePassword: '',
       responseBank: '',
       respuestaPay: '',
+      referenciacompleta: '',
       datosvuelto: false,
       generado: false,
       ordengenerada: '',
@@ -177,21 +169,39 @@ export default {
     }
   },
   mounted () {
-    this.total = (parseFloat(this.total) + parseFloat(this.delivery)).toFixed(2)
+    this.bindPaymentServ()
+    this.operacion = 'PM2'
+    this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
+    this.serie = this.obtenerSerie(this.paymentServ.referencia)
+    let fecha = new Date()
+    // let diaA = fecha.getDate()
+    let hoy = fecha.getDate()
+    console.log('aaaa', hoy)
+    console.log(fecha)
+
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.referenciacompleta.toUpperCase()
+    console.log('este el valor de referencia', this.referenciacompleta)
+    console.log('este el valor de total', this.total)
+    // this.total = (parseFloat(this.total) + parseFloat(this.delivery)).toFixed(2)
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
+    ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
 
     async payment () {
+      this.estado = false
+      this.pagando = true
       this.respuestaPay = await this.paymentbank()
       console.log(this.respuestaPay)
+
       this.$emit('payment-done', this.respuestaPay)
       if (this.respuestaPay) {
         this.$q.dialog({
           title: 'Sastifactorio',
-          message: 'La transaccion se realizo con exito'
+          message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
         })
-        this.$q.loading.hide()
+        //  this.$q.loading.hide()
         this.limpiar()
       }
     },
@@ -235,10 +245,23 @@ export default {
     validar () {
       console.log('valores ', this.valueFields.telefono, this.valueFields.referencia, this.valueFields.correo)
       console.log('estados', this.desahabilitadorefencia, this.desabililitadocorreo, this.desahabilitadotelefono)
-      if ((!this.desahabilitadorefencia) && (!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
+      if ((!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
         console.log('entreeee')
         this.estado = false
       }
+    },
+    obtenerprimeraletra (palabra) {
+      return palabra[0]
+    },
+    obtenerSerie (numero) {
+      let numeroAumentado = Number(numero) + 1
+      let length = numeroAumentado.toString().length
+      // let width = 9 - length
+      // let numeroConvertido = NumeroString12(numeroAumentado, width)
+      let numerostring = numeroAumentado.toString()
+      var zero = '0'
+      let numeroConvertido = (zero.repeat(8 - length)) + numerostring
+      return numeroConvertido
     },
     async crearorden () {
       try {
@@ -258,7 +281,7 @@ export default {
             'bank': 'PagomovilNovared',
             'ambiente': localStorage.getItem('amb'),
             'amt': monto,
-            'curr': 'Bolivares',
+            'curr': '"Bolívares',
             'cnt': referencia,
             'telefono': telefono,
             'email': this.valueFields.correo
@@ -293,51 +316,49 @@ export default {
     },
     async paymentbank () {
       try {
-        this.$q.loading.show()
-        // let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
-        //   let browserAgent = this.getBrowserInfo()
-        //   let trxType = 'compra'
-        //  let paymentMethod = 'TDC'
-        let referencia = this.valueFields.referencia
+        // this.$q.loading.show()
+
+        // let referencia = this.valueFields.referencia
+        this.vuelto = this.montooperacion - this.total
         let monto = this.total
+        console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
         let ip = '186.91.191.248'
         let options = { method: 'post',
-          // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          // url: window.location.origin + '/transact',
-          // aca esta la url que lo probe con appengine en ele local
-          // con cors y luego lo comente para colocar la url que esta en apengine por http
-          url: 'http://localhost/transact/',
+
+          url: 'http://localhost:3000/transact/',
           data:
           {
-            'bank': 'PagomovilNovared',
+            'bank': 'createOrder',
+            'token': '286748b0-c542-47a0-8fff-ca08cc9965a9',
             'ambiente': localStorage.getItem('amb'),
             'monto': monto,
-            'moneda': 'Bolívares',
+            'moneda': 'Bolivares',
             'formaPago': 'Pago Movil',
-            'referencia': referencia,
+            'referencia': '88888888',
             'telefono': telefono,
             'correo': this.valueFields.correo,
             'ip': ip
           } }
         console.log(options)
         let respuesta = await this.$axios(options)
+        console.log('estaaaaaaaaaaaa', respuesta)
         let resp = {
           data: {
             id: respuesta,
             trx: {
               trx_status: 'approved'
             },
-            referencia: referencia,
+            referencia: respuesta.data.refgenerada,
             correo: this.valueFields.correo,
-            formaPago: 'Pago Movil',
+            formaPago: this.metodopago.value,
             telefono: telefono
           }
 
         }
         return resp
       } catch (err) {
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
           return this.$q.dialog(err.response.data)
