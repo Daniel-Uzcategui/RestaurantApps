@@ -615,9 +615,9 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
-        console.log('el id', this.id)
         this.newAddress()
-        console.log('el objeto', this.objeto)
+
+        console.log('los datos extaridos', this.objeto.id)
         // this.addressSelected()
         //  this.tarifa.data.total = undefined
         this.dialog = false
