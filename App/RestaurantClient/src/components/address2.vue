@@ -330,6 +330,7 @@ export default {
       let cantidad = 0
 
       let monto = 0
+
       this.numeroPiezas = 0
       let corriers = []
       this.couriersList2 = []
@@ -614,8 +615,10 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
+        console.log('el id', this.id)
         this.newAddress()
-        //  this.$emit('tarifa2-done', this.Tarifita)
+        // this.addressSelected()
+        //  this.tarifa.data.total = undefined
         this.dialog = false
       })
     },
@@ -764,6 +767,7 @@ export default {
       loading2: false,
       corriers2: [],
       ciudadList: [],
+      idselecionado: '',
       oficina: '',
       couriersList2: [],
       valorSeleccionado: '',

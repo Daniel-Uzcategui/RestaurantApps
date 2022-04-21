@@ -25,7 +25,13 @@
          </div>
            <div >
             <div class="card-input"><label  aria-label="Referencia" >Referencia</label>
-                <q-input filled rounded outlined disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off"/>
+                <q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+        </div>
+        </div>
+          <div >
+            <div class="card-input"><label  aria-label="Referencia2" >Nota:  </label>
+
+                <p class="p-5 mb-5 bg-danger text-red">Por Favor Tomar Registro de la Referencia para la Operacion</p>
         </div>
         </div>
          <div >
@@ -46,7 +52,7 @@
     <div class="column items-center">
 
         <div class="col-12">
-          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment" :disable="estado" >Pagar</q-btn>
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" :loading="pagando" @click="payment" :disable="estado" >Pagar</q-btn>
         </div>
 
     </div>
@@ -62,6 +68,7 @@
 <script>
 // import { VuePaycard } from 'vue-paycard's
 import { mapActions, mapGetters } from 'vuex'
+// import { date } from 'quasar'
 export default {
   components: {
     //  VuePaycard
@@ -89,7 +96,14 @@ export default {
     this.operacion = this.obtenerprimeraletra(this.metodospagos[0].value)
     this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
     this.serie = this.obtenerSerie(this.paymentServ.referencia)
-    this.referenciacompleta = this.operacion + this.ambientes + this.paymentServ.Novared.idComercio + 'caja04' + this.serie
+    let fecha = new Date()
+    // let diaA = fecha.getDate()
+    let hoy = fecha.getDate()
+    console.log('aaaa', hoy)
+    console.log(fecha)
+
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
     this.total = parseFloat(this.total) + parseFloat(this.delivery)
@@ -116,6 +130,7 @@ export default {
       responseBank: '',
       respuestaPay: '',
       ordengenerada: '',
+      pagando: false,
       mostrarVuelto: false,
       estado: true,
       operacion: '',
@@ -238,6 +253,8 @@ export default {
     ...mapActions('transactions', ['addTransaction', 'cambiarBase64']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     async payment () {
+      this.estado = false
+      this.pagando = true
       this.respuestaPay = await this.paymentbank()
       console.log(this.respuestaPay)
 
@@ -247,15 +264,20 @@ export default {
           title: 'Sastifactorio',
           message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
         })
-        this.$q.loading.hide()
+        //  this.$q.loading.hide()
         this.limpiar()
       }
     },
     actualizar () {
-      this.operacion = this.obtenerprimeraletra(this.metodopago.value)
-      this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
-      this.serie = this.obtenerSerie(this.paymentServ.referencia)
-      this.referenciacompleta = this.operacion + this.ambientes + this.paymentServ.Novared.idComercio + 'caja04' + this.serie
+      let fecha = new Date()
+      // let diaA = fecha.getDate()
+      let hoy = fecha.getDate()
+      console.log('aaaa', hoy)
+      console.log(fecha)
+
+      this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+      this.referenciacompleta = this.referenciacompleta.toUpperCase()
+      console.log('este el valor de referencia', this.referenciacompleta)
     },
     async verificarPago (respuesta) {
       try {
@@ -291,7 +313,7 @@ export default {
         let respuesta2 = await this.$axios(options)
         return respuesta2
       } catch (err) {
-        this.$q.loading.hide()
+        //  this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
           return this.$q.dialog(err.response.data)
@@ -356,7 +378,7 @@ export default {
         this.generado = true
         this.ordengenerada = this.respuestaPay.data.id.data.trx
       } catch (err) {
-        this.$q.loading.hide()
+      //  this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
           return this.$q.dialog(err.response.data)
@@ -414,7 +436,7 @@ export default {
     },
     async paymentbank () {
       try {
-        this.$q.loading.show()
+        // this.$q.loading.show()
 
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
@@ -423,10 +445,7 @@ export default {
         let telefono = this.valueFields.telefono
         let ip = '186.91.191.248'
         let options = { method: 'post',
-          // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          // url: window.location.origin + '/transact',
-          // aca esta la url que lo probe con appengine en ele local
-          // con cors y luego lo comente para colocar la url que esta en apengine por http
+
           url: 'http://localhost:3000/transact/',
           data:
           {
@@ -459,7 +478,7 @@ export default {
         }
         return resp
       } catch (err) {
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
           return this.$q.dialog(err.response.data)
