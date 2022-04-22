@@ -393,7 +393,7 @@ export default {
 
       // this.mostarDatos = true
     },
-    ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
+    ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress', 'addAddress2']),
     ...mapActions('data', ['loadEstados2', 'loadCiudades2', 'loadCouriers2']),
     ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
@@ -608,7 +608,7 @@ export default {
       console.log('la oficinas', this.oficina)
       this.calcularTarifa()
     },
-    confirm () {
+    async confirm () {
       this.$q.dialog({
         title: 'Confirmar',
         message: 'Luego de guardar, solo podrá editar el contacto, alias y puntos de referencia, ¿Desea continuar?',
@@ -617,11 +617,11 @@ export default {
       }).onOk(() => {
         this.newAddress()
 
-        console.log('los datos extaridos', this.objeto.id)
         // this.addressSelected()
         //  this.tarifa.data.total = undefined
         this.dialog = false
       })
+      await console.log('los datos extaridos', this.objeto)
     },
     updateAddIn (e) {
       if (typeof e === 'undefined') { return }
@@ -641,7 +641,7 @@ export default {
     },
     async newAddress () {
       if (this.dialogType === 'new') {
-        this.objeto = await this.addAddress({
+        this.objeto = await this.addAddress2({
 
           user: this.currentUser.id,
           alias: this.alias,

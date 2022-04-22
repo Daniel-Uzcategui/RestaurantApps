@@ -18,10 +18,10 @@ export const addAddress = firestoreAction((state, payload) => {
     .collection('address').add({
       ...payload,
       softDelete: 0
-    })
-    .then(function (docRef) {
+    }).then(function (docRef) {
       console.log('Document written with ID: ', docRef)
-      return { id: docRef.id,
+      return {
+        id: docRef.id,
         ...payload,
         ref: docRef,
         softDelete: 0
@@ -31,7 +31,24 @@ export const addAddress = firestoreAction((state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
-
+export const addAddress2 = firestoreAction((state, payload) => {
+  console.log({ payload })
+  let valor
+  firestore()
+    .collection('address').add({
+      ...payload,
+      softDelete: 0
+    }).then(docRef => {
+      valor = docRef.id
+      console.log('este es valor dentro de la promesa', valor)
+      return valor
+    })
+    .catch(function (error) {
+      console.error('Error adding document: ', error)
+    })
+  console.log('este es valor fuera de la promesa', valor)
+//  return valor
+})
 export const updateAddress = firestoreAction((state, payload) => {
   return firestore()
     .collection('address')

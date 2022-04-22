@@ -300,7 +300,7 @@ export default {
         }
         console.log('valoresssssssssss', this.respuestaPay)
         this.generado = true
-        this.ordengenerada = this.respuestaPay.data.id.data.trx
+        //    this.ordengenerada = this.respuestaPay.data.id.data.trx
       } catch (err) {
         this.$q.loading.hide()
         console.error({ err })
@@ -349,9 +349,9 @@ export default {
             trx: {
               trx_status: 'approved'
             },
-            referencia: respuesta.data.refgenerada,
+            referencia: respuesta.data.trx,
             correo: this.valueFields.correo,
-            formaPago: this.metodopago.value,
+            formaPago: 'Pago Movil',
             telefono: telefono
           }
 

@@ -852,14 +852,14 @@ export default {
       switch (this.pagoSel) {
         case 2:
           order = { ...order, payto: this.config.zelleEmail }
-          if (this.objetotarifa !== undefined) {
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa.tarifa }
             order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
           }
           break
         case 4:
           order = { ...order, payto: this.config.venmoAcc }
-          if (this.objetotarifa !== undefined) {
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa.tarifa }
             order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
           }
@@ -877,7 +877,7 @@ export default {
           }
           order = { ...order, onlinePay: reg1 }
           console.log('objeto tarifa', this.objetotarifa)
-          if (this.objetotarifa?.tarifa !== undefined) {
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa?.tarifa }
             order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
           }
@@ -896,7 +896,7 @@ export default {
             correo: aux1.correo,
             formapago: aux1.formaPago
           }
-          if (this.objetotarifa?.tarifa !== undefined) {
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa?.tarifa }
             order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
           }
