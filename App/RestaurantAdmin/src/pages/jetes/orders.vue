@@ -51,6 +51,7 @@ export default {
       console.log('los datos', datos)
       let encomiendaAxu = datos.encomienda
       encomiendaAxu = { ...encomiendaAxu, idorden: datos.id }
+      encomiendaAxu = { ...encomiendaAxu, factura: datos.factura }
       this.encomienda(encomiendaAxu)
       console.log('esta es la encomienda', this.Encomienda)
     }

@@ -355,6 +355,7 @@ export default {
     this.courier = this.couriersList[0]
     this.estado = this.estadosList[0]
     this.ciudad = this.ciudadesList[0]
+    this.referencia = this.propsEcomienda.factura
     if (this.propsEcomienda.oficina !== '') {
       this.oficinasList.push(this.propsEcomienda.oficina)
       this.oficina = this.oficinasList[0]

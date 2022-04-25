@@ -281,7 +281,7 @@ export default {
       //   console.log('el tipo de servicio ', objeto.tipEnvio)
       // console.log('los valores de servicios', this.tipoServicio)
       obj = this.tipoServicio.find(x => x.value === parseInt(objeto.tipEnvio))
-      //  console.log('resultado de la busquedad', obj)
+      console.log('resultado de la busquedad', obj)
       if (obj !== undefined) {
         return obj.label
       }
