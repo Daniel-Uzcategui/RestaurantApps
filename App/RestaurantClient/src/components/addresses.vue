@@ -122,7 +122,7 @@ export default {
   components: {
     GoogleMap: GoogleMap
   },
-  props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping'],
+  props: ['noload', 'readOnly', 'addressPickup', 'addressShipping'],
   computed: {
     ...mapGetters('localization', ['localZones', 'localizations']),
     ...mapGetters('address', ['address']),
@@ -159,9 +159,14 @@ export default {
       return this.value?.id || null
     },
     addressSelected (e) {
-      return this.address.find(x => x.id === e)
+      let id
+      console.log('parametro de entrada', e)
+      id = this.address.find(x => x.id === e)
+      console.log('registro', id)
+      this.value = id
+      return id
     },
-    ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress']),
+    ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress', 'addAddress2']),
     ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
     isValidMarker () {
       if (this.getZones().length === 0 && this.markers.length !== 0) {
@@ -240,34 +245,37 @@ export default {
     translateLabel (e) {
       return this.addressIn && this.addressIn.country && this.translationJson[this.addressIn.country] && this.translationJson[this.addressIn.country][e] ? this.translationJson[this.addressIn.country][e] : e
     },
-    newAddress () {
-      this.dialogType === 'new' ? this.addAddress({
-        // estado: this.estado,
-        // ciudad: this.ciudad,
-        // municipio: this.municipio,
-        // calle: this.calle,
-        // domicilio: this.domicilio,
-        user: this.currentUser.id,
-        alias: this.alias,
-        address: this.addressIn,
-        contact: this.contact,
-        phone: this.phone,
-        // urb: this.urb,
-        puntoRef: this.puntoRef,
-        location: JSON.stringify(this.markers) }) : this.updateAddress({
-        // estado: this.estado,
-        // ciudad: this.ciudad,
-        // urb: this.urb,
-        // municipio: this.municipio,
-        // calle: this.calle,
-        // domicilio: this.domicilio,
-        address: this.addressIn,
-        id: this.id,
-        contact: this.contact,
-        phone: this.phone,
-        alias: this.alias,
-        puntoRef: this.puntoRef,
-        location: JSON.stringify(this.markers) })
+    async newAddress () {
+      if (this.dialogType === 'new') {
+        this.objeto = await this.addAddress2({
+
+          user: this.currentUser.id,
+          alias: this.alias,
+          address: this.addressIn,
+          contact: this.contact,
+          phone: this.phone,
+          // urb: this.urb,
+          puntoRef: this.puntoRef,
+          location: JSON.stringify(this.markers) })
+        console.log('el valor del objeto', this.objeto)
+        let valores = this.addressSelected(this.objeto)
+        console.log('el valor del objeto', valores)
+        this.$emit('input', valores)
+
+        console.log('cual es valor de value', this.value)
+        this.value = valores
+        this.returnValue()
+      } else {
+        this.updateAddress({
+
+          address: this.addressIn,
+          id: this.id,
+          contact: this.contact,
+          phone: this.phone,
+          alias: this.alias,
+          puntoRef: this.puntoRef,
+          location: JSON.stringify(this.markers) })
+      }
       this.$emit('input', null)
     },
     setDialog () {
@@ -354,9 +362,11 @@ export default {
       loading: true,
       id: null,
       dialogType: null,
+      objeto: '',
       alias: null,
       puntoRef: null,
       maximizedToggle: true,
+      value: '',
       dialog: true,
       diagHack: false,
       center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },

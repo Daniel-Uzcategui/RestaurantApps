@@ -1,4 +1,5 @@
 import { firestoreAction } from 'vuexfire'
+// import firebase from 'firebase/app'
 import { firestore } from '../../services/firebase/db.js'
 export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log({ payload })
@@ -31,23 +32,16 @@ export const addAddress = firestoreAction((state, payload) => {
       console.error('Error adding document: ', error)
     })
 })
-export const addAddress2 = firestoreAction((state, payload) => {
-  console.log({ payload })
+export const addAddress2 = firestoreAction(async (state, payload) => {
+  //  console.log({ payload })
   let valor
-  firestore()
+  valor = await firestore()
     .collection('address').add({
       ...payload,
       softDelete: 0
-    }).then(docRef => {
-      valor = docRef.id
-      console.log('este es valor dentro de la promesa', valor)
-      return valor
     })
-    .catch(function (error) {
-      console.error('Error adding document: ', error)
-    })
-  console.log('este es valor fuera de la promesa', valor)
-//  return valor
+
+  return valor.id
 })
 export const updateAddress = firestoreAction((state, payload) => {
   return firestore()

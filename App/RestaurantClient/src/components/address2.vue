@@ -261,7 +261,7 @@ export default {
     GoogleMap: GoogleMap
 
   },
-  props: ['value', 'noload', 'readOnly', 'addressPickup', 'addressShipping', 'cart', 'rate'],
+  props: ['noload', 'readOnly', 'addressPickup', 'addressShipping', 'cart', 'rate'],
   computed: {
     ...mapGetters('localization', ['localZones', 'localizations']),
     ...mapGetters('address', ['address']),
@@ -320,8 +320,18 @@ export default {
     },
     addressSelected (e) {
       let id
+      console.log('parametro de entrada', e)
       id = this.address.find(x => x.id === e)
+      console.log('registro', id)
+      this.value = id
       this.DatosEncomienda(id.id, this.cart)
+      return id
+    },
+    addressSelected2 (e) {
+      let id
+      console.log('parametro de entrada', e)
+      id = this.address.find(x => x.id === e)
+      console.log('registro', id)
       return id
     },
 
@@ -608,7 +618,7 @@ export default {
       console.log('la oficinas', this.oficina)
       this.calcularTarifa()
     },
-    async confirm () {
+    confirm () {
       this.$q.dialog({
         title: 'Confirmar',
         message: 'Luego de guardar, solo podrá editar el contacto, alias y puntos de referencia, ¿Desea continuar?',
@@ -616,12 +626,10 @@ export default {
         persistent: true
       }).onOk(() => {
         this.newAddress()
+        console.log('los datos extaridos', this.objeto)
 
-        // this.addressSelected()
-        //  this.tarifa.data.total = undefined
         this.dialog = false
       })
-      await console.log('los datos extaridos', this.objeto)
     },
     updateAddIn (e) {
       if (typeof e === 'undefined') { return }
@@ -651,6 +659,15 @@ export default {
           // urb: this.urb,
           puntoRef: this.puntoRef,
           location: JSON.stringify(this.markers) })
+        console.log('valor del objeto', this.objeto)
+        let valores = this.addressSelected2(this.objeto)
+        this.$emit('input', valores)
+
+        console.log('cual es valor de value', this.value)
+        this.value = valores
+        this.returnValue()
+
+        this.DatosEncomienda(this.objeto, this.cart)
       } else {
         this.updateAddress({
 
@@ -663,10 +680,6 @@ export default {
           location: JSON.stringify(this.markers) })
       }
       this.$emit('input', null)
-      this.$emit('noselect', false)
-      this.tarifa.data.total = undefined
-      // let continuar = false
-      // this.$router.reload()
     },
     setDialog () {
       this.readAddr = true
@@ -692,29 +705,18 @@ export default {
       this.phone = ''
       // this.urb = null
       this.puntoRef = null
-      // this.estado = null
-      // this.ciudad = null
-      // this.municipio = null
-      // this.calle = null
-      // this.domicilio = null
+
       this.addressIn = {}
       this.addressOpt = []
     }
   },
   async mounted () {
     this.bindPaymentServ()
-    // this.estados = this.deshabilitarguardar()
-    // this.bindLocalizations().catch(e => console.log(e))
-    // this.bindLocalZones().catch(e => console.log(e))
+
     if (this.isAnonymous) {
       this.loading = false
     }
-    // if (this.currentUser !== null) {
-    //   var binded = await this.bindAddress(this.currentUser.id).catch(e => { console.log(e); this.loading = false })
-    //   if (binded) {
-    //     this.loading = false
-    //   }
-    // }
+
     if (this.address.length) {
       this.loading = false
     }
@@ -740,6 +742,7 @@ export default {
         this.$emit('invalid-address', false)
       }
     }
+
   },
   data () {
     return {
@@ -761,6 +764,7 @@ export default {
       retirarOficina: false,
       seguro: false,
       loading2: false,
+      value: '',
       objeto: '',
       corriers2: [],
       ciudadList: [],

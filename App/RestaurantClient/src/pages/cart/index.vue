@@ -185,7 +185,7 @@
                            @update-price="(e) => deliveryPrice = e" :cart="cart" :rate ="ratesComp.find(obj => {
         return obj.currency === 'Bs'
       })" class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
-                             @tarifa2-done ='obtenertarifa'  @noselect ='noseleccionado'/>
+                             @tarifa2-done ='obtenertarifa' />
                          </q-card-section>
                          <q-card-section>
                            </q-card-section>
