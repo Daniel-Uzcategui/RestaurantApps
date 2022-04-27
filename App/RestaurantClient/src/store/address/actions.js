@@ -13,35 +13,31 @@ const serialize = (snapshot) => {
   // return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
   return { ...snapshot.data(), id: snapshot.id }
 }
-export const addAddress = firestoreAction((state, payload) => {
-  console.log({ payload })
-  return firestore()
-    .collection('address').add({
-      ...payload,
-      softDelete: 0
-    }).then(function (docRef) {
-      console.log('Document written with ID: ', docRef)
-      return {
-        id: docRef.id,
+export const addAddress = firestoreAction(async (state, payload) => {
+  try {
+    let valor
+    valor = await firestore()
+      .collection('address').add({
         ...payload,
-        ref: docRef,
         softDelete: 0
-      }
-    })
-    .catch(function (error) {
-      console.error('Error adding document: ', error)
-    })
+      })
+    return valor.id
+  } catch (error) {
+    console.error('Error adding document: ', error)
+  }
 })
 export const addAddress2 = firestoreAction(async (state, payload) => {
-  //  console.log({ payload })
-  let valor
-  valor = await firestore()
-    .collection('address').add({
-      ...payload,
-      softDelete: 0
-    })
-
-  return valor.id
+  try {
+    let valor
+    valor = await firestore()
+      .collection('address').add({
+        ...payload,
+        softDelete: 0
+      })
+    return valor.id
+  } catch (error) {
+    console.error('Error adding document: ', error)
+  }
 })
 export const updateAddress = firestoreAction((state, payload) => {
   return firestore()

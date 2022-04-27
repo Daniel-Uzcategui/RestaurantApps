@@ -188,16 +188,17 @@ export default {
         let ipaddress = '148.36.191.244' // req.header('x-forwarded-for') || req.connection.remoteAddress
         let browserAgent = this.getBrowserInfo()
         let trxType = 'compra'
-        let paymentMethod = 'TDC'
+        let paymentMethod = 'tdc'
         let cardNumber = this.valueFields.cardNumber.replace(/\s+/g, '') // this.valueFields.cardNumber
         let customerId = this.valueFields.customerIdV + this.valueFields.customerId
         // let accountType = this.valueFields.account_type
         let cvv = this.valueFields.cardCvv
         let currency = 'ves'
         let amount = parseFloat(this.amount.toFixed(2))
+        let url = window.location.hostname === 'localhost' ? 'http://localhost:8085' : window.location.origin
         let options = { method: 'post',
           // url: 'http://localhost:5001/qa-restaurant-testnet/us-central1/MakePay',
-          url: window.location.origin + '/transact',
+          url: url + '/transact',
           data:
           {
             'bank': 'MercantilTDC',
