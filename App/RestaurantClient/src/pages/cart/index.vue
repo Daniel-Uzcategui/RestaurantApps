@@ -185,7 +185,7 @@
                            @update-price="(e) => deliveryPrice = e" :cart="cart" :rate ="ratesComp.find(obj => {
         return obj.currency === 'Bs'
       })" class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"
-                             @tarifa2-done ='obtenertarifa' />
+                             @tarifa2-done ='obtenertarifa' @valorcontinuar = 'falsecontinuar'/>
                          </q-card-section>
                          <q-card-section>
                            </q-card-section>
@@ -193,7 +193,6 @@
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
-                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && deliveryPrice != 0 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && continuar != false  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           </div>
                          </q-card-section>
@@ -619,6 +618,9 @@ export default {
         console.error(error)
         return 'Precios no encontrados'
       }
+    },
+    falsecontinuar () {
+      this.continuar = false
     },
     dateOptions (date) {
       if (typeof this.configDates === 'undefined') { return new Date(date + ' 23:59:59') >= new Date() }

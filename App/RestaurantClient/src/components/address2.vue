@@ -285,8 +285,7 @@ export default {
     ]),
 
     deshabilitarguardar () {
-      console.log('el valor de totallllllllllllllll')
-      return this.tarifa.data.total !== undefined
+      return this.valorSeleccionado !== null
     },
     addPickup () {
       let p = this.addressRadio.find(x => x.value === this.addressPickup)
@@ -313,6 +312,7 @@ export default {
         }
       })
     }
+
   },
   methods: {
     returnValue () {
@@ -366,9 +366,9 @@ export default {
         monto = parseFloat(parseFloat(monto) + (parseFloat(obj.prodPrice) * parseFloat(obj.quantity)))
         cantidad = cantidad + obj.quantity
         if (obj?.peso === undefined) {
-          this.peso = this.peso + (this.paymentServ.pesoDefault * obj.quantity)
+          this.peso = this.peso + (this.paymentServ?.pesoDefault * obj?.quantity)
         } else {
-          this.peso = this.peso + (obj?.peso * obj.quantity)
+          this.peso = this.peso + (obj?.peso * obj?.quantity)
         }
       }
       this.numeroPiezas = cantidad
@@ -383,7 +383,7 @@ export default {
       //  this.corriers2 = corriers.data
       for (let i = 0; i < corriers.data.length; i++) {
         obj2 = corriers.data[i]
-        reg = { label: obj2.nombre,
+        reg = { label: obj2?.nombre,
           value: obj2._id,
           category: cont }
         this.couriersList2.push(reg)
@@ -394,11 +394,11 @@ export default {
         value: corriers.data[0]._id,
         category: 1 })
       //  }
-      this.contacto = this.currentUser.nombre
+      this.contacto = this.currentUser?.nombre
       this.telefono = this.addressAux.phone
       this.localizacion = this.addressAux.address.locality
       this.puntorefer = this.addressAux.puntoRef
-      this.destinatario = this.currentUser.nombre
+      this.destinatario = this.currentUser?.nombre
       this.cirif = this.currentUser.cedula
 
       // this.mostarDatos = true
@@ -455,9 +455,9 @@ export default {
         ofic = this.oficina.value
       }
       // this.generandoTarifa = true
-      this.ciudad = { label: this.ciudadList.nombre,
-        value: this.ciudadList._id,
-        category: this.ciudadList.codigo }
+      this.ciudad = { label: this.ciudadList?.nombre,
+        value: this.ciudadList?._id,
+        category: this.ciudadList?.codigo }
       console.log('los valores currier', this.courier, 'ciudad', this.ciudad, 'modalidad', modalidad, 'numero pieza', this.numeroPiezas, 'peso', this.peso, 'valor', this.valor, 'seguro', seguro, 'tipo tarifa', this.tipoServicio, 'oficina', this.oficina)
       this.alertaMsg = ''
       try {
@@ -544,17 +544,13 @@ export default {
       })
     },
     async actualizarCourier (currieraux) {
-      console.log('el curriel pasado al procedimiento', currieraux)
       if (currieraux.label === 'zoom') {
-        console.log('entreeeee')
         this.courier = currieraux
-        console.log('los curiers pasados', this.courier)
         if (this.courier.label === 'Liberty') {
           this.isLiberty = true
           this.retirarOficina = false
         } else {
           this.isLiberty = false
-          // this.retirarOficina = true
         }
 
         //  this.$store.commit('data/loadCouriers')
@@ -568,13 +564,19 @@ export default {
         this.$store.dispatch('data/loadEstados', this.courier)
         let listEstado = await this.loadEstados2(this.courier.value)
         console.log('los estado', listEstado, 'y el estado seleccionado es:', this.addressAux.address.administrative_area_level_1.toUpperCase())
-        this.estadojete = listEstado.data.find(x => x.nombre.toUpperCase() === this.addressAux.address.administrative_area_level_1.toUpperCase())
+        if (this.addressAux.address.locality === 'Caracas') {
+          let edo = 'Distrito Capital'
+          this.estadojete = listEstado.data.find(x => x.nombre.toUpperCase() === edo.toUpperCase())
+        } else {
+          this.estadojete = listEstado.data.find(x => x.nombre.toUpperCase() === this.addressAux.address.administrative_area_level_1.toUpperCase())
+        }
+
         console.log('objeto estado', this.estadojete)
         // this.estados
         if (this.estadojete) {
-          this.estado = { label: this.estadojete.nombre,
-            value: this.estadojete._id,
-            category: this.estadojete.codigo }
+          this.estado = { label: this.estadojete?.nombre,
+            value: this.estadojete?._id,
+            category: this.estadojete?.codigo }
           this.actualizarEstado()
         }
       }
@@ -588,29 +590,29 @@ export default {
       this.$store.commit('data/initParroquias')
       this.$store.commit('data/initOficinas')
       let ciudadList = await this.loadCiudades2(this.estadojete._id)
-      this.ciudadList = ciudadList.data.find(x => x.nombre.toUpperCase() === this.addressAux.address.locality.toUpperCase())
-      this.ciudad = { label: this.ciudadList.nombre,
-        value: this.ciudadList._id,
-        category: this.ciudadList.codigo }
+      this.ciudadList = ciudadList.data.find(x => x.nombre.toUpperCase() === this.addressAux.address?.locality.toUpperCase())
+      this.ciudad = { label: this.ciudadList?.nombre,
+        value: this.ciudadList?._id,
+        category: this.ciudadList?.codigo }
       this.$store.dispatch('data/loadCiudades', this.ciudad)
       console.log('las ciudad del estado de Daniel', this.ciudadList)
       this.actualizarCiudad()
     },
     async  actualizarCiudad () {
-      this.$store.commit('data/updateCiudad', { label: this.ciudadList.nombre,
-        value: this.ciudadList._id,
-        category: this.ciudadList.codigo })
+      this.$store.commit('data/updateCiudad', { label: this.ciudadList?.nombre,
+        value: this.ciudadList?._id,
+        category: this.ciudadList?.codigo })
       this.$store.commit('data/initMunicipios')
       this.$store.commit('data/initParroquias')
       this.$store.commit('data/initOficinas')
       this.municipio = null
-      this.$store.dispatch('data/loadMunicipios', { label: this.ciudadList.nombre,
-        value: this.ciudadList._id,
-        category: this.ciudadList.codigo })
+      this.$store.dispatch('data/loadMunicipios', { label: this.ciudadList?.nombre,
+        value: this.ciudadList?._id,
+        category: this.ciudadList?.codigo })
       console.log('las cuidades')
-      this.$store.dispatch('data/loadOficinas', { label: this.ciudadList.nombre,
-        value: this.ciudadList._id,
-        category: this.ciudadList.codigo })
+      this.$store.dispatch('data/loadOficinas', { label: this.ciudadList?.nombre,
+        value: this.ciudadList?._id,
+        category: this.ciudadList?.codigo })
       await this.actualizarOficina()
     },
     actualizarOficina () {
@@ -649,6 +651,8 @@ export default {
     },
     async newAddress () {
       if (this.dialogType === 'new') {
+      //  let valido = this.validarciudad()
+        //   if (valido === true) {
         this.objeto = await this.addAddress2({
 
           user: this.currentUser.id,
@@ -668,6 +672,7 @@ export default {
         this.returnValue()
 
         this.DatosEncomienda(this.objeto, this.cart)
+        // }
       } else {
         this.updateAddress({
 
@@ -695,6 +700,15 @@ export default {
       this.puntoRef = obj.puntoRef
       this.id = obj.id
     },
+    /*  validarciudad () {
+      let corrieaux = this.loadCouriers2()
+      let idcurrier = corrieaux.data[0]._id
+      let estadosAux = this.loadEstados2(idcurrier)
+      let idestado = estadosAux.find(x => x.nombre.toUpperCase() === this.addressIn.administrative_area_level_1.toUpperCase())
+      let ciudades = this.loadCiudades2(idestado)
+      let idcuidad = ciudades.find(x => x.nombre.toUpperCase() === this.addressIn.locality.toUpperCase())
+
+    } , */
     newAddDialog () {
       this.gActive = true
       this.readAddr = false
@@ -741,8 +755,13 @@ export default {
       } else {
         this.$emit('invalid-address', false)
       }
+    },
+    valorSeleccionado () {
+      console.log('valor seleccionado', this.valorSeleccionado)
+      if (this.valorSeleccionado === null) {
+        this.$emit('valorcontinuar', false)
+      }
     }
-
   },
   data () {
     return {
