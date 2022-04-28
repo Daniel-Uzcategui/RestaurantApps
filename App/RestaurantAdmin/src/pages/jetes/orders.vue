@@ -1,12 +1,10 @@
 <template>
     <div>
-<h1>
-    Ordenes por Envio
-</h1>
+
   <q-table flat bordered
       class="table"
       style="border-radius: 28px"
-      title="Ordenes"
+      title=" Ordenes por Envio"
       :data="orderencomienda"
       :columns="columns"
       :grid="$q.screen.lt.md"

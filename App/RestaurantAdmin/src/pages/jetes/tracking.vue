@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <div><h1>Chequeo de Tracking</h1></div>
+        <div><h6>Chequeo de Tracking</h6></div>
        <div class="col-4 d-flex justify-content-center text-center">
             <tracking/>
         </div>

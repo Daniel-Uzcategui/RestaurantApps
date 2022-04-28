@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Encomienda</h1>
+        <h6>Encomienda</h6>
 <courier
 :propsEcomienda ="Encomienda"
 />
