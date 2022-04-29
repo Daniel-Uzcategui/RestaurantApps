@@ -52,13 +52,13 @@
      <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
   </div>
   <div class="col-2" v-show="deshabilitarguardar">
-     <q-select v-model="tipoServicio" :options="tipoServicios"  label="Tipo Servicio" />
+     <q-select v-model="tipoServicio" :options="tipoServicios" @input="recalcular()" label="Tipo Servicio" />
   </div>
   <div class="col-2" v-show="deshabilitarguardar">
    <q-toggle v-model="retirarOficina" label="Retirar en la Oficina" @input="recalcular2()" :disable="isLiberty ? true:false" />
   </div>
   <div class="col-2" v-show="retirarOficina">
-    <q-select v-model="oficina" :options="oficinasList" label="Oficina" @blur="actualizarOficina()" @input="recalcular()" :disable="isLiberty ? true : false"/>
+    <q-select v-model="oficina" :options="oficinasList" label="Oficina" @input="recalcular()" :disable="isLiberty ? true : false"/>
   </div>
 
     <div class="col-2" v-show="deshabilitarguardar">
@@ -104,7 +104,7 @@
     <q-card-section @click.prevent class="q-pt-none q-pa-md">
       <google-map
         v-if="address.length || markers.length || gActive "
-        :poly="getZones()"
+
         @address-update="(e) => updateAddIn(e)"
         :readOnly="readAddr"
         :center="center"
@@ -152,7 +152,7 @@
           overflow-x: hidden;">
           <q-card-section class="q-pt-none q-pa-md">
               <div class="col-2">
-                 <q-select v-model="tipoServicio" :options="tipoServicios"  label="Tipo Servicio" />
+                 <q-select v-model="tipoServicio" :options="tipoServicios" @input ="recalcular" label="Tipo Servicio" />
                </div>
                <div class="col-2">
                   <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
@@ -414,33 +414,38 @@ export default {
       if (this.markers.length === 0) { return false }
       // eslint-disable-next-line no-undef
       if (typeof google === 'undefined') { return false }
-      for (let i in this.getZones()) {
-        let latLng = this.markers[0].position
-        if (!isNaN(latLng.lat)) {
+      //  for (let i in this.getZones()) {
+      //  let latLng = this.markers[0].position
+      /*  if (!isNaN(latLng.lat)) {
           // eslint-disable-next-line no-undef
           latLng = new google.maps.LatLng(this.markers[0].position)
-        }
-        // eslint-disable-next-line no-undef
-        let poly = new google.maps.Polygon({ paths: this.getZones()[i] })
-        // console.log({ latLng, mark: this.markers, poly })
-        // eslint-disable-next-line no-undef
-        if (google.maps.geometry.poly.containsLocation(latLng, poly)) {
+        } */
+      // eslint-disable-next-line no-undef
+      // let poly = new google.maps.Polygon({ paths: this.getZones()[i] })
+      // console.log({ latLng, mark: this.markers, poly })
+      // eslint-disable-next-line no-undef
+      /*  if (google.maps.geometry.poly.containsLocation(latLng, poly)) {
           this.$emit('update-price', this.getZonePrices()[i]['price'])
           return true
-        }
-      }
+        } */
+      // }
       return false
     },
     recalcular () {
       console.log('este es el valor de retirar a oficina', this.retirarOficina)
+      console.log('este es el valor oficina', this.oficina.value)
       this.loading = true
+
       this.calcularTarifa()
+
       this.loading = false
     },
     recalcular2 () {
       console.log('este es el valor de retirar a oficina', this.retirarOficina)
+      console.log('este es el valor de retiraraaaaaaaaaaaaaaaaaaaaaaaaaaa a oficina', this.oficina.value)
       if (!this.retirarOficina) {
         this.loading = true
+        console.log('entreeeeeeeeeeeeeeeeeee')
         this.calcularTarifa()
         this.loading = false
       }
@@ -475,7 +480,9 @@ export default {
 
         if (this.tarifa.error) {
           this.alerta = true
-          this.alertaMsg = this.tarifa.error
+          this.alertaMsg = 'Opcion no Disponible'
+          this.$emit('valorcontinuar', false)
+          this.valorSeleccionado = null
         } else {
         //  this.tarifaModal = true
           this.taficacompleto = {
@@ -505,9 +512,11 @@ export default {
           this.$emit('tarifa2-done', this.taficacompleto)
         }
       } catch (error) {
-        console.error(error)
+      //  console.error(error)
         this.alerta = true
-        this.alertaMsg = error
+        this.alertaMsg = 'Opcion no Disponible'
+        this.$emit('valorcontinuar', false)
+        this.valorSeleccionado = null
       } finally {
         this.generandoTarifa = false
         this.loading2 = false
