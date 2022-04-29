@@ -39,12 +39,13 @@
          <div class="q-pa-md col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="col-3">
             <label>Tipo de Servicios</label>
-            <div class="label-error" v-if="config && config.statusPickup === 0 && config.statusDelivery === 0 && config.statusInlocal === 0">Tipo de Servicios no disponibles </div>
+            <div class="label-error" v-if="config && config.statusPickup === 0 && config.statusDelivery === 0 && config.statusInlocal === 0 && config.statusEncomienda === 0">Tipo de Servicios no disponibles </div>
             </div>
             <div class="div-typeServices">
               <q-checkbox v-if="config && config.statusPickup"  dense label="Pick-up" color="teal" class="typeServices"  :value="localization.PickUP" @input="(e) => saved(e, this.$route.query.Localization_Id, 'PickUP')" />
               <q-checkbox v-if="config && config.statusDelivery" dense label="Delivery" color="orange" class="typeServices" :value="localization.Delivery" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Delivery')" />
               <q-checkbox v-if="config && config.statusInlocal" dense label="En local" color="red" class="typeServices" :value="localization.Inlocal" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Inlocal')" />
+              <q-checkbox v-if="config && config.statusEncomienda"  dense label="Encomienda" color="teal" class="typeServices"  :value="localization.Encomienda" @input="(e) => saved(e, this.$route.query.Localization_Id, 'Encomienda')" />
               <q-checkbox dense label="Orden de Compra" color="red" class="typeServices" :value="localization.statusSeller" @input="(e) => beforeSaved(e, this.$route.query.Localization_Id, 'statusSeller')" />
             </div>
         </div>
@@ -123,6 +124,7 @@ export default {
       PickUP: false,
       Delivery: false,
       Inlocal: false,
+      Encomienda: false,
       center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },
       marker: [{ position: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 } }],
       places: [],

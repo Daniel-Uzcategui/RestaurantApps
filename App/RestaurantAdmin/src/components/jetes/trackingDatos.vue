@@ -156,13 +156,13 @@ export default ({
         })
         if (this.tracking.error) {
           this.alerta = true
-          this.alertaMsg = this.tracking.error
+          this.alertaMsg = 'Opcion no Disponible'
         }
         console.log('Data:', this.tracking)
       } catch (error) {
         console.error(error)
         this.alerta = true
-        this.alertaMsg = error
+        this.alertaMsg = 'Opcion no Disponible'
       } finally {
         this.generandoTracking = false
       }
