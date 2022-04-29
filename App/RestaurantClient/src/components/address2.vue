@@ -51,9 +51,7 @@
   <div class="col-2"  v-show="deshabilitarguardar">
      <q-select v-model="courier" :options="couriersList2" label="Corrier" @blur="actualizarCourier()"  @change="actualizarCourier()"/>
   </div>
-  <div class="col-2" v-show="deshabilitarguardar">
-     <q-select v-model="tipoServicio" :options="tipoServicios" @input="recalcular()" label="Tipo Servicio" />
-  </div>
+
   <div class="col-2" v-show="deshabilitarguardar">
    <q-toggle v-model="retirarOficina" label="Retirar en la Oficina" @input="recalcular2()" :disable="isLiberty ? true:false" />
   </div>
@@ -403,7 +401,7 @@ export default {
 
       // this.mostarDatos = true
     },
-    ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress', 'addAddress2']),
+    ...mapActions('address', ['bindAddress2', 'addAddress', 'updateAddress', 'deleteAddress', 'addAddress2']),
     ...mapActions('data', ['loadEstados2', 'loadCiudades2', 'loadCouriers2']),
     ...mapActions('localization', ['bindLocalZones', 'bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
@@ -435,8 +433,8 @@ export default {
       console.log('este es el valor de retirar a oficina', this.retirarOficina)
       console.log('este es el valor oficina', this.oficina.value)
       this.loading = true
-
       this.calcularTarifa()
+      this.$emit('valorcontinuar', true)
 
       this.loading = false
     },
@@ -445,9 +443,13 @@ export default {
       console.log('este es el valor de retiraraaaaaaaaaaaaaaaaaaaaaaaaaaa a oficina', this.oficina.value)
       if (!this.retirarOficina) {
         this.loading = true
+        this.oficina = ''
         console.log('entreeeeeeeeeeeeeeeeeee')
         this.calcularTarifa()
+
         this.loading = false
+      } else {
+        this.$emit('valorcontinuar', false)
       }
     },
     async calcularTarifa () {
@@ -496,7 +498,7 @@ export default {
               peso: this.peso,
               seguro: seguro,
               valor: this.valor,
-              tipoTarifa: this.tipoServicio,
+              tipoTarifa: 'cod',
               modalidadTarifa: modalidad,
               oficina: this.oficina,
               status: 'enviar',
@@ -743,6 +745,7 @@ export default {
     if (this.address.length) {
       this.loading = false
     }
+    this.loading = false
     console.log({ addd: this.address })
     setTimeout(() => {
       this.dialog = false

@@ -619,8 +619,8 @@ export default {
         return 'Precios no encontrados'
       }
     },
-    falsecontinuar () {
-      this.continuar = false
+    falsecontinuar (valor) {
+      this.continuar = valor
     },
     dateOptions (date) {
       if (typeof this.configDates === 'undefined') { return new Date(date + ' 23:59:59') >= new Date() }
@@ -721,17 +721,13 @@ export default {
     obtenertarifa (tarif) {
       this.objetotarifa = tarif
       console.log('objeto tarifa', this.objetotarifa)
-      if (this.objetotarifa.tipoTarifa === 'nacional') {
-        let rate = this.ratesComp.find(obj => {
-          return obj.currency === 'Bs'
-        })
-        console.log('este es valor rate', rate.rateValue, 'el valor de tarifa.total', this.objetotarifa.tarifa.total)
-        let valor = (parseFloat(this.objetotarifa.tarifa.total) / parseFloat(rate.rateValue))
-        this.deliveryPrice = valor.toFixed(2)
-        console.log('el valor de this.deliveryPrice', valor)
-      } else {
-        this.deliveryPrice = 0
-      }
+      let rate = this.ratesComp.find(obj => {
+        return obj.currency === 'Bs'
+      })
+      console.log('este es valor rate', rate.rateValue, 'el valor de tarifa.total', this.objetotarifa.tarifa.total)
+      let valor = (parseFloat(this.objetotarifa.tarifa.total) / parseFloat(rate.rateValue))
+      this.deliveryPrice = valor.toFixed(2)
+      console.log('el valor de this.deliveryPrice', valor)
       this.continuar = true
     },
     totalItComp (its) {

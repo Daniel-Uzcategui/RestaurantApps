@@ -5,6 +5,10 @@ export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log({ payload })
   return bindFirestoreRef('address', firestore().collection('address').where('user', '==', payload), { reset: false, serialize: serialize, wait: true })
 })
+export const bindAddress2 = firestoreAction(({ bindFirestoreRef }, payload) => {
+  console.log({ payload })
+  return bindFirestoreRef('address', firestore().collection('address').where('user', '==', payload), { reset: false, serialize: serialize, wait: true })
+})
 const serialize = (snapshot) => {
   // snapshot.data() DOES NOT contain the `id` of the document. By
   // default, Vuefire adds it as a non enumerable property named id.
