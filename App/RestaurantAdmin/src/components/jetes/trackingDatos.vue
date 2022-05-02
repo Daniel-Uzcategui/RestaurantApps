@@ -83,9 +83,7 @@
               <q-input v-model="tracking.data.codtipo" hint="Cod. Tipo" :dense="dense" disable />
           </div>
       </div>
-      <q-badge color="red" v-if="tracking.error">
-          Tracking: {{tracking.error}}
-      </q-badge>
+
       <br>
 
     </div>
