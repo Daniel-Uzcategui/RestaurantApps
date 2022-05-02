@@ -10,6 +10,10 @@ export const bindConfigs = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindConfigs')
   return bindFirestoreRef('configs', firestore().collection('config'), { reset: false })
 })
+export const bindpaymentsev = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindConfigs')
+  return bindFirestoreRef('configs2', firestore().collection('config').doc('paymentServ'), { reset: false })
+})
 export const bindEnv = firestoreAction(async ({ bindFirestoreRef }) => {
   console.log('bindEnv')
   return bindFirestoreRef('version', firestore().collection('environment').doc('version'), { reset: false })

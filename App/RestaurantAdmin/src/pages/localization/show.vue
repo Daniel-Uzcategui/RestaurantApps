@@ -69,7 +69,16 @@
           />
         </div>
        </div>
-
+ <div v-if="config && config.statusEncomienda">
+         <div class="q-pa-md col-xs-12 col-sm-6 col-md-3 col-lg-3"  v-show="localization.Encomienda">
+          <q-input filled rounded outlined v-model="pesoDefaults"
+          type="numbery"
+          label="Peso Defaults"
+          float-label="Float Label"
+          @input="guardarpeso()"
+          />
+        </div>
+       </div>
      </q-card-section>
      </q-card>
      <q-card class="q-cardGlass" v-if="config && config.statusDelivery && localization.Delivery">
@@ -117,6 +126,7 @@ export default {
       deliveryZone: null,
       tables: '',
       capacity: '',
+      encomienda: '',
       estatus_options: [
         { label: 'Activo', value: 0 },
         { label: 'Inactivo', value: 1 }
@@ -125,6 +135,7 @@ export default {
       Delivery: false,
       Inlocal: false,
       Encomienda: false,
+      pesoDefaults: '',
       center: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 },
       marker: [{ position: { 'lat': 10.489585981801593, 'lng': -66.90502725946766 } }],
       places: [],
@@ -135,7 +146,7 @@ export default {
   },
   computed: {
     ...mapGetters('localization', ['localizations']),
-    ...mapGetters('config', ['configs']),
+    ...mapGetters('config', ['configs', 'configs2']),
     markers: {
       get () {
         if (this.localization && this.localization.localizacion_sede) {
@@ -162,14 +173,20 @@ export default {
   created () {
     this.bindConfigs()
   },
-  mounted () {
+  async mounted () {
+    if (!this.configs2.length) {
+      await this.bindpaymentsev()
+    }
+
     this.markers = [{ position: { 'lat': this.localization.localizacion_sede.latitude, 'lng': this.localization.localizacion_sede.longitude } }]
     this.center = { 'lat': this.localization.localizacion_sede.latitude, 'lng': this.localization.localizacion_sede.longitude }
     console.log({ mark: this.markers })
+    this.pesoDefaults = this.configs2.pesoDefault
+    console.log('el peso por defaults', this.pesoDefaults)
   },
   methods: {
     ...mapActions('localization', ['saveLocation']),
-    ...mapActions('config', ['bindConfigs', 'saveConfig']),
+    ...mapActions('config', ['bindConfigs', 'saveConfig', 'saveConfig2', 'bindpaymentsev']),
     beforeSaved (value, id, key) {
       if (!value) {
         return this.saved(value, id, key)
@@ -182,6 +199,15 @@ export default {
         this.saved(value, id, key)
         this.saveConfig({ value: 1, id: 'paymentServ', key }).catch(e => console.log(e))
       })
+    },
+    guardarpeso () {
+      console.log('el valor del id', this.config)
+      console.log('el valor del peso', this.pesoDefaults)
+      if (this.pesoDefaults !== '') {
+        this.saveConfig2({
+          id: this.config.id,
+          pesoDefault: this.pesoDefaults })
+      }
     },
     saved (value, id, key) {
       console.log(value, id, key)
