@@ -106,7 +106,7 @@ export default {
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
-    this.total = parseFloat(this.total) + parseFloat(this.delivery)
+    this.total2 = parseFloat(this.total) + parseFloat(this.delivery)
   },
   computed: {
     desahabilitadorefencia () {
@@ -137,6 +137,7 @@ export default {
       referenciacompleta: '',
       ambientes: '',
       serie: '',
+      total2: 0,
       metodopago: '',
       metodospagos: [
         {
@@ -440,7 +441,7 @@ export default {
 
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
-        let monto = this.total
+        let monto = this.total2
         console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
         let ip = '186.91.191.248'
