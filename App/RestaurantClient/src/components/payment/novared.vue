@@ -23,10 +23,12 @@
           />
         </div>
          </div>
-           <div >
-            <div class="card-input"><label  aria-label="Referencia" >Referencia</label>
-                <q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
-        </div>
+<div class="card-input "><label  aria-label="Referencia" >Referencia</label></div>
+           <div class="row">
+                <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                </div>
+                <div class="col-6 col-md-4"><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
+                </div>
         </div>
           <div >
             <div class="card-input"><label  aria-label="Referencia2" >Nota:  </label>
@@ -68,6 +70,7 @@
 <script>
 // import { VuePaycard } from 'vue-paycard's
 import { mapActions, mapGetters } from 'vuex'
+import { copyToClipboard } from 'quasar'
 // import { date } from 'quasar'
 export default {
   components: {
@@ -106,7 +109,7 @@ export default {
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
-    this.total2 = parseFloat(this.total) + parseFloat(this.delivery)
+    this.total = parseFloat(this.total) + parseFloat(this.delivery)
   },
   computed: {
     desahabilitadorefencia () {
@@ -137,7 +140,6 @@ export default {
       referenciacompleta: '',
       ambientes: '',
       serie: '',
-      total2: 0,
       metodopago: '',
       metodospagos: [
         {
@@ -268,6 +270,11 @@ export default {
         //  this.$q.loading.hide()
         this.limpiar()
       }
+    },
+    copy (referencia) {
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', referencia)
+      copyToClipboard(referencia)
+      return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
     },
     actualizar () {
       let fecha = new Date()
@@ -441,7 +448,7 @@ export default {
 
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
-        let monto = this.total2
+        let monto = this.total
         console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
         let ip = '186.91.191.248'
