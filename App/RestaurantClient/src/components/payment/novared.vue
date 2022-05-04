@@ -38,13 +38,14 @@
         </div>
          <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined type="email" v-model="valueFields.correo"  @change="validar" title="Correo"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  pattern="/^[a-zA-Z0-9.!#$%’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+    required type="email" v-model="valueFields.correo"  @change="validar" title="Correo"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined  v-model="valueFields.telefono"  title="Telefono"  @change="validar" data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="number" v-model="valueFields.telefono"  title="Telefono"  @change="validar" data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
