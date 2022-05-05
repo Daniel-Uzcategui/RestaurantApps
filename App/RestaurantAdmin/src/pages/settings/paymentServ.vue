@@ -69,19 +69,19 @@
         </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
+          <p>Pasarela de Pago</p>
+         <q-option-group color="blue" inline  filled rounded v-model="statusNovaredzelle" map-options emit-value standout="bg-teal "
+          outlined :options="estatus_options" label="Pasarela de Pago" />
+        </div>
+        </div>
+        <div class="flex-break q-py-md "></div>
+        <div class="row header-container">
         <!-- <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Mercantil</p>
 <q-option-group color="blue" inline  filled rounded v-model="statusMercantil" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Mercantil" />
         </div> -->
-        </div>
-        <div class="flex-break q-py-md "></div>
-       <div class="row header-container">
-          <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
-          <p>Encomienda</p>
-          <q-option-group color="blue" inline  filled rounded v-model="statusEncomienda" map-options emit-value standout="bg-teal "
-          outlined :options="estatus_options" label="Encomiendas" />
-        </div>
         </div>
           <div class="flex-break q-py-md "></div>
         <!-- <div class="row header-container">
@@ -186,16 +186,6 @@
           outlined label="Email Zelle" />
         </div>
         </div>
-
-        <div v-if="statusEncomienda" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Encomienda</div>
-       </div>
-       <div v-if="statusEncomienda" class="row header-container">
-        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="pesoDefault" standout="bg-teal "
-          outlined label="Peso Default" />
-        </div>
-        </div>
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
        </div>
@@ -205,46 +195,38 @@
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
         </div>
-          <!-- <div  v-if="statuspagomovil" class="row header-container q-pt-md q-pb-md">
-         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Pago móvil</div>
-       </div>
-       <div v-if="statuspagomovil"  class="row header-container">
-        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="pagomovil" standout="bg-teal "
-          outlined label="Pago Movil" />
-        </div>
-        </div> -->
-         <!-- <div v-if="statusNovaredpagomovil"  class="row header-container">
+
+         <div v-if="statusNovaredzelle"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <p>Novared</p>
-<q-option-group color="blue" inline  filled rounded v-model="Novared.ambiente" map-options emit-value standout="bg-teal "
+          <p>Pasarela de Pago</p>
+<q-option-group color="blue" inline  filled rounded v-model="Novared2.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared.ApiKey" standout="bg-teal "
+          <q-input filled rounded v-model="Novared2.ApiKey" standout="bg-teal "
           outlined label="ApiKey" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared.idComercio" standout="bg-teal "
+          <q-input filled rounded v-model="Novared2.idComercio" standout="bg-teal "
           outlined label="idComercio" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared.mockServer" standout="bg-teal "
+          <q-input filled rounded v-model="Novared2.mockServer" standout="bg-teal "
           outlined label="Url de verificacion" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared.nombreComercio" standout="bg-teal "
+          <q-input filled rounded v-model="Novared2.nombreComercio" standout="bg-teal "
           outlined label="Nombre Comercio" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared.requestPassword" standout="bg-teal "
+          <q-input filled rounded v-model="Novared2.requestPassword" standout="bg-teal "
           outlined label="Clave secreta" />
         </div>
          <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared.requestUser" standout="bg-teal "
+          <q-input filled rounded v-model="Novared2.requestUser" standout="bg-teal "
           outlined label="Usuario" />
         </div>
-        </div> -->
+        </div>
 
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
@@ -301,6 +283,23 @@ export default {
       default: () => true
     }
   },
+  watch: {
+    config () {
+      if (this.config !== undefined) {
+        console.log('valores de config', this.config.Novared)
+        this.Novared2 = {
+          ApiKey: this.config.Novared.ApiKey,
+          ambiente: this.config.Novared.ambiente,
+          idComercio: this.config.Novared.idComercio,
+          mockServer: this.config.Novared.mockServer,
+          nombreComercio: this.config.Novared.nombreComercio,
+          requestPassword: this.config.Novared.requestPassword,
+          requestUser: this.config.Novared.requestUser
+        }
+      }
+    }
+
+  },
   created () {
     this.bindConfigs().then(e => console.log(this.afterBindigs()))
   },
@@ -330,8 +329,8 @@ export default {
       statusMercantil: 0,
       statusNovaredzelle: 0,
       statusNovaredpagomovil: 0,
-      statusEncomienda: 0,
-      Novared: {
+      // statusEncomienda: 0,
+      Novared2: {
         ApiKey: '',
         idComercio: '',
         mockServer: '',
@@ -358,7 +357,7 @@ export default {
       CreditCorp: '',
       transfer: '',
       pagomovil: '',
-      pesoDefault: 0,
+      // pesoDefault: 0,
       price: 0,
       estatus_options: [
         { label: 'Activo', value: 1 },
@@ -400,17 +399,17 @@ export default {
         statustransfer: this.statustransfer,
         statusCash: this.statusCash,
         Mercantil: this.Mercantil,
-        Novared: this.Novared,
+        Novared: this.Novared2,
         statusNovaredzelle: this.statusNovaredzelle,
         statusNovaredpagomovil: this.statusNovaredpagomovil,
-        statusEncomienda: this.statusEncomienda,
+        // statusEncomienda: this.statusEncomienda,
         statusPaypal: this.statusPaypal,
         PaypalApi: this.PaypalApi,
         zelleEmail: this.zelleEmail,
         venmoAcc: this.venmoAcc,
         CreditCorp: this.CreditCorp,
         transfer: this.transfer,
-        pesoDefaul: this.pesoDefault,
+        //  pesoDefaul: this.pesoDefault,
         pagomovil: this.pagomovil,
         source: 'paymentServ'
       }
@@ -464,8 +463,8 @@ export default {
       value = this.statusNovaredzelle
       key = 'statusNovaredzelle'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusEncomienda
-      key = 'statusEncomienda'
+      // value = this.statusEncomienda
+      //  key = 'statusEncomienda'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusNovaredpagomovil
       key = 'statusNovaredpagomovil'
@@ -494,8 +493,8 @@ export default {
       key = 'venmoAcc'
       value = this.venmoAcc
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'pesoDefault'
-      value = this.pesoDefault
+      // key = 'pesoDefault'
+      // value = this.pesoDefault
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'zelleEmail'
       value = this.zelleEmail
@@ -512,7 +511,7 @@ export default {
       value = this.Mercantil
       key = 'Mercantil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.Novared
+      value = this.Novared2
       key = 'Novared'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       this.$q.dialog({

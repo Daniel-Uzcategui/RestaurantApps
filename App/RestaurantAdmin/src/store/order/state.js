@@ -45,8 +45,8 @@ export default function () {
       { label: 'Transferencia Bancaria', value: 7 },
       { label: 'Pago móvil', value: 8 },
       { label: 'Tarjeta Venezolana', value: 9 },
-      { label: 'Zelle Novared', value: 10 },
-      { label: 'Pago movil Novared', value: 11 }
+      { label: 'Novared', value: 10 },
+      { label: 'Novared', value: 11 }
     ],
     ordercorporativo: [],
     orderencomienda: [],
