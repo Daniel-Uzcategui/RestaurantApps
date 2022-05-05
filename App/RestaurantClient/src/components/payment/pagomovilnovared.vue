@@ -10,15 +10,28 @@
     <div class="col-12">
  <div class="row">
         <div class="col-12">
+          <div class="card-input "><label  aria-label="Referencia" >Referencia</label></div>
+           <div class="row">
+                <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                </div>
+                <div class="col-6 col-md-4"><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
+                </div>
+        </div>
+          <div >
+            <div class="card-input"><label  aria-label="Referencia2" >Nota:  </label>
+
+                <p class="p-5 mb-5 bg-danger text-red">Por Favor Tomar Registro de la Referencia para la Operacion</p>
+        </div>
+        </div>
                   <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined  @change="validar" type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  @input="validar" type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined  @change="validar" v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  @input="validar" v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
@@ -44,6 +57,7 @@
 <script>
 // import { VuePaycard } from 'vue-paycard'
 import { mapActions, mapGetters } from 'vuex'
+import { copyToClipboard } from 'quasar'
 export default {
   components: {
     //  VuePaycard
@@ -170,7 +184,7 @@ export default {
   },
   mounted () {
     this.bindPaymentServ()
-    this.operacion = 'PM2'
+    this.operacion = 'I'
     this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
     this.serie = this.obtenerSerie(this.paymentServ.referencia)
     let fecha = new Date()
@@ -204,6 +218,11 @@ export default {
         //  this.$q.loading.hide()
         this.limpiar()
       }
+    },
+    copy (referencia) {
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', referencia)
+      copyToClipboard(referencia)
+      return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
     },
     calcularvuelto (montooperacion) {
       console.log('ele valor es ', montooperacion)
@@ -326,16 +345,16 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: 'http://localhost:3000/transact/',
+          url: 'http://localhost/transact/',
           data:
           {
-            'bank': 'createOrder',
+            'bank': 'TransactVerify',
             'token': '286748b0-c542-47a0-8fff-ca08cc9965a9',
             'ambiente': localStorage.getItem('amb'),
             'monto': monto,
-            'moneda': 'Bolivares',
-            'formaPago': 'Pago Movil',
-            'referencia': '88888888',
+            'moneda': 'VES',
+            'formaPago': 'Interbank',
+            'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': this.valueFields.correo,
             'ip': ip

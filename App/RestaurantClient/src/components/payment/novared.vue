@@ -39,13 +39,13 @@
          <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
                 <q-input filled rounded outlined  pattern="/^[a-zA-Z0-9.!#$%’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-    required type="email" v-model="valueFields.correo"  @change="validar" title="Correo"  data-card-field="" autocomplete="off"/>
+    required type="email" v-model="valueFields.correo" @input="validar" title="Correo"  data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined type="number" v-model="valueFields.telefono"  title="Telefono"  @change="validar" data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined type="number" v-model="valueFields.telefono"  title="Telefono"  @input="validar" data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
@@ -148,11 +148,7 @@ export default {
           value: 'Zelle',
           category: 1
         },
-        {
-          label: 'Interbank',
-          value: 'Interbank',
-          category: 2
-        },
+
         {
           label: 'President',
           value: 'President',
@@ -455,7 +451,7 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: 'http://localhost:3000/transact/',
+          url: 'http://localhost/transact/',
           data:
           {
             'bank': 'TransactVerify',
