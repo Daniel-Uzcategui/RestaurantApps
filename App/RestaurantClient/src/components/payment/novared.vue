@@ -91,8 +91,8 @@ export default {
       default: 0
     },
     delivery: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     }
   },
   mounted () {
@@ -110,7 +110,7 @@ export default {
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
-    this.total = parseFloat(this.total) + parseFloat(this.delivery)
+    this.total2 = parseFloat(this.total) + parseFloat(this.delivery)
   },
   computed: {
     desahabilitadorefencia () {
@@ -138,6 +138,7 @@ export default {
       mostrarVuelto: false,
       estado: true,
       operacion: '',
+      total2: 0,
       referenciacompleta: '',
       ambientes: '',
       serie: '',
@@ -259,14 +260,14 @@ export default {
       console.log(this.respuestaPay)
 
       this.$emit('payment-done', this.respuestaPay)
-      if (this.respuestaPay) {
+      /* if (this.respuestaPay) {
         this.$q.dialog({
           title: 'Sastifactorio',
           message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
         })
         //  this.$q.loading.hide()
         this.limpiar()
-      }
+      } */
     },
     copy (referencia) {
       console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', referencia)
@@ -445,17 +446,17 @@ export default {
 
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
-        let monto = this.total
+        let monto = this.total2
         console.log('este valor de amount', this.amount)
         let telefono = this.valueFields.telefono
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: 'http://localhost/transact/',
+          url: 'http://chopzi.com:8081/transact/',
           data:
           {
             'bank': 'TransactVerify',
-            'token': '286748b0-c542-47a0-8fff-ca08cc9965a9',
+            'token': this.paymentServ.apiKeyProd,
             'ambiente': localStorage.getItem('amb'),
             'monto': monto,
             'moneda': 'USD',

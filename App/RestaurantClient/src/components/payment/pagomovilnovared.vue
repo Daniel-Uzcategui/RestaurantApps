@@ -345,11 +345,11 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: 'http://localhost/transact/',
+          url: 'http://localhost:3000/transact/',
           data:
           {
             'bank': 'TransactVerify',
-            'token': '286748b0-c542-47a0-8fff-ca08cc9965a9',
+            'token': this.paymentServ.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
             'monto': monto,
             'moneda': 'VES',
