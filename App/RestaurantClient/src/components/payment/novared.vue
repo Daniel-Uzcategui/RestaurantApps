@@ -452,7 +452,7 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: 'http://chopzi.com:8081/transact/',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'TransactVerify',
