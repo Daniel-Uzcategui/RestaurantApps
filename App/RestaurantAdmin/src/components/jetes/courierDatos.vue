@@ -532,9 +532,9 @@ export default {
         referencia: this.referencia,
         numeroPiezas: this.numeroPiezas,
         peso: this.peso,
-        tipoEnvio: this.tipoEnvio.value,
+        tipoEnvio: this.tipoEnvio,
         valor: this.valor,
-        tipoServicio: this.tipoServicio,
+        tipoServicio: 'cod',
         retirarOficina: this.retirarOficina,
         seguro: this.seguro
       })
@@ -574,9 +574,9 @@ export default {
           referencia: this.referencia,
           numeroPiezas: this.numeroPiezas,
           peso: this.peso,
-          tipoEnvio: this.tipoEnvio.value,
+          tipoEnvio: this.tipoEnvio,
           valor: this.dataSelected.valor,
-          tipoServicio: this.tipoServicio.value,
+          tipoServicio: 'cod',
           retirarOficina: this.retirarOficina,
           oficina: this.oficina.value,
           seguro: this.seguro
