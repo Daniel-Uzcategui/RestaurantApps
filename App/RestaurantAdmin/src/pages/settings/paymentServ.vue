@@ -226,6 +226,10 @@
           <q-input filled rounded v-model="Novared2.requestUser" standout="bg-teal "
           outlined label="Usuario" />
         </div>
+         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="referencia" standout="bg-teal "
+          outlined label="referencia" />
+        </div>
         </div>
 
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
@@ -296,6 +300,7 @@ export default {
           requestPassword: this.config.Novared.requestPassword,
           requestUser: this.config.Novared.requestUser
         }
+        this.referencia = this.config.referencia
       }
     }
 
@@ -321,6 +326,7 @@ export default {
       statusPto: 1,
       statusRewards: 0,
       rewards: 10,
+      referencia: 0,
       apiKeyDev: undefined,
       apiKeyProd: undefined,
       statusZelle: 0,
@@ -462,6 +468,9 @@ export default {
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.statusNovaredzelle
       key = 'statusNovaredzelle'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.referencia
+      key = 'referencia'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       // value = this.statusEncomienda
       //  key = 'statusEncomienda'
