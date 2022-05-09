@@ -28,7 +28,7 @@
                 <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
                 </div>
                 <div class="col-6 col-md-4"><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
-                </div>
+                </div>s
         </div>
           <div >
             <div class="card-input"><label  aria-label="Referencia2" >Nota:  </label>
@@ -45,7 +45,7 @@
 
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined type="number" v-model="valueFields.telefono"  title="Telefono"  @input="validar" data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined mask="(####) ###.##.##" type="text"  v-model="valueFields.telefono"  title="Telefono"  @input="validar" />
         </div>
         </div>
 
@@ -285,6 +285,9 @@ export default {
       this.referenciacompleta = this.referenciacompleta.toUpperCase()
       console.log('este el valor de referencia', this.referenciacompleta)
     },
+    formatoTelefono (tel) {
+      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
+    },
     async verificarPago (respuesta) {
       try {
         // donde se esta colocando el numero manuel debe ir la variable respuesta lo que pasa
@@ -443,12 +446,11 @@ export default {
     async paymentbank () {
       try {
         // this.$q.loading.show()
-
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
         let monto = this.total2
         console.log('este valor de amount', this.amount)
-        let telefono = this.valueFields.telefono
+        let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
@@ -456,7 +458,7 @@ export default {
           data:
           {
             'bank': 'TransactVerify',
-            'token': this.paymentServ.apiKeyProd,
+            'token': this.paymentServ.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
             'monto': monto,
             'moneda': 'USD',

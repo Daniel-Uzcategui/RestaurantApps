@@ -85,7 +85,7 @@
       <div class="row justify-center">
         <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" v-model="alias" label="Alias" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
           <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" v-model="contact" label="Nombre de Contacto" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
-            <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" v-model="phone" label="Teléfono" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
+            <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="number" v-model="phone" label="Teléfono" :rules="[ val => val && val.length > 0 || 'Campo Requerido']"/>
         <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="text" readonly v-for="(addr, index) in addressOpt" :key="index" v-model="addressIn[addr]" :label="translateLabel(addr)" />
         <q-input filled class="q-pa-sm col-4" rounded outlined style="min-width: 200px" type="textarea" v-model="puntoRef" label="Punto de referencia y/o detalles" />
       </div>

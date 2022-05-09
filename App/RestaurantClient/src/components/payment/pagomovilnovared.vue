@@ -210,14 +210,6 @@ export default {
       console.log(this.respuestaPay)
 
       this.$emit('payment-done', this.respuestaPay)
-      if (this.respuestaPay) {
-        this.$q.dialog({
-          title: 'Sastifactorio',
-          message: 'La transaccion de orden de pago se realizo con exito se realizo con exito'
-        })
-        //  this.$q.loading.hide()
-        this.limpiar()
-      }
     },
     copy (referencia) {
       console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', referencia)

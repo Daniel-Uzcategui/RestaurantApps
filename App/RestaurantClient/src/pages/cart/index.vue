@@ -848,7 +848,29 @@ export default {
         order.cupons = this.cupons
       }
       switch (this.pagoSel) {
+        case 0:
+          order = { ...order, payto: this.config.zelleEmail }
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
+
+          break
+        case 1:
+          order = { ...order, payto: this.config.zelleEmail }
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
+          break
         case 2:
+          order = { ...order, payto: this.config.zelleEmail }
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
+          break
+        case 3:
           order = { ...order, payto: this.config.zelleEmail }
           if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa.tarifa }
