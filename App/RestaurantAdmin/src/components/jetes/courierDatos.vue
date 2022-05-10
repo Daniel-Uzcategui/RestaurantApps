@@ -380,7 +380,7 @@ export default {
     this.numeroPiezas = this.propsEcomienda?.cantidadPiezas
     this.peso = this.propsEcomienda?.peso
     this.direccion = this.propsEcomienda?.localizacion
-    this.inmueble = this.propsEcomienda?.puntoreferencia
+    this.inmueble = 'casa'
     // this.tipoServicio =this.tipoServicioList[0].value
     // this.tipoServicio = this.propsEcomienda.tipoTarifa.value
     this.tipoEnvio = this.tipoEnvios[0].value
