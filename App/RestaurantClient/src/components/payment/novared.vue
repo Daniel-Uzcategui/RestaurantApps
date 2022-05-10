@@ -28,7 +28,7 @@
                 <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
                 </div>
                 <div class="col-6 col-md-4"><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
-                </div>s
+                </div>
         </div>
           <div >
             <div class="card-input"><label  aria-label="Referencia2" >Nota:  </label>
