@@ -31,7 +31,7 @@
 
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined  @input="validar" v-model="valueFields.telefono"  title="Telefono"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  @input="validar" v-model="valueFields.telefono"  title="Telefono"  mask="(####) ###.##.##" type="text" />
         </div>
         </div>
 
@@ -41,7 +41,7 @@
      <div class="column items-center">
 
         <div class="col-12">
-          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment" :disable="estado"  >Pagar</q-btn>
+          <q-btn rounded color="primary" class="q-ma-md q-mr-lg" @click="payment" :loading="pagando" :disable="estado"  >Pagar</q-btn>
         </div>
 
     </div>
@@ -106,6 +106,7 @@ export default {
       ordengenerada: '',
       mostrarVuelto: false,
       estado: true,
+      pagando: false,
       respuestavuelto: '',
       telefono: '',
       ordengenerada1: '121000201_8747cd94174a255cadd950c851d67fc2',
@@ -264,6 +265,9 @@ export default {
     obtenerprimeraletra (palabra) {
       return palabra[0]
     },
+    formatoTelefono (tel) {
+      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
+    },
     obtenerSerie (numero) {
       let numeroAumentado = Number(numero) + 1
       let length = numeroAumentado.toString().length
@@ -333,7 +337,7 @@ export default {
         this.vuelto = this.montooperacion - this.total
         let monto = this.total
         console.log('este valor de amount', this.amount)
-        let telefono = this.valueFields.telefono
+        let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
