@@ -13,13 +13,13 @@
                     <q-select v-model="ciudad" :options="ciudadesList"  label="Ciudad" @blur="actualizarCiudad()"   />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="municipio" :options="municipiosList"  label="Municipio" @blur="actualizarMunicipio()" />
+                    <q-select v-show="swoficina" v-model="municipio" :options="municipiosList"  label="Municipio" @blur="actualizarMunicipio()" />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="parroquia" :options="parroquiasList"  label="Parroquia" @blur="actualizarParroquia()" />
+                    <q-select v-show="swoficina" v-model="parroquia" :options="parroquiasList"  label="Parroquia" @blur="actualizarParroquia()" />
                 </div>
                 <div class="col-2">
-                    <q-select v-model="oficina" :options="oficinasList"  label="Oficina" @blur="actualizarOficina()" />
+                    <q-select v-show="swoficina" v-model="oficina" :options="oficinasList"  label="Oficina" @blur="actualizarOficina()" />
                 </div>
                  <div v-if="loading2">
                   <q-spinner color="primary" size="15em" />
@@ -317,7 +317,10 @@ export default {
       errorValidacion: false,
       mensajeError: null,
       dense: false,
-      isLiberty: false
+      isLiberty: false,
+      swmunicipio: false,
+      swparroquia: false,
+      swoficina: false
 
     }
   },
@@ -359,6 +362,7 @@ export default {
     if (this.propsEcomienda.oficina !== '') {
       this.oficinasList.push(this.propsEcomienda.oficina)
       this.oficina = this.oficinasList[0]
+      this.swoficina = true
     } else {
       let ciudad2 = await this.loadOficinas2(this.ciudad)
       console.log('oficinas', ciudad2)
