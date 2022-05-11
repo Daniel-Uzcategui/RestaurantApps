@@ -255,12 +255,17 @@ export default {
       this.mostrarVuelto = true
     },
     validar () {
-      console.log('valores ', this.valueFields.telefono, this.valueFields.referencia, this.valueFields.correo)
-      console.log('estados', this.desahabilitadorefencia, this.desabililitadocorreo, this.desahabilitadotelefono)
-      if ((!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
+      console.log('el valor de correo', this.valueFields.correo)
+      console.log('el valor de telefono', this.valueFields.telefono)
+      let correovalidado = this.validEmail(this.valueFields.correo)
+      if ((!this.desabililitadocorreo) && (!this.desahabilitadotelefono) && (correovalidado)) {
         console.log('entreeee')
         this.estado = false
       }
+    },
+    validEmail (email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return re.test(email)
     },
     obtenerprimeraletra (palabra) {
       return palabra[0]
@@ -341,7 +346,7 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'TransactVerify',

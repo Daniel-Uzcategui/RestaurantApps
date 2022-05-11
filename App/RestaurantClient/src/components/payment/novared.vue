@@ -25,7 +25,7 @@
          </div>
 <div class="card-input "><label  aria-label="Referencia" >Referencia</label></div>
            <div class="row">
-                <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  @change="validar" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
                 </div>
                 <div class="col-6 col-md-4"><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
                 </div>
@@ -38,8 +38,7 @@
         </div>
          <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined  pattern="/^[a-zA-Z0-9.!#$%’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-    required type="email" v-model="valueFields.correo" @input="validar" title="Correo"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined required type="email" v-model="valueFields.correo" @input="validar" title="Correo" />
         </div>
         </div>
 
@@ -91,8 +90,8 @@ export default {
       default: 0
     },
     delivery: {
-      type: String,
-      default: ''
+      type: Number,
+      default: 0
     }
   },
   mounted () {
@@ -112,9 +111,20 @@ export default {
     console.log('este el valor de total', this.total)
     this.total2 = parseFloat(this.total) + parseFloat(this.delivery)
   },
-  computed: {
+  watch: {
     desahabilitadorefencia () {
-      return this.valueFields.referencia === ''
+    },
+    desabililitadocorreo () {
+      return false
+    },
+    desahabilitadotelefono () {
+      return false
+    }
+  },
+  computed: {
+
+    desahabilitadorefencia () {
+      return this.metodopago === ''
     },
     desabililitadocorreo () {
       return this.valueFields.correo === ''
@@ -270,7 +280,6 @@ export default {
       } */
     },
     copy (referencia) {
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', referencia)
       copyToClipboard(referencia)
       return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
     },
@@ -284,6 +293,7 @@ export default {
       this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
       this.referenciacompleta = this.referenciacompleta.toUpperCase()
       console.log('este el valor de referencia', this.referenciacompleta)
+      this.validar()
     },
     formatoTelefono (tel) {
       return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
@@ -335,9 +345,10 @@ export default {
       }
     },
     validar () {
-      console.log('valores ', this.valueFields.telefono, this.valueFields.referencia, this.valueFields.correo)
-      console.log('estados', this.desahabilitadorefencia, this.desabililitadocorreo, this.desahabilitadotelefono)
-      if ((!this.desabililitadocorreo) && (!this.desahabilitadotelefono)) {
+      console.log('el valor de correo', this.valueFields.correo)
+      console.log('el valor de telefono', this.valueFields.telefono)
+      let correovalidado = this.validEmail(this.valueFields.correo)
+      if ((!this.desahabilitadorefencia) && (!this.desabililitadocorreo) && (!this.desahabilitadotelefono) && (correovalidado)) {
         console.log('entreeee')
         this.estado = false
       }
@@ -402,6 +413,10 @@ export default {
     obtenerprimeraletra (palabra) {
       return palabra[0]
     },
+    validEmail (email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return re.test(email)
+    },
     obtenerSerie (numero) {
       let numeroAumentado = Number(numero) + 1
       let length = numeroAumentado.toString().length
@@ -454,7 +469,7 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'TransactVerify',

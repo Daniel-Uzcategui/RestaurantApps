@@ -291,7 +291,7 @@
                     <div v-if="ratesComp.length">
                      <debitPayment
                       :ordersId=currentUser.cedula
-                      :amount="getRates(totalPrice + deliveryPrice)"
+                      :amount="getRates(parseFloat(totalPrice) + parseFloat(deliveryPrice))"
                       @payment-done='payment' />
                      </div>
                      <div v-else>No hay tasa de cambio colocada</div>
@@ -301,7 +301,7 @@
                      <creditPayment
                       :ordersId=currentUser.cedula
                       :credit="true"
-                      :amount="getRates(totalPrice + deliveryPrice)"
+                      :amount="getRates(parseFloat(totalPrice) + parseFloat(deliveryPrice))"
                       @payment-done='payment' />
                      </div>
                      <div v-else>No hay tasa de cambio colocada</div>
@@ -312,7 +312,7 @@
                          :ordersId=currentUser.cedula
                          :credit="true"
                           :total="totalPrice"
-                          :delivery ="deliveryPrice"
+                          :delivery ="parseFloat(deliveryPrice)"
                         @payment-done='payment' />
 
                         </div>
@@ -324,7 +324,7 @@
                          :ordersId=currentUser.cedula
                          :credit="true"
                           :total="getRates(totalPrice)"
-                          :delivery ="getRates(deliveryPrice)"
+                          :delivery ="getRates(parseFloat(deliveryPrice))"
                         @payment-done='payment' />
 
                         </div>

@@ -497,7 +497,7 @@ export default {
               cantidadPiezas: this.numeroPiezas,
               peso: this.peso,
               seguro: seguro,
-              valor: this.valor,
+              valor: parseFloat(this.valor),
               tipoTarifa: 'cod',
               modalidadTarifa: modalidad,
               oficina: this.oficina,
