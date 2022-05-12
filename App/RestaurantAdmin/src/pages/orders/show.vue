@@ -6,7 +6,7 @@
     <div class="q-gutter-md">
       <q-card class="q-cardGlass">
         <q-card-section class="q-cardtop header">
-          <div class="text-h5">Orden</div>
+          <div class="text-h5">Orden {{order.factura}}</div>
           <div class="absolute-bottom-right q-pa-md">
             <q-btn
               flat
@@ -43,7 +43,7 @@
                 <p class="text-bold">SubTotal</p>
                 <p>
                   $
-                  {{order.subtotal ? order.subtotal : order.paid && order.delivery ? order.paid - order.delivery : order.paid}}
+                  {{(order.subtotal ? order.subtotal : order.paid && order.delivery ? order.paid - order.delivery : order.paid).toFixed(2)}}
                 </p>
               </div>
               <div v-if="order.extras" class="header-cell q-ma-sm col-2">
@@ -414,7 +414,7 @@
                         filled
                         rounded
                         outlined
-                        @input="(e) => {saved(e, $route.query.Order_Id, `productos.${props.row.index}.name`)}"
+                        @input="(e) => {saved(e, $route.query.Order_Id, `productos.${props.row.index}.name`, props.row.index)}"
                         :value="props.row.name"
                         dense
                       >
@@ -422,30 +422,18 @@
                     </q-popup-edit>
                   </q-td>
                   <q-td key="quantity" :props="props">
-                    <q-input
-                      filled
-                      rounded
-                      outlined
-                      @input="(e) => {if (e > 0) {saved(parseInt(e), $route.query.Order_Id, `productos.${props.row.index}.quantity`)}}"
-                      :value="props.row.quantity"
-                      dense
-                      type="number"
-                      disabled
-                    >
-                    </q-input>
+                    {{props.row.quantity}}
+                    <q-popup-edit @input="(e) => {if (true) {quantityOrPriceChange(parseInt(e), $route.query.Order_Id, `productos.${props.row.index}.quantity`, props.row.index, 0)}}"
+                      :value="props.row.quantity" title="Actualizar cantidad" buttons persistent v-slot="scope">
+                      <q-input type="number" v-model="scope.value"  dense autofocus hint="Usar el botón para cerrar" />
+                    </q-popup-edit>
                   </q-td>
                   <q-td key="price" :props="props">
-                    <q-input
-                      filled
-                      rounded
-                      outlined
-                      @input="(e) => {if (e > -1) {saved(parseFloat(e), $route.query.Order_Id, `productos.${props.row.index}.prodPrice`)}}"
-                      :value="props.row.prodPrice"
-                      dense
-                      type="number"
-                      disabled
-                    >
-                    </q-input>
+                    {{props.row.prodPrice}}
+                    <q-popup-edit @input="(e) => {if (e > -1) {quantityOrPriceChange(parseFloat(e), $route.query.Order_Id, `productos.${props.row.index}.prodPrice`, props.row.index, 1)}}"
+                      :value="props.row.prodPrice" title="Actualizar Precio" buttons persistent v-slot="scope">
+                      <q-input type="number" v-model="scope.value"  dense autofocus hint="Usar el botón para cerrar" />
+                    </q-popup-edit>
                   </q-td>
                 </q-tr>
                 <q-tr
@@ -677,6 +665,7 @@ export default {
   },
   data () {
     return {
+      label: 'tes',
       selectRider: false,
       addPay: false,
       showLog: false,
@@ -790,6 +779,40 @@ export default {
     // console.log(this.rates)
   },
   methods: {
+    async quantityOrPriceChange (value, id, key, product, priceChange, prop) {
+      // priceChange = 0 changing quantity // priceChange = 1 changing price
+      if (this.order.status !== 0) {
+        return this.$q.notify({
+          color: 'red',
+          message: 'Solo se puede acutalizar cantidades de ordenes de estado por confirmar'
+        })
+      }
+      try {
+        this.$q.loading.show()
+        let total = this.order.paid
+        let producto = this.order.productos[product]
+        let totalNoProduct = total - (producto.quantity * producto.prodPrice)
+        let prodTot = value * producto.prodPrice
+        if (priceChange) {
+          prodTot = producto.quantity * value
+        }
+        let NewTotal = totalNoProduct + (prodTot)
+        NewTotal = parseFloat(NewTotal.toFixed(2))
+        console.log(NewTotal, 'NewTotal')
+        await this.saved(value, id, key).then(async () => {
+          console.log('Saving', NewTotal, id, 'paid')
+          await this.saved(NewTotal, id, 'paid').then(() => {
+            this.$q.loading.hide()
+          })
+        })
+      } catch (e) {
+        this.$q.loading.hide()
+        this.$q.notify({
+          color: 'red',
+          message: 'Ocurrió un error intente más tarde, verifique su conexión'
+        })
+      }
+    },
     userTitle () {
       return this.order && this.order.tipEnvio === '3' ? 'Vendedor' : 'Cliente'
     },
@@ -896,7 +919,11 @@ export default {
     },
     async saved (value, id, key) {
       //  console.log(`original new value = ${value}, row = ${id}, name  = ${key}`)
-      return this.saveOrder({ value, id, key })
+      try {
+        return this.saveOrder({ value, id, key })
+      } catch (e) {
+        throw e
+      }
     },
     getProducts (value, type) {
       if (type) {

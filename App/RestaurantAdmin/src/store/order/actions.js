@@ -35,13 +35,19 @@ export const reportBindOrders2 = firestoreAction(({ bindFirestoreRef }, payload)
 })
 
 export const saveOrder = firestoreAction((state, payload) => {
-  return firestore()
-    .collection('orders')
-    .doc(payload.id)
-    .update({ [payload.key]: payload.value })
-    .then(() => {
-      console.log('orders updated!')
-    })
+  try {
+    return firestore()
+      .collection('orders')
+      .doc(payload.id)
+      .update({ [payload.key]: payload.value })
+      .then(() => {
+        console.log('orders updated!',
+          { [payload.key]: payload.value })
+        return true
+      })
+  } catch (error) {
+    throw error
+  }
 })
 export const deleteOrder = firestoreAction((context, payload) => {
   console.log(payload)
