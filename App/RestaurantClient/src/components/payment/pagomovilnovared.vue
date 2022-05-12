@@ -295,7 +295,7 @@ export default {
         // url: window.location.origin + '/transact',
         // aca esta la url que lo probe con appengine en ele local
         // con cors y luego lo comente para colocar la url que esta en apengine por http
-          url: 'http://localhost:3000/transact/',
+          url: window.location.origin + '/transact/',
           data:
           {
             'bank': 'PagomovilNovared',
