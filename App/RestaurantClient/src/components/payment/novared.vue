@@ -38,7 +38,7 @@
         </div>
          <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined required type="email" v-model="valueFields.correo" @input="validar" title="Correo" />
+                <q-input filled rounded outlined required type="email" v-model="valueFields.correo" @input="validar" title="Correo" :rules="[ val => val && validEmail(val) || 'Correo Invalido']" />
         </div>
         </div>
 

@@ -456,7 +456,7 @@ export default {
       if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
       if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Dolares', value: 10, color: 'blue' }) }
-      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela de Pago Pago Movil Bs', value: 11, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Movil Bs', value: 11, color: 'blue' }) }
       return tip
     },
     meta () {

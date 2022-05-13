@@ -25,7 +25,7 @@
         </div>
                   <div >
             <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined  @input="validar" type="email" v-model="valueFields.correo"  title="Correo"  data-card-field="" autocomplete="off"/>
+                <q-input filled rounded outlined  @input="validar" type="email" v-model="valueFields.correo"  title="Correo" :rules="[ val => val && validEmail(val) || 'Correo Invalido']" data-card-field="" autocomplete="off"/>
         </div>
         </div>
 
