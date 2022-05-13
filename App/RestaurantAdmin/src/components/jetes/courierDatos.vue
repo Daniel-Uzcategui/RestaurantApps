@@ -81,7 +81,7 @@
         </q-badge>
         <br>
         <div class="row">
-            <q-btn :loading="generandoGuia" color="primary" @click="generarGuia()" style="width: 150px" class="q-ma-sm">
+            <q-btn :loading="generandoGuia" :disable="activo" color="primary" @click="generarGuia()"  style="width: 150px" class="q-ma-sm">
                 Crear Guía
                 <template v-slot:loading>
                     <q-spinner-hourglass class="on-left" />
@@ -285,6 +285,7 @@ export default {
       loading2: false,
       loading: true,
       alerta: false,
+      activo: false,
       tarifaModal: false,
       pdfModal: false,
       alertaMsg: '',
@@ -558,7 +559,8 @@ export default {
       } else {
         parr = this.parroquia.value
       }
-      this.loading2 = true
+      //  this.loading2 = true
+      this.activo = true
       try {
         this.alertaMsg = ''
         this.generandoGuia = true
@@ -597,6 +599,7 @@ export default {
       } finally {
         this.generandoGuia = false
         this.loading2 = false
+        this.activo = false
       }
     },
     async solicitartracking () {
