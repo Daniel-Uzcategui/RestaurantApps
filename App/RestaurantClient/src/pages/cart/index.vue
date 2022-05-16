@@ -838,7 +838,7 @@ export default {
       console.log({ deliveryview })
       let customer = this.currentUser
       let cartManage = this.cartMan()
-      let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: (this.tipEnvio === '1' || this.tipEnvio === '4') ? parseFloat(parseFloat(this.getTotalCarrito()[2]) + parseFloat(this.deliveryPrice)).toFixed(2) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: (this.tipEnvio === '1' || this.tipEnvio === '4') ? parseFloat(parseFloat(Number(this.getTotalCarrito()[2])) + parseFloat(Number(this.deliveryPrice))) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
       if (this.addId && this.addId.id) {
         order = { ...order, address: this.addId.id, addressC: this.addId }
       }
