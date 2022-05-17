@@ -23,6 +23,8 @@
     "deploy-dev": "firebase use default && yarn build-dev && firebase deploy",
     "deploy-dev-functions": "firebase use default && firebase deploy --only functions",
     "deploy-prod": "yarn build-prod && cd ../RestaurantClient && yarn deploy-prod && cd D:/Projects/appEngine && yarn deployfull",
+    "deploy-prod-admin": "yarn build-prod && cd D:/Projects/appEngine && yarn deploy-admin",
+    "deploy-prod-client": "cd ../RestaurantClient && yarn deploy-prod && cd D:/Projects/appEngine && yarn deploy-client",
     "deploy-prod-functions": "firebase use prodchopzi && firebase deploy --only functions"
   },
   "dependencies": {
