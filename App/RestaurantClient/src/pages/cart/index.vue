@@ -334,7 +334,7 @@
                       <div>
                       <div v-if="tipEnvio === '1' || tipEnvio === '4'" >
                         <div class="text-h6">SubTotal: $ {{(getTotalCarrito()[2]).toFixed(2)}}</div>
-                        <div class="text-h6">Delivery o  Encomienda: $ {{parseFloat(deliveryPrice)}}</div>
+                        <div class="text-h6">Delivery o  Encomienda: $ {{parseFloat(deliveryPrice).toFixed(2)}}</div>
                       </div>
                         <div class="text-h6" >Total: $ {{(tipEnvio === '1' || tipEnvio === '4' ? parseFloat(getTotalCarrito()[2]) + parseFloat(deliveryPrice) : getTotalCarrito()[2]).toFixed(2)}}</div>
                         <div v-if="ratesComp.length">
@@ -726,7 +726,7 @@ export default {
       })
       console.log('este es valor rate', rate.rateValue, 'el valor de tarifa.total', this.objetotarifa.tarifa.total)
       let valor = (parseFloat(this.objetotarifa.tarifa.total) / parseFloat(rate.rateValue))
-      this.deliveryPrice = valor.toFixed(2)
+      this.deliveryPrice = valor
       console.log('el valor de this.deliveryPrice', valor)
       this.continuar = true
     },
