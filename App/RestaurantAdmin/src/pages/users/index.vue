@@ -330,7 +330,7 @@ export default {
         if (typeof x.children === 'undefined') { return false }
         return true
       })
-      let out = [{ value: 'Admin', label: 'Admin' }, { value: 'Owner', label: 'Owner' }]
+      let out = [{ value: 'Admin', label: 'Admin' }, { value: 'Owner', label: 'Owner' }, { value: 'Vendedor', label: 'Vendedor' }]
       filter.forEach(e => {
         e.children.forEach(k => {
           if (typeof k !== 'undefined' && typeof k.meta !== 'undefined' && typeof k.meta.nombre !== 'undefined') {
