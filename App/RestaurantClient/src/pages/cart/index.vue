@@ -1126,9 +1126,10 @@ export default {
             let Vuelto = {
               nroOrden: nroOrden.data.trx,
               telefono: this.formatoTelefono(this.TelefonoEnviar),
-              cedula: this.nacionalidad + this.CedulaEnviar,
+              cedula: this.nacionalidad.value + this.CedulaEnviar,
               vuelto: this.Vuelto,
-              banco: this.BancoEnviar.value
+              banco: this.BancoEnviar.value,
+              status: true
             }
             order = { ...order, vuelto: Vuelto }
           }
