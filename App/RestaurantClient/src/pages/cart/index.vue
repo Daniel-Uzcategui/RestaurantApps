@@ -111,7 +111,7 @@
                           <q-item v-if="getLocBySede('Inlocal')">
                             <q-radio v-show="config.statusInlocal" class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                         </q-item>
-                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.typeAccess == 'Seller'">
+                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.rol && currentUser.rol.includes('Vendedor')">
                             <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
 

@@ -869,9 +869,10 @@ export default {
       if (permit) {
         return permit
       }
-      if (this.currentUser.rol.includes('Vendedor')) {
+      if (this.currentUser?.rol?.includes('Vendedor')) {
         return true
       }
+      return false
     },
     displayPermit () {
       let permit = this.displayPermitValue()

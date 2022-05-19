@@ -1,10 +1,10 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 
-export const bindClients = firestoreAction(({ bindFirestoreRef }) => {
+export const bindClients = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindingMenu')
   try {
-    return bindFirestoreRef('clients', firestore().collection('clients').where('softDelete', '==', 0), { reset: false, serialize: serialize, wait: true })
+    return bindFirestoreRef('clients', firestore().collection('clients').where('softDelete', '==', 0).where(`Vendedor.${payload.id}.id`, '==', payload.id), { reset: false, serialize: serialize, wait: true })
   } catch (e) {
     console.error(e)
   }
@@ -12,7 +12,7 @@ export const bindClients = firestoreAction(({ bindFirestoreRef }) => {
 export const bindClientBranch = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindingMenu')
   try {
-    return bindFirestoreRef('branches', firestore().collection('clients').doc(payload).collection('branches').where('softDelete', '==', 0), { reset: false, serialize: serialize, wait: true })
+    return bindFirestoreRef('branches', firestore().collection('clients').doc(payload.client).collection('branches').where('softDelete', '==', 0).where(`Vendedor.${payload.user.id}.id`, '==', payload.user.id), { reset: false, serialize: serialize, wait: true })
   } catch (e) {
     console.error(e)
   }

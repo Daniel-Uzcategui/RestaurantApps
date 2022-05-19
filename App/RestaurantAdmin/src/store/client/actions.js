@@ -45,9 +45,7 @@ export const setValue = async function (state, payload) {
 
   result = await firestore().collection('clients')
     .doc(payload.id)
-    .set({
-      name: payload.name
-    }, { merge: true })
+    .update(payload)
   return result
 }
 export const setValueborar = async function (state, payload) {

@@ -2,6 +2,7 @@ export default function () {
   return {
     orderClients: [
     ],
-    branches: []
+    branches: [],
+    seller: []
   }
 }

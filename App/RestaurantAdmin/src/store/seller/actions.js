@@ -1,6 +1,11 @@
 import { firestoreAction } from 'vuexfire'
 import { firestore } from '../../services/firebase/db.js'
 
+export const bindseller = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindseller')
+  return bindFirestoreRef('seller', firestore().collection('users').where('rol', 'array-contains', 'Vendedor'))
+})
+
 export const bindOrderClients = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingMenu')
   try {

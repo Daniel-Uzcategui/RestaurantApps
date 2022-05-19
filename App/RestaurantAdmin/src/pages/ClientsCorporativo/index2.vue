@@ -8,10 +8,10 @@
       @reset="cancelar" greedy >
          <q-input class="col-12 col-sm-6 q-pa-xs" label="Nombre Sucursal" :rules="[val => evalString(val) || 'Nombre no puede quedar en blanco']" v-model="nombresurculsal"/>
          <q-input class="col-12 col-sm-6 q-pa-xs" label="Razón Social" :rules="[val => evalString(val) || 'Razón Social no puede quedar en blanco']"  v-model="razon"/>
-          <q-select class="col-12 col-sm-3 q-pa-xs" label="Prefijo Rif" :rules="[val => evalString(val) || 'No puede quedar en blanco']"  id="sortBy3" v-model="prefijo" :options="options2" />
+          <q-select options-selected-class="text-orange" class="col-12 col-sm-3 q-pa-xs" label="Prefijo Rif" :rules="[val => evalString(val) || 'No puede quedar en blanco']"  id="sortBy3" v-model="prefijo" :options="options2" />
              <q-input class="col-12 col-sm-6 q-pa-xs" label="Rif" v-model="numerorif" :rules="[val => !!val || 'Solo numeros', validarnumeros]"/>
-             <q-select class="col-12 col-sm-6 q-pa-xs" label="Tipo Pago"  id="sortBy1" :rules="[val => typeof val === 'number' || 'No puede quedar en blanco']" v-model="tipopago" map-options emit-value :options="options" />
-              <q-select class="col-12 col-sm-6 q-pa-xs" label="Vendedor" id="sortBy2"  v-model="selle" :options="Vendedores" @input="obtenervendedor()"/>
+             <q-select options-selected-class="text-orange" class="col-12 col-sm-6 q-pa-xs" label="Tipo Pago"  id="sortBy1" :rules="[val => typeof val === 'number' || 'No puede quedar en blanco']" v-model="tipopago" map-options emit-value :options="options" />
+              <q-select options-selected-class="text-orange" class="col-12 col-sm-6 q-pa-xs" label="Vendedor" id="sortBy2" use-chips multiple  v-model="selle" :options="seller" :option-label="(e) => e.nombre + ' ' + e.apellido"/>
               <q-input class="col-12 col-sm-6 q-pa-xs" label="Dias de Credito" v-if="tipopago === 1" v-model="diacredito"/>
                  <q-input class="col-12 col-sm-6 q-pa-xs" label="Direccion de envio" :rules="[val => val !== 'Agregue dirección' || 'Agregue una direccion']" :value="shippingAddress === null ? 'Agregue dirección': 'Agregado'" readonly >
                     <template v-slot:append>
@@ -67,6 +67,7 @@
                       </template>
                       <template v-slot:top-right >
                         <div class="row justify-start">
+                          <q-select options-selected-class="text-orange" class="col-12 col-sm-6 q-pa-xs" label="Vendedores asignados" id="sortBy2" use-chips multiple  v-model="clientSellers" :options="seller" map-options emit-value :option-value="(e) => e" :option-label="(e) => e.nombre + ' ' + e.apellido"/>
                           <q-btn label="Crear Nuevo" rounded class="q-ma-md text-bold" no-caps color="green" icon="add" @click="initforma()"/>
                           <q-input class="" filled outlined v-model="search" label="Filtro" />
                         </div>
@@ -119,7 +120,7 @@ export default {
         { name: 'Nombre', required: false, label: 'Nombre', align: 'left', field: row => row?.name, sortable: true },
         { name: 'Rif', required: false, label: 'Rif', field: row => row.Rif?.prefijo && row.Rif?.numero ? row.Rif?.prefijo + '-' + row.Rif?.numero : null, align: 'left', sortable: true },
         { name: 'Razon', required: false, label: 'Razon Social', field: row => row?.RazonSocial, align: 'left', sortable: true },
-        { name: 'Vendedor', required: false, label: 'Vendedor', field: row => row.Vendedor?.name, align: 'left', sortable: true },
+        // { name: 'Vendedor', required: false, label: 'Vendedor', field: row => row.Vendedor?.name, align: 'left', sortable: true },
         { name: 'creditDays', required: false, label: 'Dias Credito', field: row => row?.creditDays, align: 'left', sortable: true },
         { name: 'tipoPago', required: false, label: 'Tipo Pago', field: row => typeof row?.tipoPago === 'number' ? this.options[row.tipoPago].label : 'NA', align: 'left', sortable: true },
         { name: 'boton1', required: false, label: '', align: 'left', sortable: true },
@@ -129,7 +130,8 @@ export default {
   },
   methods: {
     ...mapActions('corporativos', ['bindcorporativo', 'setValuenew', 'setValueborrar', 'setValueEditados']),
-    ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
+    ...mapActions('client', ['bindOnlyVendedor', 'bindClients2', 'setValue']),
+    ...mapActions('seller', ['bindseller']),
     initforma () {
       if (!this.corporativo.length) {
         this.forma = true
@@ -144,9 +146,8 @@ export default {
       this.shippingAddress = objeto?.shippingAddressC
       this.numerorif = objeto.Rif?.numero
       this.tipopago = objeto?.tipoPago
-      this.selle = objeto.Vendedor?.name
+      this.selle = this.modifySellerObj(objeto?.Vendedor)
       this.diacredito = objeto?.creditDays
-      this.idselle = objeto.Vendedor?.id
       this.forma = true
     },
     getname (ob) {
@@ -166,29 +167,51 @@ export default {
       }
       this.clientenombre = this.clients2.find(x => x.id === this.idClientSel)
     },
+    modifySellerObj (seller) {
+      console.log(seller)
+      if (Array.isArray(seller)) {
+        let newSellerObj = {}
+        for (let i of seller) {
+          const { id, nombre, apellido, phone, email } = i
+          const user = { id, nombre, apellido, phone, email }
+          newSellerObj[i.id] = user
+        }
+        return newSellerObj
+      }
+      if (!Array.isArray(seller)) {
+        if (seller?.id) {
+          return [seller]
+        }
+        let newSellerObj = []
+        for (let i in seller) {
+          const { id, nombre, apellido, phone, email } = seller[i]
+          const user = { id, nombre, apellido, phone, email }
+          newSellerObj.push(user)
+        }
+        return newSellerObj
+      }
+    },
     guardar () {
-      const { nombresurculsal, razon, prefijo, numerorif, tipopago, selle, idselle, diacredito, clieEditar } = this
+      const { nombresurculsal, razon, prefijo, numerorif, tipopago, selle, diacredito, clieEditar } = this
       this.$q.loading.show()
       if (clieEditar) {
         return this.guardarEditado()
       }
       // adShippingDone
       console.log('los valores del prefijo', prefijo)
+      let newSellerObj = this.modifySellerObj(selle)
       this.setValuenew({
         id: this.idClientSel,
         client_id: this.idClientSel,
         name: nombresurculsal,
         RazonSocial: razon,
-        shippingAddress: this.shippingAddress.id,
+        shippingAddress: this.shippingAddress.id ?? null,
         shippingAddressC: this.shippingAddress,
         Rif: {
           prefijo: prefijo,
           numero: numerorif
         },
-        Vendedor: {
-          id: idselle,
-          name: selle
-        },
+        Vendedor: newSellerObj,
         creditDays: diacredito,
         tipoPago: tipopago
 
@@ -196,7 +219,8 @@ export default {
         this.$q.loading.hide()
         this.$q.notify({ message: 'Cliente Guardado', color: 'green' })
         this.inicializar()
-      }).catch(() => {
+      }).catch((e) => {
+        console.error(e)
         this.$q.loading.hide()
         this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
@@ -217,7 +241,7 @@ export default {
       this.prefijo = ''
       this.numerorif = '0'
       this.tipopago = null
-      this.selle = ''
+      this.selle = []
       this.diacredito = 0
       this.shippingAddress = null
       this.adShippingDone = false
@@ -247,14 +271,14 @@ export default {
       this.shippingAddress = objeto?.shippingAddressC
       this.numerorif = objeto.Rif?.numero
       this.tipopago = objeto?.tipoPago
-      this.selle = objeto.Vendedor?.name
+      this.selle = this.modifySellerObj(objeto.Vendedor)
       this.diacredito = objeto?.creditDays
-      this.idselle = objeto.Vendedor?.id
       this.clieEditar = true
       this.forma = true
     },
     guardarEditado () {
-      const { idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, idselle, selle, diacredito, shippingAddress } = this
+      const { idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, selle, diacredito, shippingAddress } = this
+      let newSellerObj = this.modifySellerObj(selle)
       this.setValueEditados({
         idcliente: this.idClientSel,
         id: idsuculsal,
@@ -267,17 +291,15 @@ export default {
             prefijo: prefijo,
             numero: numerorif
           },
-          Vendedor: {
-            id: idselle,
-            name: selle
-          },
+          Vendedor: newSellerObj,
           creditDays: diacredito,
           tipoPago: tipopago
         }
       }).then(() => {
         this.$q.loading.hide()
         this.$q.notify({ message: 'Cambios Guardados', color: 'green' })
-      }).catch(() => {
+      }).catch((e) => {
+        console.error(e)
         this.$q.loading.hide()
         this.$q.notify({ message: 'Ocurrió un error, verifique su conexión', color: 'red' })
       })
@@ -288,7 +310,7 @@ export default {
     },
     obtenervendedor () {
       let obj
-      obj = this.vendedor.find(x => x.nombre === this.selle)
+      obj = this.seller.find(x => x.nombre === this.selle)
       console.log('este es el vendedor', obj)
       this.idselle = obj?.id
       return this.idselle
@@ -297,13 +319,31 @@ export default {
   computed: {
     ...mapGetters('client', ['clients2', 'idClientSel', 'vendedor']),
     ...mapGetters('corporativos', ['corporativo']),
+    ...mapGetters('seller', ['seller']),
+    clientSellers: {
+      get () {
+        let client = this.clients2.find(x => x.id === this.idClientSel)
+        let seller = client?.Vendedor
+        if (seller) {
+          return this.modifySellerObj(seller)
+        }
+        return []
+      },
+      set (e) {
+        let newSellers = this.modifySellerObj(e)
+        this.setValue({
+          id: this.idClientSel,
+          Vendedor: newSellers
+        })
+      }
+    },
     clients2Filtered () {
       return this.corporativo.filter(x => x.name.toLowerCase().includes(this.search.toLowerCase()))
     }
   },
   mounted () {
     this.bindClients2()
-    this.bindOnlyVendedor()
+    this.bindseller()
     this.bindcorporativo({ id: this.idClientSel })
   },
   watch: {

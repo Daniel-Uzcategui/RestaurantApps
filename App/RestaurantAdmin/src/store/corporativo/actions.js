@@ -51,10 +51,10 @@ export const setValueEditados = async function (state, payload) {
   console.log('registro', payload)
   return firestore().collection('clients')
     .doc(payload.idcliente).collection('branches').doc(payload.id)
-    .set({
+    .update({
       ...JSON.parse(JSON.stringify(payload.datos)),
       softDelete: 0
-    }, { merge: true }).then(() => {
+    }).then(() => {
       console.log('se actualizo')
     }).catch((e) => {
       console.log('error update de banches!')

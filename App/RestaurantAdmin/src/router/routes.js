@@ -446,6 +446,16 @@ const routes = [{
       requiresAuth: true,
       nombre: 'Vendedores'
     }
+  },
+  {
+    path: 'seller',
+    name: 'sellers',
+    component: () =>
+                import ('pages/clients/Vendedores/vendedor.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'sellers'
+    }
   }]
 },
 {

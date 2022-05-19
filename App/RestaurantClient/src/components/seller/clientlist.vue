@@ -86,7 +86,8 @@ export default {
     addressClient
   },
   computed: {
-    ...mapGetters('seller', ['clients', 'branches'])
+    ...mapGetters('seller', ['clients', 'branches']),
+    ...mapGetters('user', ['currentUser'])
   },
   methods: {
     getBranchValues (value) {
@@ -109,7 +110,13 @@ export default {
     },
     addNewClient () {
       this.clientLoading = true
-      this.addClient(this.newClient).then((e) => {
+      const { id, nombre, apellido, phone, email } = this.currentUser
+      const user = { id, nombre, apellido, phone, email }
+      this.addClient({ ...this.newClient,
+        Vendedor: {
+          [user.id]: user
+        }
+      }).then((e) => {
         this.client = e
         this.clientLoading = false
         this.resetNewClient()
@@ -127,11 +134,16 @@ export default {
       // if (this.newBranch.name !== '' && this.adShippingDone && (this.adBillingDone || this.billingSameAddress)) {
       if (this.newBranch.name !== '' && this.adShippingDone) {
         this.branchLoading = true
+        const { id, nombre, apellido, phone, email } = this.currentUser
+        const user = { id, nombre, apellido, phone, email }
         this.addBranch({
           data: {
             ...this.newBranch,
             shippingAddressC: this.shippingAddress,
             shippingAddress: this.shippingAddress.id,
+            Vendedor: {
+              [user.id]: user
+            },
             // billingAddress: this.billingSameAddress ? this.shippingAddress : this.billingAdress,
             dateIn: new Date()
           },
@@ -163,7 +175,7 @@ export default {
     client (e) {
       this.branch = ''
       this.branchLoading = true
-      this.bindClientBranch(e).then(() => {
+      this.bindClientBranch({ client: e, user: this.currentUser }).then(() => {
         this.branchLoading = false
       }).catch((e) => { console.error(e, 'Error'); this.branchLoading = false })
     },
@@ -174,7 +186,7 @@ export default {
     }
   },
   created () {
-    this.bindClients().catch((e) => console.error(e))
+    this.bindClients(this.currentUser).catch((e) => console.error(e))
   },
   data () {
     return {
