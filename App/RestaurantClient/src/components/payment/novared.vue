@@ -353,6 +353,11 @@ export default {
         this.estado = false
       }
     },
+    soloNumeros (e) {
+      var key = e.charCode
+      console.log(key)
+      return key >= 48 && key <= 57
+    },
     limpiar () {
       this.valueFields.telefono = ''
       this.valueFields.referencia = ''

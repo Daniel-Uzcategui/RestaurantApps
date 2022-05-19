@@ -111,7 +111,7 @@
                           <q-item v-if="getLocBySede('Inlocal')">
                             <q-radio v-show="config.statusInlocal" class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                         </q-item>
-                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.rol && currentUser.rol.includes('Vendedor')">
+                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.typeAccess == 'Seller'">
                             <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
 
@@ -541,20 +541,11 @@ export default {
       canCloseHours: false,
       loadingConfig: true,
       cupons: [],
-      openDate: false,
-      openHours: false,
-      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
-      cupon: '',
-      rateDefault: [],
       Vuelto: 0,
       operacion: '',
       referenciacompleta: '',
       serie: '',
       pagando: false,
-      nohayVuelto: true,
-      TelefonoEnviar: '',
-      CedulaEnviar: '',
-      montoEnviar: 0,
       BancoEnviar: '',
       nacionalidad: '',
       nacionalidades: [{
@@ -683,6 +674,15 @@ export default {
           category: 24
         }
       ],
+      montoEnviar: 0,
+      nohayVuelto: true,
+      TelefonoEnviar: '',
+      CedulaEnviar: '',
+      openDate: false,
+      openHours: false,
+      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
+      cupon: '',
+      rateDefault: [],
       loadingState: false,
       orderDate: null,
       orderWhen: window.location.hostname === 'chopzi.com' ? '0' : null,
@@ -775,27 +775,6 @@ export default {
         this.cupon = ''
       }
     },
-    modEventDown (item, index) {
-      this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) - 1) })
-      this.checkAvail(item.prodId, item.prodType, index)
-      if (item.quantity < 1) {
-        this.modCartVal({ id: index, key: 'quantity', value: 1 })
-      }
-    },
-    calcularVuelto () {
-      console.log('entre')
-      if (this.montoEnviar !== '') {
-        this.Vuelto = parseFloat(this.montoEnviar) - (parseFloat(this.totalPrice) + parseFloat(this.deliveryPrice))
-        console.log('el vuelto es', this.Vuelto)
-      }
-    },
-    validar () {
-      if ((!this.desahabilitadotelefono) && (!this.desahabilitadocedula) && (!this.desahabilitadoBanco) && (!this.desahabilitadonacionalidad)) {
-        this.nohayVuelto = true
-      } else {
-        this.nohayVuelto = false
-      }
-    },
     async EnviarVuelto () {
       try {
         let telefono = this.formatoTelefono(this.TelefonoEnviar)
@@ -835,18 +814,36 @@ export default {
         }
       }
     },
-    formatoTelefono (tel) {
-      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
+    modEventDown (item, index) {
+      this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) - 1) })
+      this.checkAvail(item.prodId, item.prodType, index)
+      if (item.quantity < 1) {
+        this.modCartVal({ id: index, key: 'quantity', value: 1 })
+      }
     },
     noseleccionado (valor) {
       this.continuar = false
       console.log('el valor seleccionado', this.continuar)
       return this.continuar
     },
+    formatoTelefono (tel) {
+      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
+    },
     modEventUp (item, index) {
       if (this.checkAvail(item.prodId, item.prodType, index)[0] === 1) {
         this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) + 1) })
       }
+    },
+    calcularVuelto () {
+      console.log('entre')
+      if (this.montoEnviar !== '') {
+        this.Vuelto = parseFloat(this.montoEnviar) - (parseFloat(this.totalPrice) + parseFloat(this.deliveryPrice))
+        console.log('el vuelto es', this.Vuelto)
+      }
+    },
+    setBanco () {
+      console.log('banco seleccionado', this.BancosEnviar.value)
+      this.BancoEnviar = this.BancosEnviar.value
     },
     priceDisplay (item) {
       let prodPrice = this.getProdPrice(item)
@@ -1088,7 +1085,7 @@ export default {
     getSede () {
       return this.localizations.find(x => x.id === this.sede)
     },
-    async makeOrder (details) {
+    async  makeOrder (details) {
       console.log('este valor del registro', details)
       this.$q.loading.show()
       if (this.tipEnvio !== '1') { this.addId = '' }
@@ -1120,6 +1117,7 @@ export default {
 
           break
         case 1:
+
           order = { ...order, payto: this.config.zelleEmail }
           if (this.Vuelto > 0) {
             let nroOrden = await this.EnviarVuelto()
@@ -1408,6 +1406,12 @@ export default {
         this.makeOrder(status.data)
       }
     },
+    soloNumeros (e) {
+      console.log('la tecla', e)
+      var key = e.charCode
+      console.log(key)
+      return key >= 48 && key <= 57
+    },
     paymentTDC (respuesta) {
       // let that = this
       let responseHeader = respuesta.HEADER_PAGO_RESPONSE
@@ -1435,6 +1439,13 @@ export default {
     resetPhotoType () {
       this.photoType = ''
     },
+    validar () {
+      if ((!this.desahabilitadotelefono) && (!this.desahabilitadocedula) && (!this.desahabilitadoBanco) && (!this.desahabilitadonacionalidad)) {
+        this.nohayVuelto = true
+      } else {
+        this.nohayVuelto = false
+      }
+    },
     uploadComplete (info) {
       // console.log('info payment: ' + info)
       this.photoSRC = info
@@ -1446,9 +1457,6 @@ export default {
   watch: {
     continuar () {
       console.log('cambio')
-    },
-    configDates () {
-      this.getDays()
     },
     nohayVuelto () {
       console.log('cambio')
@@ -1463,6 +1471,9 @@ export default {
     },
     desahabilitadotelefono () {
       return false
+    },
+    configDates () {
+      this.getDays()
     },
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()
