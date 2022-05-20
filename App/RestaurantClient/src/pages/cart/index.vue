@@ -803,7 +803,7 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'createOrder',
@@ -1126,7 +1126,8 @@ export default {
             let Vuelto = {
               nroOrden: nroOrden.data.trx,
               telefono: this.formatoTelefono(this.TelefonoEnviar),
-              cedula: this.nacionalidad.value + this.CedulaEnviar,
+              nacionalidad: this.nacionalidad.value,
+              documento: this.CedulaEnviar,
               vuelto: this.Vuelto,
               banco: this.BancoEnviar.value,
               status: true
