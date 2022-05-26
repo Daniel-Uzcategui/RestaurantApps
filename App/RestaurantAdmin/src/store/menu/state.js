@@ -24,6 +24,7 @@ export default function () {
     item: [],
     itemGroup: [],
     groupComp: [],
-    filters: []
+    filters: [],
+    menu2: []
   }
 }

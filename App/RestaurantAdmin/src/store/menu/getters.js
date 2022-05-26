@@ -1,6 +1,7 @@
 export const categorias = ({ categorias }) => categorias
 export const plaincategorias = ({ categorias }) => categorias
 export const menu = ({ menu }) => menu
+export const menu2 = ({ menu2 }) => menu2
 export const rewards = ({ rewards }) => rewards
 export const coupons = ({ coupons }) => coupons
 export const promos = ({ promos }) => promos

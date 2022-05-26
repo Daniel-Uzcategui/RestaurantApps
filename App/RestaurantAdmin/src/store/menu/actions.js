@@ -9,11 +9,17 @@ export const setSede = async function ({ commit }, payload) {
     console.error(e)
   }
 }
+export const bindmenu2 = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindLocalizations')
+  return bindFirestoreRef('menu2', firestore().collection('menu'))
+})
 export const setValue = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)
     .doc(payload.payload.id)
-    .update({ [payload.payload.key]: payload.payload.value })
+    .update({
+      [payload.payload.key]: payload.payload.value
+    })
     .then(() => {
       console.log(`${payload.collection} updated!`)
       return payload.payload.id
@@ -33,7 +39,9 @@ export const setValue2 = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)
     .doc(payload.payload.id)
-    .set({ [payload.payload.key]: payload.payload.value }, { merge: true })
+    .set({
+      [payload.payload.key]: payload.payload.value
+    }, { merge: true })
     .then(() => {
       console.log(`${payload.collection} updated!`)
     })
@@ -42,7 +50,9 @@ export const delValue = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)
     .doc(payload.payload.id)
-    .update({ [payload.payload.key]: firebase.firestore.FieldValue.delete() })
+    .update({
+      [payload.payload.key]: firebase.firestore.FieldValue.delete()
+    })
     .then(() => {
       console.log(`${payload.collection} updated!`)
     })
@@ -135,8 +145,7 @@ export const bindCoupons = firestoreAction(({ bindFirestoreRef }) => {
     .collection('coupons')
     .orderBy('softDelete', 'asc')
     .orderBy('DateIn', 'desc')
-    .where('softDelete', '<', 1)
-  , { reset: false, serialize: serialize, wait: true })
+    .where('softDelete', '<', 1), { reset: false, serialize: serialize, wait: true })
 })
 export const bindFilters = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindingFilters')

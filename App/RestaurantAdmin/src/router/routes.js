@@ -211,6 +211,16 @@ const routes = [{
     }
   },
   {
+    path: 'sede',
+    name: 'Sede',
+    component: () =>
+                    import ('pages/Menu/productosede.vue'),
+    meta: {
+      requiresAuth: true,
+      nombre: 'Menu'
+    }
+  },
+  {
     path: 'rewards',
     name: 'Rewards',
     component: () =>
@@ -353,17 +363,17 @@ const routes = [{
   ]
 },
 {
-  path: '/corporativo/order',
+  path: '/corporativo/reporte',
   component: () =>
             import ('layouts/User.vue'),
   children: [{
-    path: 'orders',
-    name: 'listClientsCorp2',
+    path: 'index',
+    name: 'Ordercorporativo',
     component: () =>
-                    import ('pages/ClientsCorporativo/orders/orders.vue'),
+                    import ('pages/ClientsCorporativo/reporte/index.vue'),
     meta: {
       requiresAuth: true,
-      nombre: 'Corporativo Order'
+      nombre: 'Corporativo Order2'
     }
   },
   {
@@ -441,7 +451,7 @@ const routes = [{
     path: 'index',
     name: 'listOrders',
     component: () =>
-                import ('pages/clients/Vendedores/index.vue'),
+                    import ('pages/clients/Vendedores/index.vue'),
     meta: {
       requiresAuth: true,
       nombre: 'Vendedores'
@@ -451,12 +461,13 @@ const routes = [{
     path: 'seller',
     name: 'sellers',
     component: () =>
-                import ('pages/clients/Vendedores/vendedor.vue'),
+                    import ('pages/clients/Vendedores/vendedor.vue'),
     meta: {
       requiresAuth: true,
       nombre: 'sellers'
     }
-  }]
+  }
+  ]
 },
 {
   path: '/encomienda',

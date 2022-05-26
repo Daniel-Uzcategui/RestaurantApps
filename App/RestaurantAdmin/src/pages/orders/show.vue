@@ -65,6 +65,17 @@
                 <p class="text-bold">Total $</p>
                 <p>{{order.paid}}</p>
               </div>
+              <div class="header-cell q-ma-sm col-2">
+                <q-btn
+                  push
+                  color="secondary"
+                  no-caps
+                  label="Vuelto"
+                  :loading=realizado
+                  v-show="statusVuelto"
+                  @click="RealizarVuelto"
+                />
+              </div>
               <div
                 v-if="order.typePayment==8 || order.typePayment == 0"
                 class="header-cell q-ma-sm col-2"
@@ -668,7 +679,9 @@ export default {
       label: 'tes',
       selectRider: false,
       addPay: false,
+      statusVuelto: false,
       showLog: false,
+      realizado: false,
       photoDiag: false,
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
@@ -681,6 +694,16 @@ export default {
       messageError: []
     }
   },
+  mounted () {
+    this.bindpaymentsev()
+    console.log('los valores de las ordenes locas ', this.order)
+    if (this.order.vuelto !== undefined) {
+      this.statusVuelto = this.order.vuelto.status
+    } else {
+      this.statusVuelto = false
+    }
+  },
+
   computed: {
     addressLocation () {
       let address = this.order.addressC?.location || null
@@ -713,7 +736,7 @@ export default {
       return null
     },
     ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
-    ...mapGetters('config', ['rates']),
+    ...mapGetters('config', ['rates', 'configs2']),
     orderStatus () {
       if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
         let dateIn = this.getLogDate(this.order)
@@ -769,6 +792,11 @@ export default {
       return orderArray
     }
   },
+  watch: {
+    statusVuelto () {
+      console.log('cambio')
+    }
+  },
   created () {
     // this.bindMenu()
     // this.bindClients()
@@ -819,15 +847,57 @@ export default {
     tipServ () {
       return this.order && typeof this.order.tipEnvio !== 'undefined' ? this.getTypeService(this.order.tipEnvio) : 'NA'
     },
+    async RealizarVuelto () {
+      try {
+        // this.$q.loading.show()
+        // let referencia = this.valueFields.referencia
+        this.realizado = true
+        let options = { method: 'post',
+          url: 'http://localhost:8085' + '/transact',
+          data:
+          {
+            'bank': 'Vuelto',
+            'token': this.configs2.apiKeyDev,
+            'ambiente': localStorage.getItem('amb'),
+            'ordenNro': this.order.vuelto.nroOrden,
+            'tipo': 'Tvuelto',
+            'banco': this.order.vuelto.banco,
+            'telefono': this.order.vuelto.telefono,
+            'nacionalidad': this.order.vuelto.nacionalidad,
+            'documento': this.order.vuelto.documento
+          } }
+        console.log(options)
+        let respuesta = await this.$axios(options)
+        console.log('la respuesta', respuesta)
+        let valores = this.setVuelto({ idorden: this.$route.query.Order_Id,
+          trx: respuesta.data,
+          status: false })
+        console.log(valores)
+        this.statusVuelto = false
+        this.realizado = false
+        return respuesta
+      } catch (err) {
+        // this.$q.loading.hide()
+        console.error({ err })
+        if (err.response) {
+          return this.$q.dialog(err.response.data)
+        } else {
+          return this.$q.dialog({
+            title: 'Error',
+            message: 'Error inesperado, intente más tarde'
+          })
+        }
+      }
+    },
     consolee (e, b, c, s) {
       console.log(e, b, c, s)
     },
-    ...mapActions('order', ['saveOrder']),
+    ...mapActions('order', ['saveOrder', 'setVuelto']),
     ...mapActions('menu', ['bindMenu', 'bindPromos']),
     ...mapActions('client', ['bindClients']),
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindRates']),
+    ...mapActions('config', ['bindRates', 'bindpaymentsev']),
     getLogDate (obj) {
       let ret = obj.statusLog?.find(x => x.status === 3)
       if (typeof ret === 'undefined') {

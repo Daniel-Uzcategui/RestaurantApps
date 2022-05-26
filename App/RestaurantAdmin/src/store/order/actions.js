@@ -14,6 +14,9 @@ export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
 export const bindOrdersEnvio = firestoreAction(({ bindFirestoreRef }) => {
   return bindFirestoreRef('orderencomienda', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '4').where('encomienda.status', '==', 'enviar'))
 })
+export const bindOrderscorp = firestoreAction(({ bindFirestoreRef }) => {
+  return bindFirestoreRef('ordercorporativo2', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '3').where('status', '==', 3))
+})
 
 export const unBindOrders = firestoreAction(({ unbindFirestoreRef }) => {
   console.log('unbinding')
@@ -96,6 +99,16 @@ export const setencomienda = async function (state, payload) {
     .doc(payload.idorden)
     .set({
       guia: payload
+    }, { merge: true })
+  return result
+}
+export const setVuelto = async function (state, payload) {
+  let result
+  console.log('valor del paylod', payload)
+  result = await firestore().collection('orders')
+    .doc(payload.idorden)
+    .set({
+      vuelto: payload
     }, { merge: true })
   return result
 }

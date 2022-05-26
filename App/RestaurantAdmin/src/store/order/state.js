@@ -50,6 +50,7 @@ export default function () {
     ],
     ordercorporativo: [],
     orderencomienda: [],
+    ordercorporativo2: [],
     Encomienda: {}
   }
 }

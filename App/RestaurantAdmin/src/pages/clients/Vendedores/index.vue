@@ -37,14 +37,21 @@
         </template>
 
  </q-table>
-     <q-dialog v-model="ver" transition-show="rotate" transition-hide="rotate">
-      <q-card>
+     <q-dialog  v-model="ver" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;">
+      <q-card style="margin: 0px;
+          padding: 0px;
+          overflow-x: hidden; max-width: 80% !important;">
         <q-card-section>
           <div class="text-h6">Ordenes</div>
         </q-card-section>
           <q-card-section>
-            <q-table  class="q-mt-md full-width" :title="'Ordenes'"
-                    style="border-radius: 28px"
+            <q-table  style="margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;"
+          class="q-fullscreen-glassMorph full-width" :title="'Ordenes'"
                       :data="detalle2"
                       :columns="columns2"
 
@@ -86,7 +93,10 @@ export default {
         { name: 'Sede', required: true, label: 'Sede', align: 'left', field: row => row.sede, sortable: true },
         { name: 'cliente', required: true, label: 'Cliente', align: 'left', field: row => row.cliente, sortable: true },
         { name: 'nameSede', required: true, label: 'Orden', align: 'left', field: row => row.factura, sortable: true },
+        { name: 'status', required: true, label: 'status', align: 'left', field: row => this.obtenerstatus(row), sortable: true },
+        { name: 'credito', required: true, label: 'Dias Credito', align: 'left', field: row => row.credito, sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
+        { name: 'dateOrd', label: 'Fecha de Entrega', field: row => typeof row.orderWhen !== 'undefined' && row.orderWhen.orderWhen === '1' ? row.orderWhen.orderDate : 'NA', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true },
         { name: 'email', required: true, align: 'center', label: 'Monto', field: row => row.paid, sortable: true }
       ]
     }
@@ -113,6 +123,7 @@ export default {
     ...mapActions('order', ['bindOrders', 'alterRange']),
     ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
     ...mapActions('localization', ['bindLocalizations']),
+    ...mapActions('corporativos', ['getbranches2']),
     getDateRange () {
       if (this.dateRange === null) {
         return null
@@ -123,6 +134,13 @@ export default {
       return {
         start: new Date(e.from),
         end: end
+      }
+    },
+    obtenerstatus (objeto) {
+      let obj
+      obj = this.allestatus.find(x => x.value === objeto.status)
+      if (obj !== undefined) {
+        return obj.label
       }
     },
     mostrar () {
@@ -270,8 +288,10 @@ export default {
       console.log('el arreglo', this.ArreVendores)
       return this.ArreVendores
     },
-    listar (objeto) {
+    async listar (objeto) {
       let obj, sede, clientes
+      // let corp
+      //  let cred
       console.log('el objeto', objeto)
       this.ver = true
       this.detalle2 = []
@@ -279,15 +299,34 @@ export default {
       for (let i = 0; i < this.detalle.length; i++) {
         obj = this.detalle[i]
         sede = obj.sede
-        // clientes = this.clients2.find(x => x.id === obj.buyOrderClient)
+        if (obj?.buyOrderBranch !== undefined) {
+          console.log('el ambiente', localStorage.amb, 'id del cliente', obj.buyOrderClient)
+          /* corp = await this.getbranches2({
+            ambiente: localStorage.amb,
+            idcliente: obj.buyOrderClient,
+            idbranches: obj.buyOrderBranch
+          })
+          let corporativo = corp.find(x => x.id === obj.buyOrderBranch)
+          console.log('las sucusales', corporativo)
+          if (corporativo.data?.creditDays !== undefined) {
+            cred = corporativo.data?.creditDays
+          } else {
+            cred = 0
+          }
+        */ }
+        // console.log('las sucusales', corp)
         clientes = obj.buyOrder.Client
-        console.log(obj.buyOrderClient, clientes)
+        //   cred =
+        // console.log(obj.buyOrderClient, clientes)
+
         this.detalle2.push({
           id: obj.id,
           factura: obj.factura,
           dateIn: obj.dateIn,
+          status: obj.status,
           paid: obj.paid,
           sede: sede.name,
+          credito: parseFloat(obj.buyOrder.Branch?.creditDays) || 0,
           cliente: clientes?.name || 'Nombre no encontrado'
         })
       }
@@ -299,7 +338,6 @@ export default {
     ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('client', ['vendedor', 'clients2']),
-
     dateRango: {
       get () {
         return this.dateRange
@@ -333,6 +371,7 @@ export default {
       console.log('ordenes', this.orders, 'cantidad ordenes', this.orders.length)
       this.mostrar()
     },
+
     // localizations () {
     //   console.log('sedes', this.localizations, 'cantidad sedes', this.localizations.length)
     // },
