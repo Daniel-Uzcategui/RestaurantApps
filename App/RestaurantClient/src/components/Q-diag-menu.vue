@@ -4,7 +4,7 @@
          :value="display"
          @input="(e) => $emit('dispchange', e)"
          persistent
-         maximized
+         :maximized="!displayVal.easydiag"
          transition-show="slide-up"
          transition-hide="slide-down"
          @hide="quantity = 0; totSum = 0; required = false; itComp = []"
@@ -19,13 +19,18 @@
               addId = null
               addId2 = null"
          >
+         <diaginput v-if="displayVal.easydiag" :quantity="displayVal.stock[sede]" :available="checkAvail(displayVal.id, displayVal.prodType)[2]" @hide="$emit('dispchange', false)" @Submit="diagSubmit" >
+               <q-btn class="absolute-top-right" icon="close" no-caps color="primary" flat v-close-popup />
+         </diaginput>
          <q-card
-         class="q-fullscreen-glassMorph"
+         v-else
+          class="q-fullscreen-glassMorph"
           style="width: 100%;
           height: 100%;
           margin: 0px;
           padding: 0px;
-          overflow-x: hidden;">
+          overflow-x: hidden;"
+          >
             <q-bar class="bg-transparent q-mt-sm">
               <q-btn flat ></q-btn>
                <q-btn style="z-index: 2001" dense flat icon="fas fa-chevron-left" @click="$emit('dispchange', false)" v-close-popup>
@@ -170,6 +175,7 @@ import itemcomp from './itemComp'
 import addresses from './addresses'
 import orderdate from './orderDate'
 import Top from './menu/classic/qdiagtop.vue'
+import diaginput from './menu/list/diaginput.vue'
 export default {
   name: 'q-dialog-menu',
   props: {
@@ -214,7 +220,8 @@ export default {
     itemcomp,
     addresses,
     orderdate,
-    Top
+    Top,
+    diaginput
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'listcategorias', 'plaincategorias', 'sede', 'promos', 'selectedFilter', 'selectedProduct', 'selectedProdType', 'filters']),
@@ -378,6 +385,11 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    diagSubmit (qty) {
+      this.quantity = qty
+      this.addToCart(this.displayVal.reward)
+      this.$emit('dispchange', false)
+    },
     checkMax (displayVal) {
       return this.checkAvail(displayVal.id, displayVal.prodType)[0] === 0 || !this.checkAvailReward(displayVal)[0]
     },
@@ -532,11 +544,12 @@ export default {
         if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
           // console.log(counter, parseInt(product.stock[this.sede]))
           if (counter === parseInt(product.stock[this.sede])) {
-            return [0, exists]
+            return [0, exists, 0]
           } else if (counter > parseInt(product.stock[this.sede])) {
-            return [2, exists]
+            return [2, exists, 0]
           } else {
-            return [1, exists]
+            let disp = parseInt(product.stock[this.sede]) - counter
+            return [1, exists, disp]
           }
         } else { return [0, exists] }
       } else {

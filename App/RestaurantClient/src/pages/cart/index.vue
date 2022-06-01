@@ -1,10 +1,13 @@
 <template>
   <q-page padding class="q-fullscreen-glassMorph">
         <div class="menudiv2" >
-         <div class="text-h5 menuTop q-mt-md">Tu Carrito</div>
+         <div class="text-h5 menuTop q-mt-lg relative-position">Tu Carrito
+           <q-btn icon="list" @click="list=!list" class="absolute-bottom-right q-mr-md" flat />
+         </div>
          <div class="column items-center">
          <q-list v-for="(item, index) in cart" :key="index" class="full-width">
            <classic-list
+            v-model="list"
             :photo="getProdValById(item.prodId, 'photo', item.prodType)"
             :name="getProdValById(item.prodId, 'name', item.prodType)"
             :priceDisplay="extrasTotalItem(item) ? 'Precio base ' + priceDisplay(item) : priceDisplay(item)"
@@ -535,6 +538,7 @@ export default {
   },
   data () {
     return {
+      list: true,
       ordCompraClient: null,
       ordCompraBranch: null,
       continuar: false,
