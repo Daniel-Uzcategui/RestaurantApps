@@ -290,7 +290,7 @@
                         </q-card-section>
 
                         </q-card>
-                        <q-card q-card class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1">
+                        <q-card  class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1">
                           <q-card-sec>
 
                             <div >

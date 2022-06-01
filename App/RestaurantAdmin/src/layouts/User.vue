@@ -265,6 +265,13 @@ export default {
               // separator: true,
             },
             {
+              label: 'Sedes',
+              caption: '',
+              icon: 'fas fa-utensils',
+              handler: () => this.$router.push({ path: '/menu/sede' })
+              // separator: true,
+            },
+            {
               label: 'Multi Catálogo',
               caption: '',
               icon: 'fas fa-filter',
@@ -366,6 +373,10 @@ export default {
             {
               label: 'Clientes',
               handler: (node) => this.$router.push({ path: '/corporativo/index' })
+            },
+            {
+              label: 'Ordenes',
+              handler: (node) => this.$router.push({ path: '/corporativo/reporte/index' })
             }] },
         {
           title: 'Encomiendas',

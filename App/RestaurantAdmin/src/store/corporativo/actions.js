@@ -75,3 +75,16 @@ export const getbranches = async function (state, payload) {
   })
   return resullt
 }
+export const getbranches2 = async function (state, payload) {
+  let result2
+  let resullt = []
+
+  result2 = await fireAdmin().collection('ambiente').doc(payload.ambiente).collection('clients')
+    .doc(payload.idcliente).collection('branches')
+    .get()
+  result2.forEach(doc => {
+    resullt.push({ id: doc.id,
+      data: doc.data() })
+  })
+  return resullt
+}

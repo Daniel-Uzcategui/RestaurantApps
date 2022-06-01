@@ -33,7 +33,7 @@
         emit-value
         map-options
         stack-label
-        label="Seleccionar Sede"
+        label="Seleccionar Sedeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       />
       </div>
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
