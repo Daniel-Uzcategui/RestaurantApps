@@ -127,7 +127,7 @@
             <div style="max-width: 600px">
                <q-list v-if="selectedCat !== null"  separator>
                   <q-item v-ripple
-                     @click.native="dgbg = {'background-color':selectedCat.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0)) : false"
+                     @click.native="dgbg = {'background-color':selectedCat.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0, undefined, true)) : false"
                      v-for="item in filteredMenuCat(selectedCat !== null ? selectedCat.id : filtercat ? filtercat[0] ? filtercat[0].id : '' : '')" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -159,7 +159,7 @@
                  <p class="text-bold text-grey q-ma-md">{{tabs.name}}</p>
                <q-list separator>
                   <q-item v-ripple
-                     @click.native="dgbg = {'background-color':tabs.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0)) : false"
+                     @click.native="dgbg = {'background-color':tabs.color};checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 0, undefined, true)) : false"
                      v-for="item in filteredMenuCat(tabs.id)" :key="item.id"
                      style="min-height: 70px"
                      :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
@@ -878,7 +878,7 @@ export default {
       let permit = this.displayPermitValue()
       this.display = permit
     },
-    getMenuItem (id, type, reward) {
+    getMenuItem (id, type, reward, easydiag) {
       reward = typeof reward === 'undefined' ? 0 : reward
       if (type === 0) {
         this.displayVal = JSON.parse(JSON.stringify(this.filteredMenu.find((e) => {
@@ -886,6 +886,7 @@ export default {
         })))
         console.log({ dv: this.displayVal, id })
         this.displayVal.id = id
+        this.displayVal.easydiag = easydiag
         if (reward) {
           this.displayVal.price = 0
           this.displayVal.reward = 1

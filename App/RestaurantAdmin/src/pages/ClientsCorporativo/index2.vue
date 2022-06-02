@@ -200,6 +200,9 @@ export default {
       // adShippingDone
       console.log('los valores del prefijo', prefijo)
       let newSellerObj = this.modifySellerObj(selle)
+      if (Array.isArray(newSellerObj)) {
+        newSellerObj = {}
+      }
       this.setValuenew({
         id: this.idClientSel,
         client_id: this.idClientSel,
@@ -279,6 +282,9 @@ export default {
     guardarEditado () {
       const { idsuculsal, nombresurculsal, razon, prefijo, numerorif, tipopago, selle, diacredito, shippingAddress } = this
       let newSellerObj = this.modifySellerObj(selle)
+      if (Array.isArray(newSellerObj)) {
+        newSellerObj = {}
+      }
       this.setValueEditados({
         idcliente: this.idClientSel,
         id: idsuculsal,
