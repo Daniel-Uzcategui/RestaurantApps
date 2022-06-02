@@ -175,7 +175,7 @@ import itemcomp from './itemComp'
 import addresses from './addresses'
 import orderdate from './orderDate'
 import Top from './menu/classic/qdiagtop.vue'
-import diaginput from './menu/list/diaginput.vue'
+import diaginput from './menu/list/input.vue'
 export default {
   name: 'q-dialog-menu',
   props: {

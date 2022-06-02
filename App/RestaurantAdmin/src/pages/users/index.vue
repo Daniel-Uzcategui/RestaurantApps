@@ -20,8 +20,8 @@
       <template v-slot:top-right>
         <q-btn v-if="filter_id" color="accent" no-caps class="q-ma-md" push @click="filter_id = undefined" label="Eliminar filtro de usuario" />
         <q-input label="Filtro por nombre" v-model="filter" />
-        <q-btn flat no-caps push label="Agregar" icon="add" @click="$router.replace('/users/create')"/>
-        <q-btn flat no-caps push label="Eliminar" icon="delete_outline" @click="deleted"/>
+        <q-btn flat no-caps push label="Agregar" @click="$router.replace('/users/create')"/>
+        <q-btn flat no-caps push label="Eliminar" @click="deleted"/>
         <q-btn flat no-caps push label="Exportar a csv" icon="archive" @click="exportTable"/>
       </template>
       <template v-slot:header="props">
