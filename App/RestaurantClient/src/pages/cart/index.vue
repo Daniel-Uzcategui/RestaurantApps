@@ -547,6 +547,7 @@ export default {
       cupons: [],
       openDate: false,
       openHours: false,
+      montoV: 0,
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       cupon: '',
       rateDefault: [],
@@ -808,7 +809,7 @@ export default {
         let rate = this.ratesComp.find(obj => {
           return obj.currency === 'Bs'
         })
-        let montoV = parseFloat(rate.rateValue) * parseFloat(this.Vuelto)
+        this.montoV = parseFloat(rate.rateValue) * parseFloat(this.Vuelto)
         let options = { method: 'post',
 
           url: 'http://localhost:8085' + '/transact',
@@ -817,7 +818,7 @@ export default {
             'bank': 'createOrder',
             'token': this.config.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': montoV,
+            'monto': this.montoV,
             'moneda': 'VES',
             'formaPago': 'Interbank',
             'referencia': this.referenciacompleta,
@@ -1136,7 +1137,7 @@ export default {
               telefono: this.formatoTelefono(this.TelefonoEnviar),
               nacionalidad: this.nacionalidad.value,
               documento: this.CedulaEnviar,
-              vuelto: this.Vuelto,
+              vuelto: this.montoV,
               banco: this.BancoEnviar.value,
               status: true
             }
