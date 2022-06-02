@@ -42,6 +42,9 @@
     </template>
 
 </q-table>
+  <div v-if="loading" class="margin: 0 auto" >
+                  <q-spinner  color="primary" size="15em" />
+              </div>
     </div>
 </template>
 <script>

@@ -15,6 +15,7 @@
       no-data-label="No se encontraron registros"
       rows-per-page-label=" "
       >
+
       <template v-slot:top-right>
         <q-input label="Buscar Cliente" v-model="filtrado" dark  />
         <div class="q-mr-sm">
@@ -37,6 +38,7 @@
     </q-btn>
         <q-btn no-caps round color="green" push icon="archive" @click="exportTable"/>
       </template>
+
       <template v-slot:body="props">
         <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" >
            <q-td v-if="$q.screen.lt.md"  auto-width>
@@ -46,8 +48,11 @@
             v-for="col in props.cols"
             :key="col.name"
             :props="props"
+            :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'text-white radius'"
           >
+
             {{ col.value }}
+
           </q-td>
         </q-tr>
       </template>
@@ -55,7 +60,7 @@
         <q-list class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item>
                 <q-item-section>
-                  <q-item-label>{{props.row.factura}}</q-item-label>
+                  <q-item-label :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'text-white radius'" >{{props.row.factura}}</q-item-label>
                 </q-item-section>
                 <q-item-section >
                   <q-item-label>{{props.row.status}}</q-item-label>
@@ -174,6 +179,7 @@ export default {
             'dateIn': obj.dateIn,
             'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
             'factura': obj.factura,
+            'vuelto': obj?.vuelto,
             // 'table': tableOrder,
             'typeService': typeService
           })
@@ -291,6 +297,13 @@ export default {
       obj = this.buscarsurcursal(objeto)
       return obj
     },
+    iditificarVuelto (row) {
+      if (row.vuelto !== undefined) {
+        return row.vuelto.status
+      } else {
+        return false
+      }
+    },
     buscarsurcursal (objeto) {
       console.log('entra objeto', objeto)
 
@@ -372,7 +385,7 @@ export default {
       texto: '',
       columns: [
         { name: 'nameSede', required: true, label: 'Sede', align: 'left', field: 'nameSede', sortable: true },
-        { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
+        { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: row => row.factura, sortable: true },
         { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre', sortable: true },
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
@@ -388,4 +401,11 @@ export default {
 <style lang="stylus">
  .table
   width: 100%
+.notificacion {
+  border-radius: 20px;
+  border: 2px solid #FFF;
+}
+.notificacion:hover{
+  padding-top: 1%;
+}
 </style>

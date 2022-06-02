@@ -58,6 +58,24 @@
                       no-data-label="No se encontraron registros"
 
                       >
+     <template  v-slot:body-cell-diasVencido="props" >
+
+            <q-td :props="props"
+              :class="(props.row.diferencia > 0)?'text-red radius':'text-white radius'"
+                >
+                {{props.value}}
+        </q-td>
+
+      </template>
+       <template  v-slot:body-cell-Vencido="props" >
+
+            <q-td :props="props"
+              :class="(props.row.diferencia > 0)?'text-red radius':'text-white radius'"
+                >
+                {{props.value}}
+        </q-td>
+
+      </template>
               </q-table>
         </q-card-section>
         <q-card-actions align="right">
@@ -93,11 +111,12 @@ export default {
         { name: 'Sede', required: true, label: 'Sede', align: 'left', field: row => row.sede, sortable: true },
         { name: 'cliente', required: true, label: 'Cliente', align: 'left', field: row => row.cliente, sortable: true },
         { name: 'nameSede', required: true, label: 'Orden', align: 'left', field: row => row.factura, sortable: true },
-        { name: 'status', required: true, label: 'status', align: 'left', field: row => this.obtenerstatus(row), sortable: true },
         { name: 'credito', required: true, label: 'Dias Credito', align: 'left', field: row => row.credito, sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
-        { name: 'dateOrd', label: 'Fecha de Entrega', field: row => typeof row.orderWhen !== 'undefined' && row.orderWhen.orderWhen === '1' ? row.orderWhen.orderDate : 'NA', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true },
-        { name: 'email', required: true, align: 'center', label: 'Monto', field: row => row.paid, sortable: true }
+        { name: 'dateOrd', label: 'Fecha de Entrega', field: row => this.obtenerfecha(row), sortable: true },
+        { name: 'email', required: true, align: 'center', label: 'Monto', field: row => row.paid, sortable: true },
+        { name: 'diasVencido', required: true, label: 'Fecha Vencimiento', align: 'left', field: row => this.calculardias(row), sortable: true },
+        { name: 'Vencido', required: true, label: 'Dias Vencido(s)', align: 'left', field: row => row.diferencia, sortable: true }
       ]
     }
   },
@@ -141,6 +160,49 @@ export default {
       obj = this.allestatus.find(x => x.value === objeto.status)
       if (obj !== undefined) {
         return obj.label
+      }
+    },
+    obtenerfecha (objeto) {
+      let objetoconvertido
+      console.log('los valores', objeto)
+      if (objeto?.statusLog !== undefined) {
+        for (let i = 0; i < objeto.statusLog.length; i++) {
+          if (objeto?.statusLog[i]?.receptor !== undefined) {
+            objetoconvertido = Object.assign({}, objeto?.statusLog[i])
+            console.log('objeto convertido', objetoconvertido)
+          }
+        }
+      }
+
+      if (objetoconvertido === undefined && objetoconvertido?.receptor === undefined) {
+        return 'No Entregado'
+      } else {
+        return date.formatDate(objetoconvertido?.dateIn.toDate(), 'MM-DD YYYY HH:mm')
+      }
+    },
+    calculardias (objeto) {
+      let dias
+      let objetoconvertido
+      console.log('los valores2', objeto)
+      if (objeto?.statusLog !== undefined) {
+        console.log('el tamaño del ', objeto.statusLog.length)
+        for (let i = 0; i < objeto.statusLog.length; i++) {
+          objetoconvertido = Object.assign({}, objeto?.statusLog[i])
+          //  if (objetoconvertido.receptor !== undefined) {
+          let fecha = new Date(objetoconvertido?.dateIn.toDate())
+          let fecha2 = new Date(objetoconvertido?.dateIn.toDate())
+          objeto.hoy = new Date()
+          if (objeto?.credito === undefined) {
+            dias = 0
+          } else {
+            dias = objeto.credito
+          }
+          console.log('los dias de credito', dias, objeto.creditDays)
+          objeto.diasVencido = new Date(fecha.setDate(fecha.getDate() + Number(dias)))
+          objeto.diferencia = Math.trunc((objeto.hoy.getTime() - objeto.diasVencido.getTime()) / (1000 * 3600 * 24))
+          console.log('el nuevo objeto', objeto)
+          return date.formatDate(fecha2.setDate(fecha2.getDate() + Number(dias)), 'MM-DD YYYY HH:mm')
+        }
       }
     },
     mostrar () {
@@ -191,7 +253,8 @@ export default {
                     name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
                     email: auxvendedor?.email,
                     monto: montototal,
-                    cantidad: cantidad
+                    cantidad: cantidad,
+                    vuelto: obj?.vuelto
                   })
                 }
               } else {
@@ -207,7 +270,8 @@ export default {
                     name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
                     email: auxvendedor?.email,
                     monto: montototal,
-                    cantidad: cantidad
+                    cantidad: cantidad,
+                    vuelto: obj?.vuelto
                   })
                 }
                 montototal = 0
@@ -231,7 +295,8 @@ export default {
                     name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
                     email: auxvendedor?.email,
                     monto: montototal,
-                    cantidad: cantidad
+                    cantidad: cantidad,
+                    vuelto: obj?.vuelto
                   })
                 } else {
                   let encontrado = this.ArreVendores.find(x => x.id === obj.id)
@@ -246,7 +311,8 @@ export default {
                       name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
                       email: auxvendedor?.email,
                       monto: montototal,
-                      cantidad: cantidad
+                      cantidad: cantidad,
+                      vuelto: obj?.vuelto
                     })
                   }
                 }
@@ -269,7 +335,8 @@ export default {
                 name: auxvendedor?.nombre + ' ' + auxvendedor?.apellido,
                 email: auxvendedor?.email,
                 monto: montototal,
-                cantidad: cantidad
+                cantidad: cantidad,
+                vuelto: obj?.vuelto
               })
             }
           }
@@ -301,23 +368,9 @@ export default {
         sede = obj.sede
         if (obj?.buyOrderBranch !== undefined) {
           console.log('el ambiente', localStorage.amb, 'id del cliente', obj.buyOrderClient)
-          /* corp = await this.getbranches2({
-            ambiente: localStorage.amb,
-            idcliente: obj.buyOrderClient,
-            idbranches: obj.buyOrderBranch
-          })
-          let corporativo = corp.find(x => x.id === obj.buyOrderBranch)
-          console.log('las sucusales', corporativo)
-          if (corporativo.data?.creditDays !== undefined) {
-            cred = corporativo.data?.creditDays
-          } else {
-            cred = 0
-          }
-        */ }
-        // console.log('las sucusales', corp)
+        }
+
         clientes = obj.buyOrder.Client
-        //   cred =
-        // console.log(obj.buyOrderClient, clientes)
 
         this.detalle2.push({
           id: obj.id,
@@ -326,8 +379,9 @@ export default {
           status: obj.status,
           paid: obj.paid,
           sede: sede.name,
-          credito: parseFloat(obj.buyOrder.Branch?.creditDays) || 0,
-          cliente: clientes?.name || 'Nombre no encontrado'
+          credito: parseFloat(obj.creditDays) || 0,
+          cliente: clientes?.name || 'Nombre no encontrado',
+          statusLog: obj?.statusLog
         })
       }
       console.log('los detalles', this.detalle)

@@ -68,7 +68,7 @@
               <div class="header-cell q-ma-sm col-2">
                 <q-btn
                   push
-                  color="secondary"
+                  color="red"
                   no-caps
                   label="Vuelto"
                   :loading=realizado
@@ -737,6 +737,7 @@ export default {
     },
     ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
     ...mapGetters('config', ['rates', 'configs2']),
+    ...mapGetters('user', ['currentUser']),
     orderStatus () {
       if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
         let dateIn = this.getLogDate(this.order)
@@ -853,7 +854,7 @@ export default {
         // let referencia = this.valueFields.referencia
         this.realizado = true
         let options = { method: 'post',
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'Vuelto',
@@ -1063,6 +1064,7 @@ export default {
     },
     statusLog (e, rider, receptor) {
       let log = this.order.statusLog || []
+      console.log('el valor de los parametros', e, rider, receptor)
       let newData = { user: this.currentUser.id, status: e, dateIn: new Date() }
       if (typeof rider !== 'undefined') {
         newData.rider = rider
@@ -1070,6 +1072,7 @@ export default {
       if (typeof receptor !== 'undefined') {
         newData.receptor = receptor
       }
+      console.log('los valores a guardar ', newData, this.$route.query.Order_Id)
       this.saved([...log, newData], this.$route.query.Order_Id, 'statusLog')
     },
     // getAddress (value) {
