@@ -801,15 +801,19 @@ export default {
         let telefono = this.formatoTelefono(this.TelefonoEnviar)
         this.loading2 = true
         let ip = '186.91.191.248'
+        let rate = this.ratesComp.find(obj => {
+          return obj.currency === 'Bs'
+        })
+        let montoV = parseFloat(rate.rateValue) * parseFloat(this.Vuelto)
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'createOrder',
             'token': this.config.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': this.Vuelto,
+            'monto': montoV,
             'moneda': 'VES',
             'formaPago': 'Interbank',
             'referencia': this.referenciacompleta,
