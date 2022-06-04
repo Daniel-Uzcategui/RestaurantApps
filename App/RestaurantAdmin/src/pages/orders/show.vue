@@ -65,6 +65,18 @@
                 <p class="text-bold">Total $</p>
                 <p>{{order.paid}}</p>
               </div>
+                 <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
+                <p class="text-bold">Total Enviado $</p>
+                <p>{{(order.paid + order.vuelto.VueltoDolares)}}</p>
+              </div>
+              <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
+                <p class="text-bold">Vuelto Bs</p>
+                <p>{{order.vuelto.VueltoBolivares}}</p>
+              </div>
+               <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto2 && verificarVuelto">
+                <p class="text-bold">Referencia</p>
+                <p class="text-green">{{order.vuelto.trx.referencia}}</p>
+              </div>
               <div class="header-cell q-ma-sm col-2">
                 <q-btn
                   push
@@ -678,6 +690,7 @@ export default {
     return {
       label: 'tes',
       selectRider: false,
+      respuesta: {},
       addPay: false,
       statusVuelto: false,
       showLog: false,
@@ -748,6 +761,21 @@ export default {
         return this.order.status
       }
     },
+    verificarVuelto () {
+      if (this.order?.vuelto === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
+    verificarVuelto2 () {
+      if (this.order.vuelto?.trx === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
+
     estatusOptions () {
       if (this.order.tipEnvio === '3') {
         return this.estatus_optionsOrd
@@ -868,15 +896,19 @@ export default {
             'documento': this.order.vuelto.documento
           } }
         console.log(options)
-        let respuesta = await this.$axios(options)
-        console.log('la respuesta', respuesta)
+        this.respuesta = await this.$axios(options)
+        console.log('la respuesta', this.respuesta)
         let valores = this.setVuelto({ idorden: this.$route.query.Order_Id,
-          trx: respuesta.data,
+          trx: this.respuesta.data,
           status: false })
         console.log(valores)
         this.statusVuelto = false
         this.realizado = false
-        return respuesta
+        this.$q.notify({
+          color: 'blue',
+          message: 'El Vuelto se ha enviado con Exito'
+        })
+        return this.respuesta
       } catch (err) {
         // this.$q.loading.hide()
         console.error({ err })

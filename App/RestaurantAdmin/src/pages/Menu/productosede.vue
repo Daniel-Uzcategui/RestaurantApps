@@ -14,7 +14,7 @@
       no-data-label="No se encontraron registros"
     >
     <template  v-slot:top>
-       <q-label >Producto X Sedes </q-label>
+       <label >Producto X Sedes </label>
         <div class="q-pa-md">
 
          <q-select options-selected-class="text-blue" filled rounded dense
@@ -50,6 +50,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 export default {
+  name: 'productosede',
   data () {
     return {
       sede: '',
@@ -61,7 +62,7 @@ export default {
       columns: [
         { name: 'descripcion', label: 'Nombre', align: 'left', field: 'name' },
         { name: 'stock', label: 'Stock', align: 'center', field: 'stock' },
-        { name: 'price', label: 'Precio', align: 'center', field: 'price' }],
+        { name: 'price', label: 'Precio $', align: 'center', field: row => row.price + '$' }],
       locList: []
     }
   },

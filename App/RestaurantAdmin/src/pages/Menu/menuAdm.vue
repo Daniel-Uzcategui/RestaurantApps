@@ -33,7 +33,7 @@
         emit-value
         map-options
         stack-label
-        label="Seleccionar Sedeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        label="Seleccionar Sede"
       />
       </div>
         <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
@@ -41,6 +41,7 @@
           <q-btn push color="blue" no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
           <q-btn push color="blue" icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
+           <q-btn push no-caps label="Producto X Sede" color="blue" v-if="sede !== null" @click="SedeProducto=true"/>
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>
@@ -60,6 +61,7 @@
           stack-label
           label="Filtrar por Categoría"
          />
+
       </template>
     <template v-slot:item="props">
         <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
@@ -336,6 +338,17 @@
         </div>
       </template>
     </q-table>
+     <q-dialog  v-model="SedeProducto" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;">
+           <q-card style="margin: 0px;
+          padding: 0px;
+          overflow-x: hidden; max-width: 80% !important;">
+         <productosede> </productosede>
+             <q-btn push no-caps label="Aceptar" color="blue" v-close-popup/>
+           </q-card>
+      </q-dialog>
     <q-dialog
      v-model="addcat"
       full-width
@@ -480,6 +493,7 @@ import photomulti from '../../components/menu/photomulti.vue'
 import Croppa from 'vue-croppa'
 import imageCompression from 'browser-image-compression'
 import 'vue-croppa/dist/vue-croppa.css'
+import productosede from './productosede.vue'
 
 // import ClientMenu from '../editor/components/client/pages/Menu/menu'
 export default {
@@ -488,6 +502,7 @@ export default {
     'fbq-uploader': () => import('../../components/FBQUploader.vue'),
     // ClientMenu,
     photomulti,
+    productosede,
     'croppa': Croppa.component,
     AddCat: () => import('./Categorias'),
     AddOpt: () => import('./gruposOpt')
@@ -578,6 +593,7 @@ export default {
     return {
       selectedProdCat: null,
       colorText: false,
+      SedeProducto: false,
       definitions: {
         color: {
           tip: 'Cambiar color de fuente',

@@ -57,7 +57,7 @@ export default {
         { name: 'dateIn', label: 'Fecha de solicitud', field: row => row?.dateIn, format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: row => this.obtenerfecha(row), sortable: true },
         { name: 'diasVencido', required: true, label: 'Fecha Vencimiento', align: 'left', field: row => this.calculardias(row), sortable: true },
-        { name: 'Vencido', required: true, label: 'Dias Vencido(s)', align: 'left', field: row => row.diferencia, sortable: true }
+        { name: 'Vencido', required: true, label: 'Dias Vencido(s)', align: 'left', field: row => row.diferencia > 0 ? row.diferencia : '', sortable: true }
 
       ]
     }

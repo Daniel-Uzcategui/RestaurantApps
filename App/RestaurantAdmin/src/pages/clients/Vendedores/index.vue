@@ -103,7 +103,7 @@ export default {
       columns: [
         { name: 'nombre', required: true, align: 'center', label: 'Vendedor', field: row => row.name, sortable: true },
         { name: 'email', required: true, align: 'center', label: 'email', field: row => row.email, sortable: true },
-        { name: 'paid', label: 'Monto', field: row => row.monto, sortable: true },
+        { name: 'paid', label: 'Monto $', field: row => row.monto + '$', sortable: true },
         { name: 'cantidad', label: 'cantidad Ventas', field: row => row.cantidad, sortable: true },
         { name: 'boton1', label: '', sortable: true }
       ],
@@ -114,9 +114,9 @@ export default {
         { name: 'credito', required: true, label: 'Dias Credito', align: 'left', field: row => row.credito, sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: row => this.obtenerfecha(row), sortable: true },
-        { name: 'email', required: true, align: 'center', label: 'Monto', field: row => row.paid, sortable: true },
+        { name: 'email', required: true, align: 'center', label: 'Monto $', field: row => row.paid + '$', sortable: true },
         { name: 'diasVencido', required: true, label: 'Fecha Vencimiento', align: 'left', field: row => this.calculardias(row), sortable: true },
-        { name: 'Vencido', required: true, label: 'Dias Vencido(s)', align: 'left', field: row => row.diferencia, sortable: true }
+        { name: 'Vencido', required: true, label: 'Dias Vencido(s)', align: 'left', field: row => row.diferencia > 0 ? row.diferencia : '', sortable: true }
       ]
     }
   },
