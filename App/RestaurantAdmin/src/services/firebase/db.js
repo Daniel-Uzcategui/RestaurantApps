@@ -12,6 +12,11 @@ import 'firebase/storage'
 export const fireAdmin = () => {
   return firebase.firestore()
 }
+
+export const fireCallable = () => {
+  return firebase.functions()
+}
+
 export const firestore = () => {
   let local = localStorage.getItem('amb')
   if (local !== null) {
