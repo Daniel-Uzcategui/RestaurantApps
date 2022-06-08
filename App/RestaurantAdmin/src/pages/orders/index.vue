@@ -25,9 +25,6 @@
        <q-badge v-else>
         Últimos 30 días
       </q-badge>
-      <q-badge  color="red" style="margin-left: 5px;">
-        Orden con Vuelto
-      </q-badge>
     </div>
 
     <q-btn icon="event" class="q-mr-sm" round color="blue">

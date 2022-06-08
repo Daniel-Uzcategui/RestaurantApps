@@ -5,7 +5,8 @@
       style="border-radius: 28px"
       :dense="$q.screen.lt.md"
       :data="elmenu"
-      grid
+      :visible-columns="visible"
+      :grid="!listView"
       :columns="columns"
       :rows-per-page-options="[20, 30, 0]"
       row-key="id"
@@ -41,7 +42,8 @@
           <q-btn push color="blue" no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
           <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
           <q-btn push color="blue" icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
-           <q-btn push no-caps label="Producto X Sede" color="blue" v-if="sede !== null" @click="SedeProducto=true"/>
+            <!-- <q-btn push no-caps label="Producto X Sede" color="blue" v-if="sede !== null" @click="SedeProducto=true"/> -->
+            <q-btn push no-caps :glossy="listView" label="Vista Listado" color="blue" v-if="sede !== null" @click="listView=!listView"/>
         </q-btn-group>
         <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
           <template v-slot:prepend>
@@ -63,6 +65,53 @@
          />
 
       </template>
+    <template v-slot:body="props">
+      <q-tr :props="props" class="cursor-pointer">
+            <q-td  auto-width>
+            <q-checkbox v-model="props.selected" />
+           </q-td>
+           <q-td key="name" :props="props">
+             {{props.row.name}}
+             <q-popup-edit v-model="props.row.name" auto-save  v-slot="scope">
+            <q-input filled dense
+              @input="(e) => saved(e, scope.value, props.row.id, 'name')"
+              v-model="scope.value"
+              rounded
+              class="col-12 full-width"
+              outlined />
+               </q-popup-edit>
+          </q-td>
+          <q-td key="price" :props="props">
+            {{props.row.price}}
+            <q-popup-edit v-model="props.row.price" auto-save  v-slot="scope">
+            <q-decimal
+                  dense
+                  filled
+                  :rules="[validate]"
+                  rounded
+                  outlined @input="(e) => saved(e, parseFloat(scope.value), props.row.id, 'price')"
+                  v-model="scope.value"
+                  input-style="text-align: right">
+                  </q-decimal>
+               </q-popup-edit>
+          </q-td>
+          <q-td key="stock" :props="props">
+            {{props.row.stock[sede] || 0}}
+            <q-popup-edit v-model="props.row.stock" auto-save  v-slot="scope">
+            <q-input filled dense
+                      rounded
+                      outlined
+                      @input="(e) => {saved(typeof scope.value === 'undefined' ? { [sede]: parseInt(e) } : {...scope.value,[sede]: parseInt(e) }, parseInt(scope.value), props.row.id, `stock`);
+                        typeof scope.value === 'undefined' ? (scope.value = {},scope.value[sede] = e) : scope.value[sede] = e
+                        }"
+                      :value="scope.value[sede] || 0"
+                      min="1" max="99999"
+                      type="number"
+                    />
+            </q-popup-edit>
+          </q-td>
+        </q-tr>
+    </template>
     <template v-slot:item="props">
         <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
@@ -87,7 +136,8 @@
                         typeof props.row.estatus === 'undefined' ? (props.row.estatus = [],props.row.estatus[sede] = true) : props.row.estatus[sede] = !props.row.estatus[sede]
                         }"
                       :color="props.row.estatus ? props.row.estatus[sede] ? 'blue' : 'red' : 'red'"
-                   style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? props.row.estatus[sede] ? 'toggle_on' : 'toggle_off' : 'toggle_off'" />
+                   style="min-width: 25px" class="col-1 self-center full-height" size="md" :name="props.row.estatus ? props.row.estatus[sede] ? 'toggle_on' : 'toggle_off' : 'toggle_off'"
+                  />
                   <q-item-label class="col-3 self-center text-right" :style="$q.screen.lt.md ? 'max-width: 200px' : ''" caption>{{(props.row.price).toFixed(2)}}</q-item-label>
                   <q-btn class="col-1 self-center" flat push rounded icon="edit" @click.stop="props.expand = !props.expand; props.row.categoria ? selectedProdCat = props.row.categoria  : ''" />
                   </div>
@@ -471,22 +521,6 @@
   </div>
 </template>
 <script>
-const columns = [
-  { name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
-  { name: 'desc', style: 'width: 175px;', align: 'center', label: 'Nombre', field: 'name', sortable: true },
-  { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
-  { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
-  { name: 'descripcion', align: 'left', field: 'descripcion' },
-  { name: 'stock', align: 'center', field: 'stock' },
-  { name: 'discount', align: 'center', field: 'discount' },
-  { name: 'price', align: 'center', field: 'price' },
-  { name: 'priority', align: 'center', field: 'priority' },
-  { name: 'disptype', align: 'center', field: 'disptype' },
-  { name: 'estatus', align: 'left', field: 'estatus' },
-  { name: 'photomulti', align: 'left', field: 'photomulti' },
-  { name: 'pricerange', align: 'left', field: 'pricerange' },
-  { name: 'descripcioncolor', align: 'left', field: 'descripcioncolor' }
-]
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
 import photomulti from '../../components/menu/photomulti.vue'
@@ -591,9 +625,25 @@ export default {
   },
   data () {
     return {
+      visible: ['name', 'price', 'stock'],
+      listView: false,
       selectedProdCat: null,
       colorText: false,
       SedeProducto: false,
+      columns: [{ name: 'photo', align: 'center', label: 'Foto', field: 'photo' },
+        { name: 'name', style: 'width: 175px;', align: 'center', label: 'Nombre', field: 'name', sortable: true },
+        { name: 'categoria', align: 'center', label: 'Categoria', field: 'categoria' },
+        { name: 'groupComp', align: 'center', label: 'Opciones', field: 'groupComp' },
+        { name: 'descripcion', align: 'left', field: 'descripcion' },
+        { name: 'discount', align: 'center', field: 'discount' },
+        { name: 'price', align: 'center', field: 'price', label: 'Precio', sortable: true },
+        { name: 'stock', align: 'center', field: 'stock', label: 'Stock', sortable: true, sort: (a, b) => (parseInt(a[this.sede] || 0)) - (parseInt(b[this.sede]) || 0) },
+        { name: 'priority', align: 'center', field: 'priority' },
+        { name: 'disptype', align: 'center', field: 'disptype' },
+        { name: 'estatus', align: 'left', field: 'estatus', label: 'estatus' },
+        { name: 'photomulti', align: 'left', field: 'photomulti' },
+        { name: 'pricerange', align: 'left', field: 'pricerange' },
+        { name: 'descripcioncolor', align: 'left', field: 'descripcioncolor' }],
       definitions: {
         color: {
           tip: 'Cambiar color de fuente',
@@ -637,7 +687,6 @@ export default {
       menuTemp: [],
       amb: localStorage.getItem('amb'),
       sede: null,
-      columns,
       temp1: {},
       selected: [],
       popupeditorData: '',
