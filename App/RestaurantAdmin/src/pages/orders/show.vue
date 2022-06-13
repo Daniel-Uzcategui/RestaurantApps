@@ -88,6 +88,17 @@
                   @click="RealizarVuelto"
                 />
               </div>
+               <div class="header-cell q-ma-sm col-2">
+                <q-btn
+                  push
+                  color="red"
+                  no-caps
+                  label="Renviar Correo"
+                  :loading=realizado2
+                  v-show="statusmail"
+                  @click="RenviarCorreo"
+                />
+              </div>
               <div
                 v-if="order.typePayment==8 || order.typePayment == 0"
                 class="header-cell q-ma-sm col-2"
@@ -693,8 +704,10 @@ export default {
       respuesta: {},
       addPay: false,
       statusVuelto: false,
+      statusmail: false,
       showLog: false,
       realizado: false,
+      realizado2: false,
       photoDiag: false,
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
@@ -876,6 +889,13 @@ export default {
     tipServ () {
       return this.order && typeof this.order.tipEnvio !== 'undefined' ? this.getTypeService(this.order.tipEnvio) : 'NA'
     },
+    RenviarCorreo () {
+      this.emailClients({ ambiente: localStorage.getItem('amb'), order: this.order })
+      this.$q.notify({
+        color: 'blue',
+        message: 'El Correo se ha Reenviado con Exito'
+      })
+    },
     async RealizarVuelto () {
       try {
         // this.$q.loading.show()
@@ -898,7 +918,7 @@ export default {
         console.log(options)
         this.respuesta = await this.$axios(options)
         console.log('la respuesta', this.respuesta)
-        let valores = this.setVuelto({ idorden: this.$route.query.Order_Id,
+        let valores = await this.setVuelto({ idorden: this.$route.query.Order_Id,
           trx: this.respuesta.data,
           status: false })
         console.log(valores)
@@ -908,6 +928,12 @@ export default {
           color: 'blue',
           message: 'El Vuelto se ha enviado con Exito'
         })
+        console.log('laaaaaaaaaaa orderrrrr', this.order)
+        let respuesta2 = this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
+        if (respuesta2) {
+          this.statusmail = true
+        }
+
         return this.respuesta
       } catch (err) {
         // this.$q.loading.hide()
@@ -925,7 +951,7 @@ export default {
     consolee (e, b, c, s) {
       console.log(e, b, c, s)
     },
-    ...mapActions('order', ['saveOrder', 'setVuelto']),
+    ...mapActions('order', ['saveOrder', 'setVuelto', 'emailAdminClients', 'emailClients']),
     ...mapActions('menu', ['bindMenu', 'bindPromos']),
     ...mapActions('client', ['bindClients']),
     ...mapActions('address', ['bindAddress']),
