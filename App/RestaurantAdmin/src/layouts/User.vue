@@ -265,13 +265,6 @@ export default {
               // separator: true,
             },
             {
-              label: 'Sedes',
-              caption: '',
-              icon: 'fas fa-utensils',
-              handler: () => this.$router.push({ path: '/menu/sede' })
-              // separator: true,
-            },
-            {
               label: 'Multi Catálogo',
               caption: '',
               icon: 'fas fa-filter',
