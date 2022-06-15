@@ -902,7 +902,7 @@ export default {
         // let referencia = this.valueFields.referencia
         this.realizado = true
         let options = { method: 'post',
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'Vuelto',
