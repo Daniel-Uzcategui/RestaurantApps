@@ -117,7 +117,7 @@ export const setVuelto = async function (state, payload) {
 }
 export const emailAdminClients = function (state, payload) {
   let result
-  fireCallable().useEmulator('localhost', 5001)
+  // fireCallable().useEmulator('localhost', 5001)
   result = fireCallable().httpsCallable('mail')(payload).then(result2 => {
     console.log(result2)
   })
@@ -125,7 +125,7 @@ export const emailAdminClients = function (state, payload) {
 }
 export const emailClients = function (state, payload) {
   let result
-  fireCallable().useEmulator('localhost', 5001)
+  // fireCallable().useEmulator('localhost', 5001)
   result = fireCallable().httpsCallable('mail2')(payload).then(result2 => {
     console.log(result2)
   })
