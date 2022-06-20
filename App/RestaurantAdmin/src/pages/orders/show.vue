@@ -901,6 +901,7 @@ export default {
         // this.$q.loading.show()
         // let referencia = this.valueFields.referencia
         this.realizado = true
+        console.log('la url')
         let options = { method: 'post',
           url: window.location.origin + '/transact',
           data:
