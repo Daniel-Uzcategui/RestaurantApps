@@ -59,7 +59,7 @@
               </div>
               <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
                 <p class="text-bold">Costo Delivery</p>
-                <p>{{order.delivery}}</p>
+                <p>{{(order.delivery).toFixed(2)}}</p>
               </div>
               <div class="header-cell q-ma-sm col-2">
                 <p class="text-bold">Total $</p>
@@ -67,11 +67,11 @@
               </div>
                  <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
                 <p class="text-bold">Total Enviado $</p>
-                <p>{{(order.paid + order.vuelto.VueltoDolares)}}</p>
+                <p>{{(order.paid + order.vuelto.VueltoDolares).toFixed(2)}}</p>
               </div>
               <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
                 <p class="text-bold">Vuelto Bs</p>
-                <p>{{order.vuelto.VueltoBolivares}}</p>
+                <p>{{(order.vuelto.VueltoBolivares).toFixed(2)}}</p>
               </div>
                <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto2 && verificarVuelto">
                 <p class="text-bold">Referencia</p>
