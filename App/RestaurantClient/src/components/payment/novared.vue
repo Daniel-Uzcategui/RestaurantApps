@@ -98,14 +98,15 @@ export default {
     this.bindPaymentServ()
     this.operacion = this.obtenerprimeraletra(this.metodospagos[0].value)
     this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
-    this.serie = this.obtenerSerie(this.paymentServ.referencia)
+    // this.serie = this.obtenerSerie(this.paymentServ.referencia)
     let fecha = new Date()
     // let diaA = fecha.getDate()
     let hoy = fecha.getDate()
     console.log('aaaa', hoy)
     console.log(fecha)
 
-    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    // this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
@@ -290,7 +291,8 @@ export default {
       console.log('aaaa', hoy)
       console.log(fecha)
 
-      this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+      // this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+      this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
       this.referenciacompleta = this.referenciacompleta.toUpperCase()
       console.log('este el valor de referencia', this.referenciacompleta)
       this.validar()

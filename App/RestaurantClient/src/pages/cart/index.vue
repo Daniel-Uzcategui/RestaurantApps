@@ -290,8 +290,8 @@
                         </q-card-section>
 
                         </q-card>
-                        <q-card  class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1">
-                          <q-card-sec>
+                        <q-card  class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1 && config.statusNovaredzelle" >
+                          <q-card-section >
 
                             <div >
                                  <div v-show="pagoSel == 1" class="card-input"><label  aria-label="monto" >Monto Enviado</label>
@@ -302,6 +302,13 @@
                               </div>
 
                             </div>
+                          <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Referencia</label></div>
+                            <div class="row">
+                            <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            </div>
+                          <div class="col-6 col-md-4"  v-show="Vuelto > 0" ><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
+                            </div>
+        </div>
                           <div >
                               <div class="col-12">
                                <div>
@@ -337,7 +344,7 @@
                          </div>
                          </div>
 
-                          </q-card-sec>
+                          </q-card-section>
                         </q-card>
                     </div>
                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
@@ -435,7 +442,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
-import { QUploaderBase, date } from 'quasar'
+import { QUploaderBase, date, copyToClipboard } from 'quasar'
 import NovaredPayment from '../../components/payment/novared.vue'
 import NovaredPagomovil from '../../components/payment/pagomovilnovared.vue'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
@@ -732,14 +739,15 @@ export default {
     }).catch(e => console.error('error fetching data firebase', { e }))
   },
   mounted () {
-    this.operacion = 'I'
-    this.serie = this.obtenerSerie(this.config.referencia)
+    this.operacion = 'P'
+    //  this.serie = this.obtenerSerie(this.config.referencia)
     let fecha = new Date()
     // let diaA = fecha.getDate()
     let hoy = fecha.getDate()
 
-    this.referenciacompleta = this.operacion + this.config.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
+    console.log('laaaaaaaaaaa referencia', this.referenciacompleta)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -749,6 +757,10 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     ...mapActions('editor', ['bindBlocks']),
+    copy (referencia) {
+      copyToClipboard(referencia)
+      return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
+    },
     async useCupon () {
       this.loadingState = true
       const { cupon, cupons } = this
@@ -810,17 +822,18 @@ export default {
           return obj.currency === 'Bs'
         })
         this.montoV = parseFloat(rate.rateValue) * parseFloat(this.Vuelto)
+        // url : window.location.origin
         let options = { method: 'post',
 
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'createOrder',
             'token': this.config.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': this.montoV,
+            'monto': parseFloat(this.montoV).toFixed(2),
             'moneda': 'VES',
-            'formaPago': 'Interbank',
+            'formaPago': 'President',
             'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': 'pruebas@gmail.com',
@@ -1137,7 +1150,8 @@ export default {
               telefono: this.formatoTelefono(this.TelefonoEnviar),
               nacionalidad: this.nacionalidad.value,
               documento: this.CedulaEnviar,
-              vuelto: this.montoV,
+              VueltoBolivares: this.montoV,
+              VueltoDolares: this.Vuelto,
               banco: this.BancoEnviar.value,
               status: true
             }
@@ -1458,11 +1472,23 @@ export default {
     continuar () {
       console.log('cambio')
     },
+    referenciacompleta () {
+      console.log('cambio')
+    },
     configDates () {
       this.getDays()
     },
     nohayVuelto () {
       console.log('cambio')
+      this.operacion = 'P'
+      // this.serie = this.obtenerSerie(this.config.referencia)
+      let fecha = new Date()
+      // let diaA = fecha.getDate()
+      let hoy = fecha.getDate()
+
+      this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
+      this.referenciacompleta = this.referenciacompleta.toUpperCase()
+      console.log('laaaaaaaaaaa referencia', this.referenciacompleta)
     },
     Vuelto () {
       if (this.Vuelto > 0) {

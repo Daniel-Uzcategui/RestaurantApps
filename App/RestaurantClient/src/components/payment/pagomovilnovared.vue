@@ -185,7 +185,7 @@ export default {
   },
   mounted () {
     this.bindPaymentServ()
-    this.operacion = 'I'
+    this.operacion = 'P'
     this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
     this.serie = this.obtenerSerie(this.paymentServ.referencia)
     let fecha = new Date()
@@ -194,7 +194,8 @@ export default {
     console.log('aaaa', hoy)
     console.log(fecha)
 
-    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    // this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
@@ -344,6 +345,7 @@ export default {
         console.log('este valor de amount', this.amount)
         let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
+        // window.location.origin
         let options = { method: 'post',
 
           url: window.location.origin + '/transact',
@@ -352,9 +354,9 @@ export default {
             'bank': 'TransactVerify',
             'token': this.paymentServ.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': monto,
+            'monto': parseFloat(monto).toFixed(2),
             'moneda': 'VES',
-            'formaPago': 'Interbank',
+            'formaPago': 'President',
             'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': this.valueFields.correo,
