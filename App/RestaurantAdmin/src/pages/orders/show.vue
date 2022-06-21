@@ -932,9 +932,8 @@ export default {
         })
         console.log('laaaaaaaaaaa orderrrrr', this.order)
         let respuesta2 = await this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
-        if (respuesta2) {
-          this.statusmail = true
-        }
+        console.log('respuesta2', respuesta2)
+        this.statusmail = true
 
         return this.respuesta
       } catch (err) {
