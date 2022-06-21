@@ -904,7 +904,7 @@ export default {
         console.log('la url')
         // window.location.origin
         let options = { method: 'post',
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'Vuelto',
