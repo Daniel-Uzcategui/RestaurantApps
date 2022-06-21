@@ -902,8 +902,9 @@ export default {
         // let referencia = this.valueFields.referencia
         this.realizado = true
         console.log('la url')
+        // window.location.origin
         let options = { method: 'post',
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'Vuelto',
@@ -930,7 +931,7 @@ export default {
           message: 'El Vuelto se ha enviado con Exito'
         })
         console.log('laaaaaaaaaaa orderrrrr', this.order)
-        let respuesta2 = this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
+        let respuesta2 = await this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
         if (respuesta2) {
           this.statusmail = true
         }
