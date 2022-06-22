@@ -471,7 +471,7 @@ export default {
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
         let monto = this.total2
-        console.log('este valor de amount', this.amount)
+        console.log('este valor de total', monto)
         let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
         let options = { method: 'post',

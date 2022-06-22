@@ -341,8 +341,8 @@ export default {
 
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
-        let monto = this.total
-        console.log('este valor de amount', this.amount)
+        let monto = parseFloat(this.total) + parseFloat(this.delivery)
+        console.log('este valor de delivery', this.delivery)
         let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
         // window.location.origin

@@ -822,6 +822,7 @@ export default {
           return obj.currency === 'Bs'
         })
         this.montoV = parseFloat(rate.rateValue) * parseFloat(this.Vuelto)
+        console.log('monto en Bolivares', this.montoV)
         // url : window.location.origin
         let options = { method: 'post',
 
