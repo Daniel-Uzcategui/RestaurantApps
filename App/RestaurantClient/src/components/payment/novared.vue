@@ -482,7 +482,7 @@ export default {
             'bank': 'TransactVerify',
             'token': this.paymentServ.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': monto,
+            'monto': parseFloat(monto).toFixed(2),
             'moneda': 'USD',
             'formaPago': this.metodopago.value,
             'referencia': this.referenciacompleta,
