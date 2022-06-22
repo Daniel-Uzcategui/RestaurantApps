@@ -71,7 +71,7 @@
               </div>
               <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
                 <p class="text-bold">Vuelto Bs</p>
-                <p>{{(order.vuelto.VueltoBolivares).toFixed(2)}}</p>
+                <p>{{(order.vuelto.VueltoBolivares)}}</p>
               </div>
                <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto2 && verificarVuelto">
                 <p class="text-bold">Referencia</p>
@@ -930,7 +930,6 @@ export default {
           color: 'blue',
           message: 'El Vuelto se ha enviado con Exito'
         })
-        console.log('laaaaaaaaaaa orderrrrr', this.order)
         let respuesta2 = await this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
         console.log('respuesta2', respuesta2)
         this.statusmail = true
