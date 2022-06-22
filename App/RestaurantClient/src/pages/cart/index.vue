@@ -306,6 +306,7 @@
                             <div class="row">
                             <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
                             </div>
+
                           <div class="col-6 col-md-4"  v-show="Vuelto > 0" ><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
                             </div>
         </div>
@@ -343,6 +344,9 @@
                             <q-input filled mask="########" v-show="Vuelto > 0" v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
                          </div>
                          </div>
+                          <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Vuelto Bs.</label></div>
+                         <div class="col col-md-8"><q-input  disable v-model="montoV"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            </div>
 
                           </q-card-section>
                         </q-card>
@@ -804,6 +808,10 @@ export default {
       if (this.montoEnviar !== '') {
         this.Vuelto = parseFloat(this.montoEnviar) - (parseFloat(this.totalPrice) + parseFloat(this.deliveryPrice))
         console.log('el vuelto es', this.Vuelto)
+        let rate = this.ratesComp.find(obj => {
+          return obj.currency === 'Bs'
+        })
+        this.montoV = (parseFloat(rate.rateValue) * parseFloat(this.Vuelto)).toFixed(2)
       }
     },
     validar () {
@@ -818,10 +826,7 @@ export default {
         let telefono = this.formatoTelefono(this.TelefonoEnviar)
         this.loading2 = true
         let ip = '186.91.191.248'
-        let rate = this.ratesComp.find(obj => {
-          return obj.currency === 'Bs'
-        })
-        this.montoV = parseFloat(rate.rateValue) * parseFloat(this.Vuelto)
+
         console.log('monto en Bolivares', this.montoV)
         // url : window.location.origin
         let options = { method: 'post',
@@ -832,7 +837,7 @@ export default {
             'bank': 'createOrder',
             'token': this.config.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': parseFloat(this.montoV).toFixed(2),
+            'monto': this.montoV,
             'moneda': 'VES',
             'formaPago': 'President',
             'referencia': this.referenciacompleta,
