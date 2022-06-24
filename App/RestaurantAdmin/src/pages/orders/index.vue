@@ -102,10 +102,11 @@ export default {
         let productos = order.productos
         if (productos) {
           Object.keys(productos).forEach(key => {
+            console.log(key, 'key')
             let producto = productos[key]
-            let oldprod = prods[producto.id]
+            let oldprod = prods[producto.prodId]
             console.log(producto, 'prod')
-            prods[producto.id] = {
+            prods[producto.prodId] = {
               quantity: oldprod && oldprod.quantity ? oldprod.quantity + producto.quantity : producto.quantity,
               prodPrice: oldprod && oldprod.prodPrice ? oldprod.prodPrice + producto.prodPrice : producto.prodPrice,
               name: producto.name,
@@ -115,6 +116,7 @@ export default {
         }
       }
       let out = []
+      console.log(prods, 'PRODS')
       Object.keys(prods).forEach(key => {
         let producto = prods[key]
         out.push({
