@@ -427,8 +427,11 @@
               no-data-label="No se encontraron registros"
             >
               <template v-slot:top-right>
-               <!-- <q-btn color="white" text-color="black" label="Editar compra">
-                </q-btn> -->
+               <q-btn  push
+                  color="red"
+                  no-caps label="Orden de Compra"
+                  @click="verorden=true"
+                  />
               </template>
               <template v-slot:body="props">
                 <q-tr :props="props">
@@ -677,6 +680,32 @@
       >
       </add-payment>
     </q-dialog>
+    <q-dialog  v-if="verificarOrdenCompra" v-model="verorden" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;">
+          <q-card>
+            <q-card-section>
+              <h6>Detalle</h6>
+            </q-card-section>
+      <q-card-section>
+             <q-input disable label="Fecha Vencimiento" v-model="order.ordencompra.date"></q-input>
+             <br>
+              <q-input disable label="Monto" v-model="order.ordencompra.monto"></q-input>
+            <br>
+             <q-input disable label="Porcentaje de Retención" v-model="order.ordencompra.porcentaje"></q-input>
+             <br>
+             <q-input disable label="Nro Orden Compra" v-model="order.ordencompra.ordencompra"></q-input>
+             <br>
+              <viewer :img="order.ordencompra.photo"></viewer>
+        </q-card-section>
+        <q-card-section>
+          <br>
+             <q-btn push no-caps label="Aceptar" color="blue" v-close-popup/>
+             </q-card-section>
+          </q-card>
+
+           </q-dialog>
   </q-page>
 </template>
 
@@ -709,6 +738,7 @@ export default {
       realizado: false,
       realizado2: false,
       photoDiag: false,
+      verorden: false,
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
@@ -781,6 +811,13 @@ export default {
         return true
       }
     },
+    verificarOrdenCompra () {
+      if (this.order?.ordencompra === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
     verificarVuelto2 () {
       if (this.order.vuelto?.trx === undefined) {
         return false
@@ -800,6 +837,7 @@ export default {
         return obj.id === this.$route.query.Order_Id
       })
     },
+
     getClient () {
       let order = this.order
       if (order && order.id) {
