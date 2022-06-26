@@ -2,8 +2,8 @@
   <div :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-mt-lg'" >
      <div>
   </div>
-    <div>
-      <q-table flat bordered
+      <q-table
+      v-if="report === 'estandar'"
       class="table"
       :loading="loading"
       style="border-radius: 28px"
@@ -16,88 +16,57 @@
       rows-per-page-label=" "
       >
 
-      <template v-slot:top-right>
-        <q-input label="Buscar Cliente" v-model="filtrado" dark  />
-        <div class="q-mr-sm">
-      <q-badge v-if="dateRange !== null " color="blue-grey">
-        {{ dateRange.from }} - {{ dateRange.to }}
-      </q-badge>
-       <q-badge v-else>
-        Últimos 30 días
-      </q-badge>
-    </div>
-
-    <q-btn icon="event" class="q-mr-sm" round color="blue">
-      <q-popup-proxy transition-show="scale" transition-hide="scale">
-        <q-date color="blue" v-model="dateRango" range >
-          <div class="row items-center justify-end q-gutter-sm">
-            <q-btn label="Borrar Filtro" @click="dateRango = null" color="white" flat v-close-popup/>
-          </div>
-        </q-date>
-      </q-popup-proxy>
-    </q-btn>
-        <q-btn no-caps round color="green" push icon="archive" @click="exportTable"/>
-      </template>
+     <template v-slot:top-right>
+        <tabletop
+        :filtrado="filtrado"
+        :report="report"
+        :dateRange="dateRange"
+        :dateRango="dateRango"
+        @exportTable="exportTable"
+        @report="(e) => report = e"
+        @dateRango="(e) => dateRango = e"
+        @filtrado="(e) => filtrado = e" />
+</template>
 
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" >
-           <q-td v-if="$q.screen.lt.md"  auto-width>
-             <q-checkbox />
-          </q-td>
-           <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-            :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'text-white radius'"
-          >
-
-            {{ col.value }}
-
-          </q-td>
-        </q-tr>
+        <tablestandard :item="false" :props="props" @routerpush="(e) => $router.push({ path: '/orders/show', query: { Order_Id: e } })" />
       </template>
       <template v-slot:item="props">
-        <q-list class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
-              <q-item>
-                <q-item-section>
-                  <q-item-label :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'text-white radius'" >{{props.row.factura}}</q-item-label>
-                </q-item-section>
-                <q-item-section >
-                  <q-item-label>{{props.row.status}}</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                <q-icon name="edit" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
-              </q-item-section>
-              </q-item>
-              <q-separator></q-separator>
-            </q-list>
-        <!-- <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
-          <q-card>
-            <q-card-section>
-              <q-icon name="search" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
-            </q-card-section>
-            <q-separator />
-            <q-list dense>
-              <q-item v-for="col in props.cols" :key="col.name">
-                <q-item-section>
-                  <q-item-label>{{ col.label }}</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-item-label :style="$q.screen.lt.md ? 'max-width: 200px' : ''" caption>{{ col.value }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card>
-        </div> -->
+        <tablestandard :item="true" :props="props" @routerpush="(e) => $router.push({ path: '/orders/show', query: { Order_Id: e } })" />
       </template>
     </q-table>
- </div>
+  <q-table flat bordered
+  v-if="report === 'tproducts'"
+    class="table"
+      :loading="loading"
+      style="border-radius: 28px"
+      title="Total de productos Vendidos"
+    :data="dataprod"
+    :visible-columns="['nombre', 'monto', 'cantidad']"
+    row-key="id"
+      no-data-label="No se encontraron registros"
+      rows-per-page-label=" "
+  >
+  <template v-slot:top-right>
+          <tabletop
+          :filtrado="filtrado"
+          :report="report"
+          :dateRange="dateRange"
+          :dateRango="dateRango"
+          @exportTable="exportTable"
+          @report="(e) => report = e"
+          @dateRango="(e) => dateRango = e"
+          @filtrado="(e) => filtrado = e" />
+  </template>
+ </q-table>
 </div>
 </template>
 
 <script>
 import { exportFile, date } from 'quasar'
 import { mapGetters, mapActions } from 'vuex'
+import tablestandard from '../../components/order/tablestandard.vue'
+import tabletop from '../../components/order/tabletopright.vue'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== void 0
@@ -120,12 +89,45 @@ function wrapCsvValue (val, formatFn) {
 }
 
 export default {
+  components: { tablestandard, tabletop },
   computed: {
     ...mapGetters('corporativos', ['branches']),
     ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
     ...mapGetters('client', ['clients', 'clients2']),
     ...mapGetters('localization', ['localizations']),
-
+    dataprod () {
+      let prods = {}
+      console.log('dataprod', JSON.stringify(this.ordersfilter))
+      for (let order of this.ordersfilter) {
+        let productos = order.productos
+        if (productos) {
+          Object.keys(productos).forEach(key => {
+            console.log(key, 'key')
+            let producto = productos[key]
+            let oldprod = prods[producto.prodId]
+            console.log(producto, 'prod')
+            prods[producto.prodId] = {
+              quantity: oldprod && oldprod.quantity ? oldprod.quantity + producto.quantity : producto.quantity,
+              prodPrice: oldprod && oldprod.prodPrice ? oldprod.prodPrice + producto.prodPrice : producto.prodPrice,
+              name: producto.name,
+              id: producto.prodId
+            }
+          })
+        }
+      }
+      let out = []
+      console.log(prods, 'PRODS')
+      Object.keys(prods).forEach(key => {
+        let producto = prods[key]
+        out.push({
+          id: producto.id,
+          nombre: producto.name,
+          monto: producto.prodPrice.toFixed(2) + ' $',
+          cantidad: producto.quantity
+        })
+      })
+      return out
+    },
     dateRango: {
       get () {
         return this.dateRange
@@ -176,6 +178,7 @@ export default {
             'nameSede': nameSede,
             'status': statusOrder,
             'paid': mtoTotal,
+            'productos': obj.productos,
             'dateIn': obj.dateIn,
             'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
             'factura': obj.factura,
@@ -265,23 +268,6 @@ export default {
         end: end
       }
     },
-    // getLogDate (obj) {
-    //   let ret = obj.statusLog?.find(x => x.status === 3)
-    //   if (typeof ret === 'undefined') {
-    //     return new Date()
-    //   }
-    //   return ret.dateIn.toDate()
-    // },
-    // clientOrders (value) {
-    //   return this.clients.find(obj => {
-    //     return obj.id === value
-    //   })
-    // },
-    // clientOrders2 (value) {
-    //   return this.clients2.find(obj => {
-    //     return obj.id === value
-    //   })
-    // },
     buscartiposervicio (objeto) {
       let obj
       //   console.log('el tipo de servicio ', objeto.tipEnvio)
@@ -296,13 +282,6 @@ export default {
       let obj
       obj = this.buscarsurcursal(objeto)
       return obj
-    },
-    iditificarVuelto (row) {
-      if (row.vuelto !== undefined) {
-        return row.vuelto.status
-      } else {
-        return false
-      }
     },
     buscarsurcursal (objeto) {
       console.log('entra objeto', objeto)
@@ -376,6 +355,7 @@ export default {
   },
   data () {
     return {
+      report: 'estandar',
       loading: false,
       selected: [],
       arrecleinte: [],
@@ -394,6 +374,7 @@ export default {
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
       ]
+
     }
   }
 }
