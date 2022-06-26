@@ -172,7 +172,7 @@
                          </q-card-section>
                          <q-card-section v-else>
                            <div class="text-h5">Escoja o agregue un cliente</div>
-                           <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
+                           <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null; "  @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e" @DateInput ='CargadetalleDate' @PhotoInput ='CargadetallePhoto' @PorcentajeInput='CargadetallePorcentaje' @MontoInput='CargadetalleMonto' @OrderInput ='CargadetalleOrden'/>
                          </q-card-section>
                          <q-card-section v-show="!['0', '2', '3','4'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
@@ -558,6 +558,7 @@ export default {
       cupons: [],
       openDate: false,
       openHours: false,
+      objetodetalleorden: {},
       montoV: 0,
       isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
       cupon: '',
@@ -764,6 +765,41 @@ export default {
     copy (referencia) {
       copyToClipboard(referencia)
       return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
+    },
+    CargadetalleDate (fecha) {
+      if (fecha === '') {
+        this.objetodetalleorden.date = 'N/A'
+      } else {
+        this.objetodetalleorden.date = fecha
+      }
+    },
+    CargadetallePhoto (photo) {
+      if (photo === '') {
+        this.objetodetalleorden.photo = 'N/A'
+      } else {
+        this.objetodetalleorden.photo = photo
+      }
+    },
+    CargadetallePorcentaje (porcentaje) {
+      if (porcentaje === '') {
+        this.objetodetalleorden.porcentaje = 'N/A'
+      } else {
+        this.objetodetalleorden.porcentaje = porcentaje
+      }
+    },
+    CargadetalleMonto (monto) {
+      if (monto === '') {
+        this.objetodetalleorden.monto = 'N/A'
+      } else {
+        this.objetodetalleorden.monto = monto
+      }
+    },
+    CargadetalleOrden (ordencompra) {
+      if (ordencompra === '') {
+        this.objetodetalleorden.ordencompra = 'N/A'
+      } else {
+        this.objetodetalleorden.ordencompra = ordencompra
+      }
     },
     async useCupon () {
       this.loadingState = true
@@ -1130,6 +1166,10 @@ export default {
       let customer = this.currentUser
       let cartManage = this.cartMan()
       let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: (this.tipEnvio === '1' || this.tipEnvio === '4') ? parseFloat(parseFloat(Number(this.getTotalCarrito()[2])) + parseFloat(Number(this.deliveryPrice))) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      if (this.tipEnvio === '3') {
+        order = { ...order, ordencompra: this.objetodetalleorden }
+      }
+
       if (this.addId && this.addId.id) {
         order = { ...order, address: this.addId.id, addressC: this.addId }
       }
