@@ -429,7 +429,7 @@
               <template v-slot:top-right>
                <q-btn  push
                   color="red"
-                  no-caps label="Orden de Compra"
+                  no-caps label="Ver Detalle"
                   @click="verorden=true"
                   />
               </template>
