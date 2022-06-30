@@ -82,7 +82,7 @@
                   push
                   color="red"
                   no-caps
-                  label="Vuelto"
+                  label="Realizar Vuelto"
                   :loading=realizado
                   v-show="statusVuelto"
                   @click="RealizarVuelto"
