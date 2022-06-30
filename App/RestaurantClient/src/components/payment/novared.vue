@@ -476,7 +476,7 @@ export default {
         let ip = '186.91.191.248'
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'TransactVerify',

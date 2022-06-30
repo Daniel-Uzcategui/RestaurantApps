@@ -255,7 +255,12 @@ export default {
       this.$emit('PhotoInput', this.photoSRC)
     },
     Porcentaje () {
-      this.$emit('PorcentajeInput', this.Porcentaje)
+      if (this.Porcentaje > 100) {
+        this.$q.dialog({ title: 'Error', message: 'Porcetaje no puede ser mayor del 100 %' })
+        this.Porcentaje = ''
+      } else {
+        this.$emit('PorcentajeInput', this.Porcentaje)
+      }
     },
     Monto () {
       this.$emit('MontoInput', this.Monto)
