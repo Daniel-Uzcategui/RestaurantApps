@@ -752,7 +752,8 @@ export default {
   },
   mounted () {
     this.bindpaymentsev()
-    console.log('los valores de las ordenes locas ', this.order)
+    this.binderrores()
+    console.log('los valores de los errores ', this.error)
     if (this.order.vuelto !== undefined) {
       this.statusVuelto = this.order.vuelto.status
     } else {
@@ -793,6 +794,7 @@ export default {
     },
     ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
     ...mapGetters('config', ['rates', 'configs2']),
+    ...mapGetters('errores', ['error']),
     ...mapGetters('user', ['currentUser']),
     orderStatus () {
       if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
@@ -974,14 +976,26 @@ export default {
 
         return this.respuesta
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          mensaje = this.error.find(x => x.codigo === err.response.status)
+          this.realizado = false
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }
@@ -992,6 +1006,7 @@ export default {
     ...mapActions('order', ['saveOrder', 'setVuelto', 'emailAdminClients', 'emailClients']),
     ...mapActions('menu', ['bindMenu', 'bindPromos']),
     ...mapActions('client', ['bindClients']),
+    ...mapActions('errores', ['binderrores']),
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindRates', 'bindpaymentsev']),

@@ -16,6 +16,7 @@ import seller from './seller'
 import rider from './rider'
 import corporativos from './corporativo'
 import data from './data'
+import errores from './errores'
 Vue.use(Vuex)
 
 /*
@@ -39,6 +40,7 @@ export default function (/* { ssrContext } */) {
       payment,
       localization,
       config,
+      errores,
       editor
     },
     actions: {

@@ -97,7 +97,8 @@ export default {
     ...mapGetters('localization', ['localizations']),
     dataprod () {
       let prods = {}
-      console.log('dataprod', JSON.stringify(this.ordersfilter))
+      // let prodPrice = 0
+      console.log('dataprod', this.ordersfilter)
       for (let order of this.ordersfilter) {
         let productos = order.productos
         if (productos) {
@@ -105,10 +106,11 @@ export default {
             console.log(key, 'key')
             let producto = productos[key]
             let oldprod = prods[producto.prodId]
+            console.log('producto viejo', oldprod)
             console.log(producto, 'prod')
             prods[producto.prodId] = {
               quantity: oldprod && oldprod.quantity ? oldprod.quantity + producto.quantity : producto.quantity,
-              prodPrice: oldprod && oldprod.prodPrice ? oldprod.prodPrice + producto.prodPrice : producto.prodPrice,
+              prodPrice: oldprod && oldprod.prodPrice ? (oldprod.prodPrice) + (producto.prodPrice * producto.quantity) : producto.prodPrice,
               name: producto.name,
               id: producto.prodId
             }
