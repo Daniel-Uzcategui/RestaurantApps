@@ -41,12 +41,19 @@
       :loading="loading"
       style="border-radius: 28px"
       title="Total de productos Vendidos"
-    :data="dataprod"
+    :data="dataprod.data"
     :visible-columns="['nombre', 'monto', 'cantidad']"
     row-key="id"
       no-data-label="No se encontraron registros"
       rows-per-page-label=" "
   >
+  <template v-slot:bottom-row>
+        <q-tr>
+          <q-td colspan="100%">
+            Monto Total => {{dataprod.total}}
+          </q-td>
+        </q-tr>
+      </template>
   <template v-slot:top-right>
           <tabletop
           :filtrado="filtrado"
@@ -110,7 +117,7 @@ export default {
             console.log(producto, 'prod')
             prods[producto.prodId] = {
               quantity: oldprod && oldprod.quantity ? oldprod.quantity + producto.quantity : producto.quantity,
-              prodPrice: oldprod && oldprod.prodPrice ? (oldprod.prodPrice) + (producto.prodPrice * producto.quantity) : producto.prodPrice,
+              monto: oldprod && oldprod.monto ? (oldprod.monto) + (producto.prodPrice * producto.quantity) : producto.prodPrice * producto.quantity,
               name: producto.name,
               id: producto.prodId
             }
@@ -118,17 +125,20 @@ export default {
         }
       }
       let out = []
+      let total = 0
       console.log(prods, 'PRODS')
       Object.keys(prods).forEach(key => {
         let producto = prods[key]
         out.push({
           id: producto.id,
           nombre: producto.name,
-          monto: producto.prodPrice.toFixed(2) + ' $',
+          monto: producto.monto.toFixed(2) + ' $',
           cantidad: producto.quantity
         })
+        total = total + producto.monto
       })
-      return out
+      total = total.toFixed(2) + ' $'
+      return { data: out, total }
     },
     dateRango: {
       get () {
