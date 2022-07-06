@@ -60,10 +60,15 @@
           :report="report"
           :dateRange="dateRange"
           :dateRango="dateRango"
+          :allestatus="allestatus"
+          :statusFilter="statusFilter"
           @exportTable="exportTable"
           @report="(e) => report = e"
           @dateRango="(e) => dateRango = e"
-          @filtrado="(e) => filtrado = e" />
+          @statusFilter="(e) => statusFilter = e"
+          @filtrado="(e) => filtrado = e">
+
+          </tabletop>
   </template>
  </q-table>
 </div>
@@ -154,7 +159,9 @@ export default {
       let fullname, statusOrder, typeService, nameSede
       for (i = 0; i < this.ordersClient.length; i++) {
         obj = this.ordersClient[i]
-        if (!(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
+        /// Fncion filtro aqui
+        let filterType = this.filtroOrderType(obj) // --- return true si statusFilter.include(statusOrder) || statusFilter.lenght[0]
+        if (filterType && !(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
           if (obj.tipEnvio === '3') {
             console.log(obj)
             clientforOrder = obj.buyOrder.Client
@@ -268,6 +275,10 @@ export default {
     }
   },
   methods: {
+    filtroOrderType () {
+      /// crear logica aqui
+      return true
+    },
     getDateRange () {
       if (this.dateRange === null) {
         return null
@@ -367,6 +378,7 @@ export default {
   },
   data () {
     return {
+      statusFilter: [3],
       report: 'estandar',
       loading: false,
       selected: [],
