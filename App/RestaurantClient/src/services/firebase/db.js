@@ -18,6 +18,9 @@ export const firestore = () => {
     return firebase.firestore().doc(`ambiente/${local}`)
   }
 }
+export const fireAdmin = () => {
+  return firebase.firestore()
+}
 export const firestoreMain = () => {
   return firebase.firestore().doc('ambiente/chopzi')
 }

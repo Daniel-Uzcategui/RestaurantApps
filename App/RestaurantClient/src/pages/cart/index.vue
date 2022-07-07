@@ -867,7 +867,7 @@ export default {
         // url : window.location.origin
         let options = { method: 'post',
 
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'createOrder',
@@ -887,14 +887,26 @@ export default {
         this.loading2 = false
         return respuesta
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          this.loading2 = false
+          mensaje = this.error.find(x => x.codigo === err.response.status)
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }

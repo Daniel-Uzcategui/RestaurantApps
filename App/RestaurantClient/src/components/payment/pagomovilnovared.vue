@@ -83,6 +83,7 @@ export default {
 
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
+    ...mapGetters('errores', ['error']),
     desahabilitadorefencia () {
       return this.valueFields.referencia === ''
     },
@@ -185,6 +186,7 @@ export default {
   },
   mounted () {
     this.bindPaymentServ()
+    this.binderrores()
     this.operacion = 'P'
     this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
     this.serie = this.obtenerSerie(this.paymentServ.referencia)
@@ -203,6 +205,7 @@ export default {
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
+    ...mapActions('errores', ['binderrores']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
 
     async payment () {
@@ -348,7 +351,7 @@ export default {
         // window.location.origin
         let options = { method: 'post',
 
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'TransactVerify',
@@ -380,14 +383,27 @@ export default {
         }
         return resp
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          mensaje = this.error.find(x => x.codigo === err.response.status)
+          this.pagando = false
+          this.estado = true
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }
