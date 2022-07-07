@@ -394,6 +394,18 @@
                         </div>
                      <div v-else>No hay tasa de cambio colocada</div>
                     </div>
+                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 12">
+                       <div v-if="ratesComp.length">
+                       <Mercantilc2p
+                         :ordersId=currentUser.cedula
+                         :credit="true"
+                          :total="totalPrice"
+                          :delivery ="parseFloat(deliveryPrice)"
+                        @payment-done='payment' />
+
+                        </div>
+                     <div v-else>No hay tasa de cambio colocada</div>
+                    </div>
                     <div class="q-pt-md col-12 column items-center">
                       <div>
                       <div v-if="tipEnvio === '1' || tipEnvio === '4'" >
@@ -452,6 +464,7 @@ import NovaredPagomovil from '../../components/payment/pagomovilnovared.vue'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 import ClassicList from '../../components/cart/classicList/classicList.vue'
 import Addresses from '../../components/addresses.vue'
+import Mercantilc2p from '../../components/payment/Mercantilc2p.vue'
 import clientList from '../../components/seller/clientlist.vue'
 import Address2 from '../../components/address2.vue'
 export default {
@@ -469,6 +482,7 @@ export default {
     photoUpload,
     ClassicList,
     Addresses,
+    Mercantilc2p,
     Address2
   },
   computed: {
@@ -533,6 +547,7 @@ export default {
       if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
       if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Dolares', value: 10, color: 'blue' }) }
       if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Movil Bs', value: 11, color: 'blue' }) }
+      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pasarela Pago Movil  Mercantil Bs', value: 12, color: 'blue' }) }
       return tip
     },
     meta () {
