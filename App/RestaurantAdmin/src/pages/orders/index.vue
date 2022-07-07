@@ -394,7 +394,7 @@ export default {
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
         { name: 'status', required: true, label: 'Estatus', field: 'status', sortable: true },
-        { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
+        { name: 'paid', label: 'Monto', field: row => row.paid + '$', sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
       ]
