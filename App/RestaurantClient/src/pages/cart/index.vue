@@ -1297,6 +1297,15 @@ export default {
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.pagomovil }
           break
+        case 12:
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa?.tarifa }
+            order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
+          }
+          order = { ...order, onlinePay: reg }
+          console.log('los valores', order.onlinePay)
+          order = { ...order, payto: this.config.pagomovil }
+          break
         default:
           break
       }
