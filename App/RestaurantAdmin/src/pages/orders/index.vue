@@ -162,7 +162,6 @@ export default {
         /// Fncion filtro aqui
         let filterType = this.filtroOrderType(obj) // --- return true si statusFilter.include(statusOrder) || statusFilter.lenght[0]
         if (filterType && !(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
-          console.log('entre a recalcular')
           if (obj.tipEnvio === '3') {
             console.log(obj)
             clientforOrder = obj.buyOrder.Client
@@ -275,10 +274,8 @@ export default {
       }).catch(e => console.error(e))
     },
     statusFilter () {
-      console.log('cambio el valor', this.statusFilter)
     },
     OrderClient () {
-      console.log('este es el arreglo', this.OrderClient)
       if (this.estado) {
         this.ordersfilter = this.OrderClient.concat(this.ordersfilter)
       } else {
@@ -290,13 +287,9 @@ export default {
     filtroOrderType (objeto) {
       let obj
       let valor = false
-      console.log('el objeto y status', objeto.status, 'factura', objeto.factura)
-      console.log('los valores de statusfilter', this.statusFilter, 'y su longitud', this.statusFilter.length)
       for (let i = 0; i < this.statusFilter.length; i++) {
         obj = this.statusFilter[i]
-        console.log('valor de obj', obj, 'valor de objeto.status', objeto.status)
         if (obj !== objeto.status) {
-          console.log('etreeeeeeeeee')
           valor = false
         } else {
           valor = true
