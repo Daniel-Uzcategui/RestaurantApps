@@ -75,6 +75,14 @@
           outlined :options="estatus_options" label="Pasarela de Pago" />
         </div>
         </div>
+         <div class="flex-break q-py-md "></div>
+        <div class="row header-container">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
+          <p>Pago Movil Mercantil</p>
+         <q-option-group color="blue" inline  filled rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal "
+          outlined :options="estatus_options" label="Pago Movil Mercantil" />
+        </div>
+        </div>
         <div class="flex-break q-py-md "></div>
         <div class="row header-container">
         <!-- <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
@@ -231,6 +239,46 @@
           outlined label="referencia" />
         </div>
         </div>
+        <div v-if="statuspagomovil"  class="row header-container">
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <p>Pasarela de Pago</p>
+<q-option-group color="blue" inline  filled rounded v-model="PagoMovil2.ambiente" map-options emit-value standout="bg-teal "
+          outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.claveSecreta" standout="bg-teal "
+          outlined label="Calve Secreta" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.clavecompra" standout="bg-teal "
+          outlined label="Clave de Compra" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.integratorId" standout="bg-teal "
+          outlined label="integratorId" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.merchantId" standout="bg-teal "
+          outlined label="merchantId" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.payment_method" standout="bg-teal "
+          outlined label="payment_method" />
+        </div>
+         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.terminalId" standout="bg-teal "
+          outlined label="terminalId" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.trx_type" standout="bg-teal "
+          outlined label="trx_type" />
+        </div>
+        <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PagoMovil2.xibm" standout="bg-teal "
+          outlined label="xibm" />
+        </div>
+
+        </div>
 
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
@@ -345,6 +393,18 @@ export default {
         requestUser: ''
 
       },
+      PagoMovil2: {
+        ambiente: '',
+        claveSecreta: '',
+        clavecompra: '',
+        integratorId: '',
+        merchantId: '',
+        payment_method: '',
+        terminalId: '',
+        trx_type: '',
+        xibm: ''
+
+      },
       Mercantil: {
         xibm: '',
         integratorId: '',
@@ -406,6 +466,7 @@ export default {
         statusCash: this.statusCash,
         Mercantil: this.Mercantil,
         Novared: this.Novared2,
+        PagoMovil: this.PagoMovil2,
         statusNovaredzelle: this.statusNovaredzelle,
         statusNovaredpagomovil: this.statusNovaredpagomovil,
         // statusEncomienda: this.statusEncomienda,
@@ -522,6 +583,9 @@ export default {
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.Novared2
       key = 'Novared'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.PagoMovil2
+      key = 'PagoMovil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       this.$q.dialog({
         title: '',

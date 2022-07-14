@@ -52,6 +52,7 @@ export default function () {
     ordercorporativo: [],
     orderencomienda: [],
     ordercorporativo2: [],
-    Encomienda: {}
+    Encomienda: {},
+    Status: null
   }
 }

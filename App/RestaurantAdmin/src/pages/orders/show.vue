@@ -8,11 +8,18 @@
         <q-card-section class="q-cardtop header">
           <div class="text-h5">Orden {{order.factura}}</div>
           <div class="absolute-bottom-right q-pa-md">
-            <q-btn
+            <q-btn v-if="Status !== ''"
               flat
               color="white"
               icon="arrow_back"
-              @click="$router.replace('/Orders/index')"
+              @click="$router.push({ path: '/orders/index', query: { status: Status} })"
+            >
+            </q-btn>
+            <q-btn v-if="Status === ''"
+              flat
+              color="white"
+              icon="arrow_back"
+              @click="$router.push({ path: '/orders/index', query: { status: 3} })"
             >
             </q-btn>
           </div>
@@ -66,7 +73,7 @@
                 <p>{{order.paid}}</p>
               </div>
                  <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
-                <p class="text-bold">Total Enviado $</p>
+                <p class="text-bold">Total Recibido $</p>
                 <p>{{(order.paid + order.vuelto.VueltoDolares).toFixed(2)}}</p>
               </div>
               <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
@@ -77,6 +84,11 @@
                 <p class="text-bold">Referencia</p>
                 <p class="text-green">{{order.vuelto.trx.referencia}}</p>
               </div>
+              <div class="header-cell q-ma-sm col-2" v-if="verificarPagoMovil">
+                <p class="text-bold">Referencia</p>
+                <p class="text-green">{{order.onlinePay.payment_reference}}</p>
+              </div>
+
               <div class="header-cell q-ma-sm col-2">
                 <q-btn
                   push
@@ -792,7 +804,7 @@ export default {
       }
       return null
     },
-    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd', 'Status']),
     ...mapGetters('config', ['rates', 'configs2']),
     ...mapGetters('errores', ['error']),
     ...mapGetters('user', ['currentUser']),
@@ -808,6 +820,13 @@ export default {
     },
     verificarVuelto () {
       if (this.order?.vuelto === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
+    verificarPagoMovil () {
+      if (this.order?.onlinePay === undefined) {
         return false
       } else {
         return true

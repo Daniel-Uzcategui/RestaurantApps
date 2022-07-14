@@ -46,6 +46,7 @@
               color="green"
               type="checkbox"
               inline
+              name ="foo"
             />
         </div>
 </div>

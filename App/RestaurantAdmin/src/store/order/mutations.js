@@ -10,3 +10,6 @@ export function alterRange (state, payload) {
 export function encomienda (state, payload) {
   state.Encomienda = payload
 }
+export function Status (state, payload) {
+  state.Status = payload.status
+}

@@ -29,7 +29,7 @@
 </template>
 
       <template v-slot:body="props">
-        <tablestandard :item="false" :props="props" @routerpush="(e) => $router.push({ path: '/orders/show', query: { Order_Id: e } })" />
+        <tablestandard :item="false" :props="props"  @routerpush="(e) => $router.push({ path: '/orders/show', query: { Order_Id: e } })" />
       </template>
       <template v-slot:item="props">
         <tablestandard :item="true" :props="props" @routerpush="(e) => $router.push({ path: '/orders/show', query: { Order_Id: e } })" />
@@ -50,7 +50,7 @@
   <template v-slot:bottom-row>
         <q-tr>
           <q-td colspan="100%">
-            Monto Total => {{dataprod.total}}
+            Monto Total => {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(dataprod.total))}}
           </q-td>
         </q-tr>
       </template>
@@ -69,6 +69,7 @@
           @filtrado="(e) => filtrado = e">
 
           </tabletop>
+          <q-btn  @click="Marcar()"> Quitar Filtro</q-btn>
   </template>
  </q-table>
 </div>
@@ -137,7 +138,7 @@ export default {
         out.push({
           id: producto.id,
           nombre: producto.name,
-          monto: producto.monto.toFixed(2) + ' $',
+          monto: new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(producto.monto),
           cantidad: producto.quantity
         })
         total = total + producto.monto
@@ -157,10 +158,58 @@ export default {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago, sedeforOrder, sucursalforOrder
       let fullname, statusOrder, typeService, nameSede
+      if (typeof this.$route.query.status !== 'undefined') {
+        this.setear()
+      }
       for (i = 0; i < this.ordersClient.length; i++) {
         obj = this.ordersClient[i]
         /// Fncion filtro aqui
         let filterType = this.filtroOrderType(obj) // --- return true si statusFilter.include(statusOrder) || statusFilter.lenght[0]
+        if (((typeof this.$route.query.status !== 'undefined') && (parseInt(this.$route.query.status) === obj.status))) {
+          if (obj.tipEnvio === '3') {
+            console.log(obj)
+            clientforOrder = obj.buyOrder.Client
+            sucursalforOrder = obj.buyOrder.Branch
+            console.log('valores retornados', sucursalforOrder)
+            sedeforOrder = obj.sede
+            fullname = clientforOrder?.name + '-' + sucursalforOrder?.name
+            nameSede = sedeforOrder?.name
+            typeService = this.buscartiposervicio(obj)
+            console.log('los tipos de servicios', typeService)
+            if (typeof obj.typePayment !== 'undefined') {
+              tipoPago = this.buscartipopago(obj)
+              console.log('los tipos de pagos', tipoPago)
+            } else { tipoPago = '' }
+            statusOrder = this.buscarstatus(obj)
+          } else {
+            clientforOrder = obj.customer
+            sedeforOrder = obj.sede
+            fullname = typeof clientforOrder !== 'undefined' ? clientforOrder.nombre + ' ' + clientforOrder.apellido : 'No disponible'
+            nameSede = typeof sedeforOrder !== 'undefined' ? sedeforOrder.name : 'No disponible'
+            typeService = typeof obj.tipEnvio !== 'undefined' && obj.tipEnvio !== null ? this.tipoServicio[obj.tipEnvio]['label'] : 'No disponible'
+            if (typeof obj.typePayment !== 'undefined') {
+              tipoPago = this.typePayment_options && this.typePayment_options[obj.typePayment] && this.typePayment_options[obj.typePayment]['label'] ? this.typePayment_options[obj.typePayment]['label'] : ''
+            } else { tipoPago = '' }
+            statusOrder = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : ''
+          }
+          this.Status({ status: this.$route.query.status })
+          let mtoTotal = obj.paid
+          OrderClient.push({
+            'id': obj.id,
+            'nombre': fullname,
+            'typePayment': tipoPago,
+            'nameSede': nameSede,
+            'status': statusOrder,
+            'paid': mtoTotal,
+            'productos': obj.productos,
+            'dateIn': obj.dateIn,
+            'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
+            'factura': obj.factura,
+            'vuelto': obj?.vuelto,
+            // 'table': tableOrder,
+            'typeService': typeService
+          })
+        }
         if (filterType && !(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
           if (obj.tipEnvio === '3') {
             console.log(obj)
@@ -188,25 +237,31 @@ export default {
             } else { tipoPago = '' }
             statusOrder = typeof obj.status !== 'undefined' ? this.allestatus[obj.status]['label'] : ''
           }
-
           let mtoTotal = obj.paid
-          OrderClient.push({
-            'id': obj.id,
-            'nombre': fullname,
-            'typePayment': tipoPago,
-            'nameSede': nameSede,
-            'status': statusOrder,
-            'paid': mtoTotal,
-            'productos': obj.productos,
-            'dateIn': obj.dateIn,
-            'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
-            'factura': obj.factura,
-            'vuelto': obj?.vuelto,
-            // 'table': tableOrder,
-            'typeService': typeService
-          })
+
+          if (typeof this.$route.query.status === 'undefined') {
+            this.Status({ status: 3 })
+            OrderClient.push({
+              'id': obj.id,
+              'nombre': fullname,
+              'typePayment': tipoPago,
+              'nameSede': nameSede,
+              'status': statusOrder,
+              'paid': mtoTotal,
+              'productos': obj.productos,
+              'dateIn': obj.dateIn,
+              'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
+              'factura': obj.factura,
+              'vuelto': obj?.vuelto,
+              // 'table': tableOrder,
+              'typeService': typeService
+            })
+          }
         }
       }
+
+      this.setearruta()
+
       return OrderClient
     },
     filtrado: {
@@ -281,6 +336,9 @@ export default {
       } else {
         this.ordersfilter = this.OrderClient
       }
+    },
+    seleccionado () {
+
     }
   },
   methods: {
@@ -299,6 +357,9 @@ export default {
       this.estado = valor
       return valor
     },
+    setearruta () {
+      this.$route.query.status = undefined
+    },
     getDateRange () {
       if (this.dateRange === null) {
         return null
@@ -311,10 +372,22 @@ export default {
         end: end
       }
     },
+
+    Marcar () {
+      console.log('los valor se seleccionado', this.seleccionado)
+
+      this.statusFilter = []
+    },
+    setear () {
+      this.statusFilter = []
+      // this.statusFilter[0] = parseInt(this.$route.query.status)
+      /* this.OrderClient = this.OrderClient.filter((item, index) => {
+        return this.OrderClient.indexOf(item) === index
+      }) */
+    },
     buscartiposervicio (objeto) {
       let obj
-      //   console.log('el tipo de servicio ', objeto.tipEnvio)
-      // console.log('los valores de servicios', this.tipoServicio)
+
       obj = this.tipoServicio.find(x => x.value === parseInt(objeto.tipEnvio))
       console.log('resultado de la busquedad', obj)
       if (obj !== undefined) {
@@ -388,7 +461,7 @@ export default {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.ordersClient.length}`
     },
     // ...mapActions('corporativos', ['bindonlybranches']),
-    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange']),
+    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange', 'Status']),
     // ...mapActions('localization', ['bindLocalizations']),
     // ...mapActions('client', ['bindClients', 'bindClients2']),
 
@@ -401,12 +474,15 @@ export default {
       statusFilter: [3],
       report: 'estandar',
       loading: false,
+      seleccionado: true,
       selected: [],
       estado: false,
       arrecleinte: [],
       arreglobranches: [],
       OrderClient2: [],
       ordersfilter: [],
+      opt: [],
+      selection: [],
       texto: '',
       columns: [
         { name: 'nameSede', required: true, label: 'Sede', align: 'left', field: 'nameSede', sortable: true },
@@ -415,7 +491,7 @@ export default {
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
         { name: 'status', required: true, label: 'Estatus', field: 'status', sortable: true },
-        { name: 'paid', label: 'Monto', field: row => row.paid + '$', sortable: true },
+        { name: 'paid', label: 'Monto', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(row.paid), sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
       ]

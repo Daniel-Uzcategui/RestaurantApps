@@ -319,7 +319,8 @@ export default {
           title: 'Ordenes',
           caption: '',
           icon: 'room_service',
-          link: '#/orders/index'
+          handler: () => this.$router.push({ path: '/orders/index', query: { status: 3 } })
+          // link: '#/orders/index'
           // separator: true,
 
         },

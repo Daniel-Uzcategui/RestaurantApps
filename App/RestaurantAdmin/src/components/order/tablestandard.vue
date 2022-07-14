@@ -8,7 +8,7 @@
       <q-item-label>{{props.row.status}}</q-item-label>
     </q-item-section>
     <q-item-section side>
-    <q-icon name="edit" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
+    <q-icon name="edit" @input="guardarstado" @click="$router.push({ path: '/orders/show', query: { Order_Id: props.row.id } })" />
   </q-item-section>
   </q-item>
   <q-separator></q-separator>
@@ -37,6 +37,9 @@ export default {
       } else {
         return false
       }
+    },
+    guardarstado () {
+      console.log('el valor del estatus', this.props.status)
     }
   }
 }

@@ -95,6 +95,9 @@ export const reportBindOrderscorporativo = firestoreAction(({ bindFirestoreRef }
 export const encomienda = async function ({ commit }, payload) {
   commit('order/encomienda', payload, { root: true })
 }
+export const Status = async function ({ commit }, payload) {
+  commit('order/Status', payload, { root: true })
+}
 export const setencomienda = async function (state, payload) {
   let result
   console.log('valor del paylod', payload)
