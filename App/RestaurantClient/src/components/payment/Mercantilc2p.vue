@@ -387,7 +387,7 @@ export default {
       this.validar() */
     },
     formatoTelefono (tel) {
-      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
+      return `58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
     },
     async verificarPago (respuesta) {
       try {
@@ -555,6 +555,7 @@ export default {
       return window.atob(archivo)
     },
     async paymentbank () {
+      let respuesta
       try {
         // this.$q.loading.show()
         // let referencia = this.valueFields.referencia
@@ -563,6 +564,7 @@ export default {
         console.log('este valor de total', monto)
         //   let telefono = this.formatoTelefono(this.valueFields.telefono)
         // let ip = '186.91.191.248'
+        let telefono = this.formatoTelefono(this.valueFields.telefono)
         let options = { method: 'post',
 
           url: window.location.origin + '/transact',
@@ -573,15 +575,15 @@ export default {
             'ambiente': localStorage.getItem('amb'),
             'transaction_c2p': {
               'currency': 'VES',
-              'amount': 1000,
-              'destination_bank_id': '0105',
-              'destination_mobile_number': '584241513063',
-              'destination_id': 'V18367443',
-              'origin_mobile_number': '584126935529'
+              'amount': monto.toFixed(2),
+              'destination_bank_id': this.metodopago.value,
+              'destination_mobile_number': this.paymentServ.pagomovil,
+              'destination_id': this.nacionalidad.value + this.CedulaEnviar,
+              'origin_mobile_number': telefono
             }
           } }
         console.log(options)
-        let respuesta = await this.$axios(options)
+        respuesta = await this.$axios(options)
         console.log('estaaaaaaaaaaaa', respuesta)
         let resp = {
           data: {
@@ -595,18 +597,19 @@ export default {
         }
         return resp
       } catch (err) {
-        let mensaje
+        // let mensaje
+        this.pagando = false
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          console.log('errorrrrrrr', err.response.status)
-          mensaje = this.error.find(x => x.codigo === err.response.status)
+          console.log('errorrrrrrr', err.response)
+          //   mensaje = this.error.find(x => x.codigo === err.response.status)
           this.pagando = false
           this.estado = true
           return this.$q.dialog({
             title: 'Error',
 
-            message: mensaje.descripcion
+            message: err.response.data.message.error_list[0].description
           })
         } else {
           // let mensaje = this.eror.find(x => x.id === err.response.status)
@@ -615,7 +618,7 @@ export default {
           return this.$q.dialog({
             title: 'Error',
 
-            message: mensaje.descripcion
+            message: 'Ha ocurrido un Error'
           })
         }
       }
