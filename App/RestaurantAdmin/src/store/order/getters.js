@@ -53,3 +53,4 @@ export const ordercorporativo2 = ({ ordercorporativo2 }) => ordercorporativo2
 export const orderencomienda = ({ orderencomienda }) => orderencomienda
 export const Encomienda = ({ Encomienda }) => Encomienda
 export const Status = ({ Status }) => Status
+export const Ordersfilter = ({ Ordersfilter }) => Ordersfilter

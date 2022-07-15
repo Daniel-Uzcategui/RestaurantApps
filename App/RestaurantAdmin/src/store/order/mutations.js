@@ -13,3 +13,6 @@ export function encomienda (state, payload) {
 export function Status (state, payload) {
   state.Status = payload.status
 }
+export function Ordersfilter2 (state, payload) {
+  state.Ordersfilter = payload.Ordersfilter
+}

@@ -49,9 +49,12 @@
   >
   <template v-slot:bottom-row>
         <q-tr>
-          <q-td colspan="100%">
-            Monto Total => {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(dataprod.total))}}
-          </q-td>
+          <q-td></q-td>
+          <q-td class="text-left">
+        Total => {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(dataprod.total))}}
+        </q-td >
+        <q-td class="text-right" > <strong>Cantidad => {{dataprod.cantidad}}</strong></q-td>
+
         </q-tr>
       </template>
   <template v-slot:top-right>
@@ -105,7 +108,7 @@ export default {
   components: { tablestandard, tabletop },
   computed: {
     ...mapGetters('corporativos', ['branches']),
-    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus']),
+    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus', 'Ordersfilter']),
     ...mapGetters('client', ['clients', 'clients2']),
     ...mapGetters('localization', ['localizations']),
     dataprod () {
@@ -132,6 +135,7 @@ export default {
       }
       let out = []
       let total = 0
+      let cantidad = 0
       console.log(prods, 'PRODS')
       Object.keys(prods).forEach(key => {
         let producto = prods[key]
@@ -142,9 +146,10 @@ export default {
           cantidad: producto.quantity
         })
         total = total + producto.monto
+        cantidad = cantidad + producto.quantity
       })
       total = total.toFixed(2) + ' $'
-      return { data: out, total }
+      return { data: out, total, cantidad }
     },
     dateRango: {
       get () {
@@ -260,6 +265,8 @@ export default {
         }
       }
 
+      this.Ordersfilter2({ Ordersfilter: OrderClient })
+
       this.setearruta()
 
       return OrderClient
@@ -297,6 +304,12 @@ export default {
     // if (!this.clients2.length) {
     //   await this.bindClients2().catch(e => console.error(e))
     // }
+    console.log('el valor de route Id orden', this.$route.query.valor)
+    if (typeof this.$route.query.valor !== 'undefined') {
+      console.log('los valores de arreglo', this.Ordersfilter)
+      this.ordersfilter = this.Ordersfilter
+    }
+
     if (!this.orders.length) {
       await this.bindOrders(this.getDateRange()).catch(e => console.error(e))
     }
@@ -340,6 +353,9 @@ export default {
     seleccionado () {
 
     }
+    /* Ordersfilter () {
+      this.ordersfilter = this.Ordersfilter
+    } */
   },
   methods: {
     filtroOrderType (objeto) {
@@ -359,6 +375,9 @@ export default {
     },
     setearruta () {
       this.$route.query.status = undefined
+    },
+    guardarordersfilter () {
+      this.Ordersfilter2({ Ordersfilter: this.ordersfilter })
     },
     getDateRange () {
       if (this.dateRange === null) {
@@ -461,7 +480,7 @@ export default {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.ordersClient.length}`
     },
     // ...mapActions('corporativos', ['bindonlybranches']),
-    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange', 'Status']),
+    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange', 'Status', 'Ordersfilter2']),
     // ...mapActions('localization', ['bindLocalizations']),
     // ...mapActions('client', ['bindClients', 'bindClients2']),
 
@@ -481,6 +500,7 @@ export default {
       arreglobranches: [],
       OrderClient2: [],
       ordersfilter: [],
+      ordersfilter2: [],
       opt: [],
       selection: [],
       texto: '',

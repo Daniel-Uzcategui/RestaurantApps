@@ -8,14 +8,21 @@
         <q-card-section class="q-cardtop header">
           <div class="text-h5">Orden {{order.factura}}</div>
           <div class="absolute-bottom-right q-pa-md">
-            <q-btn v-if="Status !== ''"
+            <q-btn v-if="Status !== '' && Ordersfilter !== ''"
               flat
               color="white"
               icon="arrow_back"
-              @click="$router.push({ path: '/orders/index', query: { status: Status} })"
+              @click="$router.push({ path: '/orders/index', query: { valor: 5} })"
             >
             </q-btn>
             <q-btn v-if="Status === ''"
+              flat
+              color="white"
+              icon="arrow_back"
+              @click="$router.push({ path: '/orders/index', query: { status: 3} })"
+            >
+            </q-btn>
+             <q-btn v-if="Status === '' &&  Ordersfilter === ''"
               flat
               color="white"
               icon="arrow_back"
@@ -804,7 +811,7 @@ export default {
       }
       return null
     },
-    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd', 'Status']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd', 'Status', 'Ordersfilter']),
     ...mapGetters('config', ['rates', 'configs2']),
     ...mapGetters('errores', ['error']),
     ...mapGetters('user', ['currentUser']),
