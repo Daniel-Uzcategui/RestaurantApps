@@ -1,6 +1,9 @@
 /// ////// Orders Action ////////
+// import firebase from 'firebase/app'
 import { firestoreAction } from 'vuexfire'
-import { firestore } from '../../services/firebase/db.js'
+import { firestore, fireCallable } from '../../services/firebase/db.js'
+
+// const orderEmail = require('../../pages/orders/template/vuelto')
 export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindorders', { payload })
   if (payload?.start && payload?.end) {
@@ -92,6 +95,12 @@ export const reportBindOrderscorporativo = firestoreAction(({ bindFirestoreRef }
 export const encomienda = async function ({ commit }, payload) {
   commit('order/encomienda', payload, { root: true })
 }
+export const Status = async function ({ commit }, payload) {
+  commit('order/Status', payload, { root: true })
+}
+export const Ordersfilter2 = async function ({ commit }, payload) {
+  commit('order/Ordersfilter2', payload, { root: true })
+}
 export const setencomienda = async function (state, payload) {
   let result
   console.log('valor del paylod', payload)
@@ -111,4 +120,20 @@ export const setVuelto = async function (state, payload) {
       vuelto: payload
     }, { merge: true })
   return result
+}
+export const emailAdminClients = function (state, payload) {
+  let result
+  // fireCallable().useEmulator('localhost', 5001)
+  result = fireCallable().httpsCallable('mail')(payload).then(result2 => {
+    console.log(result2)
+  })
+  console.log(result)
+}
+export const emailClients = function (state, payload) {
+  let result
+  // fireCallable().useEmulator('localhost', 5001)
+  result = fireCallable().httpsCallable('mail2')(payload).then(result2 => {
+    console.log(result2)
+  })
+  console.log(result)
 }

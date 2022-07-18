@@ -46,11 +46,14 @@ export default function () {
       { label: 'Pago móvil captura', value: 8 },
       { label: 'Tarjeta Venezolana', value: 9 },
       { label: 'Dólares elecrónicos', value: 10 },
-      { label: 'Pago móvil', value: 11 }
+      { label: 'Pago móvil', value: 11 },
+      { label: 'Pago móvil', value: 12 }
     ],
     ordercorporativo: [],
     orderencomienda: [],
     ordercorporativo2: [],
-    Encomienda: {}
+    Encomienda: {},
+    Status: null,
+    Ordersfilter: []
   }
 }

@@ -18,6 +18,7 @@ import editor from './editor'
 import transactions from './transactions'
 import seller from './seller'
 import data from './data'
+import errores from './errores'
 Vue.use(Vuex)
 
 /*
@@ -38,6 +39,7 @@ export default function (/* { ssrContext } */) {
       localization,
       config,
       data,
+      errores,
       editor,
       seller,
       transactions

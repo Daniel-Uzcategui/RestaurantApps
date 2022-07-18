@@ -1,10 +1,13 @@
 <template>
   <q-page padding class="q-fullscreen-glassMorph">
         <div class="menudiv2" >
-         <div class="text-h5 menuTop q-mt-md">Tu Carrito</div>
+         <div class="text-h5 menuTop q-mt-lg relative-position">Tu Carrito
+           <q-btn icon="list" @click="list=!list" class="absolute-bottom-right q-mr-md" flat />
+         </div>
          <div class="column items-center">
          <q-list v-for="(item, index) in cart" :key="index" class="full-width">
            <classic-list
+            v-model="list"
             :photo="getProdValById(item.prodId, 'photo', item.prodType)"
             :name="getProdValById(item.prodId, 'name', item.prodType)"
             :priceDisplay="extrasTotalItem(item) ? 'Precio base ' + priceDisplay(item) : priceDisplay(item)"
@@ -111,7 +114,7 @@
                           <q-item v-if="getLocBySede('Inlocal')">
                             <q-radio v-show="config.statusInlocal" class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                         </q-item>
-                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.typeAccess == 'Seller'">
+                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.rol && currentUser.rol.includes('Vendedor')">
                             <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
 
@@ -169,7 +172,7 @@
                          </q-card-section>
                          <q-card-section v-else>
                            <div class="text-h5">Escoja o agregue un cliente</div>
-                           <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
+                           <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null; "  @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e" @DateInput ='CargadetalleDate' @PhotoInput ='CargadetallePhoto' @PorcentajeInput='CargadetallePorcentaje' @MontoInput='CargadetalleMonto' @OrderInput ='CargadetalleOrden'/>
                          </q-card-section>
                          <q-card-section v-show="!['0', '2', '3','4'].includes(tipEnvio)" >
                           <div class="text-h5"> Mis direcciones</div>
@@ -206,70 +209,12 @@
                      <div class="col-6" style="min-width: 300px">
                       <div class="q-pt-xl q-pb-xl text-h4 text-bold">Formas de Pago</div>
                       <div v-if="tipoPago && tipoPago.length === 0">No existe ningún método de pago activo</div>
-                      <div class="q-pa-md" style="max-width: 350px">
-    <q-list bordered class="rounded-borders">
-      <q-expansion-item
-        switch-toggle-side
-        icon="attach_money"
-        label="Efectivo"
-        caption="Envia dinero en efectivo"
-        header-class="text-blue"
-        default-opened
-      >
-        <q-card>
-          <q-card-section>
-           <q-option-group
-        :options="tipoPago.filter(e => e.transf ==='efectivo')"
-        label="Notifications"
-        type="radio"
-        v-model="pagoSel"
-        ></q-option-group>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-expansion-item
-        switch-toggle-side
-        icon="credit_card"
-        label="Tarjeta Debito/Crédito"
-        caption="Tus pagos se realizan de forma segura"
-        header-class="text-blue"
-        default-opened
-      >
-        <q-card>
-          <q-card-section>
-                  <div align="center"><img src="../../assets/visa.png" style="width: 15%;padding-right: 2%;"><img src="../../assets/mastercard.png" style="width: 15%;padding-right: 2%;"><img src="../../assets/american.png" style="width: 15%;padding-right: 2%;"></div>
-           <q-option-group
-           :options="tipoPago.filter(e => e.transf ===true)"
-           label="Notifications"
-           type="radio"
-           v-model="pagoSel"
-           ></q-option-group>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-expansion-item
-        switch-toggle-side
-        icon="account_balance_wallet"
-        label="Transferencia"
-        caption="Paga directamente en nuestra cuenta de manera eléctronica"
-        header-class="text-blue"
-        default-opened
-      >
-        <q-card>
-          <q-card-section>
-           <q-option-group
-           :options="tipoPago.filter(e => e.transf ===false)"
-           label="Notifications"
-           type="radio"
-           v-model="pagoSel"
-           ></q-option-group>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-    </q-list>
-  </div>
+                    <q-option-group
+                      :options="tipoPago"
+                      label="Tipo de Pago"
+                      type="radio"
+                      v-model="pagoSel"
+                    />
                   </div>
                   <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 3"> <div id="paypal-button-container" ref="payp"></div> </div>
                   <div style="min-width: 300px" class="col-6 q-pt-xl" v-if="pagoSel === 5">
@@ -345,10 +290,13 @@
                         </q-card-section>
 
                         </q-card>
-                        <q-card q-card class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1">
-                          <q-card-sec>
+
+                        <q-card  class="q-pa-xl q-cardGlass"  style="margin-top: 15px; border-radius: 15px;" v-show="pagoSel == 1 && config.statusNovaredzelle" >
+                          <q-card-section >
 
                             <div >
+                              <label >SI DESEA PROCESAR VUELTO, INDIQUELO EN ESTA SECCION.</label>
+
                                  <div v-show="pagoSel == 1" class="card-input"><label  aria-label="monto" >Monto Enviado</label>
                                 <q-input filled  v-show="pagoSel == 1" v-model="montoEnviar"  title="Monto Enviar" @input="calcularVuelto()" />
                               </div>
@@ -357,6 +305,14 @@
                               </div>
 
                             </div>
+                          <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Referencia</label></div>
+                            <div class="row">
+                            <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            </div>
+
+                          <div class="col-6 col-md-4"  v-show="Vuelto > 0" ><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
+                            </div>
+        </div>
                           <div >
                               <div class="col-12">
                                <div>
@@ -391,8 +347,11 @@
                             <q-input filled mask="########" v-show="Vuelto > 0" v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
                          </div>
                          </div>
+                          <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Vuelto Bs.</label></div>
+                         <div class="col col-md-8"><q-input  disable v-model="montoV"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            </div>
 
-                          </q-card-sec>
+                          </q-card-section>
                         </q-card>
                     </div>
                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
@@ -438,7 +397,7 @@
                         </div>
                      <div v-else>No hay tasa de cambio colocada</div>
                     </div>
-                    <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 12">
+                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 12">
                        <div v-if="ratesComp.length">
                        <Mercantilc2p
                          :ordersId=currentUser.cedula
@@ -502,15 +461,15 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
-import { QUploaderBase, date } from 'quasar'
+import { QUploaderBase, date, copyToClipboard } from 'quasar'
 import NovaredPayment from '../../components/payment/novared.vue'
 import NovaredPagomovil from '../../components/payment/pagomovilnovared.vue'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
 import ClassicList from '../../components/cart/classicList/classicList.vue'
 import Addresses from '../../components/addresses.vue'
+import Mercantilc2p from '../../components/payment/Mercantilc2p.vue'
 import clientList from '../../components/seller/clientlist.vue'
 import Address2 from '../../components/address2.vue'
-import Mercantilc2p from '../../components/payment/Mercantilc2p.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
@@ -578,21 +537,20 @@ export default {
       return this.paymentServ
     },
     tipoPago () {
-      // se agrega la variable de control transf: donde es true si es una transferencia  y false si es tarjeta en caso contrario efectivo
       var tip = []
-      if (this.config && this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red', transf: false }) }
-      if (this.config && this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green', transf: 'efectivo' }) }
-      if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue', transf: false }) }
-      if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Mercantil', value: 6, color: 'blue', transf: true }) }
-      if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red', transf: true }) }
-      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red', transf: false }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Dolares', value: 10, color: 'blue', transf: false }) }
-      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Movil Bs', value: 11, color: 'blue', transf: false }) }
-      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago Movil Mercantil Bs', value: 12, color: 'blue', transf: false }) }
+      if (this.config && this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red' }) }
+      if (this.config && this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green' }) }
+      if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue' }) }
+      if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue' }) }
+      if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue' }) }
+      if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Mercantil', value: 6, color: 'blue' }) }
+      if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red' }) }
+      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red' }) }
+      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Dolares', value: 10, color: 'blue' }) }
+      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Movil Bs', value: 11, color: 'blue' }) }
+      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pasarela Pago Movil  Mercantil Bs', value: 12, color: 'blue' }) }
       return tip
     },
     meta () {
@@ -609,17 +567,29 @@ export default {
   },
   data () {
     return {
+      list: true,
       ordCompraClient: null,
       ordCompraBranch: null,
       continuar: false,
       canCloseHours: false,
       loadingConfig: true,
       cupons: [],
+      openDate: false,
+      openHours: false,
+      objetodetalleorden: {},
+      montoV: 0,
+      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
+      cupon: '',
+      rateDefault: [],
       Vuelto: 0,
       operacion: '',
       referenciacompleta: '',
       serie: '',
       pagando: false,
+      nohayVuelto: true,
+      TelefonoEnviar: '',
+      CedulaEnviar: '',
+      montoEnviar: 0,
       BancoEnviar: '',
       nacionalidad: '',
       nacionalidades: [{
@@ -748,15 +718,6 @@ export default {
           category: 24
         }
       ],
-      montoEnviar: 0,
-      nohayVuelto: true,
-      TelefonoEnviar: '',
-      CedulaEnviar: '',
-      openDate: false,
-      openHours: false,
-      isChopzi: window.location.hostname === 'chopzi.com' || window.location.hostname === 'localhost',
-      cupon: '',
-      rateDefault: [],
       loadingState: false,
       orderDate: null,
       orderWhen: window.location.hostname === 'chopzi.com' ? '0' : null,
@@ -801,14 +762,15 @@ export default {
     }).catch(e => console.error('error fetching data firebase', { e }))
   },
   mounted () {
-    this.operacion = 'I'
-    this.serie = this.obtenerSerie(this.config.referencia)
+    this.operacion = 'P'
+    //  this.serie = this.obtenerSerie(this.config.referencia)
     let fecha = new Date()
     // let diaA = fecha.getDate()
     let hoy = fecha.getDate()
 
-    this.referenciacompleta = this.operacion + this.config.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
+    console.log('laaaaaaaaaaa referencia', this.referenciacompleta)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -818,6 +780,45 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
     ...mapActions('editor', ['bindBlocks']),
+    copy (referencia) {
+      copyToClipboard(referencia)
+      return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
+    },
+    CargadetalleDate (fecha) {
+      if (fecha === '') {
+        this.objetodetalleorden.date = 'N/A'
+      } else {
+        this.objetodetalleorden.date = fecha
+      }
+    },
+    CargadetallePhoto (photo) {
+      if (photo === '') {
+        this.objetodetalleorden.photo = 'N/A'
+      } else {
+        this.objetodetalleorden.photo = photo
+      }
+    },
+    CargadetallePorcentaje (porcentaje) {
+      if (porcentaje === '') {
+        this.objetodetalleorden.porcentaje = 'N/A'
+      } else {
+        this.objetodetalleorden.porcentaje = porcentaje
+      }
+    },
+    CargadetalleMonto (monto) {
+      if (monto === '') {
+        this.objetodetalleorden.monto = 'N/A'
+      } else {
+        this.objetodetalleorden.monto = monto
+      }
+    },
+    CargadetalleOrden (ordencompra) {
+      if (ordencompra === '') {
+        this.objetodetalleorden.ordencompra = 'N/A'
+      } else {
+        this.objetodetalleorden.ordencompra = ordencompra
+      }
+    },
     async useCupon () {
       this.loadingState = true
       const { cupon, cupons } = this
@@ -849,22 +850,50 @@ export default {
         this.cupon = ''
       }
     },
+    modEventDown (item, index) {
+      this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) - 1) })
+      this.checkAvail(item.prodId, item.prodType, index)
+      if (item.quantity < 1) {
+        this.modCartVal({ id: index, key: 'quantity', value: 1 })
+      }
+    },
+    calcularVuelto () {
+      console.log('entre')
+      if (this.montoEnviar !== '') {
+        this.Vuelto = parseFloat(this.montoEnviar) - (parseFloat(this.totalPrice) + parseFloat(this.deliveryPrice))
+        console.log('el vuelto es', this.Vuelto)
+        let rate = this.ratesComp.find(obj => {
+          return obj.currency === 'Bs'
+        })
+        this.montoV = (parseFloat(rate.rateValue) * parseFloat(this.Vuelto)).toFixed(2)
+      }
+    },
+    validar () {
+      if ((!this.desahabilitadotelefono) && (!this.desahabilitadocedula) && (!this.desahabilitadoBanco) && (!this.desahabilitadonacionalidad)) {
+        this.nohayVuelto = true
+      } else {
+        this.nohayVuelto = false
+      }
+    },
     async EnviarVuelto () {
       try {
         let telefono = this.formatoTelefono(this.TelefonoEnviar)
         this.loading2 = true
         let ip = '186.91.191.248'
+
+        console.log('monto en Bolivares', this.montoV)
+        // url : window.location.origin
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: 'http://localhost:8085' + '/transact',
           data:
           {
             'bank': 'createOrder',
             'token': this.config.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': this.Vuelto,
+            'monto': this.montoV,
             'moneda': 'VES',
-            'formaPago': 'Interbank',
+            'formaPago': 'President',
             'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': 'pruebas@gmail.com',
@@ -876,48 +905,42 @@ export default {
         this.loading2 = false
         return respuesta
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          this.loading2 = false
+          mensaje = this.error.find(x => x.codigo === err.response.status)
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }
     },
-    modEventDown (item, index) {
-      this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) - 1) })
-      this.checkAvail(item.prodId, item.prodType, index)
-      if (item.quantity < 1) {
-        this.modCartVal({ id: index, key: 'quantity', value: 1 })
-      }
+    formatoTelefono (tel) {
+      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
     },
     noseleccionado (valor) {
       this.continuar = false
       console.log('el valor seleccionado', this.continuar)
       return this.continuar
     },
-    formatoTelefono (tel) {
-      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
-    },
     modEventUp (item, index) {
       if (this.checkAvail(item.prodId, item.prodType, index)[0] === 1) {
         this.modCartVal({ id: index, key: 'quantity', value: (parseInt(item.quantity) + 1) })
       }
-    },
-    calcularVuelto () {
-      console.log('entre')
-      if (this.montoEnviar !== '') {
-        this.Vuelto = parseFloat(this.montoEnviar) - (parseFloat(this.totalPrice) + parseFloat(this.deliveryPrice))
-        console.log('el vuelto es', this.Vuelto)
-      }
-    },
-    setBanco () {
-      console.log('banco seleccionado', this.BancosEnviar.value)
-      this.BancoEnviar = this.BancosEnviar.value
     },
     priceDisplay (item) {
       let prodPrice = this.getProdPrice(item)
@@ -1159,7 +1182,7 @@ export default {
     getSede () {
       return this.localizations.find(x => x.id === this.sede)
     },
-    async  makeOrder (details) {
+    async makeOrder (details) {
       console.log('este valor del registro', details)
       this.$q.loading.show()
       if (this.tipEnvio !== '1') { this.addId = '' }
@@ -1173,6 +1196,10 @@ export default {
       let customer = this.currentUser
       let cartManage = this.cartMan()
       let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: (this.tipEnvio === '1' || this.tipEnvio === '4') ? parseFloat(parseFloat(Number(this.getTotalCarrito()[2])) + parseFloat(Number(this.deliveryPrice))) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      if (this.tipEnvio === '3') {
+        order = { ...order, ordencompra: this.objetodetalleorden }
+      }
+
       if (this.addId && this.addId.id) {
         order = { ...order, address: this.addId.id, addressC: this.addId }
       }
@@ -1191,16 +1218,18 @@ export default {
 
           break
         case 1:
-
           order = { ...order, payto: this.config.zelleEmail }
           if (this.Vuelto > 0) {
             let nroOrden = await this.EnviarVuelto()
             let Vuelto = {
               nroOrden: nroOrden.data.trx,
               telefono: this.formatoTelefono(this.TelefonoEnviar),
-              cedula: this.nacionalidad + this.CedulaEnviar,
-              vuelto: this.Vuelto,
-              banco: this.BancoEnviar.value
+              nacionalidad: this.nacionalidad.value,
+              documento: this.CedulaEnviar,
+              VueltoBolivares: this.montoV,
+              VueltoDolares: this.Vuelto,
+              banco: this.BancoEnviar.value,
+              status: true
             }
             order = { ...order, vuelto: Vuelto }
           }
@@ -1270,6 +1299,15 @@ export default {
           order = { ...order, onlinePay: reg }
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.pagomovil }
+          break
+        case 12:
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa?.tarifa }
+            order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
+          }
+          //  order = { ...order, onlinePay: reg }
+          console.log('los valores', order.onlinePay)
+          order = { ...order, onlinePay: details.id.data.trx }
           break
         default:
           break
@@ -1480,12 +1518,6 @@ export default {
         this.makeOrder(status.data)
       }
     },
-    soloNumeros (e) {
-      console.log('la tecla', e)
-      var key = e.charCode
-      console.log(key)
-      return key >= 48 && key <= 57
-    },
     paymentTDC (respuesta) {
       // let that = this
       let responseHeader = respuesta.HEADER_PAGO_RESPONSE
@@ -1513,13 +1545,6 @@ export default {
     resetPhotoType () {
       this.photoType = ''
     },
-    validar () {
-      if ((!this.desahabilitadotelefono) && (!this.desahabilitadocedula) && (!this.desahabilitadoBanco) && (!this.desahabilitadonacionalidad)) {
-        this.nohayVuelto = true
-      } else {
-        this.nohayVuelto = false
-      }
-    },
     uploadComplete (info) {
       // console.log('info payment: ' + info)
       this.photoSRC = info
@@ -1532,8 +1557,23 @@ export default {
     continuar () {
       console.log('cambio')
     },
+    referenciacompleta () {
+      console.log('cambio')
+    },
+    configDates () {
+      this.getDays()
+    },
     nohayVuelto () {
       console.log('cambio')
+      this.operacion = 'P'
+      // this.serie = this.obtenerSerie(this.config.referencia)
+      let fecha = new Date()
+      // let diaA = fecha.getDate()
+      let hoy = fecha.getDate()
+
+      this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
+      this.referenciacompleta = this.referenciacompleta.toUpperCase()
+      console.log('laaaaaaaaaaa referencia', this.referenciacompleta)
     },
     Vuelto () {
       if (this.Vuelto > 0) {
@@ -1545,9 +1585,6 @@ export default {
     },
     desahabilitadotelefono () {
       return false
-    },
-    configDates () {
-      this.getDays()
     },
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()

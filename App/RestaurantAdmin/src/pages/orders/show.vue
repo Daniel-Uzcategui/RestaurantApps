@@ -8,11 +8,25 @@
         <q-card-section class="q-cardtop header">
           <div class="text-h5">Orden {{order.factura}}</div>
           <div class="absolute-bottom-right q-pa-md">
-            <q-btn
+            <q-btn v-if="Status !== '' && Ordersfilter !== ''"
               flat
               color="white"
               icon="arrow_back"
-              @click="$router.replace('/Orders/index')"
+              @click="$router.push({ path: '/orders/index', query: { valor: 5} })"
+            >
+            </q-btn>
+            <q-btn v-if="Status === ''"
+              flat
+              color="white"
+              icon="arrow_back"
+              @click="$router.push({ path: '/orders/index', query: { status: 3} })"
+            >
+            </q-btn>
+             <q-btn v-if="Status === '' &&  Ordersfilter === ''"
+              flat
+              color="white"
+              icon="arrow_back"
+              @click="$router.push({ path: '/orders/index', query: { status: 3} })"
             >
             </q-btn>
           </div>
@@ -59,33 +73,49 @@
               </div>
               <div v-if="order.delivery" class="header-cell q-ma-sm col-2">
                 <p class="text-bold">Costo Delivery</p>
-                <p>{{order.delivery}}</p>
+                <p>{{(order.delivery).toFixed(2)}}</p>
               </div>
               <div class="header-cell q-ma-sm col-2">
                 <p class="text-bold">Total $</p>
                 <p>{{order.paid}}</p>
               </div>
                  <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
-                <p class="text-bold">Total Enviado $</p>
-                <p>{{(order.paid + order.vuelto.VueltoDolares)}}</p>
+                <p class="text-bold">Total Recibido $</p>
+                <p>{{(order.paid + order.vuelto.VueltoDolares).toFixed(2)}}</p>
               </div>
               <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
                 <p class="text-bold">Vuelto Bs</p>
-                <p>{{order.vuelto.VueltoBolivares}}</p>
+                <p>{{(order.vuelto.VueltoBolivares)}}</p>
               </div>
                <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto2 && verificarVuelto">
                 <p class="text-bold">Referencia</p>
                 <p class="text-green">{{order.vuelto.trx.referencia}}</p>
               </div>
+              <div class="header-cell q-ma-sm col-2" v-if="verificarPagoMovil">
+                <p class="text-bold">Referencia</p>
+                <p class="text-green">{{order.onlinePay.payment_reference}}</p>
+              </div>
+
               <div class="header-cell q-ma-sm col-2">
                 <q-btn
                   push
                   color="red"
                   no-caps
-                  label="Vuelto"
+                  label="Realizar Vuelto"
                   :loading=realizado
                   v-show="statusVuelto"
                   @click="RealizarVuelto"
+                />
+              </div>
+               <div class="header-cell q-ma-sm col-2">
+                <q-btn
+                  push
+                  color="red"
+                  no-caps
+                  label="Renviar Correo"
+                  :loading=realizado2
+                  v-show="statusmail"
+                  @click="RenviarCorreo"
                 />
               </div>
               <div
@@ -416,8 +446,11 @@
               no-data-label="No se encontraron registros"
             >
               <template v-slot:top-right>
-               <!-- <q-btn color="white" text-color="black" label="Editar compra">
-                </q-btn> -->
+               <q-btn  push
+                  color="red"
+                  no-caps label="Ver Detalle"
+                  @click="verorden=true"
+                  />
               </template>
               <template v-slot:body="props">
                 <q-tr :props="props">
@@ -666,6 +699,32 @@
       >
       </add-payment>
     </q-dialog>
+    <q-dialog  v-if="verificarOrdenCompra" v-model="verorden" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
+          margin: 0px;
+          padding: 0px;
+          overflow-x: hidden;">
+          <q-card>
+            <q-card-section>
+              <h6>Detalle</h6>
+            </q-card-section>
+      <q-card-section>
+             <q-input disable label="Fecha Vencimiento" v-model="order.ordencompra.date"></q-input>
+             <br>
+              <q-input disable label="Monto" v-model="order.ordencompra.monto"></q-input>
+            <br>
+             <q-input disable label="Porcentaje de Retención" v-model="order.ordencompra.porcentaje"></q-input>
+             <br>
+             <q-input disable label="Nro Orden Compra" v-model="order.ordencompra.ordencompra"></q-input>
+             <br>
+              <viewer :img="order.ordencompra.photo"></viewer>
+        </q-card-section>
+        <q-card-section>
+          <br>
+             <q-btn push no-caps label="Aceptar" color="blue" v-close-popup/>
+             </q-card-section>
+          </q-card>
+
+           </q-dialog>
   </q-page>
 </template>
 
@@ -693,9 +752,12 @@ export default {
       respuesta: {},
       addPay: false,
       statusVuelto: false,
+      statusmail: false,
       showLog: false,
       realizado: false,
+      realizado2: false,
       photoDiag: false,
+      verorden: false,
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
@@ -709,7 +771,8 @@ export default {
   },
   mounted () {
     this.bindpaymentsev()
-    console.log('los valores de las ordenes locas ', this.order)
+    this.binderrores()
+    console.log('los valores de los errores ', this.error)
     if (this.order.vuelto !== undefined) {
       this.statusVuelto = this.order.vuelto.status
     } else {
@@ -748,8 +811,9 @@ export default {
       }
       return null
     },
-    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd']),
+    ...mapGetters('order', ['orders', 'typePayment_options', 'tipoServicio', 'estatus_options', 'estatus_optionsOrd', 'Status', 'Ordersfilter']),
     ...mapGetters('config', ['rates', 'configs2']),
+    ...mapGetters('errores', ['error']),
     ...mapGetters('user', ['currentUser']),
     orderStatus () {
       if (this.order.tipEnvio === '3' && this.order.status === 3 && this.order.creditDays) {
@@ -763,6 +827,20 @@ export default {
     },
     verificarVuelto () {
       if (this.order?.vuelto === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
+    verificarPagoMovil () {
+      if (this.order?.onlinePay === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
+    verificarOrdenCompra () {
+      if (this.order?.ordencompra === undefined) {
         return false
       } else {
         return true
@@ -787,6 +865,7 @@ export default {
         return obj.id === this.$route.query.Order_Id
       })
     },
+
     getClient () {
       let order = this.order
       if (order && order.id) {
@@ -876,13 +955,22 @@ export default {
     tipServ () {
       return this.order && typeof this.order.tipEnvio !== 'undefined' ? this.getTypeService(this.order.tipEnvio) : 'NA'
     },
+    RenviarCorreo () {
+      this.emailClients({ ambiente: localStorage.getItem('amb'), order: this.order })
+      this.$q.notify({
+        color: 'blue',
+        message: 'El Correo se ha Reenviado con Exito'
+      })
+    },
     async RealizarVuelto () {
       try {
         // this.$q.loading.show()
         // let referencia = this.valueFields.referencia
         this.realizado = true
+        console.log('la url')
+        // window.location.origin
         let options = { method: 'post',
-          url: 'http://localhost:8085' + '/transact',
+          url: window.location.origin + '/transact',
           data:
           {
             'bank': 'Vuelto',
@@ -898,7 +986,7 @@ export default {
         console.log(options)
         this.respuesta = await this.$axios(options)
         console.log('la respuesta', this.respuesta)
-        let valores = this.setVuelto({ idorden: this.$route.query.Order_Id,
+        let valores = await this.setVuelto({ idorden: this.$route.query.Order_Id,
           trx: this.respuesta.data,
           status: false })
         console.log(valores)
@@ -908,16 +996,32 @@ export default {
           color: 'blue',
           message: 'El Vuelto se ha enviado con Exito'
         })
+        let respuesta2 = await this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
+        console.log('respuesta2', respuesta2)
+        this.statusmail = true
+
         return this.respuesta
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          mensaje = this.error.find(x => x.codigo === err.response.status)
+          this.realizado = false
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }
@@ -925,9 +1029,10 @@ export default {
     consolee (e, b, c, s) {
       console.log(e, b, c, s)
     },
-    ...mapActions('order', ['saveOrder', 'setVuelto']),
+    ...mapActions('order', ['saveOrder', 'setVuelto', 'emailAdminClients', 'emailClients']),
     ...mapActions('menu', ['bindMenu', 'bindPromos']),
     ...mapActions('client', ['bindClients']),
+    ...mapActions('errores', ['binderrores']),
     ...mapActions('address', ['bindAddress']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('config', ['bindRates', 'bindpaymentsev']),

@@ -146,3 +146,6 @@ export const routerBeforeEach = async (router, store) => {
     }
   })
 }
+export const fireCallable = () => {
+  return firebase.functions()
+}

@@ -83,6 +83,7 @@ export default {
 
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
+    ...mapGetters('errores', ['error']),
     desahabilitadorefencia () {
       return this.valueFields.referencia === ''
     },
@@ -185,7 +186,8 @@ export default {
   },
   mounted () {
     this.bindPaymentServ()
-    this.operacion = 'I'
+    this.binderrores()
+    this.operacion = 'P'
     this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
     this.serie = this.obtenerSerie(this.paymentServ.referencia)
     let fecha = new Date()
@@ -194,7 +196,8 @@ export default {
     console.log('aaaa', hoy)
     console.log(fecha)
 
-    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    // this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
     console.log('este el valor de referencia', this.referenciacompleta)
     console.log('este el valor de total', this.total)
@@ -202,6 +205,7 @@ export default {
   },
   methods: {
     ...mapActions('transactions', ['addTransaction']),
+    ...mapActions('errores', ['binderrores']),
     ...mapActions('config', ['bindPaymentServ', 'bindConfigs', 'bindRates']),
 
     async payment () {
@@ -340,10 +344,11 @@ export default {
 
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
-        let monto = this.total
-        console.log('este valor de amount', this.amount)
+        let monto = parseFloat(this.total) + parseFloat(this.delivery)
+        console.log('este valor de delivery', this.delivery)
         let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
+        // window.location.origin
         let options = { method: 'post',
 
           url: window.location.origin + '/transact',
@@ -352,9 +357,9 @@ export default {
             'bank': 'TransactVerify',
             'token': this.paymentServ.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': monto,
+            'monto': parseFloat(monto).toFixed(2),
             'moneda': 'VES',
-            'formaPago': 'Interbank',
+            'formaPago': 'President',
             'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': this.valueFields.correo,
@@ -378,14 +383,27 @@ export default {
         }
         return resp
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          mensaje = this.error.find(x => x.codigo === err.response.status)
+          this.pagando = false
+          this.estado = true
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }

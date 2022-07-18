@@ -17,31 +17,29 @@
             bottom-slots
             v-model="metodopago"
             :options="metodospagos"
-            label="Metodo"
+            label="Banco"
             @input="actualizar()"
 
           />
         </div>
          </div>
-<div class="card-input "><label  aria-label="Referencia" >Referencia</label></div>
-           <div class="row">
-                <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"  title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
-                </div>
-                <div class="col-6 col-md-4"><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
-                </div>
-        </div>
-          <div >
-            <div class="card-input"><label  aria-label="Referencia2" >Nota:  </label>
+             <div >
+                              <div class="col-12">
+                               <div>
+                                 <q-select
 
-                <p class="p-5 mb-5 bg-danger text-red">Por Favor Tomar Registro de la Referencia para la Operacion</p>
-        </div>
-        </div>
-         <div >
-            <div class="card-input"><label  aria-label="Correo" >Correo</label>
-                <q-input filled rounded outlined required type="email" v-model="valueFields.correo" @input="validar" title="Correo" :rules="[ val => val && validEmail(val) || 'Correo Invalido']" />
-        </div>
-        </div>
+                                   bottom-slots
+                                   v-model="nacionalidad"
+                                 :options="nacionalidades"
+                                 label="Nacionalidad"
 
+                               />
+                          </div>
+                           </div>
+                            <div  class="card-input"><label  aria-label="monto" >Cedula</label>
+                            <q-input filled mask="########" v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
+                         </div>
+                         </div>
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
                 <q-input filled rounded outlined mask="(####) ###.##.##" type="text"  v-model="valueFields.telefono"  title="Telefono"  @input="validar" />
@@ -96,19 +94,19 @@ export default {
   },
   mounted () {
     this.bindPaymentServ()
-    this.operacion = this.obtenerprimeraletra(this.metodospagos[0].value)
-    this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb'))
+    /*  this.operacion = this.obtenerprimeraletra(this.metodospagos[0].value)
+    this.ambientes = this.obtenerprimeraletra(localStorage.getItem('amb')) */
     // this.serie = this.obtenerSerie(this.paymentServ.referencia)
-    let fecha = new Date()
+    // let fecha = new Date()
     // let diaA = fecha.getDate()
-    let hoy = fecha.getDate()
-    console.log('aaaa', hoy)
-    console.log(fecha)
+    // let hoy = fecha.getDate()
+    //   console.log('aaaa', hoy)
+    //  console.log(fecha)
 
     // this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + '00' + hoy + this.serie
-    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
-    this.referenciacompleta = this.referenciacompleta.toUpperCase()
-    console.log('este el valor de referencia', this.referenciacompleta)
+    //  this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
+    /*  this.referenciacompleta = this.referenciacompleta.toUpperCase()
+    console.log('este el valor de referencia', this.referenciacompleta) */
     console.log('este el valor de total', this.total)
     this.total2 = parseFloat(this.total) + parseFloat(this.delivery)
   },
@@ -152,34 +150,126 @@ export default {
       total2: 0,
       referenciacompleta: '',
       ambientes: '',
+      CedulaEnviar: '',
+      nacionalidad: '',
       serie: '',
       metodopago: '',
       metodospagos: [
         {
-          label: 'Zelle',
-          value: 'Zelle',
+          label: 'Mercantil',
+          value: '0105',
           category: 1
         },
 
         {
-          label: 'President',
-          value: 'President',
+          label: 'PresidentBanco Nacional de Credito',
+          value: '0191',
           category: 3
         },
         {
-          label: 'PresidentDollar',
-          value: 'PresidentDollar',
+          label: 'Mi Banco',
+          value: '0169',
           category: 4
         },
         {
-          label: 'Zinli',
-          value: 'Zinli',
+          label: 'Banco del Pueblo Soberano',
+          value: '0149',
           category: 5
         },
         {
-          label: 'Mony',
-          value: 'Mony',
+          label: 'Banco del Tesoro',
+          value: '0163',
           category: 6
+        },
+        {
+          label: 'Bancaribe',
+          value: '0114',
+          category: 7
+        },
+        {
+          label: 'Banco Caroni',
+          value: '0128',
+          category: 8
+        },
+        {
+          label: 'Banco de la Gente Emprendedora C.A.',
+          value: '0146',
+          category: 9
+        },
+        {
+          label: '100% Banco',
+          value: '0156',
+          category: 10
+        },
+        {
+          label: 'Banco Central de Venezuela',
+          value: '0001',
+          category: 11
+        },
+        {
+          label: 'BFC Banco Fondo Comun',
+          value: '0151',
+          category: 12
+        },
+        {
+          label: 'Banco Espirito Santo',
+          value: '0176',
+          category: 13
+        },
+        {
+          label: 'Citibank N.A.',
+          value: '0190',
+          category: 14
+        },
+        {
+          label: 'Banco Occidental de Descuento',
+          value: '0121',
+          category: 15
+        },
+        {
+          label: 'Banco Agrícola de Venezuela',
+          value: '0166',
+          category: 16
+        },
+        {
+          label: 'Instituto Municipal de Credito Popular',
+          value: '0601',
+          category: 17
+        },
+        {
+          label: 'Banco Provincial',
+          value: '0108',
+          category: 18
+        },
+        {
+          label: 'Banplus',
+          value: '0174',
+          category: 19
+        },
+        {
+          label: 'Banco Industrial de Venezuela',
+          value: '0003',
+          category: 20
+        },
+        {
+          label: 'Banco Bicentenario',
+          value: '0175',
+          category: 21
+        },
+        {
+          label: 'Banco de la Fuerza Armada Nacional Bolivariana',
+          value: '0177',
+          category: 22
+        },
+        {
+          label: 'Banco de Venezuela',
+          value: '0102',
+          category: 23
+        },
+        {
+          label: 'Banco Internacional de Desarrollo',
+          value: '0173',
+          category: 24
         }
       ],
       fecha: new Date(),
@@ -188,7 +278,6 @@ export default {
       datosvuelto: false,
       telefono: '',
       documento: '',
-      nacionalidad: '',
       bancos: [
         {
           label: 'Mercantil',
@@ -285,7 +374,7 @@ export default {
       return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
     },
     actualizar () {
-      let fecha = new Date()
+    /*  let fecha = new Date()
       // let diaA = fecha.getDate()
       let hoy = fecha.getDate()
       console.log('aaaa', hoy)
@@ -295,10 +384,10 @@ export default {
       this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
       this.referenciacompleta = this.referenciacompleta.toUpperCase()
       console.log('este el valor de referencia', this.referenciacompleta)
-      this.validar()
+      this.validar() */
     },
     formatoTelefono (tel) {
-      return `+58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
+      return `58${tel.substr(2, 3)}${tel.substr(7).replace(/\./g, '')}`
     },
     async verificarPago (respuesta) {
       try {
@@ -349,8 +438,8 @@ export default {
     validar () {
       console.log('el valor de correo', this.valueFields.correo)
       console.log('el valor de telefono', this.valueFields.telefono)
-      let correovalidado = this.validEmail(this.valueFields.correo)
-      if ((!this.desahabilitadorefencia) && (!this.desabililitadocorreo) && (!this.desahabilitadotelefono) && (correovalidado)) {
+      // let correovalidado = this.validEmail(this.valueFields.correo)
+      if ((!this.desahabilitadorefencia) && (!this.desahabilitadocedula) && (!this.desahabilitadotelefono)) {
         console.log('entreeee')
         this.estado = false
       }
@@ -466,60 +555,61 @@ export default {
       return window.atob(archivo)
     },
     async paymentbank () {
+      let respuesta
       try {
         // this.$q.loading.show()
         // let referencia = this.valueFields.referencia
         this.vuelto = this.montooperacion - this.total
         let monto = this.total2
         console.log('este valor de total', monto)
+        //   let telefono = this.formatoTelefono(this.valueFields.telefono)
+        // let ip = '186.91.191.248'
         let telefono = this.formatoTelefono(this.valueFields.telefono)
-        let ip = '186.91.191.248'
         let options = { method: 'post',
 
           url: window.location.origin + '/transact',
           data:
           {
-            'bank': 'TransactVerify',
+            'bank': 'PagoMovil',
             'token': this.paymentServ.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': parseFloat(monto).toFixed(2),
-            'moneda': 'USD',
-            'formaPago': this.metodopago.value,
-            'referencia': this.referenciacompleta,
-            'telefono': telefono,
-            'correo': this.valueFields.correo,
-            'ip': ip
+            'transaction_c2p': {
+              'currency': 'VES',
+              'amount': monto.toFixed(2),
+              'destination_bank_id': this.metodopago.value,
+              'destination_mobile_number': this.paymentServ.pagomovil,
+              'destination_id': this.nacionalidad.value + this.CedulaEnviar,
+              'origin_mobile_number': telefono
+            }
           } }
         console.log(options)
-        let respuesta = await this.$axios(options)
+        respuesta = await this.$axios(options)
         console.log('estaaaaaaaaaaaa', respuesta)
         let resp = {
           data: {
             id: respuesta,
             trx: {
               trx_status: 'approved'
-            },
-            referencia: respuesta.data.refgenerada,
-            correo: this.valueFields.correo,
-            formaPago: this.metodopago.value,
-            telefono: telefono
+            }
+
           }
 
         }
         return resp
       } catch (err) {
-        let mensaje
+        // let mensaje
+        this.pagando = false
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          console.log('errorrrrrrr', err.response.status)
-          mensaje = this.error.find(x => x.codigo === err.response.status)
+          console.log('errorrrrrrr', err.response)
+          //   mensaje = this.error.find(x => x.codigo === err.response.status)
           this.pagando = false
           this.estado = true
           return this.$q.dialog({
             title: 'Error',
 
-            message: mensaje.descripcion
+            message: err.response.data.message.error_list[0].description
           })
         } else {
           // let mensaje = this.eror.find(x => x.id === err.response.status)
@@ -528,7 +618,7 @@ export default {
           return this.$q.dialog({
             title: 'Error',
 
-            message: mensaje.descripcion
+            message: 'Ha ocurrido un Error'
           })
         }
       }
