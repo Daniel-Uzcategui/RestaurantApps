@@ -1070,6 +1070,7 @@ export default {
           this.$q.dialog({
             title: 'Receptor',
             message: 'Nombre de la persona que recibió la entrega',
+            persistent: true,
             prompt: {
               model: '',
               type: 'text' // optional
@@ -1083,6 +1084,7 @@ export default {
         case 4:
           this.$q.dialog({
             title: 'Alerta!',
+            persistent: true,
             message: 'Al colocar la orden como anulada se acutalizará el stock, esto no se puede reversar '
           }).onOk(() => {
             this.saved(e, this.$route.query.Order_Id, 'status')

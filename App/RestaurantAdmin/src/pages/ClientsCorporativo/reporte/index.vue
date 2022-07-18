@@ -67,10 +67,14 @@ export default {
     if (!this.ordercorporativo2.length) { await this.bindOrderscorp() }
     for (let i = 0; i < this.ordercorporativo2.length; i++) {
       obj = this.ordercorporativo2[i]
-      if (obj.typePayment === null && obj.statusLog !== undefined) {
+      console.log('here')
+      if (obj.typePayment === null) {
+        // if (obj.typePayment === null && typeof obj.statusLog !== 'undefined') {
         this.ordenes.push(obj)
+        console.log('he3re!')
       }
     }
+    console.log(this.ordenes, 'ordenes', this.ordercorporativo2)
   },
   watch: {
     ordenes () {
