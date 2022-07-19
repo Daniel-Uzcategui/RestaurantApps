@@ -4,7 +4,7 @@
   </div>
       <q-table
       v-if="report === 'estandar'"
-      class="table"
+      class="q-mt-md full-width"
       :loading="loading"
       style="border-radius: 28px"
       title="Ordenes"
@@ -72,7 +72,7 @@
           @filtrado="(e) => filtrado = e">
 
           </tabletop>
-          <q-btn  @click="Marcar()"> Quitar Filtro</q-btn>
+            <q-btn no-caps @click="Marcar()" class="btnquitarfiltro"> Quitar Filtro</q-btn>
   </template>
  </q-table>
 </div>
@@ -108,7 +108,7 @@ export default {
   components: { tablestandard, tabletop },
   computed: {
     ...mapGetters('corporativos', ['branches']),
-    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus', 'Ordersfilter']),
+    ...mapGetters('order', ['orders', 'ordersClient', 'typePayment_options', 'dateRange', 'tipoServicio', 'allestatus', 'Ordersfilter', 'StatusFilter']),
     ...mapGetters('client', ['clients', 'clients2']),
     ...mapGetters('localization', ['localizations']),
     dataprod () {
@@ -163,6 +163,7 @@ export default {
       let OrderClient = []
       let i, obj, clientforOrder, tipoPago, sedeforOrder, sucursalforOrder
       let fullname, statusOrder, typeService, nameSede
+
       if (typeof this.$route.query.status !== 'undefined') {
         this.setear()
       }
@@ -215,7 +216,9 @@ export default {
             'typeService': typeService
           })
         }
-        if (filterType && !(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
+        // if (filterType && !(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
+        console.log('el valor de filterType', filterType)
+        if (filterType) {
           if (obj.tipEnvio === '3') {
             console.log(obj)
             clientforOrder = obj.buyOrder.Client
@@ -263,11 +266,42 @@ export default {
             })
           }
         }
+
+        // }
+      }
+      console.log('vaolor de this.$route.query.valor', this.$route.query.valor)
+      console.log('valor de OrderClient', OrderClient)
+
+      if ((typeof this.$route.query.valor === 'undefined')) {
+        console.log('entreeeeeeeeeeeeeeeeee')
+        this.Ordersfilter2({ Ordersfilter: OrderClient })
+      } else {
+        this.setearstausfilter()
       }
 
-      this.Ordersfilter2({ Ordersfilter: OrderClient })
-
       this.setearruta()
+      console.log('el arreglo de status', this.statusFilter)
+      console.log('la longitud de StatusFilter', this.StatusFilter.length)
+      console.log('El valor de StatusFilter', this.StatusFilter)
+      /*
+      if (this.StatusFilter.length === 0) {
+        this.StatusFilter2({ StatusFilter: this.statusFilter })
+        // this.Ordersfilter2({ Ordersfilter: OrderClient })
+      } else {
+        console.log('este es el valor del query.valor', this.$route.query.valor)
+        if (this.$route.query.valor === '3') {
+          console.log('entre22222222222')
+          if (this.statusFilter.length === 0) {
+            this.StatusFilter2({ StatusFilter: this.statusFilter })
+          }
+
+          this.Ordersfilter2({ Ordersfilter: this.Ordersfiltert })
+        } else {
+          console.log('entre por acaaaaaa', this.Ordersfilter)
+          this.Ordersfilter2({ Ordersfilter: this.Ordersfilter })
+        }
+        this.setearvalor()
+      } */
 
       return OrderClient
     },
@@ -292,23 +326,6 @@ export default {
   },
   async mounted () {
     this.loading = true
-    // if (!this.branches.length) {
-    //   await this.bindonlybranches().catch(e => console.error(e))
-    // }
-    // if (!this.clients.length) {
-    //   await this.bindClients().catch(e => console.error(e))
-    // }
-    // if (!this.localizations.length) {
-    //   await this.bindLocalizations().catch(e => console.error(e))
-    // }
-    // if (!this.clients2.length) {
-    //   await this.bindClients2().catch(e => console.error(e))
-    // }
-    console.log('el valor de route Id orden', this.$route.query.valor)
-    if (typeof this.$route.query.valor !== 'undefined') {
-      console.log('los valores de arreglo', this.Ordersfilter)
-      this.ordersfilter = this.Ordersfilter
-    }
 
     if (!this.orders.length) {
       await this.bindOrders(this.getDateRange()).catch(e => console.error(e))
@@ -316,11 +333,17 @@ export default {
     return (() => { this.loading = false; this.mostrar() })()
   },
   watch: {
+
     // branches () {
     //   console.log('los branches', this.branches)
     // },
     orders () {
       this.mostrar()
+    },
+    report () {
+      if (this.report !== 'estandar') {
+      //   this.Marcar()
+      }
     },
     async dateRange (e) {
       this.loading = true
@@ -342,6 +365,11 @@ export default {
       }).catch(e => console.error(e))
     },
     statusFilter () {
+      console.log('el valor del statusfilter', this.statusFilter)
+      // this.statusFilter = this.StatusFilter
+      if (this.statusFilter.length === 0) {
+        this.ordersfilter = []
+      }
     },
     OrderClient () {
       if (this.estado) {
@@ -352,10 +380,28 @@ export default {
     },
     seleccionado () {
 
+    },
+    ordersfilter () {
+      //  this.statusFilter = this.StatusFilter
+      console.log('cambio ordenfilter', this.ordersfilter)
+      console.log('el valor de valor', this.$route.query.valor)
+      console.log('el valor de Ordersfilter', this.Ordersfilter)
+      console.log('el valor de statusfilter', this.statusFilter)
+
+      if ((typeof this.$route.query.valor !== 'undefined')) {
+        if (this.Ordersfilter.length !== 0) {
+          this.ordersfilter = this.Ordersfilter
+        } else {
+          console.log('cambio ordenfilter2222', this.ordersfilter)
+          this.Ordersfilter2({ Ordersfilter: this.ordersfilter })
+        }
+
+        //  this.$route.query.valor = ''
+      } else {
+        console.log('entre por aca')
+        this.ordersfilter = this.OrderClient
+      }
     }
-    /* Ordersfilter () {
-      this.ordersfilter = this.Ordersfilter
-    } */
   },
   methods: {
     filtroOrderType (objeto) {
@@ -375,6 +421,7 @@ export default {
     },
     setearruta () {
       this.$route.query.status = undefined
+      this.$route.query.valor = undefined
     },
     guardarordersfilter () {
       this.Ordersfilter2({ Ordersfilter: this.ordersfilter })
@@ -396,6 +443,9 @@ export default {
       console.log('los valor se seleccionado', this.seleccionado)
 
       this.statusFilter = []
+      this.ordersfilter = []
+      this.Ordersfilter2({ Ordersfilter: [] })
+      this.StatusFilter2({ StatusFilter: [] })
     },
     setear () {
       this.statusFilter = []
@@ -403,6 +453,9 @@ export default {
       /* this.OrderClient = this.OrderClient.filter((item, index) => {
         return this.OrderClient.indexOf(item) === index
       }) */
+    },
+    setearthisordersfilter () {
+
     },
     buscartiposervicio (objeto) {
       let obj
@@ -451,6 +504,13 @@ export default {
       this.ordersfilter = this.OrderClient
       console.log(this.branches, 'BRANCHES')
     },
+    setearvalor () {
+      // this.statusFilter = this.StatusFilter
+    },
+    setearstausfilter () {
+      console.log('los valores de arreglo', this.Ordersfilter)
+      this.ordersfilter = this.Ordersfilter
+    },
     exportTable () {
       // naive encoding to csv format
       const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
@@ -480,7 +540,7 @@ export default {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.ordersClient.length}`
     },
     // ...mapActions('corporativos', ['bindonlybranches']),
-    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange', 'Status', 'Ordersfilter2']),
+    ...mapActions('order', ['deleteOrder', 'bindOrders', 'alterRange', 'Status', 'Ordersfilter2', 'StatusFilter2']),
     // ...mapActions('localization', ['bindLocalizations']),
     // ...mapActions('client', ['bindClients', 'bindClients2']),
 
@@ -511,7 +571,7 @@ export default {
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
         { name: 'status', required: true, label: 'Estatus', field: 'status', sortable: true },
-        { name: 'paid', label: 'Monto', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(row.paid), sortable: true },
+        { name: 'paid', label: 'Monto($)', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(row.paid), sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
       ]
@@ -529,5 +589,17 @@ export default {
 }
 .notificacion:hover{
   padding-top: 1%;
+}
+.btnquitarfiltro{
+display: flex;
+position: relative;
+margin-left: 63%;
+margin-top: -2% !important;
+}
+@media (min-width: 320px) and (max-width: 780px) {
+  .btnquitarfiltro{
+    margin-left:0px !important;
+    margin-top:0px !important;
+  }
 }
 </style>

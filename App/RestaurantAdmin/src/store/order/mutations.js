@@ -16,3 +16,6 @@ export function Status (state, payload) {
 export function Ordersfilter2 (state, payload) {
   state.Ordersfilter = payload.Ordersfilter
 }
+export function StatusFilter2 (state, payload) {
+  state.StatusFilter = payload.StatusFilter
+}

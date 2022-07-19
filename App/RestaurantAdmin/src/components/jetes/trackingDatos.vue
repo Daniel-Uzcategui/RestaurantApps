@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="row col-12" >
+        <div class="row col-12" style="margin-left: 2%" >
             <q-form class="q-gutter-md formulario row">
                 <div class="col-12">
                     <q-select v-model="courier" :options="couriersList" label="Couriers" />

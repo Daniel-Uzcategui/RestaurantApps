@@ -1,7 +1,7 @@
 <template>
-<div class="row justify-end items-start">
+<div class="row">
   <div class="row justify-end col-12">
-        <q-btn color="blue" rounded label="Reportes" no-caps class="q-ma-md">
+        <q-btn color="blue"  label="Reporte" rounded style="font-size:12px;margin-right:15px;" >
         <q-menu
           transition-show="scale"
           transition-hide="scale"
@@ -17,7 +17,7 @@
         </q-menu>
       </q-btn>
         <q-input label="Buscar Cliente" :value="filtrado" @input="(e) =>$emit('filtrado', e)" dark  />
-        <div class="q-mr-sm">
+        <div class="" style="display: flex;align-items: center;margin-right:15px;">
           <q-badge v-if="dateRange !== null " color="blue-grey">
             {{ dateRange.from }} - {{ dateRange.to }}
           </q-badge>
@@ -35,9 +35,9 @@
             </q-date>
           </q-popup-proxy>
         </q-btn>
-            <q-btn no-caps rounded color="green" push icon="archive" @click="$emit('exportTable')"/>
+            <q-btn no-caps rounded color="green" push icon="archive"  @click="$emit('exportTable')"/>
       </div>
-        <div class="col-12">
+        <div class="" style="padding-top:1.5%">
             <q-option-group
               :value="statusFilter"
               @input="(e) => $emit('statusFilter', e)"
@@ -48,7 +48,8 @@
               inline
               name ="foo"
             />
-        </div>
+            </div>
+
 </div>
 </template>
 <script>

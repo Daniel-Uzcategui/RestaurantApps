@@ -130,7 +130,7 @@ export default {
         { name: 'nombre', required: true, align: 'center', label: 'Cliente', field: 'nombre', sortable: true },
         { name: 'typePayment', align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: 'typeService', sortable: true },
-        { name: 'paid', label: 'Monto', field: 'paid', sortable: true }
+        { name: 'paid', label: 'Monto($)', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(row.paid)), sortable: true }
       ]
       // estatus_options: [
       //   { label: 'Por Confirmar', value: 0 },

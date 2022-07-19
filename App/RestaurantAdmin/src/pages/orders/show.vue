@@ -8,13 +8,7 @@
         <q-card-section class="q-cardtop header">
           <div class="text-h5">Orden {{order.factura}}</div>
           <div class="absolute-bottom-right q-pa-md">
-            <q-btn v-if="Status !== '' && Ordersfilter !== ''"
-              flat
-              color="white"
-              icon="arrow_back"
-              @click="$router.push({ path: '/orders/index', query: { valor: 5} })"
-            >
-            </q-btn>
+
             <q-btn v-if="Status === ''"
               flat
               color="white"
@@ -22,11 +16,18 @@
               @click="$router.push({ path: '/orders/index', query: { status: 3} })"
             >
             </q-btn>
-             <q-btn v-if="Status === '' &&  Ordersfilter === ''"
+             <q-btn v-if="Status !== 3"
               flat
               color="white"
               icon="arrow_back"
-              @click="$router.push({ path: '/orders/index', query: { status: 3} })"
+              @click="$router.push({ path: '/orders/index', query: { status: Status} })"
+            >
+            </q-btn>
+             <q-btn v-if="Status === 3"
+              flat
+              color="white"
+              icon="arrow_back"
+              @click="$router.push({ path: '/orders/index', query: { valor: Status} })"
             >
             </q-btn>
           </div>
@@ -57,7 +58,7 @@
                 <p class="text-bold">SubTotal</p>
                 <p>
                   $
-                  {{(order.subtotal ? order.subtotal : order.paid && order.delivery ? order.paid - order.delivery : order.paid).toFixed(2)}}
+                  {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat((order.subtotal ? order.subtotal : order.paid && order.delivery ? order.paid - order.delivery : order.paid)))}}
                 </p>
               </div>
               <div v-if="order.extras" class="header-cell q-ma-sm col-2">
@@ -77,7 +78,7 @@
               </div>
               <div class="header-cell q-ma-sm col-2">
                 <p class="text-bold">Total $</p>
-                <p>{{order.paid}}</p>
+                <p>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(order.paid))}}</p>
               </div>
                  <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto">
                 <p class="text-bold">Total Recibido $</p>
