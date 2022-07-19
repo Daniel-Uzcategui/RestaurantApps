@@ -271,10 +271,12 @@ export default {
       }
       console.log('vaolor de this.$route.query.valor', this.$route.query.valor)
       console.log('valor de OrderClient', OrderClient)
+      console.log('valor de this.statusFilter', this.statusFilter)
 
       if ((typeof this.$route.query.valor === 'undefined')) {
         console.log('entreeeeeeeeeeeeeeeeee')
         this.Ordersfilter2({ Ordersfilter: OrderClient })
+        this.StatusFilter2({ StatusFilter: this.statusFilter })
       } else {
         this.setearstausfilter()
       }
@@ -399,7 +401,7 @@ export default {
         //  this.$route.query.valor = ''
       } else {
         console.log('entre por aca')
-        this.ordersfilter = this.OrderClient
+        this.ordersfilter = this.Ordersfilter
       }
     }
   },
@@ -509,7 +511,9 @@ export default {
     },
     setearstausfilter () {
       console.log('los valores de arreglo', this.Ordersfilter)
+      console.log('los valores de arreglo status', this.StatusFilter)
       this.ordersfilter = this.Ordersfilter
+      this.statusFilter = this.StatusFilter
     },
     exportTable () {
       // naive encoding to csv format
