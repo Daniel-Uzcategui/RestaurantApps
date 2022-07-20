@@ -53,7 +53,7 @@ export default {
         { name: 'cliente', required: true, label: 'client corp', align: 'left', field: row => row.buyOrder.Client.name, sortable: true },
         { name: 'Vendedor', required: true, label: 'Vendedor', align: 'left', field: row => this.buscarvendedor(row), sortable: true },
         { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: row => row.factura, sortable: true },
-        { name: 'paid', label: 'Monto $', field: row => row.paid + '$', sortable: true },
+        { name: 'paid', label: 'Monto $', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(row.paid)), sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: row => row?.dateIn, format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'dateOrd', label: 'Fecha de Entrega', field: row => this.obtenerfecha(row), sortable: true },
         { name: 'diasVencido', required: true, label: 'Fecha Vencimiento', align: 'left', field: row => this.calculardias(row), sortable: true },

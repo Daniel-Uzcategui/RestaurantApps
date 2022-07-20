@@ -65,7 +65,7 @@ export default {
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: row => this.buscartipopago(row), sortable: true },
         { name: 'typeService', align: 'center', label: 'Tipo de Servicio', field: row => this.buscartiposervicio(row), sortable: true },
         { name: 'status', required: true, label: 'Estatus', field: row => this.buscarstatus(row), sortable: true },
-        { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
+        { name: 'paid', label: 'Monto', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(row.paid)), sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: row => row.dateIn, format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true }
       ]
     }

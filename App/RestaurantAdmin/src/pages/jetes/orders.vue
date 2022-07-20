@@ -31,7 +31,7 @@ export default {
         { name: 'factura', required: true, label: 'Nro. Pedido', align: 'left', field: 'factura', sortable: true },
         { name: 'typePayment', required: true, align: 'center', label: 'Tipo de Pago', field: 'typePayment', sortable: true },
         { name: 'status', required: true, label: 'Estatus', field: 'status', sortable: true },
-        { name: 'paid', label: 'Monto', field: 'paid', sortable: true },
+        { name: 'paid', label: 'Monto($)', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(row.paid)), sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
         { name: 'boton1', required: false, label: '', align: 'left', sortable: true }
       ]
