@@ -27,7 +27,7 @@
           </q-badge>
         </div>
         <div class="botones">
-        <q-btn icon="event" class="q-mr-sm" rounded color="blue" >
+        <q-btn icon="event" class="q-mr-sm" rounded color="blue"  style="height: 56px;">
           <q-popup-proxy transition-show="scale" transition-hide="scale">
             <q-date color="blue" :value="dateRango" @input="(e)=>$emit('dateRango', e)" range >
               <div class="row items-center justify-end q-gutter-sm">
@@ -36,9 +36,9 @@
             </q-date>
           </q-popup-proxy>
           </q-btn>
-            <q-btn no-caps rounded color="green" push icon="archive" :size="q-mr-sm" @click="$emit('exportTable')"/>
+            <q-btn no-caps rounded   color="green" push icon="archive" :class="q-mr-sm" @click="$emit('exportTable')" style="height: 56px;"/>
         </div>
-        <div class="" style="padding-top:1.5%">
+        <div class="opciones_reporte" >
             <q-option-group
             :value="statusFilter"
             @input="(e) => $emit('statusFilter', e)"
@@ -72,6 +72,10 @@ export default {
 .botones{
   display:flex;
 }
+.opciones_reporte{
+  padding-top:1.5%;
+  width:100%
+}
 @media (min-width: 320px) and (max-width: 780px){
 .buscar_responsive{
 margin: 1rem;
@@ -89,7 +93,11 @@ width: 96%;
 padding: 1rem;
 width: 100%;
 margin-left:25%;
+height:31%;
 }
+}
+@media (min-width: 780px) and (max-width: 1280px){
+
 }
 
 </style>
