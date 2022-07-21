@@ -285,26 +285,6 @@ export default {
       console.log('el arreglo de status', this.statusFilter)
       console.log('la longitud de StatusFilter', this.StatusFilter.length)
       console.log('El valor de StatusFilter', this.StatusFilter)
-      /*
-      if (this.StatusFilter.length === 0) {
-        this.StatusFilter2({ StatusFilter: this.statusFilter })
-        // this.Ordersfilter2({ Ordersfilter: OrderClient })
-      } else {
-        console.log('este es el valor del query.valor', this.$route.query.valor)
-        if (this.$route.query.valor === '3') {
-          console.log('entre22222222222')
-          if (this.statusFilter.length === 0) {
-            this.StatusFilter2({ StatusFilter: this.statusFilter })
-          }
-
-          this.Ordersfilter2({ Ordersfilter: this.Ordersfiltert })
-        } else {
-          console.log('entre por acaaaaaa', this.Ordersfilter)
-          this.Ordersfilter2({ Ordersfilter: this.Ordersfilter })
-        }
-        this.setearvalor()
-      } */
-
       return OrderClient
     },
     filtrado: {
@@ -336,9 +316,6 @@ export default {
   },
   watch: {
 
-    // branches () {
-    //   console.log('los branches', this.branches)
-    // },
     orders () {
       this.mostrar()
     },
@@ -368,7 +345,6 @@ export default {
     },
     statusFilter () {
       console.log('el valor del statusfilter', this.statusFilter)
-      // this.statusFilter = this.StatusFilter
       if (this.statusFilter.length === 0) {
         this.ordersfilter = []
       }
@@ -451,10 +427,6 @@ export default {
     },
     setear () {
       this.statusFilter = []
-      // this.statusFilter[0] = parseInt(this.$route.query.status)
-      /* this.OrderClient = this.OrderClient.filter((item, index) => {
-        return this.OrderClient.indexOf(item) === index
-      }) */
     },
     setearthisordersfilter () {
 
@@ -497,11 +469,6 @@ export default {
         return obj.label
       }
     },
-    // sedeOrders (value) {
-    //   return this.localizations.find(obj => {
-    //     return obj.id === value
-    //   })
-    // },
     mostrar () {
       this.ordersfilter = this.OrderClient
       console.log(this.branches, 'BRANCHES')

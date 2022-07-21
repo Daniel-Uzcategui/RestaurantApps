@@ -1,7 +1,7 @@
 <template>
-<div class="row">
+<div class="row ">
   <div class="row justify-end col-12">
-        <q-btn color="blue"  label="Reporte" rounded style="font-size:12px;margin-right:15px;" >
+        <div class="boton_reporte" style="display: flex;align-items:center"><q-btn color="blue"  label="Reporte" rounded style="font-size:12px;margin-right:15px;">
         <q-menu
           transition-show="scale"
           transition-hide="scale"
@@ -16,8 +16,9 @@
           </q-list>
         </q-menu>
       </q-btn>
-        <q-input label="Buscar Cliente" :value="filtrado" @input="(e) =>$emit('filtrado', e)" dark  />
-        <div class="" style="display: flex;align-items: center;margin-right:15px;">
+      </div>
+        <div class="buscar_responsive"><q-input label="Buscar Cliente" :value="filtrado" @input="(e) =>$emit('filtrado', e)" dark  /></div>
+        <div class="etiqueta_fecha" style="display: flex;align-items: center;margin-right:15px;">
           <q-badge v-if="dateRange !== null " color="blue-grey">
             {{ dateRange.from }} - {{ dateRange.to }}
           </q-badge>
@@ -25,8 +26,8 @@
             Últimos 30 días
           </q-badge>
         </div>
-
-        <q-btn icon="event" class="q-mr-sm" rounded color="blue">
+        <div class="botones">
+        <q-btn icon="event" class="q-mr-sm" rounded color="blue"  style="height: 56px;">
           <q-popup-proxy transition-show="scale" transition-hide="scale">
             <q-date color="blue" :value="dateRango" @input="(e)=>$emit('dateRango', e)" range >
               <div class="row items-center justify-end q-gutter-sm">
@@ -34,22 +35,21 @@
               </div>
             </q-date>
           </q-popup-proxy>
-        </q-btn>
-            <q-btn no-caps rounded color="green" push icon="archive"  @click="$emit('exportTable')"/>
-      </div>
-        <div class="" style="padding-top:1.5%">
+          </q-btn>
+            <q-btn no-caps rounded   color="green" push icon="archive" :class="q-mr-sm" @click="$emit('exportTable')" style="height: 56px;"/>
+        </div>
+        <div class="opciones_reporte" >
             <q-option-group
-              :value="statusFilter"
-              @input="(e) => $emit('statusFilter', e)"
+            :value="statusFilter"
+            @input="(e) => $emit('statusFilter', e)"
               :options="allestatus"
               dense
               color="green"
               type="checkbox"
               inline
               name ="foo"
-            />
+            /></div>
             </div>
-
 </div>
 </template>
 <script>
@@ -67,4 +67,37 @@ export default {
 .column
   .flex-break
     width: 0 !important
+</style>
+<style >
+.botones{
+  display:flex;
+}
+.opciones_reporte{
+  padding-top:1.5%;
+  width:100%
+}
+@media (min-width: 320px) and (max-width: 780px){
+.buscar_responsive{
+margin: 1rem;
+padding: 1rem;
+}
+.etiqueta_fecha{
+margin-left: 30%;
+width: 96%;
+}
+.boton_reporte{
+  margin-right: 8rem !important;
+}
+.botones{
+ margin: 1rem;
+padding: 1rem;
+width: 100%;
+margin-left:25%;
+height:31%;
+}
+}
+@media (min-width: 780px) and (max-width: 1280px){
+
+}
+
 </style>
