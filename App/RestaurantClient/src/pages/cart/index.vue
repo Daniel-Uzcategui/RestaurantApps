@@ -346,7 +346,7 @@
 
                         </q-card>
                         <q-card q-card class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1">
-                          <q-card-sec>
+                          <q-card-section>
 
                             <div >
                                  <div v-show="pagoSel == 1" class="card-input"><label  aria-label="monto" >Monto Enviado</label>
@@ -355,7 +355,14 @@
                               <div v-show="Vuelto > 0">
                                 <p v-show="Vuelto > 0">Datos para el Vuelto</p>
                               </div>
+                              <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Referencia</label></div>
+                            <div class="row">
+                            <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            </div>
 
+                          <div class="col-6 col-md-4"  v-show="Vuelto > 0" ><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
+                            </div>
+                         </div>
                             </div>
                           <div >
                               <div class="col-12">
@@ -391,8 +398,10 @@
                             <q-input filled mask="########" v-show="Vuelto > 0" v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
                          </div>
                          </div>
-
-                          </q-card-sec>
+                           <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Vuelto Bs.</label></div>
+                         <div class="col col-md-8"><q-input  disable v-model="montoV"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            </div>
+                          </q-card-section>
                         </q-card>
                     </div>
                     <div style="min-width: 320px" class="col-6 q-pt-xl" v-if="pagoSel === 6">
@@ -502,7 +511,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import payCreditCorp from '../../components/payCreditCorp.vue'
 import debitPayment from '../../components/payment/debit'
 import creditPayment from '../../components/payment/credit'
-import { QUploaderBase, date } from 'quasar'
+import { QUploaderBase, date, copyToClipboard } from 'quasar'
 import NovaredPayment from '../../components/payment/novared.vue'
 import NovaredPagomovil from '../../components/payment/pagomovilnovared.vue'
 import photoUpload from '../../components/photoUpload/uploadphoto.vue'
@@ -616,6 +625,7 @@ export default {
       loadingConfig: true,
       cupons: [],
       Vuelto: 0,
+      montoV: 0,
       operacion: '',
       referenciacompleta: '',
       serie: '',
@@ -807,8 +817,9 @@ export default {
     // let diaA = fecha.getDate()
     let hoy = fecha.getDate()
 
-    this.referenciacompleta = this.operacion + this.config.Novared.nombreComercio + '00' + hoy + this.serie
+    this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
     this.referenciacompleta = this.referenciacompleta.toUpperCase()
+    console.log('laaaaaaaaaaa referencia', this.referenciacompleta)
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'modCartVal', 'delCartItem']),
@@ -849,11 +860,18 @@ export default {
         this.cupon = ''
       }
     },
+    copy (referencia) {
+      copyToClipboard(referencia)
+      return this.$q.dialog({ title: 'Sastifactorio', message: 'Código copiado' })
+    },
     async EnviarVuelto () {
       try {
         let telefono = this.formatoTelefono(this.TelefonoEnviar)
         this.loading2 = true
         let ip = '186.91.191.248'
+
+        console.log('monto en Bolivares', this.montoV)
+        // url : window.location.origin
         let options = { method: 'post',
 
           url: window.location.origin + '/transact',
@@ -862,9 +880,9 @@ export default {
             'bank': 'createOrder',
             'token': this.config.apiKeyDev,
             'ambiente': localStorage.getItem('amb'),
-            'monto': this.Vuelto,
+            'monto': this.montoV,
             'moneda': 'VES',
-            'formaPago': 'Interbank',
+            'formaPago': 'President',
             'referencia': this.referenciacompleta,
             'telefono': telefono,
             'correo': 'pruebas@gmail.com',
@@ -876,14 +894,26 @@ export default {
         this.loading2 = false
         return respuesta
       } catch (err) {
+        let mensaje
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          return this.$q.dialog(err.response.data)
-        } else {
+          console.log('errorrrrrrr', err.response.status)
+          this.loading2 = false
+          mensaje = this.error.find(x => x.codigo === err.response.status)
           return this.$q.dialog({
             title: 'Error',
-            message: 'Error inesperado, intente más tarde'
+
+            message: mensaje.descripcion
+          })
+        } else {
+          // let mensaje = this.eror.find(x => x.id === err.response.status)
+          console.log('errorrrrrrr', err.response)
+
+          return this.$q.dialog({
+            title: 'Error',
+
+            message: mensaje.descripcion
           })
         }
       }
@@ -913,6 +943,10 @@ export default {
       if (this.montoEnviar !== '') {
         this.Vuelto = parseFloat(this.montoEnviar) - (parseFloat(this.totalPrice) + parseFloat(this.deliveryPrice))
         console.log('el vuelto es', this.Vuelto)
+        let rate = this.ratesComp.find(obj => {
+          return obj.currency === 'Bs'
+        })
+        this.montoV = (parseFloat(rate.rateValue) * parseFloat(this.Vuelto)).toFixed(2)
       }
     },
     setBanco () {
@@ -1173,6 +1207,10 @@ export default {
       let customer = this.currentUser
       let cartManage = this.cartMan()
       let order = { productos: cartManage, photo: this.photoSRC, orderWhen, sede: this.getSede(), cart: this.cart, tipEnvio: this.tipEnvio, typePayment: this.pagoSel, customer, customer_id: this.currentUser.id, status: 0, table: 0, delivery: this.deliveryPrice, paid: (this.tipEnvio === '1' || this.tipEnvio === '4') ? parseFloat(parseFloat(Number(this.getTotalCarrito()[2])) + parseFloat(Number(this.deliveryPrice))) : parseFloat((parseFloat(this.getTotalCarrito()[2])).toFixed(2)) }
+      if (this.tipEnvio === '3') {
+        order = { ...order, ordencompra: this.objetodetalleorden }
+      }
+
       if (this.addId && this.addId.id) {
         order = { ...order, address: this.addId.id, addressC: this.addId }
       }
@@ -1191,16 +1229,18 @@ export default {
 
           break
         case 1:
-
           order = { ...order, payto: this.config.zelleEmail }
           if (this.Vuelto > 0) {
             let nroOrden = await this.EnviarVuelto()
             let Vuelto = {
               nroOrden: nroOrden.data.trx,
               telefono: this.formatoTelefono(this.TelefonoEnviar),
-              cedula: this.nacionalidad + this.CedulaEnviar,
-              vuelto: this.Vuelto,
-              banco: this.BancoEnviar.value
+              nacionalidad: this.nacionalidad.value,
+              documento: this.CedulaEnviar,
+              VueltoBolivares: this.montoV,
+              VueltoDolares: this.Vuelto,
+              banco: this.BancoEnviar.value,
+              status: true
             }
             order = { ...order, vuelto: Vuelto }
           }
@@ -1270,6 +1310,15 @@ export default {
           order = { ...order, onlinePay: reg }
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.pagomovil }
+          break
+        case 12:
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa?.tarifa }
+            order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
+          }
+          //  order = { ...order, onlinePay: reg }
+          console.log('los valores', order.onlinePay)
+          order = { ...order, onlinePay: details.id.data.trx }
           break
         default:
           break
@@ -1534,6 +1583,15 @@ export default {
     },
     nohayVuelto () {
       console.log('cambio')
+      this.operacion = 'P'
+      // this.serie = this.obtenerSerie(this.config.referencia)
+      let fecha = new Date()
+      // let diaA = fecha.getDate()
+      let hoy = fecha.getDate()
+
+      this.referenciacompleta = this.operacion + this.paymentServ.Novared.nombreComercio + hoy + this.paymentServ.referencia
+      this.referenciacompleta = this.referenciacompleta.toUpperCase()
+      console.log('laaaaaaaaaaa referencia', this.referenciacompleta)
     },
     Vuelto () {
       if (this.Vuelto > 0) {
@@ -1548,6 +1606,9 @@ export default {
     },
     configDates () {
       this.getDays()
+    },
+    referenciacompleta () {
+      console.log('cambio')
     },
     CheckAv () {
       if (this.CheckAv === 2) this.showNotif()
