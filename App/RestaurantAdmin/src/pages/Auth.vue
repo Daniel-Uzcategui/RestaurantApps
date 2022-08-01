@@ -395,9 +395,17 @@ export default {
           return waitAuth
         } catch (err) {
           console.error(err)
+          let mensaje
+          if (err.code === 'auth/user-not-found') {
+            mensaje = `No se encontró cuenta del usuario con el correo especificado`
+          }
+          if (err.code === 'auth/wrong-password') {
+            mensaje = `Contraseña incorrecta`
+          }
           this.$q.notify({
-            message: `A occurido un error: ${err}`,
+            message: mensaje !== undefined ? mensaje : 'A Ocurrido un error Interno',
             color: 'negative'
+
           })
           this.$q.loading.hide()
         }
@@ -409,10 +417,6 @@ export default {
       if (validate) {
         return this.$router.push({ path: '/ambientes' })
       }
-      return this.$q.notify({
-        message: `Acceso no permitido`,
-        color: 'negative'
-      })
     }
   }
   // watch: {

@@ -88,9 +88,13 @@
                 <p class="text-bold">Vuelto Bs</p>
                 <p>{{(order.vuelto.VueltoBolivares)}}</p>
               </div>
-               <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto2 && verificarVuelto">
+               <div class="header-cell q-ma-sm col-2" v-if="!verificarVuelto3 && verificarVuelto2">
                 <p class="text-bold">Referencia</p>
-                <p class="text-green">{{order.vuelto.trx.referencia}}</p>
+                <p class="text-green">{{order.vuelto.trx.contrato}}</p>
+              </div>
+                <div class="header-cell q-ma-sm col-2" v-if="verificarVuelto3 && verificarVuelto">
+                <p class="text-bold">Referencia</p>
+                <p class="text-green">{{order.vuelto.trx.payment_reference}}</p>
               </div>
               <div class="header-cell q-ma-sm col-2" v-if="verificarPagoMovil">
                 <p class="text-bold">Referencia</p>
@@ -105,7 +109,7 @@
                   label="Realizar Vuelto"
                   :loading=realizado
                   v-show="statusVuelto"
-                  @click="RealizarVuelto"
+                  @click="PagarVuelto"
                 />
               </div>
                <div class="header-cell q-ma-sm col-2">
@@ -486,7 +490,7 @@
                     </q-popup-edit>
                   </q-td>
                   <q-td key="price" :props="props">
-                    {{props.row.prodPrice}}
+                    {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(props.row.prodPrice)}}
                     <q-popup-edit @input="(e) => {if (e > -1) {quantityOrPriceChange(parseFloat(e), $route.query.Order_Id, `productos.${props.row.index}.prodPrice`, props.row.index, 1)}}"
                       :value="props.row.prodPrice" title="Actualizar Precio" buttons persistent v-slot="scope">
                       <q-input type="number" v-model="scope.value"  dense autofocus hint="Usar el botón para cerrar" />
@@ -762,7 +766,7 @@ export default {
       columns: [
         { name: 'name', required: true, align: 'center', label: 'Nombre', field: 'name' },
         { name: 'quantity', required: true, align: 'center', label: 'Cantidad', field: 'quantity' },
-        { name: 'price', required: true, align: 'center', label: 'Precio/Unidad', field: 'price' },
+        { name: 'price', required: true, align: 'center', label: 'Precio/Unidad', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(row.price) },
         { name: 'discount', align: 'center', label: 'discount', field: 'discount' }
       ],
       visibleColumns: ['name', 'quantity', 'price'],
@@ -854,9 +858,15 @@ export default {
         return true
       }
     },
-
+    verificarVuelto3 () {
+      if (this.order.vuelto?.metodo === 'mercantil' && this.order.vuelto?.trx !== undefined) {
+        return true
+      } else {
+        return false
+      }
+    },
     estatusOptions () {
-      if (this.order.tipEnvio === '3') {
+      if (this.order.tipEnvio === '3' || this.order.tipEnvio === '0') {
         return this.estatus_optionsOrd
       }
       return this.estatus_options
@@ -963,15 +973,64 @@ export default {
         message: 'El Correo se ha Reenviado con Exito'
       })
     },
+    buscarError (error) {
+      if (error === 401) {
+        return 'Error de Acceso'
+      }
+      if (error === 400) {
+        return 'Error al Armar la Solicitud'
+      }
+      if (error === 403) {
+        return 'Error de Permiso'
+      }
+      if (error === 404) {
+        return 'Recurso no Encontrado Pago no existe'
+      }
+      if (error === 405) {
+        return 'Error método no Permitido'
+      }
+      if (error === 406) {
+        return 'error de formato – petición no aceptable'
+      }
+      if (error === 410) {
+        return 'no disponible ( se intenta procesar una transacción expirada, o se usa un duplica un ticket de una transacción ya expirada)'
+      }
+      if (error === 409) {
+        return 'Conflicto ( Transacciones Duplicadas)'
+      }
+      if (error === 502) {
+        return 'error cuando un servicio externo o de tercero esta fallando'
+      }
+      if (error === 503) {
+        return 'error cuando un servicio externo o de tercero no esta disponible'
+      }
+      if (error === 500) {
+        return 'error del servidor – este es un error inesperado'
+      }
+      if (error === 504) {
+        return 'error cuando un servicio externo o de tercero tarda demasiado en responder'
+      }
+    },
+    PagarVuelto () {
+      if (this.order.vuelto.metodo === 'mercantil') {
+        this.RealizarVuelto2()
+      } else {
+        this.RealizarVuelto()
+      }
+    },
     async RealizarVuelto () {
       try {
-        // this.$q.loading.show()
-        // let referencia = this.valueFields.referencia
         this.realizado = true
-        console.log('la url')
+        let url
         // window.location.origin
+        if (localStorage.getItem('amb') === 'poke') {
+          url = 'http://localhost:8085' + '/transact'
+        } else {
+          url = window.location.origin + '/transact'
+        }
+        console.log('url', url)
         let options = { method: 'post',
-          url: window.location.origin + '/transact',
+          url: url,
           data:
           {
             'bank': 'Vuelto',
@@ -1004,16 +1063,82 @@ export default {
         return this.respuesta
       } catch (err) {
         let mensaje
+        console.error({ err })
+        //  if (err.response) {
+        console.log('errorrrrrrr', err.response.status)
+        mensaje = this.buscarError(err.response.status)
+        this.realizado = false
+        return this.$q.dialog({
+          title: 'Error',
+          message: mensaje
+        })
+      //  }
+      }
+    },
+    consolee (e, b, c, s) {
+      console.log(e, b, c, s)
+    },
+    async RealizarVuelto2 () {
+      let respuesta
+      try {
+        let telefono = this.formatoTelefono(this.order.vuelto.telefono)
+        let url
+        // window.location.origin
+        if (localStorage.getItem('amb') === 'poke') {
+          url = 'http://localhost:8085' + '/transact'
+        } else {
+          url = window.location.origin + '/transact'
+        }
+        console.log('url', url)
+        let options = { method: 'post',
+
+          url: url,
+          data:
+          {
+            'bank': 'VueltoMercantil',
+            'token': this.configs2.apiKeyDev,
+            'ambiente': localStorage.getItem('amb'),
+            'transaction_c2p': {
+              'currency': 'VES',
+              'amount': this.order.vuelto.VueltoBolivares,
+              'destination_bank_id': this.order.vuelto.banco,
+              'destination_mobile_number': this.configs2.pagomovil,
+              'destination_id': this.order.vuelto.nacionalidad + this.order.vuelto.documento,
+              'origin_mobile_number': telefono
+            }
+          } }
+        console.log(options)
+        respuesta = await this.$axios(options)
+        console.log('estaaaaaaaaaaaa', respuesta)
+        let valores = await this.setVuelto({ idorden: this.$route.query.Order_Id,
+          trx: respuesta.data.trx,
+          status: false })
+        console.log(valores)
+        this.statusVuelto = false
+        this.realizado = false
+        this.$q.notify({
+          color: 'blue',
+          message: 'El Vuelto se ha enviado con Exito'
+        })
+        let respuesta2 = await this.emailAdminClients({ ambiente: localStorage.getItem('amb'), order: this.order })
+        console.log('respuesta2', respuesta2)
+        this.statusmail = true
+
+        return respuesta
+      } catch (err) {
+        // let mensaje
+        this.pagando = false
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          console.log('errorrrrrrr', err.response.status)
-          mensaje = this.error.find(x => x.codigo === err.response.status)
-          this.realizado = false
+          console.log('errorrrrrrr', err.response)
+          //   mensaje = this.error.find(x => x.codigo === err.response.status)
+          this.pagando = false
+          this.estado = true
           return this.$q.dialog({
             title: 'Error',
 
-            message: mensaje.descripcion
+            message: err.response.data.message.error_list[0].description
           })
         } else {
           // let mensaje = this.eror.find(x => x.id === err.response.status)
@@ -1022,13 +1147,13 @@ export default {
           return this.$q.dialog({
             title: 'Error',
 
-            message: mensaje.descripcion
+            message: 'Ha ocurrido un Error'
           })
         }
       }
     },
-    consolee (e, b, c, s) {
-      console.log(e, b, c, s)
+    formatoTelefono (tel) {
+      return `58${tel.substr(3, 12)}`
     },
     ...mapActions('order', ['saveOrder', 'setVuelto', 'emailAdminClients', 'emailClients']),
     ...mapActions('menu', ['bindMenu', 'bindPromos']),
