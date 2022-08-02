@@ -173,18 +173,14 @@ export default {
         let filterType = this.filtroOrderType(obj) // --- return true si statusFilter.include(statusOrder) || statusFilter.lenght[0]
         if (((typeof this.$route.query.status !== 'undefined') && (parseInt(this.$route.query.status) === obj.status))) {
           if (obj.tipEnvio === '3') {
-            console.log(obj)
             clientforOrder = obj.buyOrder.Client
             sucursalforOrder = obj.buyOrder.Branch
-            console.log('valores retornados', sucursalforOrder)
             sedeforOrder = obj.sede
             fullname = clientforOrder?.name + '-' + sucursalforOrder?.name
             nameSede = sedeforOrder?.name
             typeService = this.buscartiposervicio(obj)
-            console.log('los tipos de servicios', typeService)
             if (typeof obj.typePayment !== 'undefined') {
               tipoPago = this.buscartipopago(obj)
-              console.log('los tipos de pagos', tipoPago)
             } else { tipoPago = '' }
             statusOrder = this.buscarstatus(obj)
           } else {
@@ -217,21 +213,16 @@ export default {
           })
         }
         // if (filterType && !(typeof this.$route.query.status !== 'undefined' && !(parseInt(this.$route.query.status) === this.ordersClient[i].status))) {
-        console.log('el valor de filterType', filterType)
         if (filterType) {
           if (obj.tipEnvio === '3') {
-            console.log(obj)
             clientforOrder = obj.buyOrder.Client
             sucursalforOrder = obj.buyOrder.Branch
-            console.log('valores retornados', sucursalforOrder)
             sedeforOrder = obj.sede
             fullname = clientforOrder?.name + '-' + sucursalforOrder?.name
             nameSede = sedeforOrder?.name
             typeService = this.buscartiposervicio(obj)
-            console.log('los tipos de servicios', typeService)
             if (typeof obj.typePayment !== 'undefined') {
               tipoPago = this.buscartipopago(obj)
-              console.log('los tipos de pagos', tipoPago)
             } else { tipoPago = '' }
             statusOrder = this.buscarstatus(obj)
           } else {
@@ -269,12 +260,8 @@ export default {
 
         // }
       }
-      console.log('vaolor de this.$route.query.valor', this.$route.query.valor)
-      console.log('valor de OrderClient', OrderClient)
-      console.log('valor de this.statusFilter', this.statusFilter)
 
       if ((typeof this.$route.query.valor === 'undefined')) {
-        console.log('entreeeeeeeeeeeeeeeeee')
         this.Ordersfilter2({ Ordersfilter: OrderClient })
         this.StatusFilter2({ StatusFilter: this.statusFilter })
       } else {
@@ -282,9 +269,6 @@ export default {
       }
 
       this.setearruta()
-      console.log('el arreglo de status', this.statusFilter)
-      console.log('la longitud de StatusFilter', this.StatusFilter.length)
-      console.log('El valor de StatusFilter', this.StatusFilter)
       return OrderClient
     },
     filtrado: {
@@ -292,17 +276,14 @@ export default {
         return this.texto
       },
       set (value) {
-        console.log(value)
         value = value.toLowerCase()
 
         this.ordersfilter = this.OrderClient.filter(function (item) {
-          console.log('este valor de item', item)
           if (item.nombre !== undefined) {
             return item.nombre.toLowerCase().indexOf(value) !== -1
           }
         })
         this.texto = value
-        console.log('nuevos valores', this.ordersfilter)
       }
     }
   },
@@ -344,7 +325,6 @@ export default {
       }).catch(e => console.error(e))
     },
     statusFilter () {
-      console.log('el valor del statusfilter', this.statusFilter)
       if (this.statusFilter.length === 0) {
         this.ordersfilter = []
       }
@@ -361,22 +341,16 @@ export default {
     },
     ordersfilter () {
       //  this.statusFilter = this.StatusFilter
-      console.log('cambio ordenfilter', this.ordersfilter)
-      console.log('el valor de valor', this.$route.query.valor)
-      console.log('el valor de Ordersfilter', this.Ordersfilter)
-      console.log('el valor de statusfilter', this.statusFilter)
 
       if ((typeof this.$route.query.valor !== 'undefined')) {
         if (this.Ordersfilter.length !== 0) {
           this.ordersfilter = this.Ordersfilter
         } else {
-          console.log('cambio ordenfilter2222', this.ordersfilter)
           this.Ordersfilter2({ Ordersfilter: this.ordersfilter })
         }
 
         //  this.$route.query.valor = ''
       } else {
-        console.log('entre por aca')
         this.ordersfilter = this.Ordersfilter
       }
     }
@@ -418,8 +392,6 @@ export default {
     },
 
     Marcar () {
-      console.log('los valor se seleccionado', this.seleccionado)
-
       this.statusFilter = []
       this.ordersfilter = []
       this.Ordersfilter2({ Ordersfilter: [] })
@@ -435,7 +407,6 @@ export default {
       let obj
 
       obj = this.tipoServicio.find(x => x.value === parseInt(objeto.tipEnvio))
-      console.log('resultado de la busquedad', obj)
       if (obj !== undefined) {
         return obj.label
       }
@@ -446,16 +417,12 @@ export default {
       return obj
     },
     buscarsurcursal (objeto) {
-      console.log('entra objeto', objeto)
-
       let reg = this.branches.find(x => x.id === objeto.buyOrderBranch)
-      console.log('resultado de busquedad', reg)
       return reg
     },
 
     buscartipopago (objeto) {
       let obj
-      console.log('el tipo de pago', objeto.typePayment)
       obj = this.typePayment_options.find(x => x.value === objeto.typePayment)
 
       if (obj !== undefined) {
@@ -477,8 +444,6 @@ export default {
       // this.statusFilter = this.StatusFilter
     },
     setearstausfilter () {
-      console.log('los valores de arreglo', this.Ordersfilter)
-      console.log('los valores de arreglo status', this.StatusFilter)
       this.ordersfilter = this.Ordersfilter
       this.statusFilter = this.StatusFilter
     },
@@ -570,7 +535,13 @@ margin-top: -2% !important;
 @media (min-width: 320px) and (max-width: 780px) {
   .btnquitarfiltro{
     margin-left:0px !important;
-    margin-top:0px !important;
+    margin-top:10% !important;
   }
+}
+@media (min-width: 781px) and (max-width: 1300px) {
+  .btnquitarfiltro{
+margin-left: 80%;
+margin-top: -2.5% !important;
+}
 }
 </style>

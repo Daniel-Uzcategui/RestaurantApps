@@ -347,25 +347,28 @@
                         </q-card-section>
 
                         </q-card>
-                        <q-card q-card class="q-pa-xl q-cardGlass" style="border-radius: 15px;" v-show="pagoSel == 1">
-                          <q-card-section>
+                                <q-card  class="q-pa-xl q-cardGlass"  style="margin-top: 15px; border-radius: 15px;" v-show="pagoSel == 1 || config.statusNovaredzelle || config.statuspagomovil" >
+                          <q-card-section >
 
                             <div >
+                              <label >SI DESEA PROCESAR VUELTO, INDIQUELO EN ESTA SECCION.</label>
+
                                  <div v-show="pagoSel == 1" class="card-input"><label  aria-label="monto" >Monto Enviado</label>
-                                <q-input filled  v-show="pagoSel == 1" v-model="montoEnviar"  title="Monto Enviar" @input="calcularVuelto()" />
+                                <q-input filled mask="########" v-show="pagoSel == 1" v-model="montoEnviar"  title="Monto Enviar" @input="calcularVuelto()" />
                               </div>
                               <div v-show="Vuelto > 0">
                                 <p v-show="Vuelto > 0">Datos para el Vuelto</p>
                               </div>
-                              <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Referencia</label></div>
+
+                            </div>
+                          <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0  && config.statusNovaredzelle && !config.statuspagomovil" >Referencia</label></div>
                             <div class="row">
-                            <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
+                            <div class="col col-md-8"><q-input  disable v-model="referenciacompleta"   v-show="Vuelto > 0  && config.statusNovaredzelle && !config.statuspagomovil" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
                             </div>
 
-                          <div class="col-6 col-md-4"  v-show="Vuelto > 0" ><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
+                          <div class="col-6 col-md-4"  v-show="Vuelto > 0 && config.statusNovaredzelle && !config.statuspagomovil" ><i class="material-icons" style="font-size:24px" @click="copy(referenciacompleta)">content_copy</i>
                             </div>
-                         </div>
-                            </div>
+        </div>
                           <div >
                               <div class="col-12">
                                <div>
@@ -400,9 +403,10 @@
                             <q-input filled mask="########" v-show="Vuelto > 0" v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
                          </div>
                          </div>
-                           <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Vuelto Bs.</label></div>
+                          <div class="card-input "><label  aria-label="Referencia"  v-show="Vuelto > 0" >Vuelto Bs.</label></div>
                          <div class="col col-md-8"><q-input  disable v-model="montoV"   v-show="Vuelto > 0" title="Referencia"  data-card-field="" autocomplete="off" maxlength="200"/>
                             </div>
+
                           </q-card-section>
                         </q-card>
                     </div>
@@ -872,12 +876,17 @@ export default {
         let telefono = this.formatoTelefono(this.TelefonoEnviar)
         this.loading2 = true
         let ip = '186.91.191.248'
+        let url
+        // window.location.origin
+        if (localStorage.getItem('amb') === 'poke') {
+          url = 'http://localhost:8085' + '/transact'
+        } else {
+          url = window.location.origin + '/transact'
+        }
 
-        console.log('monto en Bolivares', this.montoV)
-        // url : window.location.origin
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: url,
           data:
           {
             'bank': 'createOrder',
@@ -1234,18 +1243,33 @@ export default {
         case 1:
           order = { ...order, payto: this.config.zelleEmail }
           if (this.Vuelto > 0) {
-            let nroOrden = await this.EnviarVuelto()
-            let Vuelto = {
-              nroOrden: nroOrden.data.trx,
-              telefono: this.formatoTelefono(this.TelefonoEnviar),
-              nacionalidad: this.nacionalidad.value,
-              documento: this.CedulaEnviar,
-              VueltoBolivares: this.montoV,
-              VueltoDolares: this.Vuelto,
-              banco: this.BancoEnviar.value,
-              status: true
+            if (this.config.statusNovaredzelle && !this.config.statuspagomovil) {
+              let nroOrden = await this.EnviarVuelto()
+              let Vuelto = {
+                nroOrden: nroOrden.data.trx,
+                telefono: this.formatoTelefono(this.TelefonoEnviar),
+                nacionalidad: this.nacionalidad.value,
+                documento: this.CedulaEnviar,
+                VueltoBolivares: this.montoV,
+                VueltoDolares: this.Vuelto,
+                banco: this.BancoEnviar.value,
+                metodo: 'novared',
+                status: true
+              }
+              order = { ...order, vuelto: Vuelto }
+            } else {
+              let Vuelto = {
+                telefono: this.formatoTelefono(this.TelefonoEnviar),
+                nacionalidad: this.nacionalidad.value,
+                documento: this.CedulaEnviar,
+                VueltoBolivares: this.montoV,
+                VueltoDolares: this.Vuelto,
+                banco: this.BancoEnviar.value,
+                metodo: 'mercantil',
+                status: true
+              }
+              order = { ...order, vuelto: Vuelto }
             }
-            order = { ...order, vuelto: Vuelto }
           }
 
           if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
@@ -1294,6 +1318,8 @@ export default {
 
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.zelleEmail }
+          delete order.status
+          order = { ...order, status: 6 }
           break
         case 11:
           let aux1 = order?.onlinePay
@@ -1313,15 +1339,20 @@ export default {
           order = { ...order, onlinePay: reg }
           console.log('los valores', order.onlinePay)
           order = { ...order, payto: this.config.pagomovil }
+          delete order.status
+          order = { ...order, status: 6 }
           break
         case 12:
           if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa?.tarifa }
             order = { ...order, encomienda: this.objetotarifa?.tarifaOrden }
           }
+
           //  order = { ...order, onlinePay: reg }
           console.log('los valores', order.onlinePay)
           order = { ...order, onlinePay: details.id.data.trx }
+          delete order.status
+          order = { ...order, status: 6 }
           break
         default:
           break

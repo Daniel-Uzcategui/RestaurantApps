@@ -37,12 +37,12 @@
                           </div>
                            </div>
                             <div  class="card-input"><label  aria-label="monto" >Cedula</label>
-                            <q-input filled mask="########" v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
+                            <q-input   mask="########"  filled  v-model="CedulaEnviar"  title="Cedula" @input="validar"  />
                          </div>
                          </div>
         <div >
             <div class="card-input"><label aria-label="Telefono" >Telefono</label>
-                <q-input filled rounded outlined mask="(####) ###.##.##" type="text"  v-model="valueFields.telefono"  title="Telefono"  @input="validar" />
+                <q-input filled  outlined mask="(####) ###.##.##" type="text"  v-model="valueFields.telefono"  title="Telefono"  @input="validar" />
         </div>
         </div>
 
@@ -118,6 +118,23 @@ export default {
     },
     desahabilitadotelefono () {
       return false
+    },
+    CedulaEnviar () {
+      /* if (this.CedulaEnviar.length < 3) {
+        this.mascara = ''
+      }
+      if (this.CedulaEnviar.length === 4) {
+        this.mascara = '#.###'
+      }
+      console.log(this.CedulaEnviar.length)
+      if (this.CedulaEnviar.length === 5) {
+        this.mascara = '##.###'
+      } */
+      // let numaux = this.CedulaEnviar
+      // this.CedulaEnviar = new Intl.NumberFormat('es-ES', { maximumSignificantDigits: 9 }).format(numaux)
+    },
+    mascara () {
+
     }
   },
   computed: {
@@ -127,6 +144,9 @@ export default {
     },
     desabililitadocorreo () {
       return this.valueFields.correo === ''
+    },
+    cedulaMask () { // *the trick
+      return this.CedulaEnviar.length > 8 ? '##.###.###' : '#.###.###'
     },
     desahabilitadotelefono () {
       return this.valueFields.telefono === ''
@@ -148,6 +168,7 @@ export default {
       estado: true,
       operacion: '',
       total2: 0,
+      mascara: '',
       referenciacompleta: '',
       ambientes: '',
       CedulaEnviar: '',
@@ -439,6 +460,7 @@ export default {
       console.log('el valor de correo', this.valueFields.correo)
       console.log('el valor de telefono', this.valueFields.telefono)
       // let correovalidado = this.validEmail(this.valueFields.correo)
+      // this.CedulaEnviar = this.sepradormiles(this.CedulaEnviar)
       if ((!this.desahabilitadorefencia) && (!this.desahabilitadocedula) && (!this.desahabilitadotelefono)) {
         console.log('entreeee')
         this.estado = false
@@ -454,6 +476,17 @@ export default {
       this.valueFields.referencia = ''
       this.valueFields.correo = ''
       this.monto = 0
+    },
+    formatmiles (input) {
+      var num = input.value.replace(/\./g, '')
+      if (!isNaN(num)) {
+        num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1.')
+        num = num.split('').reverse().join('').replace(/^[.]/, '')
+        input.value = num
+      } else {
+        alert('Solo se permiten numeros')
+        input.value = input.value.replace(/[^\\.]*/g, '')
+      }
     },
     async crearorden () {
       try {
@@ -513,6 +546,22 @@ export default {
       var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
+    formatNumber (floatValue = 0, decimals = 0, multiplier = 1) {
+      let floatMultiplied = floatValue * multiplier
+      let stringFloat = floatMultiplied + ''
+      let arraySplitFloat = stringFloat.split('.')
+      let decimalsValue = '0'
+      if (arraySplitFloat.length > 1) {
+        decimalsValue = arraySplitFloat[1].slice(0, decimals)
+      }
+      let integerValue = arraySplitFloat[0]
+      let arrayFullStringValue = [integerValue, decimalsValue]
+      let FullStringValue = arrayFullStringValue.join('.')
+      let floatFullValue = parseFloat(FullStringValue) + ''
+      let formatFloatFullValue = new Intl.NumberFormat('es-ES', { maximumSignificantDigits: 9 }).format(floatFullValue)
+      console.log('este es el numero', formatFloatFullValue)
+      return formatFloatFullValue
+    },
     obtenerSerie (numero) {
       let numeroAumentado = Number(numero) + 1
       let length = numeroAumentado.toString().length
@@ -554,6 +603,29 @@ export default {
     cambiarBase6411 (archivo) {
       return window.atob(archivo)
     },
+    sepradormiles (text) {
+      if (text.length === 4) {
+        let textaux = text[0] + '.' + text[1] + text[2] + text[3]
+        return textaux
+      }
+      if (text.length === 6) {
+        let textaux = text[0] + text[2] + '.' + text[3] + text[4] + text[5]
+        return textaux
+      }
+      if (text.length === 7) {
+        let textaux = text[0] + text[1] + text[3] + '.' + text[4] + text[5] + text[6]
+        return textaux
+      }
+      if (text.length === 8) {
+        let textaux = text[0] + '.' + text[1] + text[2] + text[4] + '.' + text[5] + text[6] + text[7]
+        return textaux
+      }
+      if (text.length === 10) {
+        let textaux = text[0] + text[2] + '.' + text[3] + text[4] + text[6] + '.' + text[7] + text[8] + text[9]
+        return textaux
+      }
+      return text
+    },
     async paymentbank () {
       let respuesta
       try {
@@ -565,9 +637,19 @@ export default {
         //   let telefono = this.formatoTelefono(this.valueFields.telefono)
         // let ip = '186.91.191.248'
         let telefono = this.formatoTelefono(this.valueFields.telefono)
+        // this.CedulaEnviar = parseInt(this.CedulaEnviar)
+        // console.log('canvertida a entero', this.CedulaEnviar)
+        this.CedulaEnviar = this.CedulaEnviar
+        let url
+        // window.location.origin
+        if (localStorage.getItem('amb') === 'poke') {
+          url = 'http://localhost:8085' + '/transact'
+        } else {
+          url = window.location.origin + '/transact'
+        }
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: url,
           data:
           {
             'bank': 'PagoMovil',

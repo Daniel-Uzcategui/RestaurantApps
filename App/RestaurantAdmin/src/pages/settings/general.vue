@@ -505,7 +505,8 @@ export default {
 .header
   padding-bottom: 50px
 .header-cell
-  padding-left: 30px
+  padding-left: 2%
+  padding-right: 4%;
 .filled
   padding-top: 30px
 </style>

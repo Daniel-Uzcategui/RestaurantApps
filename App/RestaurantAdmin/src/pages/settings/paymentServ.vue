@@ -241,7 +241,7 @@
         </div>
         <div v-if="statuspagomovil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <p>Pasarela de Pago</p>
+          <p>Pago Movil Mercantil</p>
 <q-option-group color="blue" inline  filled rounded v-model="PagoMovil2.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
@@ -347,6 +347,18 @@ export default {
           nombreComercio: this.config.Novared.nombreComercio,
           requestPassword: this.config.Novared.requestPassword,
           requestUser: this.config.Novared.requestUser
+        }
+        this.PagoMovil2 = {
+          ambiente: this.config.PagoMovil.ambiente,
+          claveSecreta: this.config.PagoMovil.claveSecreta,
+          clavecompra: this.config.PagoMovil.clavecompra,
+          integratorId: this.config.PagoMovil.integratorId,
+          merchantId: this.config.PagoMovil.merchantId,
+          payment_method: this.config.PagoMovil.payment_method,
+          terminalId: this.config.PagoMovil.terminalId,
+          trx_type: this.config.PagoMovil.trx_type,
+          xibm: this.config.PagoMovil.xibm
+
         }
         this.referencia = this.config.referencia
       }

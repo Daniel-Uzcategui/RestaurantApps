@@ -465,6 +465,44 @@ export default {
     cambiarBase6411 (archivo) {
       return window.atob(archivo)
     },
+    buscarError (error) {
+      if (error === 401) {
+        return 'Error de Acceso'
+      }
+      if (error === 400) {
+        return 'Error al Armar la Solicitud'
+      }
+      if (error === 403) {
+        return 'Error de Permiso'
+      }
+      if (error === 404) {
+        return 'Recurso no Encontrado Pago no existe'
+      }
+      if (error === 405) {
+        return 'Error método no Permitido'
+      }
+      if (error === 406) {
+        return 'error de formato – petición no aceptable'
+      }
+      if (error === 410) {
+        return 'no disponible ( se intenta procesar una transacción expirada, o se usa un duplica un ticket de una transacción ya expirada)'
+      }
+      if (error === 409) {
+        return 'Conflicto ( Transacciones Duplicadas)'
+      }
+      if (error === 502) {
+        return 'error cuando un servicio externo o de tercero esta fallando'
+      }
+      if (error === 503) {
+        return 'error cuando un servicio externo o de tercero no esta disponible'
+      }
+      if (error === 500) {
+        return 'error del servidor – este es un error inesperado'
+      }
+      if (error === 504) {
+        return 'error cuando un servicio externo o de tercero tarda demasiado en responder'
+      }
+    },
     async paymentbank () {
       try {
         // this.$q.loading.show()
@@ -474,9 +512,16 @@ export default {
         console.log('este valor de total', monto)
         let telefono = this.formatoTelefono(this.valueFields.telefono)
         let ip = '186.91.191.248'
+        let url
+        // window.location.origin
+        if (localStorage.getItem('amb') === 'poke') {
+          url = 'http://localhost:8085' + '/transact'
+        } else {
+          url = window.location.origin + '/transact'
+        }
         let options = { method: 'post',
 
-          url: window.location.origin + '/transact',
+          url: url,
           data:
           {
             'bank': 'TransactVerify',
@@ -512,23 +557,12 @@ export default {
         // this.$q.loading.hide()
         console.error({ err })
         if (err.response) {
-          console.log('errorrrrrrr', err.response.status)
-          mensaje = this.error.find(x => x.codigo === err.response.status)
           this.pagando = false
           this.estado = true
+          mensaje = this.buscarError(err.response.status)
           return this.$q.dialog({
             title: 'Error',
-
-            message: mensaje.descripcion
-          })
-        } else {
-          // let mensaje = this.eror.find(x => x.id === err.response.status)
-          console.log('errorrrrrrr', err.response)
-
-          return this.$q.dialog({
-            title: 'Error',
-
-            message: mensaje.descripcion
+            message: mensaje
           })
         }
       }
