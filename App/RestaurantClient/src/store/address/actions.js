@@ -25,7 +25,7 @@ export const addAddress = firestoreAction(async (state, payload) => {
         ...payload,
         softDelete: 0
       })
-    return valor
+    return { id: valor.id, ...payload }
   } catch (error) {
     console.error('Error adding document: ', error)
   }

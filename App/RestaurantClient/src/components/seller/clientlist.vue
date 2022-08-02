@@ -72,19 +72,18 @@
 
     </q-dialog>
     <br>
-    <label v-show="client !== '' && branch !== ''">Fecha de Vencimiento</label>
-    <q-btn icon="event" class="q-mr-sm" round color="blue" v-show="client !== '' && branch !== ''">
+    <q-btn icon="event" label="Fecha de Vencimiento" class="q-mr-sm" rounded color="blue" v-show="client !== '' && branch !== ''">
       <q-popup-proxy transition-show="scale" transition-hide="scale">
         <q-date color="blue" v-model="date" @input="verificarValor"/>
           </q-popup-proxy>
     </q-btn>
     <br>
-    <q-input filled mask="########" v-show="client !== '' && branch !== ''" v-model="Monto"  title="Monto" label="Monto"/>
-    <br>
-    <q-input filled mask="###" v-show="client !== '' && branch !== ''" v-model="Porcentaje"  title="Porcentaje" label="Porcentaje Retencion"/>
-    <br>
-    <q-input filled  v-show="client !== '' && branch !== ''" v-model="ordencompra"  title="Orden Compra" label="Orden de Compra"/>
-    <br>
+    <!-- <q-input filled mask="########" v-show="client !== '' && branch !== ''" v-model="Monto"  title="Monto" label="Monto"/> -->
+ <div class="row justify-center">
+   <q-input class="col-6" filled mask="###" v-show="client !== '' && branch !== ''" v-model="Porcentaje"  title="Porcentaje" label="Porcentaje Retencion"/>
+   <q-input filled class="col-6"  v-show="client !== '' && branch !== ''" v-model="ordencompra"  title="Orden Compra" label="Detalle Orden de Compra"/>
+ </div>
+
     <q-card class="q-pa-xl q-cardGlass"  v-show="client !== '' && branch !== ''" style="border-radius: 28px;"  @click="showPhotoUpload()">
                         <q-card-section>
                             <div class="column items-center ">
@@ -194,7 +193,7 @@ export default {
       console.log('el valor de date', this.date)
     },
 
-    addNewBranch () {
+    async addNewBranch () {
       // if (this.newBranch.name !== '' && this.adShippingDone && (this.adBillingDone || this.billingSameAddress)) {
       if (this.newBranch.name !== '' && this.adShippingDone) {
         this.branchLoading = true

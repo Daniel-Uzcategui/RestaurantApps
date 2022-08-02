@@ -245,8 +245,8 @@
              </q-list>
           </q-item>
               <q-item class="column items-start"  :props="props">
-                <q-td><label class="col label-expand">Descripción</label></q-td>
-                <q-td class="col" key="descripcion" :props="props">
+                <div><label class="col label-expand">Descripción</label></div>
+                <div class="col" key="descripcion" :props="props">
                     <q-editor content-class="bg-blue-6"
                       :definitions="definitions" :toolbar="toolbar"
                       @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
@@ -275,7 +275,7 @@
                               </q-card-section>
                             </q-card>
                           </q-dialog>
-                </q-td>
+                </div>
               </q-item>
               <q-item class="row justify-start"  :props="props">
                 <div class="col-6 col-lg-6 col-sm-12 q-pa-xs">

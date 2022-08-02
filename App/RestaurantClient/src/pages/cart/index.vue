@@ -1,10 +1,13 @@
 <template>
   <q-page padding class="q-fullscreen-glassMorph">
         <div class="menudiv2" >
-         <div class="text-h5 menuTop q-mt-md">Tu Carrito</div>
+         <div class="text-h5 menuTop q-mt-lg relative-position">Tu Carrito
+           <q-btn icon="list" @click="list=!list" class="absolute-bottom-right q-mr-md" flat />
+         </div>
          <div class="column items-center">
          <q-list v-for="(item, index) in cart" :key="index" class="full-width">
            <classic-list
+            v-model="list"
             :photo="getProdValById(item.prodId, 'photo', item.prodType)"
             :name="getProdValById(item.prodId, 'name', item.prodType)"
             :priceDisplay="extrasTotalItem(item) ? 'Precio base ' + priceDisplay(item) : priceDisplay(item)"
@@ -111,10 +114,9 @@
                           <q-item v-if="getLocBySede('Inlocal')">
                             <q-radio v-show="config.statusInlocal" class="q-pa-sm" dense v-model="tipEnvio" val=2 label="In-Local" />
                         </q-item>
-                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.typeAccess == 'Seller'">
+                        <q-item v-if="getLocBySede('statusSeller') && currentUser && currentUser.rol && currentUser.rol.includes('Vendedor')">
                             <q-radio v-show="config.statusSeller" class="q-pa-sm" dense v-model="tipEnvio" val=3 label="Orden de Compra" />
                         </q-item>
-
                          <q-item v-if="getLocBySede('Encomienda')">
                             <q-radio v-show="config.statusEncomienda" class="q-pa-sm" dense v-model="tipEnvio" val=4 label="Encomienda" />
                         </q-item>
@@ -618,6 +620,7 @@ export default {
   },
   data () {
     return {
+      list: true,
       ordCompraClient: null,
       ordCompraBranch: null,
       continuar: false,

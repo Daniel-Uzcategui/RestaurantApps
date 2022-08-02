@@ -41,6 +41,7 @@ export const addClient = firestoreAction((state, payload) => {
 })
 
 export const addBranch = firestoreAction((state, payload) => {
+  console.log('Adding branch', payload)
   return firestore()
     .collection('clients').doc(payload.client).collection('branches').add({
       ambiente: localStorage.getItem('amb'),
