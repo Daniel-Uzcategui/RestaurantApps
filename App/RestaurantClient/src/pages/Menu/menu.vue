@@ -436,9 +436,9 @@ export default {
     },
     themeMode: {
       get () {
-        if (this.menucfg && this.menucfg.themeMode === 0) {
-          return this.menucfg.themeMode
-        }
+        // if (this.menucfg && this.menucfg.themeMode === 0) {
+        //   return this.menucfg.themeMode
+        // }
         return 1
       }
     },
