@@ -1,7 +1,7 @@
 <template>
    <div @click="click()" :class="global_class" :style="global_style">
       <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
-      <q-card v-if="false" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+      <q-card flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
       <q-card-section
       class="column items-center"
           v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
@@ -350,54 +350,6 @@
 
          </q-card-section>
       </q-card>
-      <q-card v-else flat class="menu-div2 q-mt-xl q-pb-md" >
-      <q-card-section
-      class="row justify-center bg-orange"
-          v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
-      >
-      <q-icon name="fas fa-search col-2"></q-icon>
-        <q-input
-          v-model="searchBar" class="col bg-white q-pl-md" style="border-radius: 8px;" borderless @input="search" dense label="Hoy estoy buscando..." >
-          <template v-slot:append>
-            <div style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;" class="bg-grey-7 q-pl-md q-pr-lg full-height">
-              <q-icon  name="fas fa-search" color="white" />
-
-            </div>
-          </template>
-        </q-input>
-      </q-card-section>
-          <!-- :rewards="rewards" -->
-         <!-- <menu-filter
-          :promo="promo"
-          :selectedFilter="selectedFilter"
-          :menucfg="menucfg"
-          :sede="sede"
-          :filterFindName="filterFindName(selectedFilter)"
-          :pointsCat="pointsCat"
-          :paymentServ="paymentServ"
-          :promoData="promoData"
-          @nextDisp="nextDisp()"
-          @promos="promo = !promo"
-          :filters="filters"
-          @nextFilter="nextFilter()"
-         /> -->
-          <!-- @rewards="rewards = !rewards" -->
-         <q-card-section class="row justify-center" v-if="menuLoading">
-           <q-spinner
-              color="primary"
-              size="md"
-            />
-         </q-card-section>
-              <menutype-4
-              @tabs="(e) => {selectedCat=e; search()}"
-              :selectedCat="selectedCat"
-              :checkAvail="checkAvail"
-              @hook:mounted="selectedCat=filtercat[0]"
-              :sede="sede"
-              :filtercat="filtercat"
-              :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
-              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (displayPermit(), getMenuItem(e.id, 0)) : false}" />
-      </q-card>
       <q-dialog-menu
       style="z-index: 9999999"
       :display="display"
@@ -723,7 +675,7 @@ export default {
       })
     },
     nextDisp () {
-      console.log(this.themeMode, this.menucfg, this.displayType)
+      console.log(this.themeMode, this.menucfg)
       if (this.themeMode === 0) {
         if (this.displayType === this.menucfg.displayType && this.$q.platform.is.mobile) {
           this.displayType = 2
