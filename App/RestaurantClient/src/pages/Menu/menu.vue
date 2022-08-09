@@ -1,7 +1,7 @@
 <template>
    <div @click="click()" :class="global_class" :style="global_style">
       <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
-      <q-card flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+      <q-card v-if="false" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
       <q-card-section
       class="column items-center"
           v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
@@ -272,6 +272,56 @@
 
          </q-card-section>
       </q-card>
+      <q-card v-else flat class="menu-div2 q-ma-none q-pa-none q-pb-md" >
+      <q-card-section
+      class="row bg-orange q-ma-none q-pa-none"
+          v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
+      >
+        <img class="col-2 col-sm-3 col-xs-12" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FLogo%20caminoMARKET%20BLANCO%20Y%20GRIS%20(1).png?alt=media&token=2e68723f-c8c1-4337-b56a-9fca66fe33c7">
+      <div class=" col-md-8 col-sm-8 col-xs-12 row q-pa-md">
+        <q-input
+          v-model="searchBar" class="col bg-white self-end q-pl-md" style="border-radius: 8px;" borderless @input="search" dense label="Hoy estoy buscando..." >
+          <template v-slot:append>
+            <div style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;" class="bg-grey-7 q-pl-md q-pr-lg full-height">
+              <q-icon  name="fas fa-search" color="white" />
+
+            </div>
+          </template>
+        </q-input>
+      </div>
+      </q-card-section>
+          <!-- :rewards="rewards" -->
+         <!-- <menu-filter
+          :promo="promo"
+          :selectedFilter="selectedFilter"
+          :menucfg="menucfg"
+          :sede="sede"
+          :filterFindName="filterFindName(selectedFilter)"
+          :pointsCat="pointsCat"
+          :paymentServ="paymentServ"
+          :promoData="promoData"
+          @nextDisp="nextDisp()"
+          @promos="promo = !promo"
+          :filters="filters"
+          @nextFilter="nextFilter()"
+         /> -->
+          <!-- @rewards="rewards = !rewards" -->
+         <q-card-section class="row justify-center" v-if="menuLoading">
+           <q-spinner
+              color="primary"
+              size="md"
+            />
+         </q-card-section>
+              <menutype-5
+              @tabs="(e) => {selectedCat=e; search()}"
+              :selectedCat="selectedCat"
+              :checkAvail="checkAvail"
+              @hook:mounted="selectedCat=filtercat[0]"
+              :sede="sede"
+              :filtercat="filtercat"
+              :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
+              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (displayPermit(), getMenuItem(e.id, 0)) : false}" />
+      </q-card>
       <q-dialog-menu
       style="z-index: 9999999"
       :display="display"
@@ -288,6 +338,7 @@ import { mapActions, mapGetters } from 'vuex'
 import menuFilter from '../../components/menu/classic/menuFilter.vue'
 import Menutype0 from '../../components/menu/classic/menutype0.vue'
 import Menutype4 from '../../components/menu/classic/menutype4.vue'
+import Menutype5 from '../../components/menu/classic/menutype5.vue'
 // import store from '../../store/index'
 import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
 export default {
@@ -322,7 +373,8 @@ export default {
     Slide,
     menuFilter,
     Menutype0,
-    Menutype4
+    Menutype4,
+    Menutype5
   },
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
@@ -597,7 +649,7 @@ export default {
       })
     },
     nextDisp () {
-      console.log(this.themeMode, this.menucfg)
+      console.log(this.themeMode, this.menucfg, this.displayType)
       if (this.themeMode === 0) {
         if (this.displayType === this.menucfg.displayType && this.$q.platform.is.mobile) {
           this.displayType = 2

@@ -92,8 +92,8 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       // https: true,
-      // port: 8080,
-      public: '192.168.68.117:8080',
+      port: 8080,
+      // public: '192.168.68.117:8080',
       open: true // opens browser window automatically
     },
 

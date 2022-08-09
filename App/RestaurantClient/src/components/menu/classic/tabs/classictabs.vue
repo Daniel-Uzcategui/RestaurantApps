@@ -1,8 +1,12 @@
 <template>
   <q-tabs
-               class="wrapel"
-               content-class="wrapel"
+               class=""
+               dense
+               content-class=""
                :value="selectedCat ? selectedCat.id : ''"
+               outside-arrows
+               mobile-arrows
+               :breakpoint="500"
                >
                <classictab v-for="(tabs, index) in filtercat"
                   :key="index"
