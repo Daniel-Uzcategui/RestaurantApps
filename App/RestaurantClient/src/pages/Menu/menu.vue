@@ -192,84 +192,6 @@
             </div>
             </div>
          </q-card-section>
-          <!-- Seccion de rewards -->
-         <!-- <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && rewards">
-            <div class="background-color q-pa-none q-ma-none" v-if="displayType">
-               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
-               <carousel
-                  :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
-                  :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-                  <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item && item.categoria && item.categoria.includes(r))" >
-                     <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
-                           <div class="container-photo">
-                              <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
-                           </div>
-                           <div class="text-caption">
-                              <div class="text-bold relative-position q-pa-sm">
-                                 <q-item-label lines="5">{{item.name}} </q-item-label>
-                              </div>
-                           </div>
-                           <div class="price-content" >
-                              <div>
-                                 <q-item-label >$ 0.00
-                                 </q-item-label>
-                              </div>
-                           </div>
-                           <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                           <q-tooltip :hide-delay="650" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-tooltip>
-                        </q-card>
-                     </div>
-                  </slide>
-               </carousel>
-            </div>
-            <div v-else>
-              <q-tabs
-               class="wrapel"
-               content-class="wrapel"
-               :value="selectedCat ? selectedCat.id : ''"
-               >
-               <q-tab no-caps class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
-                  :key="index"
-                  @click="selectedCat=tabs; search()"
-                  :name="tabs.id"
-                  >
-                  {{tabs.name}}
-               </q-tab>
-            </q-tabs>
-            <div class="row justify-around" >
-               <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-               <q-card v-ripple class="q-ma-md q-pa-md bg-secondary text-white" style="border-radius: 28px;"
-                  :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'}]"
-                  @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
-                  v-for="(item, key) in filteredMenu" :key="key"
-                  v-show="pointsCat && Object.keys(pointsCat).some(r=> item && item.categoria && item.categoria.includes(r))" >
-                  <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''"  class="menuitemcont">
-                     <div class="menuitem row">
-                        <div class="menuphotocont col">
-                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
-                        </div>
-                        <div class="menutext col column justify-center">
-                           <div class="col-auto">
-                              <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
-                           </div>
-                        </div>
-                        <div>
-                           <div class="menuprice col">
-                              <q-item-label >$ 0.00
-                              </q-item-label>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                  <q-tooltip :hide-delay="650" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-tooltip>
-               </q-card>
-            </div>
-            </div>
-         </q-card-section> -->
          <!-- Seccion de promociones -->
          <q-card-section class="wrapel q-pa-none q-ma-none" v-if="promo">
               <div class="background-color" v-if="displayType">
@@ -361,7 +283,7 @@
    </div>
 </template>
 <script>
-
+import Fuse from 'fuse.js'
 import { mapActions, mapGetters } from 'vuex'
 import menuFilter from '../../components/menu/classic/menuFilter.vue'
 import Menutype0 from '../../components/menu/classic/menutype0.vue'
@@ -765,17 +687,22 @@ export default {
       return filtered
     },
     search () {
+      const options = {
+        includeScore: true,
+        // Search in `author` and in `tags` array
+        keys: [{ name: 'name', weight: 0.4 }, 'descripcion']
+      }
+      let fuse = new Fuse(this.origMenu, options)
+      this.filteredMenu = this.origMenu
       if (this.selectedCat !== null) {
-        this.filteredMenu = this.origMenu.filter(x => {
-          return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
-        })
         this.filteredMenu = this.filteredMenu.filter(x => {
           return x && x.categoria && x.categoria[this.selectedCat.id]
         })
-      } else {
-        this.filteredMenu = this.origMenu.filter(x => {
-          return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
-        })
+        fuse = new Fuse(this.filteredMenu, options)
+      }
+      console.log(this.searchBar)
+      if (this.searchBar.length) {
+        this.filteredMenu = fuse.search(this.searchBar).map(x => { return { ...x.item } })
       }
     },
     // checkAvailReward (item) {

@@ -9,6 +9,9 @@ export const setSede = async function ({ commit }, payload) {
     console.error(e)
   }
 }
+export const createId = (state, payload) => { return firestore().collection(payload).doc().id }
+export const batch = (state, payload) => {
+}
 export const bindmenu2 = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindLocalizations')
   return bindFirestoreRef('menu2', firestore().collection('menu'))

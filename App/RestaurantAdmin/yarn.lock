@@ -5652,6 +5652,11 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
+fuse.js@^6.6.2:
+  version "6.6.2"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.6.2.tgz#fe463fed4b98c0226ac3da2856a415576dc9a111"
+  integrity sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA==
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
@@ -12215,6 +12220,11 @@ vue-loader@15.9.7:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-org-tree@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vue-org-tree/-/vue-org-tree-0.1.0.tgz#bf83907101654b00e97e83d77519d4505f637e9e"
+  integrity sha512-9SivpMblYi0DH4QXroUsGxmzaGJ/NXYee8F1OWi2PIXcE3MaZfL0wyxRUkkVOeyluztyAZyFeIeLY0z7Yr61Yg==
+
 vue-prism-editor@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/vue-prism-editor/-/vue-prism-editor-1.2.2.tgz#023cfd4329848f191aac851f2f5e6c7a8c2e059f"
@@ -12266,6 +12276,11 @@ vue-typer@^1.2.0:
   integrity sha512-o0n2F9yOnbdQak1OiPFbZonIzysL5jiS1OPgaEX0KnMlKqXRKi808QHRdoMuqw44oYQM/vtxCt3AaNb9OzKH1Q==
   dependencies:
     lodash.split "^4.4.2"
+
+vue2-org-tree@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/vue2-org-tree/-/vue2-org-tree-1.3.6.tgz#03e9c369c4f02b1bc77e541d45b04c7f021b3907"
+  integrity sha512-ExkQWmHcS3s1tjPDdaruE2p4JnfwOTc4MBqqMY7rsSM9pgzD53t6hbjyNOq9csnyugzREdCnX5V/ZHQMREDYZQ==
 
 vue@2.6.14:
   version "2.6.14"

@@ -1,19 +1,11 @@
 <template>
   <div>
-            <q-tabs
-               v-if="!(typeof sede === 'undefined' || sede === null)"
-               class="wrapel"
-               content-class="wrapel"
-               :value="selectedCat ? selectedCat.id : ''"
-               >
-               <q-tab no-caps class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
-                  :key="index"
-                  @click="$emit('tabs', tabs)"
-                  :name="tabs.id"
-                  >
-                  {{tabs.name}}
-               </q-tab>
-            </q-tabs>
+   <classictabs
+    v-if="!(typeof sede === 'undefined' || sede === null)"
+    :selectedCat="selectedCat"
+    :filtercat="filtercat"
+    @tabs="(e) => $emit('tabs', e)"
+     />
             <div>
                <div class="row justify-around">
                   <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
@@ -52,8 +44,10 @@
             </div>
 </template>
 <script>
+import classictabs from './tabs/classictabs.vue'
 export default {
   name: 'menutype0',
+  components: { classictabs },
   props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede']
 }
 </script>
