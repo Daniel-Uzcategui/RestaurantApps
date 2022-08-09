@@ -1,7 +1,7 @@
 <template>
   <div>
             <q-tabs
-               class="wrapel bg-grey-7 text-white"
+               class="wrapel"
                content-class="wrapel"
                :value="selectedCat ? selectedCat.id : ''"
                >
