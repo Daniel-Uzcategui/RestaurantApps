@@ -28,6 +28,11 @@
 <q-option-group color="blue" inline  filled rounded v-model="statusZelle" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Zelle" />
         </div>
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <p>Paypal correo</p>
+<q-option-group color="blue" inline  filled rounded v-model="statusPaypalTx" map-options emit-value standout="bg-teal "
+          outlined :options="estatus_options" label="Zelle" />
+        </div>
         <div class="flex-break q-py-md "></div>
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Venmo</p>
@@ -182,9 +187,18 @@
         </div>
         </div> -->
          <div class="flex-break q-py-md "></div>
-        <div v-if="statusZelle || statusVenmo || statuspagomovil || statustransfer" class="row header-container">
+        <div v-if="statusZelle || statusVenmo || statuspagomovil || statustransfer || statusPaypalTx" class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Configuraciones textos Medios de pago</div>
        </div>
+       <div v-if="statusPaypalTx" class="row header-container q-pt-md q-pb-md">
+         <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">PayPal correo</div>
+       </div>
+       <div v-if="statusPaypalTx" class="row header-container">
+        <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled rounded v-model="PaypalEmail" standout="bg-teal "
+          outlined label="Email Paypal" />
+        </div>
+        </div>
         <div v-if="statusZelle" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Zelle</div>
        </div>
@@ -283,12 +297,12 @@
         <div v-if="statusVenmo" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Venmo</div>
        </div>
-       <div v-if="statusVenmo" class="row header-container">
+       <!-- <div v-if="statusVenmo" class="row header-container">
         <div class="header-cell q-pa-sm  col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <q-input filled rounded v-model="venmoAcc" standout="bg-teal "
           outlined label="Cuenta/Teléfono Venmo" />
         </div>
-        </div>
+        </div> -->
           <div  v-if="statuspagomovil" class="row header-container q-pt-md q-pb-md">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-12 col-md-12 col-lg-12 text-h6">Pago móvil</div>
        </div>
@@ -340,25 +354,17 @@ export default {
       if (this.config !== undefined) {
         console.log('valores de config', this.config.Novared)
         this.Novared2 = {
-          ApiKey: this.config.Novared.ApiKey,
-          ambiente: this.config.Novared.ambiente,
-          idComercio: this.config.Novared.idComercio,
-          mockServer: this.config.Novared.mockServer,
-          nombreComercio: this.config.Novared.nombreComercio,
-          requestPassword: this.config.Novared.requestPassword,
-          requestUser: this.config.Novared.requestUser
+          ...this.config?.Novared
+          // ApiKey: this.config.Novared.ApiKey,
+          // ambiente: this.config.Novared.ambiente,
+          // idComercio: this.config.Novared.idComercio,
+          // mockServer: this.config.Novared.mockServer,
+          // nombreComercio: this.config.Novared.nombreComercio,
+          // requestPassword: this.config.Novared.requestPassword,
+          // requestUser: this.config.Novared.requestUser
         }
         this.PagoMovil2 = {
-          ambiente: this.config.PagoMovil.ambiente,
-          claveSecreta: this.config.PagoMovil.claveSecreta,
-          clavecompra: this.config.PagoMovil.clavecompra,
-          integratorId: this.config.PagoMovil.integratorId,
-          merchantId: this.config.PagoMovil.merchantId,
-          payment_method: this.config.PagoMovil.payment_method,
-          terminalId: this.config.PagoMovil.terminalId,
-          trx_type: this.config.PagoMovil.trx_type,
-          xibm: this.config.PagoMovil.xibm
-
+          ...this.config?.PagoMovil
         }
         this.referencia = this.config.referencia
       }
@@ -390,6 +396,7 @@ export default {
       apiKeyDev: undefined,
       apiKeyProd: undefined,
       statusZelle: 0,
+      statusPaypalTx: 0,
       statusVenmo: 0,
       statusCreditCorp: 0,
       statusMercantil: 0,
@@ -431,6 +438,7 @@ export default {
       statustransfer: 0,
       PaypalApi: '',
       zelleEmail: '',
+      PaypalEmail: '',
       venmoAcc: '',
       CreditCorp: '',
       transfer: '',
@@ -471,6 +479,7 @@ export default {
         apiKeyProd: this.apiKeyProd,
         apiKeyDev: this.apiKeyDev,
         statusZelle: this.statusZelle,
+        statusPaypalTx: this.statusPaypalTx,
         statusVenmo: this.statusVenmo,
         statusCreditCorp: this.statusCreditCorp,
         statuspagomovil: this.statuspagomovil,
@@ -485,6 +494,7 @@ export default {
         statusPaypal: this.statusPaypal,
         PaypalApi: this.PaypalApi,
         zelleEmail: this.zelleEmail,
+        PaypalEmail: this.PaypalEmail,
         venmoAcc: this.venmoAcc,
         CreditCorp: this.CreditCorp,
         transfer: this.transfer,
@@ -523,7 +533,10 @@ export default {
       value = this.statusZelle
       key = 'statusZelle'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusVenmo
+      value = this.statusPaypalTx || 0
+      key = 'statusPaypalTx'
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      value = this.statusVenmo || 0
       key = 'statusVenmo'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       if (this.apiKeyDev) {
@@ -536,10 +549,10 @@ export default {
         key = 'apiKeyProd'
         this.saveConfig({ value, id, key }).catch(e => console.log(e))
       }
-      value = this.statusCreditCorp
+      value = this.statusCreditCorp || 0
       key = 'statusCreditCorp'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusNovaredzelle
+      value = this.statusNovaredzelle || 0
       key = 'statusNovaredzelle'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       value = this.referencia
@@ -548,22 +561,22 @@ export default {
       // value = this.statusEncomienda
       //  key = 'statusEncomienda'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusNovaredpagomovil
+      value = this.statusNovaredpagomovil || 0
       key = 'statusNovaredpagomovil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusCash
+      value = this.statusCash || 0
       key = 'statusCash'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPto
+      value = this.statusPto || 0
       key = 'statusPto'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statuspagomovil
+      value = this.statuspagomovil || 0
       key = 'statuspagomovil'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statustransfer
+      value = this.statustransfer || 0
       key = 'statustransfer'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPaypal
+      value = this.statusPaypal || 0
       key = 'statusPaypal'
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'PaypalApi'
@@ -580,6 +593,9 @@ export default {
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'zelleEmail'
       value = this.zelleEmail
+      this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      key = 'PaypalEmail'
+      value = this.PaypalEmail
       this.saveConfig({ value, id, key }).catch(e => console.log(e))
       key = 'transfer'
       value = this.transfer

@@ -47,7 +47,8 @@ export default function () {
       { label: 'Tarjeta Venezolana', value: 9 },
       { label: 'Dólares elecrónicos', value: 10 },
       { label: 'Pago móvil', value: 11 },
-      { label: 'Pago móvil', value: 12 }
+      { label: 'Pago móvil', value: 12 },
+      { label: 'PayPal', value: 13 }
     ],
     ordercorporativo: [],
     orderencomienda: [],

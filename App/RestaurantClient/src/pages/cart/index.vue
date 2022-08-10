@@ -283,12 +283,19 @@
                       @click='payment' />
                      </div>
                   </div>
-                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7">
+                     <div class="col-6 q-pt-xl" style="min-width: 350px" v-if=" pagoSel ===1 ||  pagoSel ===2  || pagoSel ===4 || pagoSel ===8 || pagoSel ===7 || pagoSel ===13">
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 2">
                         <div class="text-center">
                           <div class="text-h5 ">Zelle</div>
                           <div class="text-caption text-center filler-bottom"></div>
                             <span class="label">{{config.zelleEmail}}</span>
+                          </div>
+                        </div>
+                        <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 13">
+                        <div class="text-center">
+                          <div class="text-h5 ">Paypal</div>
+                          <div class="text-caption text-center filler-bottom"></div>
+                            <span class="label">{{config.PaypalEmail}}</span>
                           </div>
                         </div>
                         <div style="min-width: 300px" class="col-6 q-pt-xl"  v-if="pagoSel === 10">
@@ -327,12 +334,12 @@
                         </div>
                       </div>
                       <br>
-                       <q-card class="q-pa-xl q-cardGlass" style="border-radius: 28px;"  @click="showPhotoUpload()">
+                       <q-card flat class="q-pa-xl q-cardGlass" style="border-radius: 28px;">
                         <q-card-section>
                             <div class="column items-center ">
-                                <div class=" column items-center" v-show='photoMessage'>
+                                <div class=" column items-center" v-show="photoMessage">
                                   <div>
-                                  <q-btn style="border-radius: 28px;" push>
+                                  <q-btn no-caps style="border-radius: 28px;" @click="showPhotoUpload()" push>
                                       <q-avatar rounded class="q-mb-sm" icon="collections" font-size="50px" size="130px" text-color="grey-4" >
                                       </q-avatar>
                                       <p v-if="pagoSel != 1">Haga click para cargar la captura del pago realizado </p>
@@ -598,6 +605,7 @@ export default {
       if (this.config && this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red', transf: false }) }
       if (this.config && this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green', transf: 'efectivo' }) }
       if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue', transf: false }) }
+      if (this.config && this.config.statusPaypalTx) { tip.push({ label: 'Paypal', value: 13, color: 'blue', transf: false }) }
       if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue', transf: true }) }
       if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue', transf: true }) }
       if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue', transf: true }) }
@@ -1279,6 +1287,13 @@ export default {
           break
         case 2:
           order = { ...order, payto: this.config.zelleEmail }
+          if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
+            order = { ...order, tarifa: this.objetotarifa.tarifa }
+            order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
+          }
+          break
+        case 13:
+          order = { ...order, payto: this.config.PaypalEmail }
           if (this.objetotarifa.tarifaOrden?.courier !== undefined) {
             order = { ...order, tarifa: this.objetotarifa.tarifa }
             order = { ...order, encomienda: this.objetotarifa.tarifaOrden }
