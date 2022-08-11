@@ -79,58 +79,58 @@ export default {
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('menu', ['bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede', 'setFilter', 'setCat', 'setProduct', 'setProdType']),
     ...mapMutations('menu', ['delCart']),
-    async init () {
-      // try {
-      // const bar = this.$refs.bar
+    // async init () {
+    //   // try {
+    //   // const bar = this.$refs.bar
 
-      // bar.start()
-      // let a = await Promise.all([
-      //   this.bindLocalizations(),
-      //   this.bindMenu(),
-      //   this.bindCategorias(),
-      //   this.bindPromos(),
-      //   this.bindGroupComp()
-      //   // this.testQuery('item'),
-      //   // this.testQuery('menu'),
-      //   // this.testQuery('categorias'),
-      //   // this.testQuery('promos'),
-      //   // this.testQuery('groupcomp')
-      // ])
-      // var a = await this.bindLocalizations()
-      // var b = await this.bindMenu()
-      // var c = await this.bindCategorias()
-      // var d = await this.bindPromos()
-      // var e = await this.bindGroupComp()
-      // var f = await this.bindItem()
-      // if (a) {
-      //   bar.increment(1)
-      // }
-      // if (b) {
-      //   bar.increment(30)
-      // }
-      // if (c) {
-      //   bar.increment(5)
-      // }
-      // if (d) {
-      //   bar.increment(5)
-      // }
-      // if (e) {
-      //   bar.increment(15)
-      // }
-      // if (f) {
-      //   bar.stop()
-      // }
-      //   if (a) {
-      //     bar.stop()
-      //     this.loading = false
-      //     return 1
-      //   }
-      // } catch (e) {
-      //   console.error(e)
-      //   this.loading = false
-      //   return 1
-      // }
-    },
+    //   // bar.start()
+    //   // let a = await Promise.all([
+    //   //   this.bindLocalizations(),
+    //   //   this.bindMenu(),
+    //   //   this.bindCategorias(),
+    //   //   this.bindPromos(),
+    //   //   this.bindGroupComp()
+    //   //   // this.testQuery('item'),
+    //   //   // this.testQuery('menu'),
+    //   //   // this.testQuery('categorias'),
+    //   //   // this.testQuery('promos'),
+    //   //   // this.testQuery('groupcomp')
+    //   // ])
+    //   // var a = await this.bindLocalizations()
+    //   // var b = await this.bindMenu()
+    //   // var c = await this.bindCategorias()
+    //   // var d = await this.bindPromos()
+    //   // var e = await this.bindGroupComp()
+    //   // var f = await this.bindItem()
+    //   // if (a) {
+    //   //   bar.increment(1)
+    //   // }
+    //   // if (b) {
+    //   //   bar.increment(30)
+    //   // }
+    //   // if (c) {
+    //   //   bar.increment(5)
+    //   // }
+    //   // if (d) {
+    //   //   bar.increment(5)
+    //   // }
+    //   // if (e) {
+    //   //   bar.increment(15)
+    //   // }
+    //   // if (f) {
+    //   //   bar.stop()
+    //   // }
+    //   //   if (a) {
+    //   //     bar.stop()
+    //   //     this.loading = false
+    //   //     return 1
+    //   //   }
+    //   // } catch (e) {
+    //   //   console.error(e)
+    //   //   this.loading = false
+    //   //   return 1
+    //   // }
+    // },
     getLocById (id) {
       try {
         if (id === null || this.cart.length === 0) {
@@ -158,7 +158,7 @@ export default {
     if (this.qprodtype !== null) {
       this.setProdType(this.qprodtype)
     }
-    this.init()
+    // this.init()
   }
 }
 </script>

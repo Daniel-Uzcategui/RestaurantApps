@@ -123,6 +123,12 @@ export const routerBeforeEach = async (router, store) => {
     try {
       if (typeof to === 'undefined' || typeof next === 'undefined') { return }
       // Loading.show()
+      console.log(to, 'Este pana')
+      if (to.fullPath.includes('%2F')) {
+        let pana = decodeURIComponent(to.fullPath).replace('//', '/')
+        console.log(pana, 'Ahora es este pana')
+        next(pana)
+      }
       if (to.matched.some(record => record && record.meta && record.meta.requiresAuth)) {
         let waitforme = await ensureAuthIsInitialized(store)
         console.log('started')

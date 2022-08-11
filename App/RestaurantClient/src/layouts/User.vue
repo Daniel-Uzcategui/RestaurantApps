@@ -715,11 +715,19 @@ export default {
         this.setupNotif()
       }
     }
-    this.bindLocalizations().catch(e => console.error('error fetching data firebase', { e }))
-    this.bindMenu().catch(e => console.error('error fetching data firebase', { e }))
-    this.bindCategorias().catch(e => console.error('error fetching data firebase', { e }))
-    this.bindPromos().catch(e => console.error('error fetching data firebase', { e }))
-    this.bindGroupComp().catch(e => console.error('error fetching data firebase', { e }))
+    try {
+      this.$q.loading.show()
+      await this.bindLocalizations()
+      await this.bindMenu()
+      await this.bindCategorias()
+      await this.bindGroupComp()
+    } catch (error) {
+      console.error('error fetching data firebase', { error })
+    } finally {
+      this.$q.loading.hide()
+    }
+
+    // this.bindPromos().catch(e => console.error('error fetching data firebase', { e }))
     this.bindManif().then(e => {
       // if (e && e.icons && e.icons.favicon) {
       //   const favicon = document.getElementById('favicon')

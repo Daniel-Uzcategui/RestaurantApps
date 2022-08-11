@@ -21,14 +21,9 @@ const routes = [
     children: [
       {
         path: '',
-        component: Home
-      }
-    ]
-  },
-  {
-    path: '/',
-    component: layout,
-    children: [
+        component: Home,
+        props: true
+      },
       {
         path: 'home',
         name: 'Home',
