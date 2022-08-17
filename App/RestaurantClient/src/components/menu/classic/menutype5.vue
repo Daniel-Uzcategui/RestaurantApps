@@ -7,7 +7,7 @@
     @tabs="(e) => $emit('tabs', e)"
      />
             <div>
-              <q-img src="https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-one-a-day.jpg.webp"
+              <q-img src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FBaneer%20C.%20Travel%20Comida.jpg?alt=media&token=52514d4d-ac53-4db0-9cdf-75393ac912db"
               ></q-img>
                <div class="row justify-around">
 

@@ -277,7 +277,7 @@
       class="row bg-orange q-ma-none q-pa-none"
           v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
       >
-        <img class="col-2 col-sm-3 col-xs-12" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FLogo%20caminoMARKET%20BLANCO%20Y%20GRIS%20(1).png?alt=media&token=2e68723f-c8c1-4337-b56a-9fca66fe33c7">
+        <q-img class="col-2 col-sm-3 col-xs-12" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FLogo%20caminoMARKET%20SIN%20FONDO.png?alt=media&token=0ff71189-a628-47d1-82c4-94645743c7e6" />
       <div class=" col-md-8 col-sm-8 col-xs-12 row q-pa-md">
         <q-input
           v-model="searchBar" class="col bg-white self-end q-pl-md" style="border-radius: 8px;" borderless @input="search" dense label="Hoy estoy buscando..." >
