@@ -527,95 +527,21 @@ export default {
         }
       }
     },
-    save () {
-      let value, id, key
+    async save () {
+      let value, id, arr
       id = this.config.id
-      value = this.statusZelle
-      key = 'statusZelle'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPaypalTx || 0
-      key = 'statusPaypalTx'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusVenmo || 0
-      key = 'statusVenmo'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      if (this.apiKeyDev) {
-        value = this.apiKeyDev
-        key = 'apiKeyDev'
-        this.saveConfig({ value, id, key }).catch(e => console.log(e))
+      arr = ['statusZelle', 'statusVenmo', 'statusPaypalTx', 'apiKeyDev', 'apiKeyProd', 'statusCreditCorp', 'statusCreditCorp', 'statusNovaredzelle', 'referencia', 'statusNovaredpagomovil', 'statusCash', 'statusPto', 'statuspagomovil', 'statustransfer', 'statusPaypal', 'PaypalApi', 'CreditCorp', 'venmoAcc', 'zelleEmail', 'PaypalEmail', 'transfer', 'pagomovil', 'statusMercantil', 'Mercantil', 'Novared', 'PagoMovil']
+      for (let i of arr) {
+        try {
+          value = this[i]
+          if (value) {
+            await this.saveConfig({ value, id, i })
+          }
+        } catch (error) {
+          console.error(error)
+        }
       }
-      if (this.apiKeyProd) {
-        value = this.apiKeyProd
-        key = 'apiKeyProd'
-        this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      }
-      value = this.statusCreditCorp || 0
-      key = 'statusCreditCorp'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusNovaredzelle || 0
-      key = 'statusNovaredzelle'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.referencia
-      key = 'referencia'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      // value = this.statusEncomienda
-      //  key = 'statusEncomienda'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusNovaredpagomovil || 0
-      key = 'statusNovaredpagomovil'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusCash || 0
-      key = 'statusCash'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPto || 0
-      key = 'statusPto'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statuspagomovil || 0
-      key = 'statuspagomovil'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statustransfer || 0
-      key = 'statustransfer'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusPaypal || 0
-      key = 'statusPaypal'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'PaypalApi'
-      value = this.PaypalApi
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'CreditCorp'
-      value = this.CreditCorp
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'venmoAcc'
-      value = this.venmoAcc
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      // key = 'pesoDefault'
-      // value = this.pesoDefault
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'zelleEmail'
-      value = this.zelleEmail
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'PaypalEmail'
-      value = this.PaypalEmail
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'transfer'
-      value = this.transfer
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      key = 'pagomovil'
-      value = this.pagomovil
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.statusMercantil
-      key = 'statusMercantil'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.Mercantil
-      key = 'Mercantil'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.Novared2
-      key = 'Novared'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      value = this.PagoMovil2
-      key = 'PagoMovil'
-      this.saveConfig({ value, id, key }).catch(e => console.log(e))
-      this.$q.dialog({
+      return this.$q.dialog({
         title: '',
         message: 'Se han guardo exitosamente los ajustes',
         cancel: false,
