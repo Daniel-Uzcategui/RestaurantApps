@@ -1,5 +1,5 @@
 <template>
-      <q-tab
+      <div
        v-if="tabs.subCat"
         no-caps class="wrapel fontsize-13 q-pa-none q-ma-none " content-class="wrapel capitalize fontsize-13"
         :name="tabs.id"
@@ -15,19 +15,19 @@
           </q-item>
         </q-list>
         </q-btn-dropdown>
-      </q-tab>
-      <q-tab v-else no-caps class="wrapel fontsize-13" content-class="wrapel capitalize fontsize-13"
+      </div>
+      <q-btn v-else no-caps class="wrapel capitalize fontsize-13" content-class="wrapel capitalize fontsize-13"
         :name="tabs.id"
         @click="$emit('tabs', tabs)"
         >
         {{tabs.name}}
-      </q-tab>
+      </q-btn>
 </template>
 <script>
-import Recursivetablist from './recursivetablist.vue'
+import Recursivetablist from './recursivetabcolumnlist.vue'
 export default {
   components: { Recursivetablist },
-  name: 'classictabs',
+  name: 'classictabcolumn',
   props: { tabs: {
     type: Object, default: () => { return {} } } }
 }

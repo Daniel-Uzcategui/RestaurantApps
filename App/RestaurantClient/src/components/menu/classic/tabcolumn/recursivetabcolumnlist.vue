@@ -11,9 +11,9 @@
       <q-item-section class="fontsize-13 capitalize" v-else>{{tab.name}}</q-item-section>
 </template>
 <script>
-import Recursivetablist from './recursivetablist.vue'
+import Recursivetablist from './recursivetabcolumnlist.vue'
 export default {
-  name: 'recursivetablist',
+  name: 'recursivetabcolumnlist',
   components: { Recursivetablist },
   props: ['tab']
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="capitalize">
     <classictabs
     class="bg-grey-7 text-white text-bold"
     :selectedCat="selectedCat"
@@ -7,7 +7,7 @@
     @tabs="(e) => $emit('tabs', e)"
      />
             <div>
-              <q-img src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FBaneer%20C.%20Travel%20Comida.jpg?alt=media&token=52514d4d-ac53-4db0-9cdf-75393ac912db"
+              <q-img src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FSerCAZa.jpg?alt=media&token=730e872d-3596-4243-96d9-dcfe281c2678"
               ></q-img>
                <div class="row justify-around">
 
@@ -31,9 +31,9 @@
                                  <q-item-label v-if="item.discount > 0">{{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} $
                                  </q-item-label>
                                   <!-- Prime Static -->
-                                 <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false" class=" text-indigo"><span class="text-italic text-bold">Prime: </span> {{parseFloat(item.price).toFixed(2)}} $
+                                 <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false" class=" text-indigo"><span class="text-italic text-bold"></span> {{parseFloat(getRates(item.price)).toFixed(2)}} Bs
                                  </q-item-label>
-                                 <q-item-label v-if="item.discount > 0" class="text-indigo"><span class="text-italic text-bold">Prime: </span>{{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} $
+                                 <q-item-label v-if="item.discount > 0" class="text-indigo"><span class="text-italic text-bold"></span>{{getRates(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} Bs
                                  </q-item-label>
                               </div>
                               <div v-else class="col">
@@ -54,12 +54,50 @@
             </div>
 </template>
 <script>
-import classictabs from './tabs/classictabs.vue'
+import classictabs from './tabcolumn/classictabscolumn.vue'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { classictabs },
   name: 'menutype0',
+  computed: {
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates']),
+    ratesComp () {
+      if (this.rates.length) {
+        return this.rates
+      }
+      return this.rateDefault
+    }
+  },
+  async mounted () {
+    await this.bindRates().then(async e => {
+      console.log(e, 'BINDRATES')
+      if (!e.length) {
+        await this.$axios.get('https://s3.amazonaws.com/dolartoday/data.json')
+          .then(e => { this.rateDefault = [{ rateValue: e?.data?.USD?.promedio, currency: 'Bs' }] }).catch(e => console.error('error fetching data ratesApi', { e }))
+      }
+    }).catch(e => console.error('error fetching data firebase', { e }))
+  },
+  data () {
+    return {
+      rateDefault: []
+    }
+  },
   props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede'],
   methods: {
+    ...mapActions('config', ['bindRates']),
+    getRates (mto) {
+      let mtoTotal = 0
+      let rate
+      if (typeof this.ratesComp !== 'undefined' && this.ratesComp.length) {
+        rate = this.ratesComp.find(obj => {
+          return obj.currency === 'Bs'
+        })
+      }
+      if (typeof mto !== 'undefined' && rate && rate.rateValue) {
+        mtoTotal = rate.rateValue * mto
+      }
+      return mtoTotal
+    },
     getCatNames (item) {
       let flatten = Object.keys(item.categoria)
       let categorias = ''
@@ -72,6 +110,8 @@ export default {
 }
 </script>
 <style lang="stylus">
+.capitalize
+  text-transform capitalize
 .descripcion
   overflow hidden
   text-overflow ellipsis
