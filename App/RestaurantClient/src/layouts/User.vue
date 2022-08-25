@@ -4,7 +4,7 @@
     :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }"
     view="hhh LpR fFf">
      <q-header elevated
- class="bg-primary" style="z-index: 2" v-if="$q.screen.gt.sm && mobileGreatView">
+ class="bg-primary" style="z-index: 2" v-if="$q.screen.gt.sm && mobileGreatView && !newGreatView">
        <q-toolbar>
           <q-avatar size="80px">
             <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
@@ -36,23 +36,11 @@
       </q-tabs>
       <svg class="waves" viewBox="0 0 1920 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path :fill="primary" d="M 0 0 C 78.5 0 78.5 46 157 46 L 157 46 L 157 0 L 0 0 Z" stroke-width="0"></path> <path :fill="primary" d="M 156 46 C 264.5 46 264.5 20 373 20 L 373 20 L 373 0 L 156 0 Z" stroke-width="0"></path> <path :fill="primary" d="M 372 20 C 459.5 20 459.5 37 547 37 L 547 37 L 547 0 L 372 0 Z" stroke-width="0"></path><path :fill="primary" d="M 546 37 C 647 37 647 3 748 3 L 748 3 L 748 0 L 546 0 Z" stroke-width="0"></path><path :fill="primary" d="M 747 3 C 845 3 845 44 943 44 L 943 44 L 943 0 L 747 0 Z" stroke-width="0"></path><path :fill="primary" d="M 942 44 C 1026.5 44 1026.5 20 1111 20 L 1111 20 L 1111 0 L 942 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1110 20 C 1153 20 1153 34 1196 34 L 1196 34 L 1196 0 L 1110 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1195 34 C 1260 34 1260 18 1325 18 L 1325 18 L 1325 0 L 1195 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1324 18 C 1403.5 18 1403.5 42 1483 42 L 1483 42 L 1483 0 L 1324 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1482 42 C 1527.5 42 1527.5 19 1573 19 L 1573 19 L 1573 0 L 1482 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1572 19 C 1640 19 1640 39 1708 39 L 1708 39 L 1708 0 L 1572 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1707 39 C 1813.5 39 1813.5 0 1920 0 L 1920 0 L 1920 0 L 1707 0 Z" stroke-width="0"></path></svg>
      </q-header>
-     <q-footer v-if="$q.screen.lt.md && mobileGreatView" class="bg-primary">
-       <svg class="waves2 absolute-top" viewBox="0 0 1920 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path :fill="primary" d="M 0 0 C 78.5 0 78.5 46 157 46 L 157 46 L 157 0 L 0 0 Z" stroke-width="0"></path> <path :fill="primary" d="M 156 46 C 264.5 46 264.5 20 373 20 L 373 20 L 373 0 L 156 0 Z" stroke-width="0"></path> <path :fill="primary" d="M 372 20 C 459.5 20 459.5 37 547 37 L 547 37 L 547 0 L 372 0 Z" stroke-width="0"></path><path :fill="primary" d="M 546 37 C 647 37 647 3 748 3 L 748 3 L 748 0 L 546 0 Z" stroke-width="0"></path><path :fill="primary" d="M 747 3 C 845 3 845 44 943 44 L 943 44 L 943 0 L 747 0 Z" stroke-width="0"></path><path :fill="primary" d="M 942 44 C 1026.5 44 1026.5 20 1111 20 L 1111 20 L 1111 0 L 942 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1110 20 C 1153 20 1153 34 1196 34 L 1196 34 L 1196 0 L 1110 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1195 34 C 1260 34 1260 18 1325 18 L 1325 18 L 1325 0 L 1195 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1324 18 C 1403.5 18 1403.5 42 1483 42 L 1483 42 L 1483 0 L 1324 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1482 42 C 1527.5 42 1527.5 19 1573 19 L 1573 19 L 1573 0 L 1482 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1572 19 C 1640 19 1640 39 1708 39 L 1708 39 L 1708 0 L 1572 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1707 39 C 1813.5 39 1813.5 0 1920 0 L 1920 0 L 1920 0 L 1707 0 Z" stroke-width="0"></path></svg>
-      <q-tabs>
-        <q-tab flat
-              indicator-color="transparent"
-               dense
-               round
-               icon='fas fa-bars'
-               name="cart"
-               @click="leftDrawerOpen = !leftDrawerOpen"
-               exact />
-        <q-tab v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
-          <q-badge color="red" floating>{{getCartQ}}</q-badge>
-        </q-tab>
-      </q-tabs>
-     </q-footer>
-         <q-toolbar v-if="!mobileGreatView" class="absolute-top logocont" >
+      <Headersearch v-if="newGreatView"></Headersearch>
+     <Footertoolbar v-if="mobileGreatView || newGreatView" class="mobile-only">
+
+     </Footertoolbar>
+         <q-toolbar v-show="!mobileGreatView && !newGreatView" class="absolute-top logocont" >
            <div class="relative-position full-width">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
@@ -189,6 +177,8 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
 import firebase from 'firebase/app'
 import '@firebase/messaging'
+import Footertoolbar from '../components/menu/classic/tabcolumn/footertoolbar.vue'
+import Headersearch from '../components/navigation/headersearch.vue'
 // import Axios from 'axios'
 export default {
   name: 'UserLayout',
@@ -207,15 +197,25 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     'ClassicDark': () => import('./themes/ClassicDark'),
     // eslint-disable-next-line vue/no-unused-components
-    'ClassicLight': () => import('./themes/ClassicLight')
+    'ClassicLight': () => import('./themes/ClassicLight'),
+    Footertoolbar,
+    Headersearch
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest']),
+    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('editor', ['blocks', 'page', 'routes']),
+    leftDrawerOpen: {
+      get () {
+        return this.leftDrawerOp
+      },
+      set (e) {
+        this.leftDrawerOpCommit(e)
+      }
+    },
     pageStyle () {
       if (this.page && this.page.style) {
         let style = this.pagecfg.style
@@ -246,6 +246,13 @@ export default {
     mobileGreatView () {
       if (this.themecfg && typeof this.themecfg.mobile !== 'undefined') {
         return this.themecfg.mobile
+      } else {
+        return false
+      }
+    },
+    newGreatView () {
+      if (this.themecfg && typeof this.themecfg.mobile2 !== 'undefined') {
+        return this.themecfg.mobile2
       } else {
         return false
       }
@@ -772,8 +779,7 @@ export default {
       fullPath: '',
       Tawk_API: null,
       notifications: 0,
-      blurLayout: false,
-      leftDrawerOpen: false
+      blurLayout: false
     }
   },
   methods: {
@@ -781,7 +787,7 @@ export default {
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg']),
+    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg', 'leftDrawerOpCommit']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
     loguserout () {

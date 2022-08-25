@@ -1,7 +1,8 @@
 <template>
    <div @click="click()" :class="global_class" :style="global_style">
       <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
-      <q-card v-if="false" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+
+      <q-card v-if="displayType !== 5" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
       <q-card-section
       class="column items-center"
           v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
@@ -15,16 +16,13 @@
       </q-card-section>
           <!-- :rewards="rewards" -->
          <menu-filter
-          :promo="promo"
           :selectedFilter="selectedFilter"
           :menucfg="menucfg"
           :sede="sede"
           :filterFindName="filterFindName(selectedFilter)"
           :pointsCat="pointsCat"
           :paymentServ="paymentServ"
-          :promoData="promoData"
           @nextDisp="nextDisp()"
-          @promos="promo = !promo"
           :filters="filters"
           @nextFilter="nextFilter()"
          />
@@ -193,119 +191,8 @@
             </div>
          </q-card-section>
          <!-- Seccion de promociones -->
-         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="promo">
-              <div class="background-color" v-if="displayType">
-               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
-               <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-               <carousel
-                  :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
-                  :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-                  <slide class="row justify-center" :name="key" v-for="(item, key) in promoData" :key="item.id" >
-                     <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
-                           <div class="container-photo">
-                              <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
-                           </div>
-                           <div class="text-caption">
-                              <div class="text-bold relative-position q-pa-sm">
-                                 <q-item-label lines="5">{{item.name}} </q-item-label>
-                              </div>
-                           </div>
-                           <div class="price-content" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')" >
-                              <div>
-                                <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
-                                 <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
-                                    $ {{parseFloat(item.price).toFixed(2)}}
-                                 </q-item-label>
-                                 <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                                 </q-item-label>
-                              </div>
-                           </div>
-                           <div class="price-content" v-else>
-                              <q-item-label>{{item.pricerange}}
-                              </q-item-label>
-                            </div>
-                           <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                           <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
-                        </q-card>
-                     </div>
-                  </slide>
-               </carousel>
-            </div>
-            <div class="row justify-around" v-else>
-               <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-               <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
-                  :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]"
-                  @click="dgbg = {'background-color':selectedCat.color}; checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 1)) : false"
-                  v-for="item in promoData" :key="item.id" >
-                  <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
-                     <div class="menuitem row">
-                        <div class="menuphotocont col">
-                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
-                        </div>
-                        <div class="menutext col column justify-center">
-                           <div class="col-auto">
-                              <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
-                           </div>
-                        </div>
-                        <div>
-                           <div class="menuprice col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
-                              <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
-                              <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
-                              </q-item-label>
-                              <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                              </q-item-label>
-                           </div>
-                           <div class="price-content" v-else>
-                              <q-item-label>{{item.pricerange}}
-                              </q-item-label>
-                            </div>
-                        </div>
-                     </div>
-                  </div>
-                  <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                  <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
-               </q-card>
-            </div>
-
-         </q-card-section>
       </q-card>
       <q-card v-else flat class="menu-div2 q-ma-none q-pa-none q-pb-md" >
-      <q-card-section
-      class="row bg-orange q-ma-none q-pa-none"
-          v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
-      >
-        <q-img class="col-2 col-sm-3 col-xs-12" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FLogo%20caminoMARKET%20SIN%20FONDO.png?alt=media&token=0ff71189-a628-47d1-82c4-94645743c7e6" />
-      <div class=" col-md-8 col-sm-8 col-xs-12 row q-pa-md">
-        <q-input
-          v-model="searchBar" class="col bg-white self-end q-pl-md" style="border-radius: 8px;" borderless @input="search" dense label="Hoy estoy buscando..." >
-          <template v-slot:append>
-            <div style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;" class="bg-grey-7 q-pl-md q-pr-lg full-height">
-              <q-icon  name="fas fa-search" color="white" />
-
-            </div>
-          </template>
-        </q-input>
-      </div>
-      </q-card-section>
-          <!-- :rewards="rewards" -->
-         <!-- <menu-filter
-          :promo="promo"
-          :selectedFilter="selectedFilter"
-          :menucfg="menucfg"
-          :sede="sede"
-          :filterFindName="filterFindName(selectedFilter)"
-          :pointsCat="pointsCat"
-          :paymentServ="paymentServ"
-          :promoData="promoData"
-          @nextDisp="nextDisp()"
-          @promos="promo = !promo"
-          :filters="filters"
-          @nextFilter="nextFilter()"
-         /> -->
-          <!-- @rewards="rewards = !rewards" -->
          <q-card-section class="row justify-center" v-if="menuLoading">
            <q-spinner
               color="primary"
@@ -377,9 +264,17 @@ export default {
     Menutype5
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType']),
+    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType', 'searchBarState']),
+    searchBar: {
+      get () {
+        return this.searchBarState
+      },
+      set (e) {
+        this.searchBarCommit(e)
+      }
+    },
     cats () {
       let objs = this.categorias
       return objs.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
@@ -493,36 +388,6 @@ export default {
         return p
       }, {})
       return objout
-    },
-    promoData () {
-      var prom = []
-      this.promos.forEach(e => {
-        var y = { prods: [] }
-        let guard = 0
-        e.prods.forEach(i => {
-          if (guard) { return }
-          var its = this.menu.find(x => x.id === i.id)
-          if (typeof its !== 'undefined' && its.estatus[this.sede]) {
-            y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock, quantity: i.quantity })
-          } else {
-            y.prods = []
-            guard = 1
-          }
-        })
-        y.name = e.name
-        y.id = e.id
-        y.price = e.price
-        y.estatus = e.estatus
-        y.descripcion = e.descripcion
-        y.descripcioncolor = e.descripcioncolor
-        y.prodType = 1
-        y.photo = e.photo
-        y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
-        if (y.prods.length && !guard) {
-          prom.push(y)
-        }
-      })
-      return prom
     }
   },
   data () {
@@ -536,7 +401,6 @@ export default {
       totSum: 0,
       required: false,
       promo: false,
-      searchBar: '',
       maximizedToggle: true,
       display: false,
       displayVal: {},
@@ -559,6 +423,9 @@ export default {
     }
   },
   watch: {
+    searchBar () {
+      this.search()
+    },
     Sede (e) {
       this.setSede(e)
     },
@@ -566,11 +433,6 @@ export default {
       this.menuLoading = false
       this.filteredMenu = this.origMenu
       if (!parseInt(this.selectedProdType)) {
-        this.productSelected()
-      }
-    },
-    promos () {
-      if (parseInt(this.selectedProdType)) {
         this.productSelected()
       }
     },
@@ -607,8 +469,8 @@ export default {
     })
   },
   methods: {
-    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindRewards', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
-    ...mapActions('config', ['setMenuDispType']),
+    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindRewards', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    ...mapActions('config', ['setMenuDispType', 'searchBarCommit']),
     filterFindName (x) {
       let found = this.filters.find(e => e.id === x)
       return typeof found === 'undefined' ? 'Catálogo' : found.name
@@ -742,20 +604,20 @@ export default {
       const options = {
         includeScore: true,
         // Search in `author` and in `tags` array
-        keys: [{ name: 'name', weight: 0.4 }, 'descripcion']
+        keys: [{ name: 'name', weight: 0.4 }]
       }
       let fuse = new Fuse(this.origMenu, options)
       this.filteredMenu = this.origMenu
       if (this.selectedCat !== null) {
-        this.filteredMenu = this.filteredMenu.filter(x => {
-          return x && x.categoria && x.categoria[this.selectedCat.id]
-        })
+        // this.filteredMenu = this.filteredMenu.filter(x => {
+        //   return x && x.categoria && x.categoria[this.selectedCat.id]
+        // })
         fuse = new Fuse(this.filteredMenu, options)
       }
-      console.log(this.searchBar)
       if (this.searchBar.length) {
         this.filteredMenu = fuse.search(this.searchBar).map(x => { return { ...x.item } })
       }
+      console.log(this.filteredMenu)
     },
     // checkAvailReward (item) {
     //   if (!this.rewards) { return [true, true] }
@@ -811,36 +673,6 @@ export default {
             return [1, exists]
           }
         } else { return [0, exists] }
-      } else {
-        var promotion = this.promoData.find(e => e.id === id)
-        if (typeof promotion !== 'undefined') {
-          for (let e in promotion.prods) {
-            product = promotion.prods[e]
-            counter = (diag ? 0 : this.quantity) * product.quantity
-            inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-            inCart.forEach(element => {
-              counter = element.quantity + counter
-            })
-            this.cart.forEach(y => {
-              if (typeof y.prods !== 'undefined') {
-                var producto = y.prods.find(j => j.id === promotion.prods[e].id)
-                if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-                counter = (producto.quantity * y.quantity) + counter
-              }
-            })
-            exists = 0
-            if (counter) { exists = 1 }
-
-            if (typeof product !== 'undefined') {
-              if (counter > parseInt(product.stock[this.sede])) {
-                return [2, exists]
-              } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
-                return [0, exists]
-              }
-            }
-          }
-        }
-        return [1, exists]
       }
     },
     displayPermitValue () {
@@ -870,11 +702,6 @@ export default {
           this.displayVal.price = 0
           this.displayVal.reward = 1
         }
-      } else {
-        this.displayVal = JSON.parse(JSON.stringify(this.promoData.find((e) => {
-          return e.id === id
-        })))
-        this.displayVal = { ...this.displayVal, prodType: 1, id: id }
       }
     }
   }

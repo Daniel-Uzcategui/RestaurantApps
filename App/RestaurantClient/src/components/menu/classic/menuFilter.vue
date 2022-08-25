@@ -11,9 +11,6 @@
           <q-item v-ripple style="padding-left: 10px;" v-if="pointsCat && Object.keys(pointsCat).length  && !promo && paymentServ && paymentServ.statusRewards">
               <q-btn :ripple='false' round dense flat color="white" icon="fas fa-gift" @click="$emit('rewards')" />
           </q-item>
-          <q-item v-ripple :ripple='false' style="padding-left: 10px;" v-if="(promoData.length || promo)  && !rewards">
-              <q-btn dense round flat color="white" icon="fab fa-creative-commons-nc" @click="$emit('promos')" />
-          </q-item>
         </q-list>
     </div>
   </q-card-section>
@@ -21,6 +18,6 @@
 <script>
 export default {
   name: 'menufilter',
-  props: ['rewards', 'promo', 'selectedFilter', 'menucfg', 'sede', 'filterFindName', 'pointsCat', 'paymentServ', 'promoData', 'filters']
+  props: ['rewards', 'promo', 'selectedFilter', 'menucfg', 'sede', 'filterFindName', 'pointsCat', 'paymentServ', 'filters']
 }
 </script>
