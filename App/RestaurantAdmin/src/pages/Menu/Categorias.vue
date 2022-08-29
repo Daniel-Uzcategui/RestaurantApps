@@ -1,12 +1,12 @@
 <template>
 <div v-if="!isDiag" :class="$q.screen.gt.xs ? 'q-ma-lg' : 'q-mt-lg'" >
-  <q-card v-if="mapCat.length" class="column q-cardGlass">
+  <!-- <q-card v-if="mapCat.length" class="column q-cardGlass">
     <vue2-org-tree  v-for="data in mapCat" :key="data.id" class="bg-transparent" :data="data" :props="{label: 'name', children:'subCat', expand: 'expand'}" collapsable :label-class-name="labelClass"
         :render-content="renderContent" @on-expand="onExpand" @on-node-click="onNodeClick"
         @on-node-drop="onNodeDrop"
         :horizontal="true"
         selected-class-name="selected-node" selected-key="selectedKey"/>
-  </q-card>
+  </q-card> -->
    <div v-if="true">
    <q-table
       grid
@@ -323,47 +323,47 @@ export default {
       }
       return newArray
     },
-    labelClass (data) {
-      let color = 'blue'
-      if (data.ref) {
-        let num = parseInt(data.ref.split('.').length) + 1
-        if (num > 14) {
-          num = num - 12
-        }
-        color = color + '-' + num
-      }
-      return 'bg_node bg-' + color
-    },
-    renderContent (h, data) {
-      return h(Contextmenucat, {
-        on: {
-          add: (event) => {
-            // console.log(event, data)
-            this.addSubCat(data, data.refid, data.ref)
-          },
-          editar: (event) => {
-            this.onNodeClick(event, data)
-          },
-          delete: (event) => {
-            // console.log(event)
-            this.onNodeDelete(event, data)
-          }
-        },
-        props: {
-          label: data.name
-        }
-      })
-    },
-    onExpand (e, data) {
-      if ('expand' in data) {
-        data.expand = !data.expand
-        if (!data.expand && data.subCat) {
-          this.collapse(data.subCat)
-        }
-      } else {
-        this.$set(data, 'expand', true)
-      }
-    },
+    // labelClass (data) {
+    //   let color = 'blue'
+    //   if (data.ref) {
+    //     let num = parseInt(data.ref.split('.').length) + 1
+    //     if (num > 14) {
+    //       num = num - 12
+    //     }
+    //     color = color + '-' + num
+    //   }
+    //   return 'bg_node bg-' + color
+    // },
+    // renderContent (h, data) {
+    //   return h(Contextmenucat, {
+    //     on: {
+    //       add: (event) => {
+    //         // console.log(event, data)
+    //         this.addSubCat(data, data.refid, data.ref)
+    //       },
+    //       editar: (event) => {
+    //         this.onNodeClick(event, data)
+    //       },
+    //       delete: (event) => {
+    //         // console.log(event)
+    //         this.onNodeDelete(event, data)
+    //       }
+    //     },
+    //     props: {
+    //       label: data.name
+    //     }
+    //   })
+    // },
+    // onExpand (e, data) {
+    //   if ('expand' in data) {
+    //     data.expand = !data.expand
+    //     if (!data.expand && data.subCat) {
+    //       this.collapse(data.subCat)
+    //     }
+    //   } else {
+    //     this.$set(data, 'expand', true)
+    //   }
+    // },
     collapse (nodes) {
       // console.log(nodes, 'NODES')
       nodes.forEach(node => {
@@ -374,39 +374,39 @@ export default {
         node.subCat && this.collapse(node.subCat)
       })
     },
-    onNodeDelete (e, data) {
-      this.$q.dialog({
-        message: '¿Está seguro que desea eliminar a ' + data.name + '?'
-      }).onOk(() => {
-        this.catHolder = data
-        this.catHolder.softDelete = 1
-        this.saveCatHolder()
-      })
-    },
-    onNodeClick (e, data) {
-      console.log('CLICK', data)
-      this.editCategory = true
-      this.catHolder = data
-      this.$set(data, 'selectedKey', !data['selectedKey'])
-    },
-    onNodeMouseOver (e, data) {
-      // console.log('MOUSE OVER', e, data)
-    },
-    onNodeMouseOut (e, data) {
-      // console.log('MOUSE OUT', e)
-    },
-    onNodeDrop (e, drag, drop) {
-      // console.log('DROP', e)
-      // console.log('drag:', drag)
-      // console.log('drop:', drop)
-      let f = drag.name
-      let g = drop.name
-      drag.name = g
-      drop.name = f
-    },
-    consoleame (e) {
-      // console.log(e, 'he')
-    },
+    // onNodeDelete (e, data) {
+    //   this.$q.dialog({
+    //     message: '¿Está seguro que desea eliminar a ' + data.name + '?'
+    //   }).onOk(() => {
+    //     this.catHolder = data
+    //     this.catHolder.softDelete = 1
+    //     this.saveCatHolder()
+    //   })
+    // },
+    // onNodeClick (e, data) {
+    //   console.log('CLICK', data)
+    //   this.editCategory = true
+    //   this.catHolder = data
+    //   this.$set(data, 'selectedKey', !data['selectedKey'])
+    // },
+    // onNodeMouseOver (e, data) {
+    //   // console.log('MOUSE OVER', e, data)
+    // },
+    // onNodeMouseOut (e, data) {
+    //   // console.log('MOUSE OUT', e)
+    // },
+    // onNodeDrop (e, drag, drop) {
+    //   // console.log('DROP', e)
+    //   // console.log('drag:', drag)
+    //   // console.log('drop:', drop)
+    //   let f = drag.name
+    //   let g = drop.name
+    //   drag.name = g
+    //   drop.name = f
+    // },
+    // consoleame (e) {
+    //   // console.log(e, 'he')
+    // },
     showPopup (row, col) {
       this.popupEditData = row[col]
     },
@@ -568,8 +568,8 @@ export default {
       if (typeof this.temp1.categorias === 'undefined') {
         this.temp1.categorias = {}
       }
-      this.temp1.categorias[newId] = { id: newId, isNew: true, descripcion: '', name: 'Nueva Categoría', ...data }
-      this.elcat.unshift({ id: newId, descripcion: '', name: 'Nueva Categoría', ...data })
+      this.temp1.categorias[newId] = { id: newId, isNew: true, descripcion: '', name: 'Nueva Categoría', ...data, estatus: true }
+      this.elcat.unshift({ id: newId, descripcion: '', name: 'Nueva Categoría', ...data, estatus: true })
       this.$forceUpdate()
     }
   }
