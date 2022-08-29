@@ -1,7 +1,8 @@
 <template>
    <div @click="click()" :class="global_class" :style="global_style">
       <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
-      <q-card flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+
+      <q-card v-if="displayType !== 5" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
       <q-card-section
       class="column items-center"
           v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
@@ -15,16 +16,13 @@
       </q-card-section>
           <!-- :rewards="rewards" -->
          <menu-filter
-          :promo="promo"
           :selectedFilter="selectedFilter"
           :menucfg="menucfg"
           :sede="sede"
           :filterFindName="filterFindName(selectedFilter)"
           :pointsCat="pointsCat"
           :paymentServ="paymentServ"
-          :promoData="promoData"
           @nextDisp="nextDisp()"
-          @promos="promo = !promo"
           :filters="filters"
           @nextFilter="nextFilter()"
          />
@@ -192,163 +190,24 @@
             </div>
             </div>
          </q-card-section>
-          <!-- Seccion de rewards -->
-         <!-- <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo && rewards">
-            <div class="background-color q-pa-none q-ma-none" v-if="displayType">
-               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
-               <carousel
-                  :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
-                  :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-                  <slide class="row justify-center" :name="key" v-for="(item, key) in filteredMenu" :key="item.id" v-show="pointsCat && Object.keys(pointsCat).some(r=> item && item.categoria && item.categoria.includes(r))" >
-                     <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
-                           <div class="container-photo">
-                              <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
-                           </div>
-                           <div class="text-caption">
-                              <div class="text-bold relative-position q-pa-sm">
-                                 <q-item-label lines="5">{{item.name}} </q-item-label>
-                              </div>
-                           </div>
-                           <div class="price-content" >
-                              <div>
-                                 <q-item-label >$ 0.00
-                                 </q-item-label>
-                              </div>
-                           </div>
-                           <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                           <q-tooltip :hide-delay="650" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-tooltip>
-                        </q-card>
-                     </div>
-                  </slide>
-               </carousel>
-            </div>
-            <div v-else>
-              <q-tabs
-               class="wrapel"
-               content-class="wrapel"
-               :value="selectedCat ? selectedCat.id : ''"
-               >
-               <q-tab no-caps class="wrapel fontsize-13" content-class="wrapel" v-for="(tabs, index) in filtercat"
-                  :key="index"
-                  @click="selectedCat=tabs; search()"
-                  :name="tabs.id"
-                  >
-                  {{tabs.name}}
-               </q-tab>
-            </q-tabs>
-            <div class="row justify-around" >
-               <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-               <q-card v-ripple class="q-ma-md q-pa-md bg-secondary text-white" style="border-radius: 28px;"
-                  :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'}]"
-                  @click="checkAvail(item.id, item.prodType)[0] && checkAvailReward(item)[1] ? (display = true, getMenuItem(item.id, 0, 1)) : false"
-                  v-for="(item, key) in filteredMenu" :key="key"
-                  v-show="pointsCat && Object.keys(pointsCat).some(r=> item && item.categoria && item.categoria.includes(r))" >
-                  <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''"  class="menuitemcont">
-                     <div class="menuitem row">
-                        <div class="menuphotocont col">
-                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
-                        </div>
-                        <div class="menutext col column justify-center">
-                           <div class="col-auto">
-                              <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
-                           </div>
-                        </div>
-                        <div>
-                           <div class="menuprice col">
-                              <q-item-label >$ 0.00
-                              </q-item-label>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                  <q-tooltip :hide-delay="650" v-if="(checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]) || (!checkAvailReward(item)[1] && checkAvailReward(item)[2])">*Máx en el Carrito*</q-tooltip>
-               </q-card>
-            </div>
-            </div>
-         </q-card-section> -->
          <!-- Seccion de promociones -->
-         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="promo">
-              <div class="background-color" v-if="displayType">
-               <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold"></div>
-               <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-               <carousel
-                  :loop="true"
-                  navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x"  aria-hidden="true"></i>'
-                  navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x"  aria-hidden="true"></i>'
-                  :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-                  <slide class="row justify-center" :name="key" v-for="(item, key) in promoData" :key="item.id" >
-                     <div style="z-index: 1" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" >
-                        <q-card v-ripple @click="checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 1)) : false" :id="key" :class="$q.screen.gt.xs ? 'item-md' : 'item-xs'" class="row justify-center" :style="[{'background-color':'#64CDF5'},{'color': '#292929'}]">
-                           <div class="container-photo">
-                              <q-img style="z-index: 1000" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
-                           </div>
-                           <div class="text-caption">
-                              <div class="text-bold relative-position q-pa-sm">
-                                 <q-item-label lines="5">{{item.name}} </q-item-label>
-                              </div>
-                           </div>
-                           <div class="price-content" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')" >
-                              <div>
-                                <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
-                                 <q-item-label :class="item.discount > 0 ? 'text-strike' : false">
-                                    $ {{parseFloat(item.price).toFixed(2)}}
-                                 </q-item-label>
-                                 <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                                 </q-item-label>
-                              </div>
-                           </div>
-                           <div class="price-content" v-else>
-                              <q-item-label>{{item.pricerange}}
-                              </q-item-label>
-                            </div>
-                           <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                           <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
-                        </q-card>
-                     </div>
-                  </slide>
-               </carousel>
-            </div>
-            <div class="row justify-around" v-else>
-               <p v-if="!promoData.length" class="text-h5">No hay promociones Disponibles en este momento</p>
-               <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
-                  :style="[{'min-width':$q.screen.gt.xs ? '320px' : '290px'},{'background-color':selectedCat ? selectedCat.color : ''},{'color': selectedCat ? selectedCat.textcolor : ''}]"
-                  @click="dgbg = {'background-color':selectedCat.color}; checkAvail(item.id, item.prodType)[0] ? (displayPermit(), getMenuItem(item.id, 1)) : false"
-                  v-for="item in promoData" :key="item.id" >
-                  <div :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''" class="menuitemcont">
-                     <div class="menuitem row">
-                        <div class="menuphotocont col">
-                           <q-img :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photosmall ? item.photosmall : item.photo" color="primary" text-color="white" class="rounded-borders" />
-                        </div>
-                        <div class="menutext col column justify-center">
-                           <div class="col-auto">
-                              <q-item-label class="text-bold" lines="5">{{item.name}} </q-item-label>
-                           </div>
-                        </div>
-                        <div>
-                           <div class="menuprice col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
-                              <q-btn color="red" class="absolute-top-right" style="margin-right: -20px;margin-top: -20px;" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
-                              <q-item-label :class="item.discount > 0 ? 'text-strike' : false">$ {{parseFloat(item.price).toFixed(2)}}
-                              </q-item-label>
-                              <q-item-label v-if="item.discount > 0">$ {{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
-                              </q-item-label>
-                           </div>
-                           <div class="price-content" v-else>
-                              <q-item-label>{{item.pricerange}}
-                              </q-item-label>
-                            </div>
-                        </div>
-                     </div>
-                  </div>
-                  <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                  <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
-               </q-card>
-            </div>
-
+      </q-card>
+      <q-card v-else flat class="menu-div2 q-ma-none q-pa-none q-pb-md" >
+         <q-card-section class="row justify-center" v-if="menuLoading">
+           <q-spinner
+              color="primary"
+              size="md"
+            />
          </q-card-section>
+              <menutype-5
+              @tabs="(e) => {selectedCat=e; search()}"
+              :selectedCat="selectedCat"
+              :checkAvail="checkAvail"
+              @hook:mounted="selectedCat=filtercat[0]"
+              :sede="sede"
+              :filtercat="filtercat"
+              :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
+              @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (displayPermit(), getMenuItem(e.id, 0)) : false}" />
       </q-card>
       <q-dialog-menu
       style="z-index: 9999999"
@@ -361,11 +220,12 @@
    </div>
 </template>
 <script>
-
+import Fuse from 'fuse.js'
 import { mapActions, mapGetters } from 'vuex'
 import menuFilter from '../../components/menu/classic/menuFilter.vue'
 import Menutype0 from '../../components/menu/classic/menutype0.vue'
 import Menutype4 from '../../components/menu/classic/menutype4.vue'
+import Menutype5 from '../../components/menu/classic/menutype5.vue'
 // import store from '../../store/index'
 import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
 export default {
@@ -400,12 +260,21 @@ export default {
     Slide,
     menuFilter,
     Menutype0,
-    Menutype4
+    Menutype4,
+    Menutype5
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'promos', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType']),
+    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType', 'searchBarState']),
+    searchBar: {
+      get () {
+        return this.searchBarState
+      },
+      set (e) {
+        this.searchBarCommit(e)
+      }
+    },
     cats () {
       let objs = this.categorias
       return objs.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
@@ -519,36 +388,6 @@ export default {
         return p
       }, {})
       return objout
-    },
-    promoData () {
-      var prom = []
-      this.promos.forEach(e => {
-        var y = { prods: [] }
-        let guard = 0
-        e.prods.forEach(i => {
-          if (guard) { return }
-          var its = this.menu.find(x => x.id === i.id)
-          if (typeof its !== 'undefined' && its.estatus[this.sede]) {
-            y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock, quantity: i.quantity })
-          } else {
-            y.prods = []
-            guard = 1
-          }
-        })
-        y.name = e.name
-        y.id = e.id
-        y.price = e.price
-        y.estatus = e.estatus
-        y.descripcion = e.descripcion
-        y.descripcioncolor = e.descripcioncolor
-        y.prodType = 1
-        y.photo = e.photo
-        y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
-        if (y.prods.length && !guard) {
-          prom.push(y)
-        }
-      })
-      return prom
     }
   },
   data () {
@@ -562,7 +401,6 @@ export default {
       totSum: 0,
       required: false,
       promo: false,
-      searchBar: '',
       maximizedToggle: true,
       display: false,
       displayVal: {},
@@ -583,8 +421,14 @@ export default {
     if (this.Sede !== '') {
       this.setSede(this.Sede)
     }
+    if (this.sede === null) {
+      this.$router.push('/')
+    }
   },
   watch: {
+    searchBar () {
+      this.search()
+    },
     Sede (e) {
       this.setSede(e)
     },
@@ -592,11 +436,6 @@ export default {
       this.menuLoading = false
       this.filteredMenu = this.origMenu
       if (!parseInt(this.selectedProdType)) {
-        this.productSelected()
-      }
-    },
-    promos () {
-      if (parseInt(this.selectedProdType)) {
         this.productSelected()
       }
     },
@@ -633,8 +472,8 @@ export default {
     })
   },
   methods: {
-    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindRewards', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
-    ...mapActions('config', ['setMenuDispType']),
+    ...mapActions('menu', ['bindMenu', 'bindItem', 'addCart', 'bindCategorias', 'setSede', 'bindRewards', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    ...mapActions('config', ['setMenuDispType', 'searchBarCommit']),
     filterFindName (x) {
       let found = this.filters.find(e => e.id === x)
       return typeof found === 'undefined' ? 'Catálogo' : found.name
@@ -675,7 +514,7 @@ export default {
       })
     },
     nextDisp () {
-      console.log(this.themeMode, this.menucfg)
+      console.log(this.themeMode, this.menucfg, this.displayType)
       if (this.themeMode === 0) {
         if (this.displayType === this.menucfg.displayType && this.$q.platform.is.mobile) {
           this.displayType = 2
@@ -765,18 +604,24 @@ export default {
       return filtered
     },
     search () {
-      if (this.selectedCat !== null) {
-        this.filteredMenu = this.origMenu.filter(x => {
-          return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
-        })
-        this.filteredMenu = this.filteredMenu.filter(x => {
-          return x && x.categoria && x.categoria[this.selectedCat.id]
-        })
-      } else {
-        this.filteredMenu = this.origMenu.filter(x => {
-          return x && x.name && x.name.toLowerCase().includes(this.searchBar.toLowerCase())
-        })
+      const options = {
+        includeScore: true,
+        // Search in `author` and in `tags` array
+        keys: [{ name: 'name', weight: 1 }],
+        threshold: 0.4
       }
+      let fuse = new Fuse(this.origMenu, options)
+      this.filteredMenu = this.origMenu
+      if (this.selectedCat !== null) {
+        // this.filteredMenu = this.filteredMenu.filter(x => {
+        //   return x && x.categoria && x.categoria[this.selectedCat.id]
+        // })
+        fuse = new Fuse(this.filteredMenu, options)
+      }
+      if (this.searchBar.length) {
+        this.filteredMenu = fuse.search(this.searchBar).map(x => { return { ...x.item } })
+      }
+      console.log(this.filteredMenu)
     },
     // checkAvailReward (item) {
     //   if (!this.rewards) { return [true, true] }
@@ -832,36 +677,6 @@ export default {
             return [1, exists]
           }
         } else { return [0, exists] }
-      } else {
-        var promotion = this.promoData.find(e => e.id === id)
-        if (typeof promotion !== 'undefined') {
-          for (let e in promotion.prods) {
-            product = promotion.prods[e]
-            counter = (diag ? 0 : this.quantity) * product.quantity
-            inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-            inCart.forEach(element => {
-              counter = element.quantity + counter
-            })
-            this.cart.forEach(y => {
-              if (typeof y.prods !== 'undefined') {
-                var producto = y.prods.find(j => j.id === promotion.prods[e].id)
-                if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-                counter = (producto.quantity * y.quantity) + counter
-              }
-            })
-            exists = 0
-            if (counter) { exists = 1 }
-
-            if (typeof product !== 'undefined') {
-              if (counter > parseInt(product.stock[this.sede])) {
-                return [2, exists]
-              } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
-                return [0, exists]
-              }
-            }
-          }
-        }
-        return [1, exists]
       }
     },
     displayPermitValue () {
@@ -891,11 +706,6 @@ export default {
           this.displayVal.price = 0
           this.displayVal.reward = 1
         }
-      } else {
-        this.displayVal = JSON.parse(JSON.stringify(this.promoData.find((e) => {
-          return e.id === id
-        })))
-        this.displayVal = { ...this.displayVal, prodType: 1, id: id }
       }
     }
   }

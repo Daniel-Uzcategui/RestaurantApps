@@ -96,3 +96,12 @@ export const bindRates = firestoreAction(({ bindFirestoreRef }) => {
 export const setMenuDispType = async function ({ commit }, payload) {
   return commit('menuDispType', payload)
 }
+export const leftDrawerOpCommit = async function ({ commit }, payload) {
+  return commit('leftDrawerOp', payload)
+}
+export const leftDrawerCatOpCommit = async function ({ commit }, payload) {
+  return commit('leftDrawerCatOp', payload)
+}
+export const searchBarCommit = async function ({ commit }, payload) {
+  return commit('searchBarState', payload)
+}

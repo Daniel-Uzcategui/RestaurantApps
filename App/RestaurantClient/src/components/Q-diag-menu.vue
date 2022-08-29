@@ -300,36 +300,6 @@ export default {
         return p
       }, {})
       return objout
-    },
-    promoData () {
-      var prom = []
-      this.promos.forEach(e => {
-        var y = { prods: [] }
-        let guard = 0
-        e.prods.forEach(i => {
-          if (guard) { return }
-          var its = this.menu.find(x => x.id === i.id)
-          if (typeof its !== 'undefined' && its.estatus[this.sede]) {
-            y.prods.push({ id: its.id, name: its.name, photo: its.photo, stock: its.stock, quantity: i.quantity })
-          } else {
-            y.prods = []
-            guard = 1
-          }
-        })
-        y.name = e.name
-        y.id = e.id
-        y.price = e.price
-        y.estatus = e.estatus
-        y.descripcion = e.descripcion
-        y.descripcioncolor = e.descripcioncolor
-        y.prodType = 1
-        y.photo = e.photo
-        y.groupComp = typeof e.groupComp === 'undefined' ? [] : e.groupComp
-        if (y.prods.length && !guard) {
-          prom.push(y)
-        }
-      })
-      return prom
     }
   },
   data () {
@@ -369,6 +339,9 @@ export default {
   //     this.filteredMenu = this.origMenu
   //   }
   // },
+  created () {
+    console.log('created diag')
+  },
   mounted () {
     this.displayVal = this.displayVal2
     this.$emit('click-edit', {
@@ -552,36 +525,6 @@ export default {
             return [1, exists, disp]
           }
         } else { return [0, exists] }
-      } else {
-        var promotion = this.promoData.find(e => e.id === id)
-        if (typeof promotion !== 'undefined') {
-          for (let e in promotion.prods) {
-            product = promotion.prods[e]
-            counter = (diag ? 0 : this.quantity) * product.quantity
-            inCart = this.cart.filter(x => x.prodId === promotion.prods[e].id)
-            inCart.forEach(element => {
-              counter = element.quantity + counter
-            })
-            this.cart.forEach(y => {
-              if (typeof y.prods !== 'undefined') {
-                var producto = y.prods.find(j => j.id === promotion.prods[e].id)
-                if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-                counter = (producto.quantity * y.quantity) + counter
-              }
-            })
-            exists = 0
-            if (counter) { exists = 1 }
-
-            if (typeof product !== 'undefined') {
-              if (counter > parseInt(product.stock[this.sede])) {
-                return [2, exists]
-              } else if (counter === parseInt(product.stock[this.sede]) || counter + product.quantity > parseInt(product.stock[this.sede])) {
-                return [0, exists]
-              }
-            }
-          }
-        }
-        return [1, exists]
       }
     }
   }
