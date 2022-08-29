@@ -15,10 +15,12 @@
          behavior="mobile"
          class="mobile-only"
          >
-         <div class="q-ml-xl q-mt-md">
-         <q-avatar size="80px">
-            <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
-          </q-avatar>
+         <div class="bg-grey-4">
+           <div class="q-pl-xl q-pt-md">
+           <q-avatar size="80px">
+              <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
+            </q-avatar>
+           </div>
          </div>
          <classictabs
           class="text-bold"
@@ -40,11 +42,11 @@
                           <q-img contain @click="$emit('productSelect', item)" v-ripple class="" :src="item.photo" />
                                  <q-btn color="red" class="absolute-top-right" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
 
-                        <q-card-section class="text-start fontsize-12 col q-pa-none">
-                          <q-list>
+                        <q-card-section class="text-start col q-pa-none">
+                          <q-list dense>
                           <q-item>
                             <q-item-section>
-                              <q-item-label lines="3"  class="col fontsize-12">{{item.name}}</q-item-label >
+                              <q-item-label lines="2"  class="col">{{item.name}}</q-item-label >
                             </q-item-section>
                           </q-item>
                           <q-item>
@@ -195,7 +197,7 @@ export default {
   -webkit-box-orient vertical
 .cardtype4
   width 200px
-  height 530px
+  height 400px
   border-radius 15px
   overflow hidden
 .phototype4
@@ -203,21 +205,21 @@ export default {
   height 200px
 @media (max-width: 1440px)
   .cardtype4
-    height 490px
+    height 370px
     width 170px
   .phototype4
     width 170px
     height 170px
 @media (max-width: 640px)
   .cardtype4
-    height 370px
+    height 355px
     width 150px
   .phototype4
     width 150px
     height 150px
 @media (max-width: 360px)
   .cardtype4
-    height 355px
+    height 335px
     width 160px
   .phototype4
     width 160px

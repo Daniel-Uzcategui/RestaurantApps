@@ -421,6 +421,9 @@ export default {
     if (this.Sede !== '') {
       this.setSede(this.Sede)
     }
+    if (this.sede === null) {
+      this.$router.push('/')
+    }
   },
   watch: {
     searchBar () {
@@ -604,7 +607,8 @@ export default {
       const options = {
         includeScore: true,
         // Search in `author` and in `tags` array
-        keys: [{ name: 'name', weight: 0.4 }]
+        keys: [{ name: 'name', weight: 1 }],
+        threshold: 0.4
       }
       let fuse = new Fuse(this.origMenu, options)
       this.filteredMenu = this.origMenu

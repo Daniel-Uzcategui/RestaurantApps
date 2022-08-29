@@ -7,7 +7,7 @@
  class="bg-primary" style="z-index: 2" v-if="$q.screen.gt.sm && mobileGreatView && !newGreatView">
        <q-toolbar>
           <q-avatar size="80px">
-            <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
+            <img :src="getLogo">
           </q-avatar>
           <q-toolbar-title>{{ManiName}}</q-toolbar-title>
           <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
@@ -67,16 +67,18 @@
                   <user-settings></user-settings>
                </q-dialog>
       <q-drawer
-         style="z-index: 99999"
+         style="z-index: 99999;"
          overlay
          on-layout="hide"
          v-model="leftDrawerOpen"
          behavior="mobile"
          >
-         <div class="q-ml-xl q-mt-md">
-         <q-avatar size="80px">
-            <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
-          </q-avatar>
+         <div class="bg-grey-4">
+           <div class="q-pl-xl q-pt-md">
+           <q-avatar size="80px">
+              <img :src="getLogo">
+            </q-avatar>
+           </div>
          </div>
          <q-list class="q-pl-xl">
             <Nav
@@ -124,12 +126,6 @@
     />
     <q-dialog v-model="promptInstalliOs" class="bg-transparent">
       <q-card class="q-cardGlass" style="max-width: 320px" >
-        <q-card-section class="column items-center bg-grey-3">
-          <div v-if="!(metamani && metamani.link && metamani.link['128x128'])">
-            <q-spinner size="128px"/>
-          </div>
-          <q-img v-else width="128px" height="128px" :src="metamani && metamani.link && metamani.link['128x128'] ? metamani.link['128x128'].href : 'favicon.ico'" />
-        </q-card-section>
         <q-card-section class="column bg-white items-center">
           <p class="text-h4 text-bold">Instala {{ManiName}}</p>
         </q-card-section>
@@ -147,10 +143,7 @@
     <q-dialog v-model="promptInstall" class="bg-transparent">
       <q-card class="q-cardGlass" style="max-width: 320px" >
         <q-card-section class="column items-center bg-grey-3">
-          <div v-if="!(metamani && metamani.link && metamani.link['128x128'])">
-            <q-spinner size="128px"/>
-          </div>
-          <q-img v-else width="128px" height="128px" :src="metamani && metamani.link && metamani.link['128x128'] ? metamani.link['128x128'].href : 'favicon.ico'" />
+          <q-img width="128px" height="128px" :src="getLogo" />
         </q-card-section>
         <q-card-section class="column bg-white items-center">
           <p class="text-h4 text-bold">Instala {{metamani.title}}</p>
@@ -202,8 +195,11 @@ export default {
     Headersearch
   },
   computed: {
+    getLogo () {
+      return this.meta?.link?.['256x256']?.href || 'favicon.ico'
+    },
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp']),
+    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp', 'metamani']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
@@ -732,28 +728,28 @@ export default {
       //   const favicon = document.getElementById('favicon')
       //   favicon.setAttribute('href', e.icons.favicon)
       // }
-      console.log({ e }, 'MANIFESTO')
-      if (e && e.name) {
-        console.log({ e }, 'MANIFESTO')
-        this.metamani = {
-          title: e.name,
-          meta: {
-            title: { name: 'title', content: e.name },
-            description: { name: 'description', content: e.description },
-            keywords: { name: 'keywords', content: e.keywords },
-            robots: { name: 'robots', content: 'index, follow' },
-            language: { name: 'language', content: 'Spanish' },
-            equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
-          },
-          link: {
-            favicon: { rel: 'shortcut icon', type: 'image/ico', href: e.icons.favicon },
-            '128x128': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon128x128 },
-            '192x192': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon192x192 },
-            '256x256': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon256x256 },
-            '512x512': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon512x512 }
-          }
-        }
-      }
+      // console.log({ e }, 'MANIFESTO')
+      // if (e && e.name) {
+      //   console.log({ e }, 'MANIFESTO')
+      //   this.metamani = {
+      //     title: e.name,
+      //     meta: {
+      //       title: { name: 'title', content: e.name },
+      //       description: { name: 'description', content: e.description },
+      //       keywords: { name: 'keywords', content: e.keywords },
+      //       robots: { name: 'robots', content: 'index, follow' },
+      //       language: { name: 'language', content: 'Spanish' },
+      //       equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
+      //     },
+      //     link: {
+      //       favicon: { rel: 'shortcut icon', type: 'image/ico', href: e.icons.favicon },
+      //       '128x128': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon128x128 },
+      //       '192x192': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon192x192 },
+      //       '256x256': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon256x256 },
+      //       '512x512': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon512x512 }
+      //     }
+      //   }
+      // }
     }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindItem().finally(() => {
       if ((this.blocks === null || typeof this.blocks === 'undefined' || (typeof this.blocks !== 'undefined' && this.blocks.length === 0)) && (window.location.hash === '#/home' || window.location.hash === '#/')) {
@@ -774,7 +770,6 @@ export default {
       primary: colors.getBrand('primary'),
       promptInstall: false,
       promptInstalliOs: false,
-      metamani: {},
       isChopzi: window.location.hostname === 'chopzi.com',
       fullPath: '',
       Tawk_API: null,
