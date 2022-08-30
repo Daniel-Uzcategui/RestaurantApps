@@ -23,6 +23,7 @@ export const bindManifest = firestoreAction(async ({ bindFirestoreRef }) => {
   return bindFirestoreRef('manifest', firestore().collection('environment').doc('manifest'), { reset: false })
 })
 export const saveManifest = firestoreAction(async (state, payload) => {
+  console.log('saving manifest', payload)
   return firestore()
     .collection('environment')
     .doc('manifest')

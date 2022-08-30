@@ -5,7 +5,8 @@
     :selectedCat="selectedCat"
     :filtercat="filtercat"
     @tabs="(e) => $emit('tabs', e)"
-     />
+     /><q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
+              />
             <div>
                <div class="row justify-around">
                   <q-card v-ripple class="q-ma-md q-pa-md" style="border-radius: 28px;"
@@ -45,9 +46,13 @@
 </template>
 <script>
 import classictabs from './tabs/classictabs.vue'
+import { mapGetters } from 'vuex'
 export default {
   name: 'menutype0',
   components: { classictabs },
+  computed: {
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu'])
+  },
   props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede']
 }
 </script>

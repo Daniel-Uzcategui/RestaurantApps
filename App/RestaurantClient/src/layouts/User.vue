@@ -4,10 +4,10 @@
     :class="{ 'blur-layout': blurLayout, 'default-bg-image': typeof pagecfg === 'undefined' || typeof pagecfg.class === 'undefined' ? true : false, [pagecfg.class]: [pagecfg.class] }"
     view="hhh LpR fFf">
      <q-header elevated
- class="bg-primary" style="z-index: 2" v-if="$q.screen.gt.sm && mobileGreatView && !newGreatView">
+ class="bg-primary" style="z-index: 2" v-if="$q.screen.gt.sm && mobileGreatView == 1">
        <q-toolbar>
           <q-avatar size="80px">
-            <img :src="getLogo">
+            <img :src="getLogo['128x128']">
           </q-avatar>
           <q-toolbar-title>{{ManiName}}</q-toolbar-title>
           <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
@@ -36,11 +36,11 @@
       </q-tabs>
       <svg class="waves" viewBox="0 0 1920 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path :fill="primary" d="M 0 0 C 78.5 0 78.5 46 157 46 L 157 46 L 157 0 L 0 0 Z" stroke-width="0"></path> <path :fill="primary" d="M 156 46 C 264.5 46 264.5 20 373 20 L 373 20 L 373 0 L 156 0 Z" stroke-width="0"></path> <path :fill="primary" d="M 372 20 C 459.5 20 459.5 37 547 37 L 547 37 L 547 0 L 372 0 Z" stroke-width="0"></path><path :fill="primary" d="M 546 37 C 647 37 647 3 748 3 L 748 3 L 748 0 L 546 0 Z" stroke-width="0"></path><path :fill="primary" d="M 747 3 C 845 3 845 44 943 44 L 943 44 L 943 0 L 747 0 Z" stroke-width="0"></path><path :fill="primary" d="M 942 44 C 1026.5 44 1026.5 20 1111 20 L 1111 20 L 1111 0 L 942 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1110 20 C 1153 20 1153 34 1196 34 L 1196 34 L 1196 0 L 1110 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1195 34 C 1260 34 1260 18 1325 18 L 1325 18 L 1325 0 L 1195 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1324 18 C 1403.5 18 1403.5 42 1483 42 L 1483 42 L 1483 0 L 1324 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1482 42 C 1527.5 42 1527.5 19 1573 19 L 1573 19 L 1573 0 L 1482 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1572 19 C 1640 19 1640 39 1708 39 L 1708 39 L 1708 0 L 1572 0 Z" stroke-width="0"></path><path :fill="primary" d="M 1707 39 C 1813.5 39 1813.5 0 1920 0 L 1920 0 L 1920 0 L 1707 0 Z" stroke-width="0"></path></svg>
      </q-header>
-      <Headersearch v-if="newGreatView"></Headersearch>
-     <Footertoolbar v-if="mobileGreatView || newGreatView" class="mobile-only">
+      <Headersearch v-if="mobileGreatView === 2"></Headersearch>
+     <Footertoolbar v-if="mobileGreatView" class="mobile-only">
 
      </Footertoolbar>
-         <q-toolbar v-show="!mobileGreatView && !newGreatView" class="absolute-top logocont" >
+         <q-toolbar v-show="!mobileGreatView" class="absolute-top logocont" >
            <div class="relative-position full-width">
                 <q-btn flat
                 v-if="!leftDrawerOpen"
@@ -76,7 +76,7 @@
          <div class="bg-grey-4">
            <div class="q-pl-xl q-pt-md">
            <q-avatar size="80px">
-              <img :src="getLogo">
+              <img :src="getLogo['128x128']">
             </q-avatar>
            </div>
          </div>
@@ -143,7 +143,7 @@
     <q-dialog v-model="promptInstall" class="bg-transparent">
       <q-card class="q-cardGlass" style="max-width: 320px" >
         <q-card-section class="column items-center bg-grey-3">
-          <q-img width="128px" height="128px" :src="getLogo" />
+          <q-img width="128px" height="128px" :src="getLogo['128x128']" />
         </q-card-section>
         <q-card-section class="column bg-white items-center">
           <p class="text-h4 text-bold">Instala {{metamani.title}}</p>
@@ -195,11 +195,8 @@ export default {
     Headersearch
   },
   computed: {
-    getLogo () {
-      return this.meta?.link?.['256x256']?.href || 'favicon.ico'
-    },
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp', 'metamani']),
+    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp', 'metamani', 'mobileGreatView', 'getLogo']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
@@ -237,20 +234,6 @@ export default {
         return this.themecfg.current
       } else {
         return 'ClassicLight'
-      }
-    },
-    mobileGreatView () {
-      if (this.themecfg && typeof this.themecfg.mobile !== 'undefined') {
-        return this.themecfg.mobile
-      } else {
-        return false
-      }
-    },
-    newGreatView () {
-      if (this.themecfg && typeof this.themecfg.mobile2 !== 'undefined') {
-        return this.themecfg.mobile2
-      } else {
-        return false
       }
     },
     ManiName () {

@@ -2,7 +2,15 @@
   <div class="capitalize">
     <q-separator />
     <classictabs
+    v-if="mobileGreatView == 2"
     class=" text-bold desktop-only"
+    :selectedCat="selectedCat"
+    :filtercat="filtercat"
+    @tabs="(e) => $emit('tabs', e)"
+     />
+     <classictabs2
+    v-else
+    class="desktop-only"
     :selectedCat="selectedCat"
     :filtercat="filtercat"
     @tabs="(e) => $emit('tabs', e)"
@@ -18,19 +26,26 @@
          <div class="bg-grey-4">
            <div class="q-pl-xl q-pt-md">
            <q-avatar size="80px">
-              <img :src="this.metamani && this.metamani.link && this.metamani.link['256x256'] ? this.metamani.link['256x256'].href : 'favicon.ico'">
+              <img :src="getLogo['256x256']">
             </q-avatar>
            </div>
          </div>
          <classictabs
+          v-if="mobileGreatView == 2"
           class="text-bold"
           :selectedCat="selectedCat"
           :filtercat="filtercat"
           @tabs="(e) => {$emit('tabs', e); leftDrawerCatOpen = !leftDrawerCatOpen}"
           />
+          <classictabs2
+            v-else
+            :selectedCat="selectedCat"
+            :filtercat="filtercat"
+            @tabs="(e) => $emit('tabs', e)"
+            />
      </q-drawer>
             <div>
-              <q-img :height="$q.platform.mobile ? '150px' : 'auto'" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FSerCAZa.jpg?alt=media&token=730e872d-3596-4243-96d9-dcfe281c2678"
+              <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
               />
                <div class="row justify-around">
                   <q-intersection
@@ -97,12 +112,13 @@
 </template>
 <script>
 import classictabs from './tabcolumn/classictabscolumn.vue'
+import classictabs2 from './tabs/classictabs.vue'
 import { mapActions, mapGetters } from 'vuex'
 export default {
-  components: { classictabs },
+  components: { classictabs, classictabs2 },
   name: 'menutype0',
   computed: {
-    ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest']),
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu', 'getLogo']),
     metamani () {
       let e = this.manifest
       return {

@@ -4,7 +4,7 @@
       class="row bg-primary q-ma-none q-pa-none"
       >
       <div class="col-2 col-sm-2 col-xs-12">
-        <q-img contain :height="$q.screen.lt.md ? '128px' : 'auto'" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2Fmarketdecamino%2FLogo%20caminoMARKET%20SIN%20FONDO.png?alt=media&token=0ff71189-a628-47d1-82c4-94645743c7e6" />
+        <q-img contain :height="$q.screen.lt.md ? '128px' : '150px'" :src="getLogo['192x192']" />
       </div>
       <div class=" col-md-8 col-sm-8 col-xs-12 row q-pa-md">
         <q-input
@@ -27,7 +27,7 @@ import { mapActions, mapGetters } from 'vuex'
 import Navtabs from './navtabs.vue'
 export default {
   computed: {
-    ...mapGetters('config', ['searchBarState']),
+    ...mapGetters('config', ['searchBarState', 'getLogo']),
     searchBar: {
       get () {
         return this.searchBarState

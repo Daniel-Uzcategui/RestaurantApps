@@ -60,21 +60,25 @@
             Dinámico permite a tu cliente seleccionar el tema que más guste, Fijo solo permite cambiar entre vista de lista en móvil y el tema seleccionado
           </p>
           <div class="q-pa-none col-12  row justify-between">
-          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FHorizontal312833?alt=media&token=dbf36c60-d2fb-439f-848a-922bf6d6390a" />
           <q-radio v-model="displayType" :val="1" :size="$q.screen.name" color="white" label="Horizontal" />
           </div>
-          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
           <q-img @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FVertical352387?alt=media&token=1e52290d-df5f-4e11-9cdf-2c7858b56c2a" />
           <q-radio v-model="displayType" :val="0" :size="$q.screen.name" color="white" label="Vertical" />
           </div>
-          <div v-show="photoClick === 2 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 2 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
           <q-img @click="photoClick === 2 ? photoClick = 99 : photoClick = 2" :width="photoClick === 2 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FDenso236599?alt=media&token=ed301d10-49a8-4392-adc3-1e6b9b3a5dbe" />
           <q-radio v-model="displayType" :val="2" color="white" :size="$q.screen.name" label="Denso" />
           </div>
-          <div v-show="photoClick === 3 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
-          <q-img @click="photoClick === 3 ? photoClick = 99 : photoClick = 3" :width="photoClick === 3 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2FPhotos%2Flocalhost_8081_(Moto%20G4)%20(2)%20(1).png?alt=media&token=2463f978-e518-401e-879a-fc56c5ca366f" />
+          <div v-show="photoClick === 3 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
+          <q-img @click="photoClick === 3 ? photoClick = 99 : photoClick = 3" :width="photoClick === 3 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2FPhotos%2Fbigfoto.png?alt=media&token=c17ccb6a-cd4e-41aa-90fa-8af4bba497f4" />
           <q-radio v-model="displayType" :val="3" color="white" :size="$q.screen.name" label="BigPhoto" />
+          </div>
+          <div v-show="photoClick === 4 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
+          <q-img @click="photoClick === 4 ? photoClick = 99 : photoClick = 4" :width="photoClick === 4 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2FPhotos%2Fbigfoto2.png?alt=media&token=779dc9f7-8dc9-44ab-adca-2a3361f38140" />
+          <q-radio v-model="displayType" :val="4" color="white" :size="$q.screen.name" label="BigPhoto2" />
           </div>
           </div>
         </q-carousel-slide>
@@ -85,29 +89,37 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="themes" class="q-pa-none  row justify-between">
-          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fcomputer2515215?alt=media&token=5af2a290-beca-4ea8-af1f-03dc8fef5050" />
           <q-img style="max-width: 500px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fmobile252217?alt=media&token=e3c98a81-79e6-4710-bb0d-d23931756a22" />
-          <q-radio v-model="mobile" :val="true" :size="$q.screen.name" color="white" label="Tabular" />
+          <q-radio v-model="mobile" :val="1" :size="$q.screen.name" color="white" label="Tabular" />
           </div>
-          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 2 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
+          <q-img style="max-width: 500px" @click="photoClick === 2 ? photoClick = 99 : photoClick = 2" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2FPhotos%2Fcomputermin508833.png?alt=media&token=0a20e387-5eaa-43a7-a481-0b2ba43add9a" />
+          <q-img style="max-width: 500px" @click="photoClick === 2 ? photoClick = 99 : photoClick = 2" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/Editor%2FPhotos%2Flocalhost_8081_(Moto%20G4)%20(2)%20(1).png?alt=media&token=55de74a3-e157-4c30-8c5c-54f8901cff36" />
+          <q-radio v-model="mobile" :val="2" :size="$q.screen.name" color="white" label="Tabular2" />
+          </div>
+          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
           <q-img @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2Fcomputermin508833?alt=media&token=25537c0f-531d-447f-acc5-72fac4167abb" />
           <q-img @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FClassicLight352387?alt=media&token=3550abec-af61-422b-88e0-8cf0a140bdc8" />
-          <q-radio v-model="mobile" :val="false" :size="$q.screen.name" color="white" label="Minimalista" />
+          <q-radio v-model="mobile" :val="0" :size="$q.screen.name" color="white" label="Minimalista" />
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="themes2" class="q-pa-none  row justify-between">
-          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 1 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
             <q-img style="max-width: 200px" @click="photoClick === 1 ? photoClick = 99 : photoClick = 1" :width="photoClick === 1 && $q.screen.lt.sm ? '100vw' : null" src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture19294?alt=media&token=605a2fb5-5090-4e00-8bd1-956e741b7f30" />
           <q-radio v-model="mobile2" :val="true" :size="$q.screen.name" color="white" label="Con Iconos" />
           </div>
-          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-3">
+          <div v-show="photoClick === 0 || photoClick === 99 || $q.screen.gt.xs" :class="photoClick === 99 || $q.screen.gt.xs ? 'q-pa-md' : ''" class="column items-center col-xs-6 col-sm-4 col-md-2">
             <q-img style="max-width: 200px" @click="photoClick === 0 ? photoClick = 99 : photoClick = 0" :width="photoClick === 0 && $q.screen.lt.sm ? '100vw' : null"  src="https://firebasestorage.googleapis.com/v0/b/restaurant-testnet.appspot.com/o/Editor%2FPhotos%2FCapture27555?alt=media&token=ae998ffd-2970-4271-8719-5a489aeae8e0" />
           <q-radio v-model="mobile2" :val="false" :size="$q.screen.name" color="white" label="Sin Iconos" />
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="savemani" class="column">
-          <changeBackground v-if="slide === 'savemani'" @saved="slide = 'savepage'"/>
+          <changeBackground v-if="slide === 'savemani'" @saved="slide = 'savebanner'"/>
+        </q-carousel-slide>
+        <q-carousel-slide name="savebanner" class="column">
+          <ChangeBanner v-if="slide === 'savebanner'" @saved="slide = 'savepage'"/>
         </q-carousel-slide>
         <q-carousel-slide name="savepage" class="column">
           <change-page-color v-if="slide === 'savepage'" @saved="slide = 'themefin'"/>
@@ -128,10 +140,12 @@
 import { mapGetters, mapActions } from 'vuex'
 import changeBackground from '../../components/editor/changeBackground.vue'
 import changePageColor from '../../components/editor/changePageColors.vue'
+import ChangeBanner from '../../components/editor/changeBanner.vue'
 export default {
   components: {
     changeBackground,
-    changePageColor
+    changePageColor,
+    ChangeBanner
   },
   computed: {
     ...mapGetters('order', ['orders']),

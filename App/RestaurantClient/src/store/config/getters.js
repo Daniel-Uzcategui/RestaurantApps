@@ -10,6 +10,45 @@ export const manifest = ({ manifest }) => manifest
 export const leftDrawerOp = ({ leftDrawerOp }) => leftDrawerOp
 export const leftDrawerCatOp = ({ leftDrawerCatOp }) => leftDrawerCatOp
 export const searchBarState = ({ searchBarState }) => searchBarState
+export const getLogo = ({ manifest }) => {
+  let e = manifest
+  let obj = {
+    favicon: 'icons/icon-128x128.png',
+    '128x128': 'icons/icon-192x192.png',
+    '192x192': 'icons/icon-256x256.png',
+    '256x256': 'icons/icon-384x384.png',
+    '512x512': 'icons/icon-512x512.png'
+  }
+  if (e?.icons) {
+    obj = {
+      favicon: e.icons.favicon,
+      '128x128': e.icons.icon128x128,
+      '192x192': e.icons.icon192x192,
+      '256x256': e.icons.icon256x256,
+      '512x512': e.icons.icon512x512
+    }
+  }
+  return obj
+}
+export const mobileGreatView = ({ themecfg }) => {
+  if (themecfg && typeof themecfg.mobile !== 'undefined') {
+    if (themecfg.mobile === true) {
+      return 1
+    }
+    return themecfg.mobile
+  } else {
+    return false
+  }
+}
+export const bannerMenu = ({ manifest }) => {
+  let e = manifest
+  let bannerimage = {}
+  if (typeof e !== 'undefined' && e !== null && typeof e.bannerimage !== 'undefined' && e.bannerimage !== null) {
+    bannerimage.desktopbanner = e.bannerimage.desktopbanner
+    bannerimage.mobilebanner = e.bannerimage.mobilebanner
+  }
+  return bannerimage
+}
 export const metamani = ({ manifest }) => {
   let e = manifest
   let obj = {}

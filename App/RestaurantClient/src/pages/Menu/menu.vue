@@ -2,10 +2,10 @@
    <div @click="click()" :class="global_class" :style="global_style">
       <!-- <q-btn label="activar rewards" @click="viewRewards = !viewRewards"></q-btn> -->
 
-      <q-card v-if="displayType !== 5" flat class="menu-div2 q-cardGlass q-mt-xl q-pb-md" >
+      <q-card flat :class="mobileGreatView !== 2 ? 'menu-div2 q-cardGlass q-mt-xl q-pb-md' : ''" >
       <q-card-section
       class="column items-center"
-          v-if="!(typeof this.sede === 'undefined' || this.sede === null)"
+          v-if="!(typeof this.sede === 'undefined' || this.sede === null) && mobileGreatView !== 2"
       >
         <q-input filled
           v-model="searchBar" @input="search" rounded outlined label="Buscar" >
@@ -16,6 +16,7 @@
       </q-card-section>
           <!-- :rewards="rewards" -->
          <menu-filter
+          v-if="mobileGreatView !== 2"
           :selectedFilter="selectedFilter"
           :menucfg="menucfg"
           :sede="sede"
@@ -33,11 +34,12 @@
               size="md"
             />
          </q-card-section>
-         <q-card-section class="wrapel q-pa-none q-ma-none" v-if="!promo">
-           <div
-               v-if="displayType == 1"
+         <q-card-section class="wrapel q-pa-none q-ma-none">
+           <div v-if="displayType == 1"
                class="wrapel "
                >
+              <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
+              />
                <div class="wrapel" v-show="filteredMenuCat(tabs.id).length" :class="$q.dark.isActive ? 'background-color q-cardGlass' : 'background-color'" content-class="wrapel"  v-for="tabs in filtercat"
                   :key="tabs.id">
                   <div :class="$q.screen.gt.sm ? 'text-left text-h5 q-pl-xl' : 'text-center'" class="header-tabs text-bold">{{tabs.name}}</div>
@@ -189,17 +191,8 @@
             </div>
             </div>
             </div>
-         </q-card-section>
-         <!-- Seccion de promociones -->
-      </q-card>
-      <q-card v-else flat class="menu-div2 q-ma-none q-pa-none q-pb-md" >
-         <q-card-section class="row justify-center" v-if="menuLoading">
-           <q-spinner
-              color="primary"
-              size="md"
-            />
-         </q-card-section>
-              <menutype-5
+            <div v-if="displayType == 4">
+            <menutype-5
               @tabs="(e) => {selectedCat=e; search()}"
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
@@ -208,6 +201,9 @@
               :filtercat="filtercat"
               :filteredMenuCat="filteredMenuCat(selectedCat ? selectedCat.id : '')"
               @productSelect="(e) => {dgbg = {'background-color':selectedCat.color};checkAvail(e.id, e.prodType)[0] ? (displayPermit(), getMenuItem(e.id, 0)) : false}" />
+            </div>
+         </q-card-section>
+         <!-- Seccion de promociones -->
       </q-card>
       <q-dialog-menu
       style="z-index: 9999999"
@@ -266,7 +262,7 @@ export default {
   computed: {
     ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType', 'searchBarState']),
+    ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType', 'searchBarState', 'mobileGreatView', 'bannerMenu']),
     searchBar: {
       get () {
         return this.searchBarState
@@ -527,7 +523,7 @@ export default {
         }
         return
       }
-      if (this.displayType === 3) {
+      if (this.displayType === 4) {
         this.displayType = 0
         this.selectedCat = this.filtercat[0]
       } else {
@@ -584,7 +580,11 @@ export default {
       let canShowPrice = this.displayPermitValue()
       let filtered = []
       const { viewRewards, rewards } = this
+      let searchBar = this.searchBar
       function filter (x) {
+        if (searchBar !== '') {
+          return true
+        }
         if (viewRewards) {
           return x && x.categoria && x.categoria[e] && rewards[0].products.includes(x.id)
         }

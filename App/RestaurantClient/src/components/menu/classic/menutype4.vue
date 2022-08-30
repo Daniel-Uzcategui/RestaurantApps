@@ -7,7 +7,8 @@
      />
             <div>
                <div class="row justify-around">
-
+                <!-- <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
+                              /> -->
                   <q-card flat bordered class="column q-ma-md items-center justify-between cardtype4"
                      v-for="item in filteredMenuCat" :key="item.id" :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''">
                         <div :style="{'background-color':selectedCat ? selectedCat.color : ''}" >
@@ -50,8 +51,12 @@
 </template>
 <script>
 import classictabs from './tabs/classictabs.vue'
+import { mapGetters } from 'vuex'
 export default {
   components: { classictabs },
+  computed: {
+    ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu'])
+  },
   name: 'menutype0',
   props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede']
 }
