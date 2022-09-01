@@ -33,7 +33,7 @@
            <q-td key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id)">
             <div class=" column items-center" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm"  color="secondary" icon="insert_photo" font-size="50px" size="180px" text-color="white"></q-avatar></div>
+                <q-avatar round class="q-mb-sm"  color="secondary" icon="insert_photo" font-size="50px" size="180px" ></q-avatar></div>
             <div class="column items-center" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id)">
                     <q-img :src="props.row.photo"></q-img>
@@ -172,7 +172,7 @@
           <q-item class="column items-start" key="photo" :props="props">
             <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo, props.row)">
-                <q-avatar round class="q-mb-sm" icon="fas fa-hamburger" font-size="50px" size="180px" text-color="white"></q-avatar></div>
+                <q-avatar round class="q-mb-sm" icon="fas fa-hamburger" font-size="50px" size="180px" ></q-avatar></div>
             <div class="column items-start" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id, props.row)">
                     <q-img :src="props.row.photo"></q-img>
@@ -298,8 +298,9 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm" reveal>
-    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+    <q-footer v-if="$q.screen.lt.md" style="z-index: 9999" reveal>
+    <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps >
+      <routetabmenu></routetabmenu>
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
         <q-tab flat color="white" push no-caps label="Eliminar" icon="delete_outline" @click="delrow"/>
    </q-tabs>
@@ -327,6 +328,7 @@ const visibleColumns = ['photo', 'desc', 'descripcion', 'price', 'estatus', 'gro
 import { QUploaderBase } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
 import BusinessHours from 'vue-business-hours'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 export default {
   mixins: [ QUploaderBase ],
   components: {
@@ -335,6 +337,8 @@ export default {
     BusinessHours
   },
   computed: {
+
+    Routetabmenu,
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'promos', 'groupComp']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),

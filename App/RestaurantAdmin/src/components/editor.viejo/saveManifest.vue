@@ -12,7 +12,7 @@
          <q-item class="column items-center" key="photo">
             <div class="text-center" @click="photoUpload = true">
             <div class=" column items-start" v-if="appicons.icon512x512 === ''">
-                <q-avatar rounded class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" text-color="white"></q-avatar></div>
+                <q-avatar rounded class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" ></q-avatar></div>
             <div class="column items-start" v-else>
                 <q-avatar rounded class="q-mb-sm shadow-5" size="180px" @click="photoUpload = true">
                     <q-img :src="appicons.icon512x512"></q-img>

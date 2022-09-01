@@ -1,38 +1,38 @@
 <template>
-  <q-list>
-  <q-item
+  <q-card
+    flat
     v-if="!tree.length"
     clickable
     tag="a"
     :href="link"
     @click="handler()"
+    class="text-center bg-transparent"
   >
-    <q-item-section
+    <q-card-section
       v-if="icon"
       side
       style="color: inherit"
     >
-      <q-icon :color="color" :name="icon"/>
-    </q-item-section>
-    <q-item-section>
+      <q-icon :size="size" :color="color" v-ripple :name="icon"/>
+    </q-card-section>
+    <q-card-section class="q-pa-none">
       <q-item-label>{{ title }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
-    </q-item-section>
-  </q-item>
+    </q-card-section>
+  </q-card>
     <navtree v-else
       :icon="icon"
+      :size="size"
       :title="title"
       :tree="tree"
       :color="color"
     />
-  <q-separator v-if="separator"/>
-   </q-list>
  </template>
 
 <script>
-import navtree from './navtree'
+import navtree from './navtree2'
 export default {
   name: 'EssentialLink',
   components: {
@@ -51,7 +51,7 @@ export default {
       type: String,
       default: ''
     },
-    color: {
+    size: {
       type: String,
       default: ''
     },
@@ -59,7 +59,10 @@ export default {
       type: String,
       default: '#'
     },
-
+    color: {
+      type: String,
+      default: 'red'
+    },
     icon: {
       type: String,
       default: ''

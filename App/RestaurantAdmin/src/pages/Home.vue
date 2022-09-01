@@ -156,6 +156,7 @@ export default {
   },
   methods: {
     totalOrders (value) {
+      console.log(this.ordersClient, 'ordsd')
       var totalOrder = this.ordersClient.filter(obj => {
         return obj.status === value
       })

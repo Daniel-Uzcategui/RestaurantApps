@@ -17,52 +17,50 @@
       no-data-label="No se encontraron registros"
     >
     <template v-slot:top>
-      <p class="text-h5 text-bold q-ma-md">
-      {{menucfg.dispName ? menucfg.dispName : 'Productos'}}
-      <q-btn flat icon="edit" @click="promptNombre()" />
-      </p>
-      <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
-      <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning"
-                :value="menucfg.iconsactive ? true : false" label="Activar iconos" left-label />
-      <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning"
-                :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
-      <div class="q-pa-md">
-      <q-select options-selected-class="text-blue" filled rounded dense
-        v-model="sede"
-        :options="locList"
-        style="width: 250px"
-        emit-value
-        map-options
-        stack-label
-        label="Seleccionar Sede"
-      />
-      </div>
-        <q-btn-group flat push v-if="sede !== null && $q.screen.gt.xs">
-          <q-btn push no-caps label="Agregar" color="blue" icon="add" @click="addrow"/>
-          <q-btn push color="blue" no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
-          <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
-          <q-btn push color="blue" icon="visibility" type="a" :href="'https://' + amb + '.chopzi.com/#/menu/index'" no-caps label="Vista en Cliente" target="_blank" />
-            <!-- <q-btn push no-caps label="Producto X Sede" color="blue" v-if="sede !== null" @click="SedeProducto=true"/> -->
-            <q-btn push no-caps :glossy="listView" label="Vista Listado" color="blue" v-if="sede !== null" @click="listView=!listView"/>
-        </q-btn-group>
-        <q-input filled dense  v-if="sede !== null" class="q-ma-md" style="min-width: 250px" v-model="searchBar" rounded outlined label="Buscar" >
-          <template v-slot:prepend>
-          <q-icon name="fas fa-search"/>
-        </template>
-        </q-input>
-        <q-select options-selected-class="text-blue" filled rounded dense
-         v-if="sede !== null"
-          v-model="category"
-          clearable
-          :options="categorias"
-          style="width: 250px"
-          :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-          :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
+      <div class="row justify-center full-width">
+        <p class="text-h5 text-bold col-2 col-md-2  self-end col-sm-6 col-xs-12 q-pa-sm" >
+        {{menucfg.dispName ? menucfg.dispName : 'Productos'}}
+        <q-btn flat icon="edit" @click="promptNombre()" />
+        </p>
+        <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.iconsactive, 'menu', 'iconsactive')" color="warning" :value="menucfg.iconsactive ? true : false" label="Activar iconos" left-label />
+        <q-toggle v-if="quick && false" @input="(e) => saved3(e, menucfg.menuactive, 'menu', 'menuactive')" color="warning" :value="menucfg.menuactive ? true : false" label="Mostrar en la App" left-label />
+        <q-select options-selected-class="text-blue"
+          class="col-2 col-sm-6 col-xs-12 q-pa-sm col-md-2"
+          v-model="sede"
+          :options="locList"
           emit-value
           map-options
-          stack-label
-          label="Filtrar por Categoría"
-         />
+          label="Seleccionar Sede"
+        />
+        <q-input class="col-2 col-md-2 col-sm-6 col-xs-12 q-pa-sm"  v-if="sede !== null" v-model="searchBar" outlined label="Buscar" >
+          <template v-slot:prepend>
+            <q-icon name="fas fa-search"/>
+          </template>
+          </q-input>
+          <q-select class="col-2 col-md-2 col-sm-6 col-xs-12 q-pa-sm" options-selected-class="text-blue"
+          v-if="sede !== null"
+            v-model="category"
+            clearable
+            :options="categorias"
+            :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+            :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
+            emit-value
+            map-options
+            stack-label
+            label="Filtrar por Categoría"
+            />
+            <div class="col-12 row justify-center q-mt-md">
+              <q-btn-group rounded v-if="sede !== null && $q.screen.gt.xs">
+                <q-btn push no-caps label="Agregar" color="blue" icon="add" @click="addrow"/>
+                <q-btn push class="text-bold" v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded  no-caps color="green" icon="save"/>
+                <q-btn push color="blue" no-caps label="Eliminar" icon="delete_outline" @click="softDelete"/>
+                <!-- <q-btn flat icon="visibility" no-caps label="Vista en Cliente" @click="preview = !preview" /> -->
+                <q-btn push color="blue" icon="visibility" @click="toChopzi" no-caps label="Vista en Cliente"/>
+                  <!-- <q-btn push no-caps label="Producto X Sede" color="blue" v-if="sede !== null" @click="SedeProducto=true"/> -->
+                  <q-btn push no-caps :glossy="listView" icon="list" label="Vista Listado" color="blue" v-if="sede !== null" @click="listView=!listView"/>
+              </q-btn-group>
+            </div>
+          </div>
 
       </template>
     <template v-slot:body="props">
@@ -121,7 +119,7 @@
                   <div class="row justify-between no-wrap full-width">
                   <div style="min-width: 50px" class="text-center col-2 self-center" @click.stop="showPhotoUpload(props.row.id, props.row)">
                   <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
-                      <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="38px" size="50px" text-color="white"></q-avatar></div>
+                      <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="38px" size="50px" ></q-avatar></div>
                   <div class="column items-start" v-else>
                       <q-avatar round class="q-mb-sm shadow-5" size="50px" @click.stop="showPhotoUpload(props.row.id, props.row)">
                           <q-img :src="props.row.photosmall ? props.row.photosmall : props.row.photo"></q-img>
@@ -154,7 +152,7 @@
             <p class="text-bold col-6">Foto primaria</p>
             <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
             <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" text-color="white"></q-avatar></div>
+                <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" ></q-avatar></div>
             <div class="column items-start" v-else>
                 <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id, props.row)">
                     <q-img :src="props.row.photo"></q-img>
@@ -237,7 +235,7 @@
               <q-list>
                <q-item v-for="(item, index) in props.row.groupComp" :key="index">
                  <div>
-                    <q-chip class="glossy" removable clickable @click="addoptView = true; viewId = getCompVal(item, 'group_id')" @remove="(e) => saved(delCompVal(props.row.groupComp, item), props.row.groupComp, props.row.id, 'groupComp')" color="green" text-color="white" icon="filter_frames">
+                    <q-chip class="glossy" removable clickable @click="addoptView = true; viewId = getCompVal(item, 'group_id')" @remove="(e) => saved(delCompVal(props.row.groupComp, item), props.row.groupComp, props.row.id, 'groupComp')" color="green"  icon="filter_frames">
                        {{getCompVal(item, 'name')}}
                     </q-chip>
                  </div>
@@ -510,12 +508,12 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
-    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
-      <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
-      <q-tab flat icon="label" text-color="white" no-caps @click="promptNombre()" />
-      <q-tab flat icon="visibility" text-color="white" no-caps @click="preview = !preview" />
-      <q-tab flat push no-caps icon="add" @click="addrow"/>
+    <q-footer v-if="$q.screen.lt.md" style="z-index: 99999" reveal>
+    <q-tabs class="bg-primary" mobile-arrows indicator-color="transparent" no-caps>
+      <Routetabmenu/>
+      <q-tab flat push no-caps label="Borarr" icon="delete_outline" @click="softDelete"/>
+      <q-tab flat icon="visibility" label="Ver en Cliente" @click="toChopzi()" no-caps />
+      <q-tab flat push no-caps icon="add" label="Agregar" @click="addrow"/>
     </q-tabs>
   </q-footer>
   </div>
@@ -528,6 +526,7 @@ import Croppa from 'vue-croppa'
 import imageCompression from 'browser-image-compression'
 import 'vue-croppa/dist/vue-croppa.css'
 import productosede from './productosede.vue'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 
 // import ClientMenu from '../editor/components/client/pages/Menu/menu'
 export default {
@@ -539,7 +538,8 @@ export default {
     productosede,
     'croppa': Croppa.component,
     AddCat: () => import('./Categorias'),
-    AddOpt: () => import('./gruposOpt')
+    AddOpt: () => import('./gruposOpt'),
+    Routetabmenu
   },
   props: {
     quick: {
@@ -552,6 +552,15 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['configs', 'version']),
+    sede: {
+      get () {
+        console.log(this.locList[0])
+        return this.sedecomp || this.locList?.[0]?.value
+      },
+      set (e) {
+        this.sedecomp = e
+      }
+    },
     prodCategory: {
       get () {
         let cats = this.selectedProdCat || {}
@@ -686,7 +695,7 @@ export default {
       searchBar: '',
       menuTemp: [],
       amb: localStorage.getItem('amb'),
-      sede: null,
+      sedecomp: undefined,
       temp1: {},
       selected: [],
       popupeditorData: '',
@@ -715,6 +724,9 @@ export default {
     // console.log({ cat: this.categorias, gr: this.groupComp })
   },
   methods: {
+    toChopzi () {
+      window.open('https://' + this.amb + '.chopzi.com/#/menu/index', '_blank').focus()
+    },
     conss (e, y) {
       console.log(e, y)
     },

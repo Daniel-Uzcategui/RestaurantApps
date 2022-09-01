@@ -18,24 +18,22 @@ const routes = [{
   path: '/',
   component: () =>
             import ('layouts/User.vue'),
-  children: [{
-    path: 'home',
-    name: 'Home',
-    component: () =>
-                    import ('pages/Home.vue'),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: 'quick',
-    name: 'quick',
-    component: () =>
+  children: [
+    {
+      path: 'home',
+      name: 'Home',
+      component: () =>
+                      import ('pages/Home.vue')
+    },
+    {
+      path: 'quick',
+      name: 'quick',
+      component: () =>
                     import ('pages/quickSetup/quick.vue'),
-    meta: {
-      requiresAuth: true
+      meta: {
+        requiresAuth: true
+      }
     }
-  }
   ]
 },
 {

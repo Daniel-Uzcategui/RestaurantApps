@@ -139,10 +139,11 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm && !isDiag" reveal>
-   <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
-     <q-tab flat  push no-caps icon="add" @click="addrow"/>
-      <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
+    <q-footer v-if="$q.screen.lt.md && !isDiag" style="z-index:9999" reveal>
+   <q-tabs  class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps >
+    <routetabmenu></routetabmenu>
+     <q-tab flat  push no-caps label="Agregar" stack icon="add" @click="addrow"/>
+      <q-tab flat push no-caps label="Borrar" stack icon="delete_outline" @click="softDelete"/>
    </q-tabs>
  </q-footer>
  <q-dialog v-model="editCategory">
@@ -212,9 +213,10 @@ import { mapActions, mapGetters } from 'vuex'
 import subcatlist from '../../components/menu/categorias/subcatlist.vue'
 import Vue2OrgTree from 'vue2-org-tree'
 import Contextmenucat from '../../components/menu/categorias/contextmenucat.vue'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { subcatlist, Vue2OrgTree, Contextmenucat },
+  components: { subcatlist, Vue2OrgTree, Contextmenucat, Routetabmenu },
   computed: {
     ...mapGetters('menu', ['categorias']),
     catHolderCopy () {

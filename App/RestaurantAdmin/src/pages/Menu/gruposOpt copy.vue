@@ -145,7 +145,7 @@
              <q-list>
                <q-item v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
                  <div>
-                    <q-chip removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green" text-color="white" icon="filter_frames">
+                    <q-chip removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green"  icon="filter_frames">
                        {{item.name}}
                     </q-chip>
                  </div>
@@ -167,7 +167,7 @@
                 <q-list>
                <q-item v-for="(item, index) in findConfsonGroup(props.row.id)" :key="index">
                  <div>
-                    <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red" text-color="white" icon="tune">
+                    <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red"  icon="tune">
                        {{item.name}}
                     </q-chip>
                  </div>
@@ -204,8 +204,9 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm && !isDiag" reveal>
-    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+    <q-footer v-if="$q.screen.lt.md && !isDiag" style="z-index: 9999" reveal>
+    <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps >
+      <routetabmenu></routetabmenu>
       <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
           <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
    </q-tabs>
@@ -223,13 +224,15 @@ const columns = [
 ]
 
 import { mapActions, mapGetters } from 'vuex'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 export default {
   computed: {
     ...mapGetters('menu', ['itemPlain', 'itemGroup', 'groupComp'])
   },
   components: {
     opciones: () => import('./options'),
-    opcionesconf: () => import('./optionsConf')
+    opcionesconf: () => import('./optionsConf'),
+    Routetabmenu
   },
   props: {
     isDiag: {

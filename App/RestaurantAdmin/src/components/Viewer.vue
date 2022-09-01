@@ -5,7 +5,7 @@
             class="viewer" ref="viewer"
     >
       <template slot-scope="scope">
-        <q-avatar style="height: 300px; width: 300px" color="blue" text-color="white" rounded>
+        <q-avatar style="height: 300px; width: 300px" color="blue"  rounded>
         <img  @click="show" style="height: 300px; width: 300px" v-for="src in scope.images" :src="src" :key="src">
         </q-avatar>
       </template>

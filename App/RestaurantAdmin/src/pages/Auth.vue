@@ -8,7 +8,7 @@
         <a href="#modules" class="nav-link w-nav-link q-pa-md">Módulos</a>
         <a href="#features" class="nav-link w-nav-link q-pa-md" >Features</a>
       </nav>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 text-white">
         <q-card flat class="bg-transparent">
         <q-card-section :class="{'q-ma-md': $q.screen.gt.xs}" style="max-width: 400px">
           <span class="fontsize-18 text-bold">E-Commerce
@@ -68,8 +68,8 @@
         <div class="text-block-3 q-ma-xl">La empresa podrá gestionar los procesos internos de las órdenes de sus sedes, además, podrá administar sus promociones, catálogo y programa de fidelización.<br></div>
       </q-card>
   </div>
-  <div class="col-12 row justify-center" id="features">
-    <div class="fontsize-32 col-12 text-center q-pa-md">FEATURES</div>
+  <div class="col-12 row justify-center bg-black" id="features">
+    <div class="fontsize-32 col-12 text-center text-white q-pa-md">FEATURES</div>
     <div class="feature-container q-ma-md">
       <img src="https://firebasestorage.googleapis.com/v0/b/chopzi-production.appspot.com/o/chopzi%2FnewWeb%2FIcon-Registro.png?alt=media&token=18d459db-7df0-4ab3-b91e-da74d802c6b3" loading="lazy" width="50" alt="" class="feature-image">
     <div class="text-block-13">registro de órdenes de compra</div>
@@ -215,7 +215,7 @@
           color="primary"
           data-cy="password"
           label="Contraseña"
-          :rules="[val =&gt; !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
+          :rules="[val = !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
           @keyup.enter="onSubmit(); $event.target.blur()"
         >
           <template v-slot:append>

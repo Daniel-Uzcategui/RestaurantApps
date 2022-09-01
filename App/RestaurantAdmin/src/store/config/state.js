@@ -1,6 +1,7 @@
 export default function () {
   return {
     configs2: [],
+    navMenuOpen: false,
     configs: [
       {
         chat: [

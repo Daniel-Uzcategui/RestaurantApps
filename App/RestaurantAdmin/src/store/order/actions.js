@@ -10,9 +10,7 @@ export const bindOrders = firestoreAction(({ bindFirestoreRef }, payload) => {
     console.log('renge')
     return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', payload.start).where('dateIn', '<', payload.end))
   }
-  let hoy = new Date()
-  hoy.setDate(hoy.getDate() - 30)
-  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', hoy))
+  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('dateIn', 'desc').limit(100))
 })
 export const bindOrdersEnvio = firestoreAction(({ bindFirestoreRef }) => {
   return bindFirestoreRef('orderencomienda', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '4').where('encomienda.status', '==', 'enviar'))
@@ -35,9 +33,7 @@ export const reportBindOrders2 = firestoreAction(({ bindFirestoreRef }, payload)
     console.log('renge')
     return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc').where('customer_id', '!=', 'aaaaa').where('dateIn', '>=', payload.start).where('dateIn', '<', payload.end))
   }
-  let hoy = new Date()
-  hoy.setDate(hoy.getDate() - 30)
-  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc').where('customer_id', '!=', 'aaaaa').where('dateIn', '>=', hoy))
+  return bindFirestoreRef('orders', firestore().collection('orders').orderBy('customer_id', 'desc').where('customer_id', '!=', 'aaaaa').limit(100))
 })
 
 export const saveOrder = firestoreAction((state, payload) => {
@@ -88,9 +84,7 @@ export const reportBindOrderscorporativo = firestoreAction(({ bindFirestoreRef }
     console.log('renge')
     return bindFirestoreRef('ordercorporativo', firestore().collection('orders').orderBy('dateIn', 'desc').where('dateIn', '>=', payload.start).where('dateIn', '<', payload.end).where('tipEnvio', '==', '3'))
   }
-  let hoy = new Date()
-  hoy.setDate(hoy.getDate() - 30)
-  return bindFirestoreRef('ordercorporativo', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '3').where('dateIn', '>=', hoy))
+  return bindFirestoreRef('ordercorporativo', firestore().collection('orders').orderBy('dateIn', 'desc').where('tipEnvio', '==', '3').limit(100))
 })
 export const encomienda = async function ({ commit }, payload) {
   commit('order/encomienda', payload, { root: true })

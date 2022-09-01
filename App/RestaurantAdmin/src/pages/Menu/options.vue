@@ -270,8 +270,9 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="$q.screen.lt.sm && !isDiag" reveal>
-    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+    <q-footer style="z-index: 9999" v-if="$q.screen.lt.md && !isDiag" reveal>
+    <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps >
+      <routetabmenu></routetabmenu>
       <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
           <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
    </q-tabs>
@@ -289,7 +290,9 @@ const columns = [
 ]
 
 import { mapActions, mapGetters } from 'vuex'
+import routetabmenu from '../../components/navigation/routetabmenu.vue'
 export default {
+  components: { routetabmenu },
   computed: {
     ...mapGetters('menu', ['itemPlain', 'itemGroup'])
   },

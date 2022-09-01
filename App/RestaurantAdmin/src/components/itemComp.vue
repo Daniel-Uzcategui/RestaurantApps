@@ -107,10 +107,10 @@
                   <div class="text-weight-thin col-6">{{getValueInput(value, component, items)}}</div>
                   <div class="relative-position col-6">
                   <q-btn-group v-if="!item.reward"  style="transform: rotateZ(90deg); height: 20px ; border-radius: 0.5em">
-                    <q-btn @click="sumValueInput(value, component, items, 1)" size="0.4em" class="q-pl-xs" color="blue" icon="fas fa-chevron-left" text-color="white" dense >
+                    <q-btn @click="sumValueInput(value, component, items, 1)" size="0.4em" class="q-pl-xs" color="blue" icon="fas fa-chevron-left"  dense >
                     </q-btn>
                      <div size="0.3em" color="primary" text-color="black" label="│" dense/>
-                    <q-btn @click="sumValueInput(value, component, items, -1)" size="0.4em" class="q-pr-xs" color="blue" icon="fas fa-chevron-right" text-color="white" dense />
+                    <q-btn @click="sumValueInput(value, component, items, -1)" size="0.4em" class="q-pr-xs" color="blue" icon="fas fa-chevron-right"  dense />
                   </q-btn-group>
                   <div style="top: -200%; position: absolute">
                     <q-badge color="red" v-if="item.avail === 0" style="">max</q-badge>

@@ -5,7 +5,7 @@
        <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Agregar Sedes</div>
           <div>
-            <q-btn v-if="!quickAdded" class="header-btn" flat push no-caps label="Guardar" color="blue" @click="agregar" icon="save"/>
+            <q-btn v-if="!quickAdded" class="header-btn" push no-caps label="Guardar" color="blue" @click="agregar" icon="save"/>
             <q-btn v-if="quick" class="header-btn-back" flat push  icon="arrow_back" @click="$router.replace('/localization/index')"/>
           </div>
        </q-card-section>

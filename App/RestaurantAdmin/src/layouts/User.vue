@@ -1,15 +1,7 @@
 <template>
    <q-layout class="main my-font backgroundImage" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
-      <q-header class="bg-primary" v-if="currentUser && $router.history.current.path !== '/editor/index'" elevated>
+      <q-header class="bg-primary" v-if="currentUser" elevated>
          <q-toolbar>
-            <q-btn
-               flat
-               dense
-               round
-               icon="menu"
-               aria-label="Menu"
-               @click="leftDrawerOpen = !leftDrawerOpen"
-               />
             <q-toolbar-title class="text-caption">
                <q-avatar>
                   <img alt="chopZI" src="icons/iconwhite.png" height="326px" width="300px">
@@ -36,19 +28,21 @@
       </q-header>
       <q-drawer
          style="border-top-right-radius 100px"
-         on-layout="hide"
-         v-if="$router.history.current.path !== '/editor/index'"
+         show-if-above
+         bordered
+        :content-class="{'bg-grey-3': !$q.dark.isActive}"
+        :mini="miniState"
+        @mouseover="miniState = false"
+        @mouseout="miniState = true"
          v-model="leftDrawerOpen"
-         overlay
-         behavior="mobile"
          >
             <Nav
-              class="q-ma-xs"
+              class="q-ma-xs text-bold"
                v-for="link in nav"
                :key="link.title"
                v-bind="link"
                />
-        <q-list>
+        <q-list class="text-bold">
         <q-item clickable v-ripple>
         <q-item-section
           side
@@ -71,22 +65,36 @@
         <component :is="themeUser">
          <transition
             name="transitions"
-            enter-active-class="animated slideInUp"
-            leave-active-class="animated slideOutDown"
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
             mode="out-in">
             <router-view @setBlur="setBlur" />
          </transition>
           </component>
       </q-page-container>
+      <q-dialog v-model="navmenuopen">
+      <q-card class="q-cardGlass" flat>
+      <q-card-section>
+        <NavigationMenu/>
+      </q-card-section>
+      </q-card>
+      </q-dialog>
+      <q-footer  v-if="$q.screen.lt.md" >
+      <q-tabs class="bg-primary" mobile-arrows indicator-color="transparent" no-caps >
+        <Routetabmenu/>
+      </q-tabs>
+      </q-footer>
    </q-layout>
 </template>
 
 <script>
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { QSpinnerGears, QSpinnerRadio } from 'quasar'
+// import { QSpinnerGears, QSpinnerRadio } from 'quasar'
 import firebase from 'firebase/app'
 import '@firebase/messaging'
+import NavigationMenu from '../pages/NavigationMenu.vue'
+import Routetabmenu from '../components/navigation/routetabmenu.vue'
 export default {
   name: 'UserLayout',
   components: {
@@ -99,17 +107,28 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     'ClassicDark': () => import('./themes/ClassicDark'),
     // eslint-disable-next-line vue/no-unused-components
-    'ClassicLight': () => import('./themes/ClassicLight')
+    'ClassicLight': () => import('./themes/ClassicLight'),
+    NavigationMenu,
+    Routetabmenu
   },
   computed: {
-    themeUser () { return this.selectedTheme || 'GlassDark' },
+    themeUser () { return this.selectedTheme || 'ClassicLight' },
     ...mapGetters('user', ['currentUser', 'roles']),
+    ...mapGetters('config', ['navMenuOpen']),
     ...mapGetters('order', ['orders']),
     amb () {
       return localStorage.getItem('amb')
     },
     productName () {
       return window.sessionStorage.productName
+    },
+    navmenuopen: {
+      get () {
+        return this.navMenuOpen
+      },
+      set (e) {
+        return this.setNavMenuOpen(e)
+      }
     },
     editUserDialog: {
       get () {
@@ -120,9 +139,6 @@ export default {
       }
     }
   },
-  async created () {
-
-  },
   async mounted () {
     this.bindEnv().then(e => {
     })
@@ -132,14 +148,14 @@ export default {
       // Hide the loading screen if currentUser
       // is available before the page renders
       // console.log(this.currentUser)
-      const online = window.navigator.onLine
+      // const online = window.navigator.onLine
       try {
-        this.$q.loading.show({
-          message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
-          backgroundColor: online ? 'grey' : 'red-6',
-          spinner: online ? QSpinnerGears : QSpinnerRadio,
-          customClass: 'loader'
-        })
+        // this.$q.loading.show({
+        //   message: online ? 'Loading your user information...' : 'Looks like you\'ve lost network connectivity. Please connect back to your network to access your data.',
+        //   backgroundColor: online ? 'grey' : 'red-6',
+        //   spinner: online ? QSpinnerGears : QSpinnerRadio,
+        //   customClass: 'loader'
+        // })
         this.bindRoles(currentUser.id).then(e => {
           this.$q.loading.hide()
           console.log('ROLES binded', e)
@@ -189,9 +205,16 @@ export default {
       }
     }
   },
+  created () {
+    let colors = ['green', 'blue', 'indigo', 'orange', 'brown', 'red', 'purple', 'cyan', 'teal', 'grey', 'blue-grey']
+    for (let i in this.nav) {
+      this.nav[i].color = colors[i]
+    }
+  },
   data () {
     return {
-      selectedTheme: 'GlassDark',
+      miniState: true,
+      selectedTheme: localStorage.getItem('theme') || 'ClassicLight',
       audio: {
         sources: [
           {
@@ -375,7 +398,7 @@ export default {
         {
           title: 'Encomiendas',
           caption: '',
-          icon: 'business',
+          icon: 'local_shipping',
           // separator: true,
           tree: [
             { label: 'Verificar Encomiendas',
@@ -418,16 +441,16 @@ export default {
               label: 'Usuarios',
               handler: () => this.$router.push({ path: '/users/index' })
 
-            },
-            {
-              label: 'Widgets',
-              // separator: true,
-              tree: [
-                { label: 'Chat',
-                  link: 'chat',
-                  handler: (node) => this.onClickOption('chat') }
-              ]
             }
+            // {
+            //   label: 'Widgets',
+            //   // separator: true,
+            //   tree: [
+            //     { label: 'Chat',
+            //       link: 'chat',
+            //       handler: (node) => this.onClickOption('chat') }
+            //   ]
+            // }
             // {
             //   label: 'Editor Web',
             //   link: () => this.$router.push({ path: '/editor/index' })
@@ -463,17 +486,19 @@ export default {
   methods: {
     nextTheme () {
       switch (this.selectedTheme) {
-        case 'GlassDark':
+        case 'ClassicDark':
           this.selectedTheme = 'ClassicLight'
+          localStorage.setItem('theme', 'ClassicLight')
           break
         case 'ClassicLight':
-          this.selectedTheme = 'GlassDark'
+          this.selectedTheme = 'ClassicDark'
+          localStorage.setItem('theme', 'ClassicDark')
           break
       }
     },
     ...mapActions('auth', ['logoutUser']),
     ...mapActions('order', ['bindOrders']),
-    ...mapActions('config', ['bindEnv']),
+    ...mapActions('config', ['bindEnv', 'setNavMenuOpen']),
     ...mapActions('menu', ['setValue']),
     ...mapActions('user', ['updateUserData', 'bindRoles', 'updateLocalUserData']),
     setupNotif () {

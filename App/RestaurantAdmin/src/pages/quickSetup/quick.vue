@@ -22,16 +22,18 @@
         height="100%"
         class="q-fullscreen-glassMorph  shadow-1 rounded-borders"
       >
-        <q-carousel-slide @ name="style" class="column no-wrap flex-center" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
+        <q-carousel-slide name="style" class="column no-wrap flex-center" :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
           <q-img width="128px" src="icons/iconwhite.png" />
           <div class="q-mt-md text-center q-pa-md ">
             {{ lorem }}
           </div>
+          <q-btn color="blue" no-caps rounded @click="slide = 'layers'" label="Siguiente" />
         </q-carousel-slide>
         <q-carousel-slide  name="layers" class="column no-wrap flex-center">
           <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem2 }}
           </div>
+           <q-btn color="blue" no-caps rounded @click="slide = 'payserv'" label="Siguiente" />
         </q-carousel-slide>
         <q-carousel-slide name="payserv" class="column no-wrap flex-center">
           <PayServ class="full-width"  @done="slide = 'addsedelorem'" :quick="false" style="height: 100%;"/>
@@ -40,11 +42,13 @@
           <div class="q-mt-xl  text-center q-pa-md " :class="$q.screen.lt.sm ? 'fontsize-20' : 'text-h5'">
             {{ lorem3 }}
           </div>
+          <q-btn color="blue" no-caps rounded @click="slide = 'addsede'" label="Siguiente" />
         </q-carousel-slide>
         <q-carousel-slide name="addsede" class="column no-wrap flex-center">
           <div class="col-12">
-          <p v-if="localizations.length">
+          <p v-if="localizations.length" class="row justify-center">
             {{ lorem4 }}
+            <q-btn color="blue" no-caps rounded @click="slide = 'savemani'" label="Siguiente" />
             </p>
           <AddSede @done="slide = 'savemani'; sedeAdded = true" :quick="false"/>
           </div>
@@ -66,9 +70,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import AddSede from '../localization/create'
-import PayServ from '../settings/Services'
-import SaveManifest from '../../components/editor/saveManifest'
+import AddSede from '../localization/create.vue'
+import PayServ from '../settings/Services.vue'
+import SaveManifest from '../../components/editor/saveManifest.vue'
 // import AddCategoria from '../Menu/Categorias'
 // import AddProd from '../Menu/menuAdm'
 export default {

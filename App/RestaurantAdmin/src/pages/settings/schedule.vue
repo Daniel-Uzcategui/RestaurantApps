@@ -57,8 +57,9 @@
       </q-card-section>
      </q-card>
      </div>
-    <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
-      <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
+    <q-footer v-if="sede !== null && $q.screen.lt.md" style="z-index: 9999" reveal>
+      <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps>
+        <routetabmenu></routetabmenu>
         <q-tab no-caps flat push icon="arrow_back" @click="$router.replace('/home')"/>
         <q-tab v-if="config" no-caps flat push @click="updatedHours" icon="fas fa-save"/>
         <q-tab v-else no-caps flat push @click="add" icon="fas fa-save"/>
@@ -70,6 +71,7 @@
 
 import { mapActions, mapGetters } from 'vuex'
 import BusinessHours from '../../components/business-hour/src/components/BusinessHours'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 export default {
   created () {
     this.bindLocalizations()
@@ -158,7 +160,8 @@ export default {
     }
   },
   components: {
-    BusinessHours
+    BusinessHours,
+    Routetabmenu
   },
   data () {
     return {

@@ -471,8 +471,9 @@
               </q-item>
             </q-list>
           </div>
-    <q-footer class="bg-primary" v-if="$q.screen.lt.sm && !isDiag && !opcionesConf" reveal>
-    <q-tabs mobile-arrows indicator-color="transparent" no-caps >
+    <q-footer class="bg-primary" style="z-index: 9999" v-if="$q.screen.lt.md && !isDiag && !opcionesConf" reveal>
+    <q-tabs class="bg-primary" mobile-arrows indicator-color="transparent" no-caps >
+      <routetabmenu></routetabmenu>
       <q-tab flat  push no-caps icon="add" @click="addrow"/>
         <q-tab flat color="white" push no-capsicon="delete_outline" @click="delrow"/>
    </q-tabs>
@@ -495,11 +496,13 @@ const columns = [
 ]
 
 import { mapActions, mapGetters } from 'vuex'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 export default {
   components: {
     'itemcomp': () => import('../../components/itemComp.vue'),
     AddOpt: () => import('./options'),
-    opcionesGroup: () => import('./gruposOpt')
+    opcionesGroup: () => import('./gruposOpt'),
+    Routetabmenu
   },
   props: {
     elitempass: {

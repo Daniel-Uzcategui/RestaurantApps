@@ -116,8 +116,9 @@
       </template>
     </q-table>
  </div>
- <q-footer v-if="$q.screen.lt.sm" reveal>
-   <q-tabs dense mobile-arrows indicator-color="transparent" no-caps >
+ <q-footer v-if="$q.screen.lt.md" style="z-index: 9999" reveal>
+  <q-tabs  class="bg-primary" mobile-arrows indicator-color="transparent" no-caps >
+     <Routetabmenu/>
      <q-tab flat color="white" push no-caps icon="add" @click="$router.replace('/localization/create')"/>
         <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
         <q-tab flat color="white" push no-caps icon="archive" @click="exportTable"/>
@@ -142,6 +143,7 @@
 <script>
 import { exportFile } from 'quasar'
 import { mapGetters, mapActions } from 'vuex'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== void 0
@@ -182,21 +184,10 @@ export default {
   methods: {
     exportTable () {
       // naive encoding to csv format
-      const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
-        this.localizations.map(row => this.columns.map(col => wrapCsvValue(
-          typeof col.field === 'function'
-            ? col.field(row)
-            : row[col.field === void 0 ? col.name : col.field],
-          col.format
-        )).join(','))
-      ).join('\r\n')
-
-      const status = exportFile(
-        'Sedes.csv',
-        content,
-        'text/csv'
-      )
-
+      const content = [this.columns.map(col => wrapCsvValue(col.label))].concat(this.localizations.map(row => this.columns.map(col => wrapCsvValue(typeof col.field === 'function'
+        ? col.field(row)
+        : row[col.field === void 0 ? col.name : col.field], col.format)).join(','))).join('\r\n')
+      const status = exportFile('Sedes.csv', content, 'text/csv')
       if (status !== true) {
         this.$q.notify({
           message: 'Navegador no permitio la descarga del Archivo...',
@@ -250,7 +241,8 @@ export default {
         { name: 'Inlocal', align: 'center', label: 'En local', field: 'Inlocal' }
       ]
     }
-  }
+  },
+  components: { Routetabmenu }
 }
 </script>
 <style lang="stylus">

@@ -2,7 +2,7 @@
 <q-list v-if="item" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
   <q-item>
     <q-item-section>
-      <q-item-label :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'text-white radius'" >{{props.row.factura}}</q-item-label>
+      <q-item-label :class="(iditificarVuelto(props.row))?'text-red radius notificacion':' radius'" >{{props.row.factura}}</q-item-label>
     </q-item-section>
     <q-item-section >
       <q-item-label>{{props.row.status}}</q-item-label>
@@ -21,7 +21,7 @@
     v-for="col in props.cols"
     :key="col.name"
     :props="props"
-    :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'text-white radius'"
+    :class="(iditificarVuelto(props.row))?'text-red radius notificacion':'radius'"
   >
     {{ col.value }}
   </q-td>

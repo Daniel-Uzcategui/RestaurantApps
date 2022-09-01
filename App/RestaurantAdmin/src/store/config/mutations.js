@@ -5,3 +5,6 @@ export function saveLocationMt (state, payload) {
 export function deleteLocationMt (state, payload) {
   state.localizations = payload
 }
+export function navMenuOpen (state, payload) {
+  state.navMenuOpen = payload
+}

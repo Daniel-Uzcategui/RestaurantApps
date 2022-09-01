@@ -4,17 +4,17 @@
       <q-card class="q-cardGlass">
        <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Widgets Chat
-            <q-btn flat color="white" push @click="explain = true" icon="help" />
+            <q-btn flat push @click="explain = true" icon="help" />
 
           </div>
           <div>
             <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push  @click="save" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat push  @click="save" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push @click="add" icon="add"/>
+              <q-btn class="header-btn" flat push @click="add" icon="fas fa-save"/>
             </div>
-            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
+            <q-btn class="header-btn-back" flat push  icon="arrow_back" @click="$router.replace('/home')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>

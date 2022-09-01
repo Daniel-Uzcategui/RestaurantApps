@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted () {
-    this.$q.dark.set(true)
+    this.$q.dark.set(false)
     this.bindEnv().then(e => {
       if (e) {
         let ver = localStorage.getItem('envVer')

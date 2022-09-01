@@ -37,7 +37,7 @@
             round
             :style="{ color: color }"
             color="primary"
-            text-color="white"
+
             size="xs"
             v-if="showAddButton(index) && isOpenToday"
             @click="addRow()"

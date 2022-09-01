@@ -12,11 +12,12 @@
       :columns="columns"
       :grid="$q.screen.lt.md"
       row-key="id"
+      color="blue"
       no-data-label="No se encontraron registros"
       rows-per-page-label=" "
       >
 
-     <template v-slot:top-right>
+     <template v-slot:top>
         <tabletop
         :filtrado="filtrado"
         :report="report"

@@ -204,8 +204,9 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-footer v-if="sede !== null && $q.screen.lt.sm" reveal>
-    <q-tabs dense mobile-arrows indicator-color="transparent" no-caps>
+    <q-footer v-if="sede !== null && $q.screen.lt.md" style="z-index: 9999" reveal>
+    <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps>
+      <routetabmenu></routetabmenu>
       <q-tab flat push no-caps icon="delete_outline" @click="softDelete"/>
       <q-tab flat push no-caps icon="add" @click="addrow"/>
     </q-tabs>
@@ -223,12 +224,15 @@ const columns = [
   { name: 'amount', align: 'center', label: 'amount', field: 'amount' }
 ]
 import { mapActions, mapGetters } from 'vuex'
+import Routetabmenu from '../../components/navigation/routetabmenu.vue'
 
 // import ClientMenu from '../editor/components/client/pages/Menu/menu'
 export default {
   components: {
   },
   computed: {
+
+    Routetabmenu,
     ...mapGetters('menu', ['categorias', 'menu', 'listcategorias', 'plaincategorias', 'groupComp', 'coupons']),
     ...mapGetters('user', ['currentUser']),
     filtered () {

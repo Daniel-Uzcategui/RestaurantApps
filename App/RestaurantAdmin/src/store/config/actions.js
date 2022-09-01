@@ -22,6 +22,9 @@ export const bindManifest = firestoreAction(async ({ bindFirestoreRef }) => {
   console.log('bindManifest')
   return bindFirestoreRef('manifest', firestore().collection('environment').doc('manifest'), { reset: false })
 })
+export const setNavMenuOpen = async function ({ commit }, payload) {
+  return commit('navMenuOpen', payload)
+}
 export const saveManifest = firestoreAction(async (state, payload) => {
   console.log('saving manifest', payload)
   return firestore()

@@ -5,31 +5,22 @@
 </template>
 
 <script>
+import { colors } from 'quasar'
 export default {
   mounted () {
     this.$q.dark.set(true)
+    colors.setBrand('primary', '#2b3742')
+    colors.setBrand('secondary', '#4B555E')
   }
 }
 </script>
 
 <style lang="stylus">
-.q-cardGlass
-  border-radius: 28px
-.menu-div2
-  border-radius: 28px
-.background-color
-  margin 40px auto
-  border-radius 20px
-  width 90% !important
-  height 60%
-  background-color $primary !important
-  -webkit-box-shadow -4px 8px 18px rgba(0,0,0,0.1)
-  box-shadow -4px 8px 18px rgba(0,0,0,0.1)
-.itemcompback
-  background-color $primary
-  border-radius 28px
-.burgericon
-  color white !important
-.carticon
-  color white !important
+.q-diag-glassMorph
+  border-radius 28px !important
+  // background rgba( 43, 55, 66, 0.40 )
+  // background-color rgba( 43, 55, 66, 0.40 )
+  backdrop-filter blur( 8.0px )
+  -webkit-backdrop-filter blur( 8.0px )
+  border-radius 10px
 </style>

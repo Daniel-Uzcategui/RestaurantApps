@@ -6,12 +6,12 @@
           <div class="text-h5">Servicios y Rewards</div>
           <div>
            <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push  @click="validator" icon="fas fa-save"/>
+              <q-btn label="Guardar" no-caps class="header-btn" color="blue" push  @click="validator" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push  @click="add" icon="fas fa-save"/>
+              <q-btn label="Guardar" no-caps class="header-btn" color="blue" push  @click="add" icon="fas fa-save"/>
             </div>
-            <q-btn v-if="quick" class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
+            <q-btn v-if="quick" class="header-btn-back" flat color="blue" push  icon="arrow_back" @click="$router.replace('/home')"/>
           </div>
          </q-card-section>
 

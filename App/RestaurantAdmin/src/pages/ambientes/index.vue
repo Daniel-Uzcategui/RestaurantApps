@@ -1,6 +1,6 @@
 <template>
   <div>
-      <q-page class="items-center">
+      <q-page class="items-center text-white">
     <q-card flat square>
             <q-card-section class="bg-primary column items-center">
              <template>
@@ -18,7 +18,7 @@
           class="row justify-center"
           name="list-complete" tag="div"
         >
-      <q-card key="createamb" class="list-complete-item q-ma-md cardradius bg-primary">
+      <q-card key="createamb" class="list-complete-item q-ma-md cardradius bg-primary" :style="{height: addnew ? '190px' : ''}" :class="{'bg-white': addnew}">
         <q-card-section v-if="!addnew" class="column items-center">
           <q-btn flat @click="addnew = !addnew" icon="add" size="lg"/>
             <p>Añadir Tienda</p>
@@ -31,7 +31,7 @@
           </form>
         </q-card-section>
       </q-card>
-      <q-card @click="ambRoute(amb.id)" v-for="(amb, index) in ambientes" :key="index" v-ripple class="list-complete-item q-ma-md cardradius bg-primary">
+      <q-card @click="ambRoute(amb.id)" v-for="(amb, index) in ambientes" :key="index" v-ripple class="list-complete-item q-ma-md cardradius bg-primary text-center">
         <q-card-section>
           <q-item-label class="text-h5">
             {{amb.id}}
@@ -231,7 +231,7 @@ export default {
 .cardradius
   border-radius 28px
   width 300px
-  height 190px
+  height 130px
 .list-complete-enter, .list-complete-leave-to
 /* .list-complete-leave-active below version 2.1.8 */ {
   opacity: 0;

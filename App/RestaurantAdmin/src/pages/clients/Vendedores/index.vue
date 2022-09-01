@@ -1,6 +1,6 @@
 <template>
     <div>
-      <q-table :loading="loading"  class="q-mt-md full-width" :title="'Total Venta X Vendedor'"
+      <q-table :loading="loading"  class="q-mt-md full-width" :title="'Total Venta por Vendedor'"
                     style="border-radius: 28px"
                       :data="ordersfilter"
                       :columns="columns"
@@ -8,34 +8,18 @@
                       no-data-label="No se encontraron registros"
 
                       >
-<template v-slot:top-right>
-  <q-input label="Buscar Vendedor" v-model="filtrado" filled  />
-        <div class="q-mr-sm">
-      <q-badge v-if="dateRange !== null " color="blue-grey">
-        {{ dateRange.from }} - {{ dateRange.to }}
-      </q-badge>
-       <q-badge v-else>
-        Últimos 30 días
-      </q-badge>
-    </div>
-
-    <q-btn icon="event" class="q-mr-sm" round color="blue">
-      <q-popup-proxy transition-show="scale" transition-hide="scale">
-        <q-date color="blue" v-model="dateRango" range >
-          <div class="row items-center justify-end q-gutter-sm">
-            <q-btn label="Borrar Filtro" @click="dateRango = null" color="white" flat v-close-popup/>
-          </div>
-        </q-date>
-      </q-popup-proxy>
-    </q-btn>
-        <q-btn no-caps round color="green" push icon="archive" />
-      </template>
-       <template v-slot:body-cell-boton1 ="props" id=1>
-             <q-td :props="props" class="q-pa-md q-gutter-sm">
-              <q-btn  q-btn dense round flat color="grey" icon="list" @click="listar(props.row)" />
-              </q-td>
-        </template>
-
+<template v-slot:top>
+  <tabletopright
+        :filtrado="filtrado"
+        page="Total Venta por Vendedor"
+        :report="report"
+        :dateRange="dateRange"
+        :dateRango="dateRango"
+        @exportTable="exportTable"
+        @report="(e) => report = e"
+        @dateRango="(e) => dateRango = e"
+        @filtrado="(e) => filtrado = e" />
+</template>
  </q-table>
      <q-dialog  v-model="ver" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
           margin: 0px;
@@ -48,9 +32,7 @@
           <div class="text-h6">Ordenes</div>
         </q-card-section>
           <q-card-section>
-            <q-table  style="margin: 0px;
-          padding: 0px;
-          overflow-x: hidden;"
+            <q-table  style="margin: 0px; padding: 0px; overflow-x: hidden;"
           class="q-fullscreen-glassMorph full-width" :title="'Ordenes'"
                       :data="detalle2"
                       :columns="columns2"
@@ -87,9 +69,30 @@
     </div>
 </template>
 <script>
-import { date } from 'quasar'
+import { exportFile, date } from 'quasar'
 import { mapActions, mapGetters } from 'vuex'
+import tabletopright from '../../../components/order/tabletopright.vue'
+function wrapCsvValue (val, formatFn) {
+  let formatted = formatFn !== void 0
+    ? formatFn(val)
+    : val
+
+  formatted = formatted === void 0 || formatted === null
+    ? ''
+    : String(formatted)
+
+  formatted = formatted.split('"').join('""')
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`
+}
 export default {
+  components: { tabletopright },
   data () {
     return {
       loading: false,
@@ -143,6 +146,31 @@ export default {
     ...mapActions('client', ['bindOnlyVendedor', 'bindClients2']),
     ...mapActions('localization', ['bindLocalizations']),
     ...mapActions('corporativos', ['getbranches2']),
+    exportTable () {
+      // naive encoding to csv format
+      const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
+        this.ordersfilter.map(row => this.columns.map(col => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format
+        )).join(','))
+      ).join('\r\n')
+
+      const status = exportFile(
+        'Ordenes.csv',
+        content,
+        'text/csv'
+      )
+
+      if (status !== true) {
+        this.$q.notify({
+          message: 'Navegador no permitio la descarga del Archivo...',
+          color: 'negative',
+          icon: 'warning'
+        })
+      }
+    },
     getDateRange () {
       if (this.dateRange === null) {
         return null

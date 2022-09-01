@@ -1,45 +1,78 @@
 <template>
-<div class="row ">
-  <div class="row justify-end col-12">
-        <div class="boton_reporte" style="display: flex;align-items:center"><q-btn color="blue"  label="Reporte" rounded style="font-size:12px;margin-right:15px;">
-        <q-menu
-          transition-show="scale"
-          transition-hide="scale"
-        >
-          <q-list style="min-width: 100px">
-            <q-item clickable @click="$emit('report', 'estandar')">
-              <q-item-section>Estándar</q-item-section>
-            </q-item>
-            <q-item clickable @click="$emit('report', 'tproducts')">
-              <q-item-section>Total Productos Vendidos</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-      </div>
-        <div class="buscar_responsive"><q-input label="Buscar Cliente" :value="filtrado" @input="(e) =>$emit('filtrado', e)" dark  /></div>
-        <div class="etiqueta_fecha" style="display: flex;align-items: center;margin-right:15px;">
-          <q-badge v-if="dateRange !== null " color="blue-grey">
-            {{ dateRange.from }} - {{ dateRange.to }}
-          </q-badge>
-          <q-badge v-else>
-            Últimos 30 días
-          </q-badge>
-        </div>
-        <div class="botones">
-        <q-btn icon="event" class="q-mr-sm" rounded color="blue"  style="height: 56px;">
-          <q-popup-proxy transition-show="scale" transition-hide="scale">
-            <q-date color="blue" :value="dateRango" @input="(e)=>$emit('dateRango', e)" range >
-              <div class="row items-center justify-end q-gutter-sm">
-                <q-btn label="Borrar Filtro" @click="$emit('dateRango',null)" color="white" flat v-close-popup/>
-              </div>
-            </q-date>
-          </q-popup-proxy>
-          </q-btn>
-            <q-btn no-caps rounded   color="green" push icon="archive" :class="q-mr-sm" @click="$emit('exportTable')" style="height: 56px;"/>
-        </div>
-        <div class="opciones_reporte" >
+  <div class="row full-width justify-start ">
+    <div class="col-12 text-h5">
+      {{ page || 'Ordenes'}}
+    </div>
+    <div class="text-caption col-12">
+      <q-item-label v-if="dateRange !== null " color="blue-grey">
+        {{ dateRange.from }} - {{ dateRange.to }}
+      </q-item-label>
+      <q-item-label v-else>
+        Últimas 100
+      </q-item-label>
+    </div>
+        <q-input class="col-3 col-md-3 col-xs-12" :label="page ? 'Buscar Vendedor': 'Buscar Cliente'" :value="filtrado" @input="(e) =>$emit('filtrado', e)"  />
+          <div class="col-12 row justify-center" v-if="!$q.screen.lt.md" >
+            <q-btn-group rounded>
+              <q-btn color="blue" no-caps label="Reporte" icon="summarize" stack>
+            <q-menu
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-list style="min-width: 100px">
+                <q-item clickable @click="$emit('report', 'estandar')">
+                  <q-item-section>Estándar</q-item-section>
+                </q-item>
+                <q-item clickable @click="$emit('report', 'tproducts')">
+                  <q-item-section>Total Productos Vendidos</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+              </q-btn>
+            <q-btn icon="event"  color="blue" stack label="Rango de Fecha"  no-caps>
+              <q-popup-proxy transition-show="scale" transition-hide="scale">
+                <q-date color="blue" :value="dateRango" @input="(e)=>$emit('dateRango', e)" range >
+                  <div class="row items-center justify-end q-gutter-sm">
+                    <q-btn label="Borrar Filtro" @click="$emit('dateRango',null)" flat v-close-popup/>
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-btn>
+            <q-btn no-caps color="green" label="Exportar" stack push icon="archive" @click="$emit('exportTable')"/>
+            </q-btn-group>
+          </div>
+          <q-footer v-else style="z-index:9999">
+            <q-tabs class="bg-primary" rounded>
+              <Routetabmenu></Routetabmenu>
+              <q-tab color="blue" no-caps label="Reporte" icon="summarize" stack>
+              <q-menu
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-list style="min-width: 100px">
+                  <q-item clickable @click="$emit('report', 'estandar')">
+                    <q-item-section>Estándar</q-item-section>
+                  </q-item>
+                  <q-item clickable @click="$emit('report', 'tproducts')">
+                    <q-item-section>Total Productos Vendidos</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+                </q-tab>
+              <q-tab icon="event" stack label="Rango de Fecha"  no-caps>
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-date color="blue" :value="dateRango" @input="(e)=>$emit('dateRango', e)" range >
+                    <div class="row items-center justify-end q-gutter-sm">
+                      <q-btn label="Borrar Filtro" @click="$emit('dateRango',null)" color="white" flat v-close-popup/>
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-tab>
+              <q-tab no-caps label="Exportar" stack push icon="archive" @click="$emit('exportTable')"/>
+              </q-tabs>
+          </q-footer>
             <q-option-group
+            class="col-12"
             :value="statusFilter"
             @input="(e) => $emit('statusFilter', e)"
               :options="allestatus"
@@ -48,14 +81,15 @@
               type="checkbox"
               inline
               name ="foo"
-            /></div>
-            </div>
-</div>
+            />
+          </div>
 </template>
 <script>
+import Routetabmenu from '../navigation/routetabmenu.vue'
 export default {
   name: 'tabletop',
-  props: { report: {}, filtrado: {}, dateRange: {}, dateRango: {}, statusFilter: {}, allestatus: { type: Array, default: () => [] } }
+  props: { report: {}, filtrado: {}, dateRange: {}, dateRango: {}, statusFilter: {}, allestatus: { type: Array, default: () => [] }, page: {} },
+  components: { Routetabmenu }
 }
 </script>
 <style lang="stylus">
