@@ -19,3 +19,9 @@ export function Ordersfilter2 (state, payload) {
 export function StatusFilter2 (state, payload) {
   state.StatusFilter = payload.StatusFilter
 }
+export function selectedmesa (state, payload) {
+  state.selectedmesa = payload
+}
+export function ordermesa (state, payload) {
+  state.ordermesa = payload
+}

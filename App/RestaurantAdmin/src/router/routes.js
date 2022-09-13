@@ -37,6 +37,31 @@ const routes = [{
   ]
 },
 {
+  path: '/restaurant',
+  component: () =>
+            import ('layouts/User.vue'),
+  children: [
+    {
+      path: 'index',
+      name: 'index',
+      component: () =>
+                      import ('pages/restaurant/index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: 'table',
+      name: 'table',
+      component: () =>
+                    import ('pages/restaurant/restTable.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    }
+  ]
+},
+{
   path: '/guide',
   component: () =>
             import ('layouts/User.vue'),

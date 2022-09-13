@@ -48,6 +48,8 @@ export const tipoServicio = ({ tipoServicio }) => tipoServicio
 export const estatus_options = ({ estatus_options }) => estatus_options
 export const estatus_optionsOrd = ({ estatus_optionsOrd }) => estatus_optionsOrd
 export const allestatus = ({ allestatus }) => allestatus
+export const ordermesa = ({ ordermesa }) => ordermesa
+export const selectedmesa = ({ selectedmesa }) => selectedmesa
 export const ordercorporativo = ({ ordercorporativo }) => ordercorporativo
 export const ordercorporativo2 = ({ ordercorporativo2 }) => ordercorporativo2
 export const orderencomienda = ({ orderencomienda }) => orderencomienda

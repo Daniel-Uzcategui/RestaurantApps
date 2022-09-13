@@ -50,6 +50,204 @@ export default function () {
       { label: 'Pago móvil', value: 12 },
       { label: 'PayPal', value: 13 }
     ],
+    selectedmesa: {},
+    ordermesa: [
+      { mesa: 1,
+        newOrder: true,
+        openTable: true,
+        order: {
+          1: {
+            'producto1': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            },
+            'producto4': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            },
+            'producto5': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          },
+          2: {
+            'producto2': {
+              name: '7up',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          }
+        }
+      },
+      { mesa: 2,
+        newOrder: false,
+        openTable: true,
+        order: {
+          1: {
+            'producto1': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          },
+          2: {
+            'producto2': {
+              name: '7up',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          }
+        } },
+      { mesa: 3,
+        newOrder: false,
+        openTable: false,
+        order: {
+          1: {
+            'producto1': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          },
+          2: {
+            'producto2': {
+              name: '7up',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          }
+        } },
+      { mesa: 4,
+        newOrder: false,
+        openTable: false,
+        order: {
+          1: {
+            'producto1': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          },
+          2: {
+            'producto2': {
+              name: '7up',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          }
+        } },
+      { mesa: 5,
+        newOrder: true,
+        openTable: true,
+        order: {
+          1: {
+            'producto1': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          },
+          2: {
+            'producto2': {
+              name: '7up',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          }
+        } },
+      { mesa: 6,
+        newOrder: true,
+        openTable: true,
+        order: {
+          1: {
+            'producto1': {
+              name: 'pepsi',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          },
+          2: {
+            'producto2': {
+              name: '7up',
+              items: {
+                'item': {
+                  quantity: 1,
+                  name: 'grande',
+                  price: 1.5
+                }
+              }
+            }
+          }
+        } }
+    ],
     ordercorporativo: [],
     orderencomienda: [],
     ordercorporativo2: [],

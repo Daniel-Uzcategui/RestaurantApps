@@ -98,6 +98,9 @@ export const Ordersfilter2 = async function ({ commit }, payload) {
 export const StatusFilter2 = async function ({ commit }, payload) {
   commit('order/StatusFilter2', payload, { root: true })
 }
+export const setOrderMesa = async function ({ commit }, payload) {
+  commit('order/selectedmesa', payload, { root: true })
+}
 export const setencomienda = async function (state, payload) {
   let result
   console.log('valor del paylod', payload)
