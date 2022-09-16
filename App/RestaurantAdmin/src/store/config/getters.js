@@ -8,3 +8,4 @@ export const menucfg = ({ menucfg }) => menucfg
 export const rates = ({ rates }) => rates
 export const configs2 = ({ configs2 }) => configs2
 export const navMenuOpen = ({ navMenuOpen }) => navMenuOpen
+export const setSede = ({ setSede }) => setSede

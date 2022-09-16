@@ -1,5 +1,5 @@
 <template>
-   <q-layout class="main my-font backgroundImage" :class="{ 'blur-layout': blurLayout }" view="Lhh LpR LFf">
+   <q-layout class="main my-font backgroundImage" :class="{ 'blur-layout': blurLayout }" view="LHH LpR LFf">
       <q-header class="bg-primary" v-if="currentUser" elevated>
          <q-toolbar>
             <q-toolbar-title class="text-caption">

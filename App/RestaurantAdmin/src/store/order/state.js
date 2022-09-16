@@ -59,6 +59,7 @@ export default function () {
           1: {
             'producto1': {
               name: 'pepsi',
+              quantity: 1,
               items: {
                 'item': {
                   quantity: 1,
@@ -69,6 +70,7 @@ export default function () {
             },
             'producto4': {
               name: 'pepsi',
+              quantity: 1,
               items: {
                 'item': {
                   quantity: 1,
@@ -79,6 +81,7 @@ export default function () {
             },
             'producto5': {
               name: 'pepsi',
+              quantity: 1,
               items: {
                 'item': {
                   quantity: 1,
@@ -90,14 +93,8 @@ export default function () {
           },
           2: {
             'producto2': {
-              name: '7up',
-              items: {
-                'item': {
-                  quantity: 1,
-                  name: 'grande',
-                  price: 1.5
-                }
-              }
+              quantity: 5,
+              name: '7up'
             }
           }
         }

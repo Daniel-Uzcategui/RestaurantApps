@@ -77,6 +77,7 @@ export default function () {
         ]
       }
     ],
+    setSede: 'CbdrZ9NcthavP9rh2a2j',
     version: null,
     manifest: {},
     rates: null
