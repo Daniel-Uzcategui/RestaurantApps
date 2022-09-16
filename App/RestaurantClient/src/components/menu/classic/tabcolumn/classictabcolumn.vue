@@ -24,7 +24,9 @@
         :name="tabs.id"
         @click="$emit('tabs', tabs)"
         >
-        {{tabs.name}}
+        <div class="ellipsis">
+          {{tabs.name}}
+        </div>
           <q-icon color="secondary" class="absolute-right full-height" name="expand_more"></q-icon>
       </q-btn>
 </template>

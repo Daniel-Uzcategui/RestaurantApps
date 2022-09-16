@@ -7,7 +7,7 @@
         :horizontal="true"
         selected-class-name="selected-node" selected-key="selectedKey"/>
   </q-card> -->
-   <div v-if="true">
+   <q-card>
    <q-table
       grid
       :data="elcat"
@@ -59,73 +59,87 @@
               </q-item-section>
               </q-item>
               <q-separator></q-separator>
-          <q-dialog class="bg-transparent" v-model="props.expand">
-            <q-list class="q-diag-glassMorph full-width">
-                              <q-expansion-item
-                  expand-separator
-                  icon="settings"
-                  label="Avanzado"
-                >
+          <q-dialog v-model="props.expand">
+            <q-card class="q-pb-md q-pr-md">
+              <q-list class="q-diag-glassMorph full-width">
+                                <q-expansion-item
+                    expand-separator
+                    icon="settings"
+                    label="Avanzado"
+                  >
+                      <q-item class="column items-start">
+                          <p class="text-bold">Color de Fondo</p>
+                      <q-color
+                        default-value="#2B3742"
+                        v-model="props.row.color"
+                        default-view="palette"
+                        :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
+                        @change="val => saved(val, props.row.color, props.row.id, 'color')"
+                        style="max-width: 250px"
+                        />
+                    </q-item>
                     <q-item class="column items-start">
-                        <p class="text-bold">Color de Fondo</p>
-                    <q-color
-                      default-value="#2B3742"
-                      v-model="props.row.color"
-                      default-view="palette"
-                      :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
-                      @change="val => saved(val, props.row.color, props.row.id, 'color')"
-                      style="max-width: 250px"
+                          <p class="text-bold">Color de Texto</p>
+                      <q-color
+                        default-value="#2B3742"
+                        v-model="props.row.textcolor"
+                        default-view="palette"
+                        :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
+                        @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
+                        style="max-width: 250px"
+                        />
+                    </q-item>
+                    <q-item class="column items-start" key="priority" :props="props">
+                       <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
+                      <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" v-model="props.row.priority"  />
+                  </q-item>
+                  </q-expansion-item>
+                  <q-item class="column items-start" key="desc" :props="props">
+                    <p class="text-bold">Nombre</p>
+                      <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                        v-model="props.row.name"
+                        />
+                  </q-item>
+                  <q-item class="column items-start" key="estatus" :props="props">
+                      <q-toggle
+                        label="Estatus"
+                        @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
+                        :value="props.row.estatus ? true : false"
+                        color="blue"
                       />
                   </q-item>
-                  <q-item class="column items-start">
-                        <p class="text-bold">Color de Texto</p>
-                    <q-color
-                      default-value="#2B3742"
-                      v-model="props.row.textcolor"
-                      default-view="palette"
-                      :palette="[ '#019A9D', '#D9B801', '#E8045A', '#B2028A','#FFFFFF', '#000000']"
-                      @change="val => saved(val, props.row.textcolor, props.row.id, 'textcolor')"
-                      style="max-width: 250px"
-                      />
-                  </q-item>
-                  <q-item class="column items-start" key="priority" :props="props">
-                     <p class="text-bold">Prioridad (número más bajo se muestra primero)</p>
-                    <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.priority, props.row.id, 'priority')" v-model="props.row.priority"  />
-                </q-item>
-                </q-expansion-item>
-                <q-item class="column items-start" key="desc" :props="props">
-                  <p class="text-bold">Nombre</p>
-                    <q-input filled dense rounded outlined @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-                      v-model="props.row.name"
-                      />
-                </q-item>
-                <q-item class="column items-start" key="estatus" :props="props">
-                    <q-toggle
-                      label="Estatus"
-                      @input="(e) => {saved(e, props.row.estatus, props.row.id, 'estatus'); typeof props.row.estatus === 'undefined' ? props.row.estatus=true : props.row.estatus=!props.row.estatus}"
-                      :value="props.row.estatus ? true : false"
-                      color="blue"
-                    />
-                </q-item>
-                <q-expansion-item
-                  expand-separator
-                  icon="category"
-                  label="Sub Categorías"
-                >
-                <div class="row justify-around">
-                    <q-btn color="red" rounded label="Borrar" />
-                   <q-btn color="blue" rounded label="Añadir" @click="addSubCat(props.row)" />
-                </div>
-                <div v-if="props.row.subCat">
-                <subcatlist v-for="(sub, index) in Object.keys(props.row.subCat)" :key="index" :id="props.row.id" :subCat="props.row.subCat[sub]" @subCat="(e) => saved(e, props.row.subCat[sub], props.row.id, 'subCat.' + sub)" />
-                </div>
-                </q-expansion-item>
-            </q-list>
+                  <q-expansion-item
+                    expand-separator
+                    icon="category"
+                    label="Sub Categorías"
+                    default-opened
+                  >
+                  <template v-slot:header>
+
+                    <q-item-section>
+                      Sub Categorías
+                    </q-item-section>
+
+                    <q-item-section side>
+                      <div class="row items-center">
+                        <q-btn-group push>
+                        <!-- <q-btn color="red" rounded label="Borrar" /> -->
+                       <q-btn color="blue" rounded label="Añadir" @click.stop="addSubCat(props.row)" />
+                        </q-btn-group>
+                      </div>
+                    </q-item-section>
+                  </template>
+                  <div v-if="props.row.subCat">
+                  <subcatlist class="q-ml-md" v-for="(sub, index) in Object.keys(props.row.subCat)" :key="index" :id="props.row.id" :subCat="props.row.subCat[sub]" @subCat="(e) => saved(e, props.row.subCat[sub], props.row.id, 'subCat.' + sub)" />
+                  </div>
+                  </q-expansion-item>
+              </q-list>
+            </q-card>
           </q-dialog>
           </q-list>
       </template>
     </q-table>
-  </div>
+  </q-card>
   <q-dialog v-model="noSelect">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
@@ -231,7 +245,7 @@ export default {
   },
   data () {
     return {
-      mapCat: [],
+      // mapCat: [],
       editCategory: false,
       elcat: [],
       temp1: {},
@@ -253,9 +267,9 @@ export default {
     }
   },
   watch: {
-    mapCat (e) {
-      // console.log(e, 'mapcat')
-    },
+    // mapCat (e) {
+    //   // console.log(e, 'mapcat')
+    // },
     catHolderCopy: {
       handler (e, olde) {
         let newHold = JSON.parse(JSON.stringify(e))
@@ -282,49 +296,49 @@ export default {
       },
       deep: true
     },
-    elcat (e) {
-      this.mapCat = []
-      e.forEach(x => {
-        if (x.subCat) {
-          let subCat = this.convertToArray(x.subCat, x.id)
-          let obj = { ...x, expand: true, subCat }
-          // this.$set(obj, 'subCat', subCat)
-          this.mapCat.push(obj)
-        } else {
-          this.mapCat.push({ ...x, subCat: [], expand: true })
-        }
-      })
-      console.log(this.mapCat, 'mapcat')
-    },
+    // elcat (e) {
+    //   this.mapCat = []
+    //   e.forEach(x => {
+    //     if (x.subCat) {
+    //       let subCat = this.convertToArray(x.subCat, x.id)
+    //       let obj = { ...x, expand: true, subCat }
+    //       // this.$set(obj, 'subCat', subCat)
+    //       this.mapCat.push(obj)
+    //     } else {
+    //       this.mapCat.push({ ...x, subCat: [], expand: true })
+    //     }
+    //   })
+    //   console.log(this.mapCat, 'mapcat')
+    // },
     categorias (e) {
       this.elcat = JSON.parse(JSON.stringify(e))
     }
   },
   methods: {
-    convertToArray (sub, id, subCatid) {
-      let refid = id
-      let newArray = []
-      let subKeys = Object.keys(sub)
-      // let num = 0
-      for (let i of subKeys) {
-        let ref = 'subCat.' + i
-        if (subCatid) {
-          ref = subCatid + '.' + i
-        }
-        let prepare = sub[i]
-        if (prepare.subCat) {
-          sub[i].subCat = this.convertToArray(sub[i].subCat, refid, ref)
-          // this.$set(sub[i], 'subCat', this.convertToArray(sub[i].subCat, refid, ref))
-        } else {
-          sub[i].subCat = []
-        }
-        if (!sub[i].softDelete) {
-          newArray.push({ ...sub[i], refid, ref, expand: true })
-          // num++
-        }
-      }
-      return newArray
-    },
+    // convertToArray (sub, id, subCatid) {
+    //   let refid = id
+    //   let newArray = []
+    //   let subKeys = Object.keys(sub)
+    //   // let num = 0
+    //   for (let i of subKeys) {
+    //     let ref = 'subCat.' + i
+    //     if (subCatid) {
+    //       ref = subCatid + '.' + i
+    //     }
+    //     let prepare = sub[i]
+    //     if (prepare.subCat) {
+    //       sub[i].subCat = this.convertToArray(sub[i].subCat, refid, ref)
+    //       // this.$set(sub[i], 'subCat', this.convertToArray(sub[i].subCat, refid, ref))
+    //     } else {
+    //       sub[i].subCat = []
+    //     }
+    //     if (!sub[i].softDelete) {
+    //       newArray.push({ ...sub[i], refid, ref, expand: true })
+    //       // num++
+    //     }
+    //   }
+    //   return newArray
+    // },
     // labelClass (data) {
     //   let color = 'blue'
     //   if (data.ref) {
@@ -366,16 +380,16 @@ export default {
     //     this.$set(data, 'expand', true)
     //   }
     // },
-    collapse (nodes) {
-      // console.log(nodes, 'NODES')
-      nodes.forEach(node => {
-        if (node.expand) {
-          node.expand = false
-        }
+    // collapse (nodes) {
+    //   // console.log(nodes, 'NODES')
+    //   nodes.forEach(node => {
+    //     if (node.expand) {
+    //       node.expand = false
+    //     }
 
-        node.subCat && this.collapse(node.subCat)
-      })
-    },
+    //     node.subCat && this.collapse(node.subCat)
+    //   })
+    // },
     // onNodeDelete (e, data) {
     //   this.$q.dialog({
     //     message: '¿Está seguro que desea eliminar a ' + data.name + '?'
@@ -477,15 +491,18 @@ export default {
     saveTemp (temp) {
       console.log('SaveTemp =>', temp)
       if (typeof this.temp1[temp.collection] === 'undefined') {
-        this.temp1 = Object.assign({}, this.temp1, { [temp.collection]: {} })
+        // this.temp1 = Object.assign({}, this.temp1, { [temp.collection]: {} })
+        this.$set(this.temp1, temp.collection, {})
       }
       if (typeof this.temp1[temp.collection][temp.payload.id] === 'undefined') {
-        this.temp1[temp.collection] = Object.assign({}, this.temp1[temp.collection], { [temp.payload.id]: {} })
+        // this.temp1[temp.collection] = Object.assign({}, this.temp1[temp.collection], { [temp.payload.id]: {} })
+        this.$set(this.temp1[temp.collection], temp.payload.id, {})
       }
       if (Array.isArray(temp.payload.value.subCat)) {
         delete temp.payload.value.subCat
       }
-      this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
+      this.$set(this.temp1[temp.collection][temp.payload.id], temp.payload.key, temp.payload.value)
+      // this.temp1[temp.collection][temp.payload.id][temp.payload.key] = temp.payload.value
       // this.temp1 = Object.assign({}, this.temp1, { [temp.collection]: { [temp.payload.id]: { [temp.payload.key]: temp.payload.value, ...[temp.payload.id] } } })
       console.log('Savetemp =>', this.temp1)
     },
@@ -511,13 +528,19 @@ export default {
         estatus: true,
         refid: id,
         ref: newref,
-        expand: true
+        expand: true,
+        softDelete: 0,
+        subCat: {}
       }
       if (typeof row.subCat === 'undefined') {
-        this.$set(row, 'subCat', [])
+        this.$set(row, 'subCat', {})
       }
-      // this.$set(row, 'subCat', [ ...row.subCat, val ])
-      row.subCat.push(val)
+      this.$set(row, 'subCat', { ...row.subCat, [newId]: val })
+      // row.subCat.push(val)
+      if (newref.split('.').length === 2) {
+        newref = 'subCat'
+        val = { ...row.subCat, [newId]: val }
+      }
       this.saved(val, row, id, newref)
       // console.log(row, '<=')
       // this.executeSave(newId)
@@ -578,6 +601,6 @@ export default {
 }
 </script>
 <style>
-.org-tree-container{display:inline-block;padding:15px;background-color:#fff}.org-tree{display:table;text-align:center}.org-tree:after,.org-tree:before{content:"";display:table}.org-tree:after{clear:both}.org-tree-node,.org-tree-node-children{position:relative;margin:0;padding:0;list-style-type:none}.org-tree-node-children:after,.org-tree-node-children:before,.org-tree-node:after,.org-tree-node:before{transition:all .35s}.org-tree-node-label{position:relative;display:inline-block}.org-tree-node-label .org-tree-node-label-inner{padding:10px 15px;text-align:center;border-radius:3px;box-shadow:0 1px 5px rgba(0,0,0,.15)}.org-tree-node-btn{position:absolute;top:100%;left:50%;width:20px;height:20px;z-index:10;margin-left:-11px;margin-top:9px;background-color:#fff;border:1px solid #ccc;border-radius:50%;box-shadow:0 0 2px rgba(0,0,0,.15);cursor:pointer;transition:all .35s ease}.org-tree-node-btn:hover{background-color:#e7e8e9;-webkit-transform:scale(1.15);transform:scale(1.15)}.org-tree-node-btn:after,.org-tree-node-btn:before{content:"";position:absolute}.org-tree-node-btn:before{top:50%;left:4px;right:4px;height:0;border-top:1px solid #ccc}.org-tree-node-btn:after{top:4px;left:50%;bottom:4px;width:0;border-left:1px solid #ccc}.org-tree-node-btn.expanded:after{border:none}.org-tree-node{padding-top:20px;display:table-cell;vertical-align:top}.org-tree-node.collapsed,.org-tree-node.is-leaf{padding-left:10px;padding-right:10px}.org-tree-node:after,.org-tree-node:before{content:"";position:absolute;top:0;left:0;width:50%;height:19px}.org-tree-node:after{left:50%;border-left:1px solid #ddd}.org-tree-node:not(:first-child):before,.org-tree-node:not(:last-child):after{border-top:1px solid #ddd}.collapsable .org-tree-node.collapsed{padding-bottom:30px}.collapsable .org-tree-node.collapsed .org-tree-node-label:after{content:"";position:absolute;top:100%;left:0;width:50%;height:20px;border-right:1px solid #ddd}.org-tree>.org-tree-node{padding-top:0}.org-tree>.org-tree-node:after{border-left:0}.org-tree-node-children{padding-top:20px;display:table}.org-tree-node-children:before{content:"";position:absolute;top:0;left:50%;width:0;height:20px;border-left:1px solid #ddd}.org-tree-node-children:after{content:"";display:table;clear:both}.horizontal .org-tree-node{display:table-cell;float:none;padding-top:0;padding-left:20px}.horizontal .org-tree-node.collapsed,.horizontal .org-tree-node.is-leaf{padding-top:10px;padding-bottom:10px}.horizontal .org-tree-node:after,.horizontal .org-tree-node:before{width:19px;height:50%}.horizontal .org-tree-node:after{top:50%;left:0;border-left:0}.horizontal .org-tree-node:only-child:before{top:1px;border-bottom:1px solid #ddd}.horizontal .org-tree-node:not(:first-child):before,.horizontal .org-tree-node:not(:last-child):after{border-top:0;border-left:1px solid #ddd}.horizontal .org-tree-node:not(:only-child):after{border-top:1px solid #ddd}.horizontal .org-tree-node .org-tree-node-inner{display:table}.horizontal .org-tree-node-label{display:table-cell;vertical-align:middle}.horizontal.collapsable .org-tree-node.collapsed{padding-right:30px}.horizontal.collapsable .org-tree-node.collapsed .org-tree-node-label:after{top:0;left:100%;width:20px;height:50%;border-right:0;border-bottom:1px solid #ddd}.horizontal .org-tree-node-btn{top:50%;left:100%;margin-top:-11px;margin-left:9px}.horizontal>.org-tree-node:only-child:before{border-bottom:0}.horizontal .org-tree-node-children{display:table-cell;padding-top:0;padding-left:20px}.horizontal .org-tree-node-children:before{top:50%;left:0;width:20px;height:0;border-left:0;border-top:1px solid #ddd}.horizontal .org-tree-node-children:after{display:none}.horizontal .org-tree-node-children>.org-tree-node{display:block}
+/* .org-tree-container{display:inline-block;padding:15px;background-color:#fff}.org-tree{display:table;text-align:center}.org-tree:after,.org-tree:before{content:"";display:table}.org-tree:after{clear:both}.org-tree-node,.org-tree-node-children{position:relative;margin:0;padding:0;list-style-type:none}.org-tree-node-children:after,.org-tree-node-children:before,.org-tree-node:after,.org-tree-node:before{transition:all .35s}.org-tree-node-label{position:relative;display:inline-block}.org-tree-node-label .org-tree-node-label-inner{padding:10px 15px;text-align:center;border-radius:3px;box-shadow:0 1px 5px rgba(0,0,0,.15)}.org-tree-node-btn{position:absolute;top:100%;left:50%;width:20px;height:20px;z-index:10;margin-left:-11px;margin-top:9px;background-color:#fff;border:1px solid #ccc;border-radius:50%;box-shadow:0 0 2px rgba(0,0,0,.15);cursor:pointer;transition:all .35s ease}.org-tree-node-btn:hover{background-color:#e7e8e9;-webkit-transform:scale(1.15);transform:scale(1.15)}.org-tree-node-btn:after,.org-tree-node-btn:before{content:"";position:absolute}.org-tree-node-btn:before{top:50%;left:4px;right:4px;height:0;border-top:1px solid #ccc}.org-tree-node-btn:after{top:4px;left:50%;bottom:4px;width:0;border-left:1px solid #ccc}.org-tree-node-btn.expanded:after{border:none}.org-tree-node{padding-top:20px;display:table-cell;vertical-align:top}.org-tree-node.collapsed,.org-tree-node.is-leaf{padding-left:10px;padding-right:10px}.org-tree-node:after,.org-tree-node:before{content:"";position:absolute;top:0;left:0;width:50%;height:19px}.org-tree-node:after{left:50%;border-left:1px solid #ddd}.org-tree-node:not(:first-child):before,.org-tree-node:not(:last-child):after{border-top:1px solid #ddd}.collapsable .org-tree-node.collapsed{padding-bottom:30px}.collapsable .org-tree-node.collapsed .org-tree-node-label:after{content:"";position:absolute;top:100%;left:0;width:50%;height:20px;border-right:1px solid #ddd}.org-tree>.org-tree-node{padding-top:0}.org-tree>.org-tree-node:after{border-left:0}.org-tree-node-children{padding-top:20px;display:table}.org-tree-node-children:before{content:"";position:absolute;top:0;left:50%;width:0;height:20px;border-left:1px solid #ddd}.org-tree-node-children:after{content:"";display:table;clear:both}.horizontal .org-tree-node{display:table-cell;float:none;padding-top:0;padding-left:20px}.horizontal .org-tree-node.collapsed,.horizontal .org-tree-node.is-leaf{padding-top:10px;padding-bottom:10px}.horizontal .org-tree-node:after,.horizontal .org-tree-node:before{width:19px;height:50%}.horizontal .org-tree-node:after{top:50%;left:0;border-left:0}.horizontal .org-tree-node:only-child:before{top:1px;border-bottom:1px solid #ddd}.horizontal .org-tree-node:not(:first-child):before,.horizontal .org-tree-node:not(:last-child):after{border-top:0;border-left:1px solid #ddd}.horizontal .org-tree-node:not(:only-child):after{border-top:1px solid #ddd}.horizontal .org-tree-node .org-tree-node-inner{display:table}.horizontal .org-tree-node-label{display:table-cell;vertical-align:middle}.horizontal.collapsable .org-tree-node.collapsed{padding-right:30px}.horizontal.collapsable .org-tree-node.collapsed .org-tree-node-label:after{top:0;left:100%;width:20px;height:50%;border-right:0;border-bottom:1px solid #ddd}.horizontal .org-tree-node-btn{top:50%;left:100%;margin-top:-11px;margin-left:9px}.horizontal>.org-tree-node:only-child:before{border-bottom:0}.horizontal .org-tree-node-children{display:table-cell;padding-top:0;padding-left:20px}.horizontal .org-tree-node-children:before{top:50%;left:0;width:20px;height:0;border-left:0;border-top:1px solid #ddd}.horizontal .org-tree-node-children:after{display:none}.horizontal .org-tree-node-children>.org-tree-node{display:block} */
 /*# sourceMappingURL=style.css.map */
 </style>

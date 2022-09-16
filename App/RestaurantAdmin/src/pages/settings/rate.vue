@@ -11,8 +11,8 @@
     >
     <template v-slot:top-right>
         <q-btn-group flat push >
-          <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
-          <q-btn flat color="white" push label="Agregar" icon="add" @click="addrow"/>
+          <q-btn class="header-btn-back" flat push  icon="arrow_back" @click="$router.replace('/home')"/>
+          <q-btn flat push label="Agregar" icon="add" @click="addrow"/>
         </q-btn-group>
       </template>
       <template v-slot:body="props">
@@ -25,7 +25,7 @@
                 dense  input-style="text-align: right" disable
                 />
           </q-td>
-           <q-td key="rateValue" :props="props" v-else-if="add==false">
+           <q-td key="rateValue2" :props="props" v-else-if="add==false">
               <q-input filled
                 @input="(e) => saved(e, props.row.name, props.row.id, 'rateValue')"
                 :value="props.row.rateValue"

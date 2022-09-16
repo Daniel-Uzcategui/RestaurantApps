@@ -38,24 +38,26 @@ export const saveManifest = firestoreAction(async (state, payload) => {
 })
 export const saveConfig = firestoreAction((state, payload) => {
   console.log(payload)
-  return firestore()
-    .collection('config')
-    .doc(payload.id)
-    .update({ [payload.key]: payload.value })
-    .then(() => {
-      console.log('updated!')
-    })
+  try {
+    return firestore()
+      .collection('config')
+      .doc(payload.id)
+      .update({ [payload.key]: payload.value })
+  } catch (error) {
+    throw error
+  }
 })
 
 export const saveConfig2 = firestoreAction(async (state, payload) => {
   console.log(payload)
-  return firestore()
-    .collection('config')
-    .doc(payload.id)
-    .set({ ...payload }, { merge: true })
-    .then(() => {
-      console.log('updated!')
-    }).catch(e => console.error(e))
+  try {
+    return firestore()
+      .collection('config')
+      .doc(payload.id)
+      .set({ ...payload }, { merge: true })
+  } catch (error) {
+    throw error
+  }
 })
 
 export const saveDay = firestoreAction((state, payload) => {

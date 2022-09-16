@@ -272,8 +272,7 @@ export default {
       }
     },
     cats () {
-      let objs = this.categorias
-      return objs.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+      return this.categorias
     },
     filterop () {
       let filter = this.filters.map(x => x.id)

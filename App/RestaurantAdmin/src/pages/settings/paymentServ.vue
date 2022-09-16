@@ -6,12 +6,12 @@
           <div class="text-h5">Ajustes de Medios de Pagos</div>
           <div>
            <div v-if="config">
-              <q-btn class="header-btn" flat color="white" push  @click="validator" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat  push color="blue" @click="validator" icon="fas fa-save"/>
             </div>
             <div v-else>
-              <q-btn class="header-btn" flat color="white" push  @click="add" icon="fas fa-save"/>
+              <q-btn class="header-btn" flat  push color="blue" @click="add" icon="fas fa-save"/>
             </div>
-            <q-btn v-if="quick" class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/home')"/>
+            <q-btn v-if="quick" class="header-btn-back" flat  push  icon="arrow_back" @click="$router.replace('/home')"/>
           </div>
          </q-card-section>
 
@@ -221,31 +221,31 @@
          <div v-if="statusNovaredzelle"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Pasarela de Pago</p>
-<q-option-group color="blue" inline  filled rounded v-model="Novared2.ambiente" map-options emit-value standout="bg-teal "
+<q-option-group color="blue" inline  filled rounded v-model="Novared.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared2.ApiKey" standout="bg-teal "
+          <q-input filled rounded v-model="Novared.ApiKey" standout="bg-teal "
           outlined label="ApiKey" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared2.idComercio" standout="bg-teal "
+          <q-input filled rounded v-model="Novared.idComercio" standout="bg-teal "
           outlined label="idComercio" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared2.mockServer" standout="bg-teal "
+          <q-input filled rounded v-model="Novared.mockServer" standout="bg-teal "
           outlined label="Url de verificacion" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared2.nombreComercio" standout="bg-teal "
+          <q-input filled rounded v-model="Novared.nombreComercio" standout="bg-teal "
           outlined label="Nombre Comercio" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared2.requestPassword" standout="bg-teal "
+          <q-input filled rounded v-model="Novared.requestPassword" standout="bg-teal "
           outlined label="Clave secreta" />
         </div>
          <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="Novared2.requestUser" standout="bg-teal "
+          <q-input filled rounded v-model="Novared.requestUser" standout="bg-teal "
           outlined label="Usuario" />
         </div>
          <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
@@ -256,39 +256,39 @@
         <div v-if="statuspagomovil"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Pago Movil Mercantil</p>
-<q-option-group color="blue" inline  filled rounded v-model="PagoMovil2.ambiente" map-options emit-value standout="bg-teal "
+<q-option-group color="blue" inline  filled rounded v-model="PagoMovil.ambiente" map-options emit-value standout="bg-teal "
           outlined :options="[{value: 0, label: 'Producción'}, {value: 1, label: 'Prueba'}]" label="Ambiente" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.claveSecreta" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.claveSecreta" standout="bg-teal "
           outlined label="Calve Secreta" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.clavecompra" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.clavecompra" standout="bg-teal "
           outlined label="Clave de Compra" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.integratorId" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.integratorId" standout="bg-teal "
           outlined label="integratorId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.merchantId" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.merchantId" standout="bg-teal "
           outlined label="merchantId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.payment_method" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.payment_method" standout="bg-teal "
           outlined label="payment_method" />
         </div>
          <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.terminalId" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.terminalId" standout="bg-teal "
           outlined label="terminalId" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.trx_type" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.trx_type" standout="bg-teal "
           outlined label="trx_type" />
         </div>
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
-          <q-input filled rounded v-model="PagoMovil2.xibm" standout="bg-teal "
+          <q-input filled rounded v-model="PagoMovil.xibm" standout="bg-teal "
           outlined label="xibm" />
         </div>
 
@@ -350,25 +350,25 @@ export default {
     }
   },
   watch: {
-    config () {
-      if (this.config !== undefined) {
-        console.log('valores de config', this.config.Novared)
-        this.Novared2 = {
-          ...this.config?.Novared
-          // ApiKey: this.config.Novared.ApiKey,
-          // ambiente: this.config.Novared.ambiente,
-          // idComercio: this.config.Novared.idComercio,
-          // mockServer: this.config.Novared.mockServer,
-          // nombreComercio: this.config.Novared.nombreComercio,
-          // requestPassword: this.config.Novared.requestPassword,
-          // requestUser: this.config.Novared.requestUser
-        }
-        this.PagoMovil2 = {
-          ...this.config?.PagoMovil
-        }
-        this.referencia = this.config.referencia
-      }
-    }
+    // config () {
+    //   if (this.config !== undefined) {
+    //     console.log('valores de config', this.config.Novared)
+    //     this.Novared = {
+    //       ...this.config?.Novared
+    //       // ApiKey: this.config.Novared.ApiKey,
+    //       // ambiente: this.config.Novared.ambiente,
+    //       // idComercio: this.config.Novared.idComercio,
+    //       // mockServer: this.config.Novared.mockServer,
+    //       // nombreComercio: this.config.Novared.nombreComercio,
+    //       // requestPassword: this.config.Novared.requestPassword,
+    //       // requestUser: this.config.Novared.requestUser
+    //     }
+    //     this.PagoMovil = {
+    //       ...this.config?.PagoMovil
+    //     }
+    //     this.referencia = this.config.referencia
+    //   }
+    // }
 
   },
   created () {
@@ -393,8 +393,8 @@ export default {
       statusRewards: 0,
       rewards: 10,
       referencia: 0,
-      apiKeyDev: undefined,
-      apiKeyProd: undefined,
+      apiKeyDev: this.generateUUID('Dev'),
+      apiKeyProd: this.generateUUID('Prod'),
       statusZelle: 0,
       statusPaypalTx: 0,
       statusVenmo: 0,
@@ -403,7 +403,7 @@ export default {
       statusNovaredzelle: 0,
       statusNovaredpagomovil: 0,
       // statusEncomienda: 0,
-      Novared2: {
+      Novared: {
         ApiKey: '',
         idComercio: '',
         mockServer: '',
@@ -412,7 +412,7 @@ export default {
         requestUser: ''
 
       },
-      PagoMovil2: {
+      PagoMovil: {
         ambiente: '',
         claveSecreta: '',
         clavecompra: '',
@@ -466,43 +466,59 @@ export default {
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
       })
       this['apiKey' + e] = uuid
+      return uuid
     },
-    add () {
+    async add () {
       this.$q.loading.show()
+      const { statusZelle, statusVenmo, statusPaypalTx, apiKeyDev, apiKeyProd, statusCreditCorp, statusNovaredzelle, referencia, statusNovaredpagomovil, statusCash, statusPto, statuspagomovil, statustransfer, statusPaypal, PaypalApi, CreditCorp, venmoAcc, zelleEmail, PaypalEmail, transfer, pagomovil, statusMercantil, Mercantil, Novared, PagoMovil } = this
       const payload = {
-        statusDelivery: this.statusDelivery,
-        statusPickup: this.statusPickup,
-        statusInlocal: this.statusInlocal,
-        statusPto: this.statusPto,
-        statusRewards: this.statusRewards,
-        rewards: this.rewards,
-        apiKeyProd: this.apiKeyProd,
-        apiKeyDev: this.apiKeyDev,
-        statusZelle: this.statusZelle,
-        statusPaypalTx: this.statusPaypalTx,
-        statusVenmo: this.statusVenmo,
-        statusCreditCorp: this.statusCreditCorp,
-        statuspagomovil: this.statuspagomovil,
-        statustransfer: this.statustransfer,
-        statusCash: this.statusCash,
-        Mercantil: this.Mercantil,
-        Novared: this.Novared2,
-        PagoMovil: this.PagoMovil2,
-        statusNovaredzelle: this.statusNovaredzelle,
-        statusNovaredpagomovil: this.statusNovaredpagomovil,
-        // statusEncomienda: this.statusEncomienda,
-        statusPaypal: this.statusPaypal,
-        PaypalApi: this.PaypalApi,
-        zelleEmail: this.zelleEmail,
-        PaypalEmail: this.PaypalEmail,
-        venmoAcc: this.venmoAcc,
-        CreditCorp: this.CreditCorp,
-        transfer: this.transfer,
-        //  pesoDefaul: this.pesoDefault,
-        pagomovil: this.pagomovil,
+        statusZelle,
+        statusVenmo,
+        statusPaypalTx,
+        apiKeyDev,
+        apiKeyProd,
+        statusCreditCorp,
+        statusNovaredzelle,
+        referencia,
+        statusNovaredpagomovil,
+        statusCash,
+        statusPto,
+        statuspagomovil,
+        statustransfer,
+        statusPaypal,
+        PaypalApi,
+        CreditCorp,
+        venmoAcc,
+        zelleEmail,
+        PaypalEmail,
+        transfer,
+        pagomovil,
+        statusMercantil,
+        Mercantil,
+        Novared,
+        PagoMovil,
         source: 'paymentServ'
       }
-      this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$emit('done', true) })
+      try {
+        await this.addConfig2({ payload, doc: 'paymentServ' }).then(e => { this.$q.loading.hide(); this.$emit('done', true) })
+        return this.$q.dialog({
+          title: '',
+          message: 'Se han guardo exitosamente los ajustes',
+          cancel: false,
+          persistent: true
+        }).onOk(() => {
+          this.$emit('done', true)
+        })
+      } catch (error) {
+        this.$q.dialog({
+          title: '',
+          message: 'Ha ocurrido un error al guardar los datos, verifique su conexión',
+          cancel: false,
+          persistent: true
+        }).onOk(() => {
+          this.$emit('done', true)
+        })
+      }
     },
     validator () {
       if (this.statusDelivery === 0 && this.statusPickup === 0 && this.statusInlocal === 0) {
@@ -523,7 +539,7 @@ export default {
           }).onOk(() => {
           })
         } else {
-          this.save()
+          this.add()
         }
       }
     },
@@ -534,6 +550,7 @@ export default {
       for (let i of arr) {
         try {
           value = this[i]
+          console.log(i, this[i])
           if (value) {
             await this.saveConfig({ value, id, i })
           }
@@ -551,33 +568,16 @@ export default {
       })
     },
     afterBindigs () {
-      if (this.config.source !== '') {
+      if (this.config?.source === 'paymentServ') {
         for (let i of Object.keys(this.config)) {
           try {
-            Object.assign(this, { [i]: this.config[i] })
+            if (this.config[i]) {
+              Object.assign(this, { [i]: this.config[i] })
+            }
           } catch (e) {
             console.log(e)
           }
         }
-        // this.statusDelivery = this.config.statusDelivery
-        // this.statusPickup = this.config.statusPickup
-        // this.statusInlocal = this.config.statusInlocal
-        // this.statusPto = this.config.statusPto
-        // this.statusRewards = this.config.statusRewards
-        // this.statusZelle = this.config.statusZelle
-        // this.statusCreditCorp = this.config.statusCreditCorp
-        // this.statuspagomovil = this.config.statuspagomovil
-        // this.statustransfer = this.config.statustransfer
-        // this.statusMercantil = this.config.statusMercantil
-        // this.statusVenmo = this.config.statusVenmo
-        // this.statusCash = this.config.statusCash
-        // this.statusPaypal = this.config.statusPaypal
-        // this.PaypalApi = this.config.PaypalApi
-        // this.zelleEmail = this.config.zelleEmail
-        // this.venmoAcc = this.config.venmoAcc
-        // this.CreditCorp = this.config.CreditCorp
-        // this.transfer = this.config.transfer
-        // this.pagomovil = this.config.pagomovil
       }
     }
   }
