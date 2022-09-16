@@ -1,10 +1,18 @@
 export const categorias = ({ categorias }) => {
-  const keys = Object.keys(categorias)
-  var arr = []
-  for (const i in keys) {
-    arr.unshift(categorias[keys[i]])
+  let cats = JSON.parse(JSON.stringify(categorias))
+  for (let i in cats) {
+    let cat = cats[i]
+    if (cat.subCat) {
+      for (let subcatkey of Object.keys(cat.subCat)) {
+        let subcat = cat.subCat[subcatkey]
+        console.log('catname', subcat.name.length)
+        if (subcat.name === undefined || subcat.name.length === 0) {
+          delete cats[i].subCat[subcatkey]
+        }
+      }
+    }
   }
-  return arr
+  return cats.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
 }
 export const plaincategorias = ({ categorias }) => categorias
 // export const menu = ({ menu }) => {

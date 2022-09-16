@@ -1,7 +1,9 @@
 export default function () {
   return {
     cart: [],
-    categorias: [
+    categorias: [{
+      subCat: {}
+    }
     ],
     rewards: [],
     coupons: [],

@@ -41,7 +41,7 @@
           v-if="sede !== null"
             v-model="category"
             clearable
-            :options="categorias"
+            :options="lascats"
             :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
             :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
             emit-value
@@ -111,7 +111,7 @@
         </q-tr>
     </template>
     <template v-slot:item="props">
-        <div v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        <q-intersection transition="scale" :key="props.row.id" style="min-height: 74px" v-if="sede !== null" class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
         <q-list @click.native="props.selected = !props.selected" class="q-m-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition" flat>
               <q-item v-ripple style="border-radius: 28px" :class="props.selected ? 'bg-secondary' : ''" >
@@ -144,246 +144,248 @@
               <q-separator></q-separator>
         </q-list>
           <q-dialog class="bg-transparent" v-model="props.expand">
-            <q-list class="q-diag-glassMorph">
-              <q-item class="column items-center">
-                <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
-              </q-item>
-          <q-item class="column items-center" key="photo" :props="props">
-            <p class="text-bold col-6">Foto primaria</p>
-            <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
-            <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
-                <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" ></q-avatar></div>
-            <div class="column items-start" v-else>
-                <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id, props.row)">
-                    <q-img :src="props.row.photo"></q-img>
-                </q-avatar></div>
-                </div>
-          </q-item>
-          <q-item  :props="props">
-                  <p class="text-bold">Activar</p>
-                  <q-toggle
-                      @input="(e) => {saved(
-                        typeof props.row.estatus === 'undefined' ? { [sede]: e } : {...props.row.estatus,[sede]: e },
-                          props.row.estatus, props.row.id,
-                          `estatus`);
-                        typeof props.row.estatus === 'undefined' ? (props.row.estatus = [],props.row.estatus[sede] = e) : props.row.estatus[sede] = e
-                        }"
-                      :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
-                      color="blue"
-                    />
-              </q-item>
-          <q-item  :props="props" key="photomulti" class="column items-start">
-            <div class="row justify-start">
-                  <p class="text-bold col-6">Múltiples fotos</p>
-                  <q-btn class="col-4" flat color="white" push icon="help">
-                    <q-tooltip anchor="center right" self="center left">
-                      <strong :class="{ 'text-h5': $q.screen.gt.xs }">Las fotos que montes aqui se mostrarán en el dialogo cuando un usuario le de click a tu producto, si quieres mostrar la foto primaria también, tendras que volverla a subir aquí, luego de subirlas puedes darle click para cambiar el orden o eliminar
-                      </strong>
-                    </q-tooltip>
-                  </q-btn>
-            </div>
-                  <photomulti :row="props.row.photomulti" @updated="(e) => {saved(e, props.row.photomulti, props.row.id, 'photomulti'); props.row.photomulti = e}" />
-              </q-item>
-          <q-item class="column items-start" key="name" :props="props">
-            <div class="col-12 label-expand">Nombre</div>
-              <q-input filled dense
-              @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
-              v-model="props.row.name"
-              rounded
-              class="col-12 full-width"
-              outlined />
-          </q-item>
-          <q-item class="column items-start" key="categoria" :props="props">
-            <q-td><label class="label-expand">Categorías</label></q-td>
-              <q-select options-selected-class="text-blue" filled rounded dense
-                v-model="prodCategory"
-                @input="(e) => saved(selectedProdCat, props.row.categoria, props.row.id, 'categoria')"
-                use-input
-                use-chips
-                class="col-12"
-                multiple
-                input-debounce="0"
-                :options="categorias"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item"
-                map-options
-                emit-value
-                stack-label
-              >
-              <template v-slot:append>
-          <q-icon
-            name="add"
-            class="cursor-pointer"
-            @click.stop.prevent="addcat = !addcat"
-          />
-        </template>
-              </q-select>
-          </q-item>
-           <q-item class="column items-start" key="groupComp" :props="props">
-             <div class="label-expand full-width row justify-between">
-               <div class="text-h6">Grupos de Opciones</div>
-               <q-btn
-               rounded
-                    label="Añadir"
-                    color="blue"
-                    no-caps
-                    class="cursor-pointer"
-                    @click="addopt = !addopt; propass = props"
-                  />
-             </div>
-
-              <q-list>
-               <q-item v-for="(item, index) in props.row.groupComp" :key="index">
-                 <div>
-                    <q-chip class="glossy" removable clickable @click="addoptView = true; viewId = getCompVal(item, 'group_id')" @remove="(e) => saved(delCompVal(props.row.groupComp, item), props.row.groupComp, props.row.id, 'groupComp')" color="green"  icon="filter_frames">
-                       {{getCompVal(item, 'name')}}
-                    </q-chip>
-                 </div>
-               </q-item>
-             </q-list>
-          </q-item>
-              <q-item class="column items-start"  :props="props">
-                <div><label class="col label-expand">Descripción</label></div>
-                <div class="col" key="descripcion" :props="props">
-                    <q-editor content-class="bg-blue-6"
-                      :definitions="definitions" :toolbar="toolbar"
-                      @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                      v-model="props.row.descripcion"
-                      ref="editor_ref"
-                      @paste.native="evt => pasteCapture(evt)"
-                      min-height="5rem"
-                      :content-style="{color: props.row.descripcioncolor}"
-
-                    />
-                          <q-dialog v-model="colorText">
-                            <q-card class="q-cardGlass">
-                              <q-card-section>
-                                <p class="text-bold q-ma-md">Color del texto</p>
-                                <q-color
-                                v-model="props.row.descripcioncolor"
-                                @input="(e) => saved(e, props.row.descripcioncolor, props.row.id, 'descripcioncolor')"
-                                default-view="palette"
-                                format-model="rgba"
-                                :palette="[
-                                  '#019A9D', '#D9B801', '#E8045A', '#B2028A',
-                                  '#2A0449', '#019A9D'
-                                ]"
-                                class="my-picker"
-                              />
-                              </q-card-section>
-                            </q-card>
-                          </q-dialog>
-                </div>
-              </q-item>
-              <q-item class="row justify-start"  :props="props">
-                <div class="col-6 col-lg-6 col-sm-12 q-pa-xs">
-                <p class="text-bold">Precio</p>
-                  <q-decimal
-                  dense
-                  filled
-                  :rules="[validate]"
-                  rounded
-                  outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                  v-model="props.row.price"
-                  input-style="text-align: right">
-                  </q-decimal>
-                </div>
-              </q-item>
-              <q-expansion-item
-                expand-separator
-                icon="settings"
-                label="Avanzado"
-              >
-              <q-item class="row justify-start"  :props="props">
-                  <div class="col-6 q-pa-xs">
-                    <p class="text-bold">Stock <span class="text-caption">(Cantidad disponible para venta) </span></p>
-                    <q-input filled dense
-                      rounded
-                      outlined
-                      @input="(e) => {saved(typeof props.row.stock === 'undefined' ? { [sede]: parseInt(e) } : {...props.row.stock,[sede]: parseInt(e) }, parseInt(props.row.stock), props.row.id, `stock`);
-                        typeof props.row.stock === 'undefined' ? (props.row.stock = {},props.row.stock[sede] = e) : props.row.stock[sede] = e
-                        }"
-                      :value="props.row.stock ? props.row.stock[sede] : 0"
-                      min="1" max="99999"
-                      type="number"
-                    />
+            <q-card class="q-cardGlass">
+              <q-list class="q-diag-glassMorph">
+                <q-item class="column items-center">
+                  <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
+                </q-item>
+            <q-item class="column items-center" key="photo" :props="props">
+              <p class="text-bold col-6">Foto primaria</p>
+              <div class="text-center" @click="showPhotoUpload(props.row.id, props.row)">
+              <div class=" column items-start" v-if="showDefaultPhoto(props.row.photo)">
+                  <q-avatar round class="q-mb-sm" icon="insert_photo" color="secondary" font-size="50px" size="180px" ></q-avatar></div>
+              <div class="column items-start" v-else>
+                  <q-avatar round class="q-mb-sm shadow-5" size="180px" @click="showPhotoUpload(props.row.id, props.row)">
+                      <q-img :src="props.row.photo"></q-img>
+                  </q-avatar></div>
                   </div>
-                  <div class="col-6 q-pa-xs">
-                    <p class="text-bold">Descuento</p>
-                    <q-input filled dense
-                      rounded
-                      outlined
-                      @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
-                      v-model="props.row.discount"
-                      label="%"
-                      min="0" max="100"
-                      type="number"
-                    />
-                  </div>
-              </q-item>
-              <q-item class="row justify-start"  :props="props">
-                  <div class="col-6 q-pa-xs">
-                    <p class="text-bold">Código del producto</p>
-                    <q-input filled dense
-                      rounded
-                      outlined
-                      @input="(e) => saved(e, parseInt(props.row.code), props.row.id, 'code')"
-                      v-model="props.row.code"
-                    />
-                  </div>
-                  <div class="col-6 q-pa-xs">
-                    <p class="text-bold">Código de barras</p>
-                    <q-input filled dense
-                      rounded
-                      outlined
-                      @input="(e) => saved(e, parseInt(props.row.barCode), props.row.id, 'barCode')"
-                      v-model="props.row.barCode"
-                    />
-                  </div>
-              </q-item>
-              <q-item class="row justify-start"  :props="props">
-                <div class="col-6 q-pa-xs">
-                  <p class="text-bold">Prioridad</p>
-                  <q-input filled dense
-                  rounded
-                  outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
-                  v-model="props.row.priority"
-                  min="1" max="999"
-                  type="number">
-                  </q-input>
-                </div>
-              </q-item>
-              <q-item class="column items-start" key="pricerange" :props="props">
-                <div class="col-12 label-expand">Solapar precio
-                  <q-btn class="col-4" flat color="white" push icon="help">
-                    <q-tooltip anchor="center right" self="center left">
-                      <strong :class="{ 'text-h5': $q.screen.gt.xs }">Este texto, sobreescribe el precio que el cliente ve en el menu, el mejor caso de uso
-                        es para productos que tienen rangos de precios, variando las opciones seleccionadas.
-                      </strong>
-                    </q-tooltip>
-                  </q-btn>
-                </div>
-                  <q-input filled dense
-                  @input="(e) => saved(e, props.row.pricerange, props.row.id, 'pricerange')"
-                  v-model="props.row.pricerange"
-                  rounded
+            </q-item>
+            <q-item  :props="props">
+                    <p class="text-bold">Activar</p>
+                    <q-toggle
+                        @input="(e) => {saved(
+                          typeof props.row.estatus === 'undefined' ? { [sede]: e } : {...props.row.estatus,[sede]: e },
+                            props.row.estatus, props.row.id,
+                            `estatus`);
+                          typeof props.row.estatus === 'undefined' ? (props.row.estatus = [],props.row.estatus[sede] = e) : props.row.estatus[sede] = e
+                          }"
+                        :value="props.row.estatus ? props.row.estatus[sede] ? true : false : false"
+                        color="blue"
+                      />
+                </q-item>
+            <q-item  :props="props" key="photomulti" class="column items-start">
+              <div class="row justify-start">
+                    <p class="text-bold col-6">Múltiples fotos</p>
+                    <q-btn class="col-4" flat color="white" push icon="help">
+                      <q-tooltip anchor="center right" self="center left">
+                        <strong :class="{ 'text-h5': $q.screen.gt.xs }">Las fotos que montes aqui se mostrarán en el dialogo cuando un usuario le de click a tu producto, si quieres mostrar la foto primaria también, tendras que volverla a subir aquí, luego de subirlas puedes darle click para cambiar el orden o eliminar
+                        </strong>
+                      </q-tooltip>
+                    </q-btn>
+              </div>
+                    <photomulti :row="props.row.photomulti" @updated="(e) => {saved(e, props.row.photomulti, props.row.id, 'photomulti'); props.row.photomulti = e}" />
+                </q-item>
+            <q-item class="column items-start" key="name" :props="props">
+              <div class="col-12 label-expand">Nombre</div>
+                <q-input filled dense
+                @input="(e) => saved(e, props.row.name, props.row.id, 'name')"
+                v-model="props.row.name"
+                rounded
+                class="col-12 full-width"
+                outlined />
+            </q-item>
+            <q-item class="column items-start" key="categoria" :props="props">
+              <q-td><label class="label-expand">Categorías</label></q-td>
+                <q-select options-selected-class="text-blue" filled rounded dense
+                  v-model="prodCategory"
+                  @input="(e) => saved(selectedProdCat, props.row.categoria, props.row.id, 'categoria')"
+                  use-input
+                  use-chips
                   class="col-12"
-                  outlined />
-              </q-item>
-              <q-item class="row justify-center"  :props="props">
-                <div class="col-6 q-pa-xs">
-                <p class="text-bold">Tipo de Display <span class="text-caption"> (Tenemos dos maneras de mostrar tu producto al cliente, activalos y mira como se ven en el cliente) </span></p>
-                  <q-radio color="blue" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="0" label="A" />
-                  <q-radio color="red" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="1" label="B" />
-                </div>
-              </q-item>
-              </q-expansion-item>
-              <q-item class="column items-center">
-                <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
-              </q-item>
-            </q-list>
+                  multiple
+                  input-debounce="0"
+                  :options="lascats"
+                  :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
+                  :option-value="(item) => item === null || typeof item === 'undefined' ? null : item"
+                  map-options
+                  emit-value
+                  stack-label
+                >
+                <template v-slot:append>
+            <q-icon
+              name="add"
+              class="cursor-pointer"
+              @click.stop.prevent="addcat = !addcat"
+            />
+          </template>
+                </q-select>
+            </q-item>
+             <q-item class="column items-start" key="groupComp" :props="props">
+               <div class="label-expand full-width row justify-between">
+                 <div class="text-h6">Grupos de Opciones</div>
+                 <q-btn
+                 rounded
+                      label="Añadir"
+                      color="blue"
+                      no-caps
+                      class="cursor-pointer"
+                      @click="addopt = !addopt; propass = props"
+                    />
+               </div>
+
+                <q-list>
+                 <q-item v-for="(item, index) in props.row.groupComp" :key="index">
+                   <div>
+                      <q-chip class="glossy" removable clickable @click="addoptView = true; viewId = getCompVal(item, 'group_id')" @remove="(e) => saved(delCompVal(props.row.groupComp, item), props.row.groupComp, props.row.id, 'groupComp')" color="green"  icon="filter_frames">
+                         {{getCompVal(item, 'name')}}
+                      </q-chip>
+                   </div>
+                 </q-item>
+               </q-list>
+            </q-item>
+                <q-item class="column items-start"  :props="props">
+                  <div><label class="col label-expand">Descripción</label></div>
+                  <div class="col" key="descripcion" :props="props">
+                      <q-editor content-class="bg-blue-6"
+                        :definitions="definitions" :toolbar="toolbar"
+                        @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
+                        v-model="props.row.descripcion"
+                        ref="editor_ref"
+                        @paste.native="evt => pasteCapture(evt)"
+                        min-height="5rem"
+                        :content-style="{color: props.row.descripcioncolor}"
+
+                      />
+                            <q-dialog v-model="colorText">
+                              <q-card class="q-cardGlass">
+                                <q-card-section>
+                                  <p class="text-bold q-ma-md">Color del texto</p>
+                                  <q-color
+                                  v-model="props.row.descripcioncolor"
+                                  @input="(e) => saved(e, props.row.descripcioncolor, props.row.id, 'descripcioncolor')"
+                                  default-view="palette"
+                                  format-model="rgba"
+                                  :palette="[
+                                    '#019A9D', '#D9B801', '#E8045A', '#B2028A',
+                                    '#2A0449', '#019A9D'
+                                  ]"
+                                  class="my-picker"
+                                />
+                                </q-card-section>
+                              </q-card>
+                            </q-dialog>
+                  </div>
+                </q-item>
+                <q-item class="row justify-start"  :props="props">
+                  <div class="col-6 col-lg-6 col-sm-12 q-pa-xs">
+                  <p class="text-bold">Precio</p>
+                    <q-decimal
+                    dense
+                    filled
+                    :rules="[validate]"
+                    rounded
+                    outlined @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
+                    v-model="props.row.price"
+                    input-style="text-align: right">
+                    </q-decimal>
+                  </div>
+                </q-item>
+                <q-expansion-item
+                  expand-separator
+                  icon="settings"
+                  label="Avanzado"
+                >
+                <q-item class="row justify-start"  :props="props">
+                    <div class="col-6 q-pa-xs">
+                      <p class="text-bold">Stock <span class="text-caption">(Cantidad disponible para venta) </span></p>
+                      <q-input filled dense
+                        rounded
+                        outlined
+                        @input="(e) => {saved(typeof props.row.stock === 'undefined' ? { [sede]: parseInt(e) } : {...props.row.stock,[sede]: parseInt(e) }, parseInt(props.row.stock), props.row.id, `stock`);
+                          typeof props.row.stock === 'undefined' ? (props.row.stock = {},props.row.stock[sede] = e) : props.row.stock[sede] = e
+                          }"
+                        :value="props.row.stock ? props.row.stock[sede] : 0"
+                        min="1" max="99999"
+                        type="number"
+                      />
+                    </div>
+                    <div class="col-6 q-pa-xs">
+                      <p class="text-bold">Descuento</p>
+                      <q-input filled dense
+                        rounded
+                        outlined
+                        @input="(e) => saved(e, parseInt(props.row.discount), props.row.id, 'discount')"
+                        v-model="props.row.discount"
+                        label="%"
+                        min="0" max="100"
+                        type="number"
+                      />
+                    </div>
+                </q-item>
+                <q-item class="row justify-start"  :props="props">
+                    <div class="col-6 q-pa-xs">
+                      <p class="text-bold">Código del producto</p>
+                      <q-input filled dense
+                        rounded
+                        outlined
+                        @input="(e) => saved(e, parseInt(props.row.code), props.row.id, 'code')"
+                        v-model="props.row.code"
+                      />
+                    </div>
+                    <div class="col-6 q-pa-xs">
+                      <p class="text-bold">Código de barras</p>
+                      <q-input filled dense
+                        rounded
+                        outlined
+                        @input="(e) => saved(e, parseInt(props.row.barCode), props.row.id, 'barCode')"
+                        v-model="props.row.barCode"
+                      />
+                    </div>
+                </q-item>
+                <q-item class="row justify-start"  :props="props">
+                  <div class="col-6 q-pa-xs">
+                    <p class="text-bold">Prioridad</p>
+                    <q-input filled dense
+                    rounded
+                    outlined @input="(e) => saved(e, parseInt(props.row.priority), props.row.id, 'priority')"
+                    v-model="props.row.priority"
+                    min="1" max="999"
+                    type="number">
+                    </q-input>
+                  </div>
+                </q-item>
+                <q-item class="column items-start" key="pricerange" :props="props">
+                  <div class="col-12 label-expand">Solapar precio
+                    <q-btn class="col-4" flat color="white" push icon="help">
+                      <q-tooltip anchor="center right" self="center left">
+                        <strong :class="{ 'text-h5': $q.screen.gt.xs }">Este texto, sobreescribe el precio que el cliente ve en el menu, el mejor caso de uso
+                          es para productos que tienen rangos de precios, variando las opciones seleccionadas.
+                        </strong>
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
+                    <q-input filled dense
+                    @input="(e) => saved(e, props.row.pricerange, props.row.id, 'pricerange')"
+                    v-model="props.row.pricerange"
+                    rounded
+                    class="col-12"
+                    outlined />
+                </q-item>
+                <q-item class="row justify-center"  :props="props">
+                  <div class="col-6 q-pa-xs">
+                  <p class="text-bold">Tipo de Display <span class="text-caption"> (Tenemos dos maneras de mostrar tu producto al cliente, activalos y mira como se ven en el cliente) </span></p>
+                    <q-radio color="blue" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="0" label="A" />
+                    <q-radio color="red" v-model="props.row.disptype" @input="(e) => saved(e, parseInt(props.row.disptype), props.row.id, `disptype`)" :val="1" label="B" />
+                  </div>
+                </q-item>
+                </q-expansion-item>
+                <q-item class="column items-center">
+                  <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
+                </q-item>
+              </q-list>
+            </q-card>
           </q-dialog>
-        </div>
+        </q-intersection>
       </template>
     </q-table>
      <q-dialog  v-model="SedeProducto" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
@@ -552,6 +554,35 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('localization', ['localizations']),
     ...mapGetters('config', ['configs', 'version']),
+    lascats () {
+      let categorias = JSON.parse(JSON.stringify(this.categorias))
+      let arr, n, child
+      function red (items) {
+        let obj = []
+        let itemchild
+        for (let j of Object.keys(items)) {
+          let item = items[j]
+          if (item.subCat && Object.keys(item.subCat).length) {
+            itemchild = red(item.subCat)
+            obj.push(...itemchild)
+          }
+          delete item.subCat
+          obj.push(item)
+        }
+        return obj
+      }
+      arr = []
+      for (let i of categorias) {
+        n = { ...i }
+        if (i.subCat && Object.keys(i.subCat).length) {
+          child = red(i.subCat)
+          arr.push(...child)
+        }
+        delete n.subCat
+        arr.push(n)
+      }
+      return arr
+    },
     sede: {
       get () {
         console.log(this.locList[0])
@@ -596,7 +627,7 @@ export default {
         })
         if (this.searchBar !== null && typeof this.searchBar !== 'undefined' && this.searchBar !== '') {
           var filteredMenu = sorted.filter(x => {
-            return x.name.toLowerCase().includes(this.searchBar.toLowerCase())
+            return x.name?.toLowerCase().includes(this.searchBar.toLowerCase())
           })
           sorted = filteredMenu
         }
