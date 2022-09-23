@@ -23,9 +23,12 @@
         :report="report"
         :dateRange="dateRange"
         :dateRango="dateRango"
+        :allestatus="allestatus"
+        :statusFilter="statusFilter"
         @exportTable="exportTable"
         @report="(e) => report = e"
         @dateRango="(e) => dateRango = e"
+        @statusFilter="(e) => statusFilter = e"
         @filtrado="(e) => filtrado = e" />
 </template>
 
@@ -36,46 +39,48 @@
         <tablestandard :item="true" :props="props" @routerpush="(e) => $router.push({ path: '/orders/show', query: { Order_Id: e } })" />
       </template>
     </q-table>
-  <q-table flat bordered
-  v-if="report === 'tproducts'"
-    class="table"
-      :loading="loading"
-      style="border-radius: 28px"
-      title="Total de productos Vendidos"
-    :data="dataprod.data"
-    :visible-columns="['nombre', 'monto', 'cantidad']"
-    row-key="id"
-      no-data-label="No se encontraron registros"
-      rows-per-page-label=" "
-  >
-  <template v-slot:bottom-row>
-        <q-tr>
-          <q-td></q-td>
-          <q-td class="text-left">
-        Total => {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(dataprod.total))}}
-        </q-td >
-        <q-td class="text-right" > <strong>Cantidad => {{dataprod.cantidad}}</strong></q-td>
+    <q-card>
+      <q-table
+      v-if="report === 'tproducts'"
+        class="table"
+          :loading="loading"
+          style="border-radius: 28px"
+          title="Total de productos Vendidos"
+        :data="dataprod.data"
+        :visible-columns="['nombre', 'monto', 'cantidad']"
+        row-key="id"
+          no-data-label="No se encontraron registros"
+          rows-per-page-label=" "
+      >
+      <template v-slot:bottom-row>
+            <q-tr>
+              <q-td></q-td>
+              <q-td class="text-left">
+            Total => {{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(parseFloat(dataprod.total))}}
+            </q-td >
+            <q-td class="text-right" > <strong>Cantidad => {{dataprod.cantidad}}</strong></q-td>
 
-        </q-tr>
+            </q-tr>
+          </template>
+      <template v-slot:top-right>
+              <tabletop
+              :filtrado="filtrado"
+              :report="report"
+              :dateRange="dateRange"
+              :dateRango="dateRango"
+              :allestatus="allestatus"
+              :statusFilter="statusFilter"
+              @exportTable="exportTable"
+              @report="(e) => report = e"
+              @dateRango="(e) => dateRango = e"
+              @statusFilter="(e) => statusFilter = e"
+              @filtrado="(e) => filtrado = e">
+
+              </tabletop>
+                <q-btn no-caps @click="Marcar()" class="btnquitarfiltro"> Quitar Filtro</q-btn>
       </template>
-  <template v-slot:top-right>
-          <tabletop
-          :filtrado="filtrado"
-          :report="report"
-          :dateRange="dateRange"
-          :dateRango="dateRango"
-          :allestatus="allestatus"
-          :statusFilter="statusFilter"
-          @exportTable="exportTable"
-          @report="(e) => report = e"
-          @dateRango="(e) => dateRango = e"
-          @statusFilter="(e) => statusFilter = e"
-          @filtrado="(e) => filtrado = e">
-
-          </tabletop>
-            <q-btn no-caps @click="Marcar()" class="btnquitarfiltro"> Quitar Filtro</q-btn>
-  </template>
- </q-table>
+     </q-table>
+    </q-card>
 </div>
 </template>
 
@@ -487,7 +492,7 @@ export default {
   },
   data () {
     return {
-      statusFilter: [3],
+      statusFilter: [0, 1, 2, 3, 4, 5, 6],
       report: 'estandar',
       loading: false,
       seleccionado: true,

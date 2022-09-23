@@ -146,7 +146,7 @@ export default {
     'productos': () => import('../components/businessIntelligence/productovendidos/index'),
     'cantidadsemanal': () => import('../components/businessIntelligence/semanacantidad/index')
   },
-  ...mapActions('order', 'bindOrders'),
+  ...mapActions('order', ['bindOrders']),
   computed: {
     ...mapGetters('order', ['ordersClient']),
     ...mapGetters('client', ['clients'])

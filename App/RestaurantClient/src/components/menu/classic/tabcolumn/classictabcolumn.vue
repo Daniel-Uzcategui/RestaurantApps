@@ -3,16 +3,16 @@
        v-if="tabs.subCat"
         class="full-height"
         >
-      <q-btn-dropdown auto-close color="secondary" content-class="q-pa-none q-ma-none" padding="4px 0px 4px 16px" dropdown-icon="expand_more" align="between" no-caps stretch flat :class="$q.screen.lt.md ? 'fontsize-18' : 'fontsize-12'" class=" text-bold capitalize full-width full-height "
+      <q-btn-dropdown auto-close color="secondary" content-class="q-pa-none q-ma-none" padding="4px 0px 4px 16px" dropdown-icon="expand_more" align="between" no-caps stretch flat :class="$q.screen.lt.md ? 'fontsize-18' : 'fontsize-12'" class="   full-width full-height "
       >
       <template v-slot:label>
-        <div  class="text-black full-height text-bold capitalize text-start">
+        <div  class="text-black full-height   text-start">
           {{tabs.name}}
         </div>
       </template>
         <q-list>
           <q-item clickable >
-            <q-item-section class="capitalize text-bold" @click="$emit('tabs', tabs)">Todos</q-item-section>
+            <q-item-section class=" text-bold" @click="$emit('tabs', tabs)">Todos</q-item-section>
           </q-item>
           <q-item v-for="(tab, index) in Object.keys(tabs.subCat)" :key="index" clickable @click="$emit('tabs', tabs.subCat[tab])">
             <recursivetablist :tab="tabs.subCat[tab]" @tabs="(e) => $emit('tabs', e)" />
@@ -20,7 +20,7 @@
         </q-list>
         </q-btn-dropdown>
       </div>
-      <q-btn :class="$q.screen.lt.md ? 'fontsize-18' : 'fontsize-12'" padding="4px 16px" flat align="left" v-else no-caps class="capitalize text-black text-bold"
+      <q-btn :class="$q.screen.lt.md ? 'fontsize-18' : 'fontsize-12'" padding="4px 16px" flat align="left" v-else no-caps class=" text-black"
         :name="tabs.id"
         @click="$emit('tabs', tabs)"
         >

@@ -33,7 +33,6 @@
           <div class="absolute-bottom-right q-pa-md">
             <q-btn
               flat
-              color="white"
               icon="arrow_back"
               @click="$router.replace('/Orders/index')"
             >

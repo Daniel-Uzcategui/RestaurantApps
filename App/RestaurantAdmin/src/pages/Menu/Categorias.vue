@@ -207,7 +207,7 @@
                       color="blue"
                     />
                 </q-item>
-                 <q-btn color="white" text-color="black" label="Guardar" @click="saveCatHolder" />
+                 <q-btn  text-color="black" label="Guardar" @click="saveCatHolder" />
             </q-list>
  </q-dialog>
  </div>

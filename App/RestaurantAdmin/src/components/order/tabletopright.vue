@@ -71,8 +71,9 @@
               <q-tab no-caps label="Exportar" stack push icon="archive" @click="$emit('exportTable')"/>
               </q-tabs>
           </q-footer>
+          <div class="row justify-center full-width">
             <q-option-group
-            class="col-12"
+            class="col-7 col-md-11 col-lg-7 col-sm-12 col-xs-12"
             :value="statusFilter"
             @input="(e) => $emit('statusFilter', e)"
               :options="allestatus"
@@ -82,6 +83,7 @@
               inline
               name ="foo"
             />
+          </div>
           </div>
 </template>
 <script>

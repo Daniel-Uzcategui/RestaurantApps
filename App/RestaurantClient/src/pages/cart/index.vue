@@ -827,7 +827,7 @@ export default {
   },
   mounted () {
     this.operacion = 'I'
-    this.serie = this.obtenerSerie(this.config.referencia)
+    // this.serie = this.obtenerSerie(this.config.referencia)
     let fecha = new Date()
     // let diaA = fecha.getDate()
     let hoy = fecha.getDate()

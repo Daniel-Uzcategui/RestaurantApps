@@ -23,7 +23,7 @@
          behavior="mobile"
          class="mobile-only"
          >
-         <div class="bg-grey-4">
+         <div class="bg-primary">
            <div class="q-pl-xl q-pt-md">
            <q-avatar size="80px">
               <img :src="getLogo['256x256']">
@@ -48,13 +48,71 @@
               <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
               />
                <div class="row justify-around">
+                <q-card  v-for="item in filteredMenuCat1" :key="item.id" style="transform: scale(0.99)" bordered class="column cardtype4" :class="item.price === undefined ? 'noprice' : ''"  :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''">
+                        <!-- <div :style="{'background-color':selectedCat ? selectedCat.color : ''}" > -->
+                          <div class="phototype4 column items-center">
+                            <q-img contain @click="$emit('productSelect', item)" class="col" v-ripple  :src="item.photo" />
+                          </div>
+                                 <q-btn color="red" class="absolute-top-right" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
+
+                        <q-card-section class="text-start col q-pa-none">
+                          <q-list dense>
+                          <q-item>
+                            <q-item-section>
+                              <q-item-label lines="2"  class="col">{{item.name}}</q-item-label >
+                            </q-item-section>
+                          </q-item>
+                          <q-item>
+                            <q-item-section>
+                              <q-item-label  class="text-grey col">({{item.stock[sede]}} Disponibles)</q-item-label >
+                            </q-item-section>
+                          </q-item>
+                          <q-item>
+                            <q-item-section>
+                              <q-item-label  class="text-indigo col">{{getCatNames(item)}}</q-item-label >
+                            </q-item-section>
+                          </q-item>
+                          <q-item>
+                            <q-item-section>
+                              <div v-if="item.price !== undefined" class=" text-center col">
+                                 <div>
+                                    <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
+                                       <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false">{{parseFloat(item.price).toFixed(2)}} $
+                                       </q-item-label>
+                                       <q-item-label v-if="item.discount > 0">{{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} $
+                                       </q-item-label>
+                                        <!-- Prime Static -->
+                                       <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false" class=" text-indigo"><span class="text-italic text-bold"></span> {{parseFloat(getRates(item.price)).toFixed(2)}} Bs
+                                       </q-item-label>
+                                       <q-item-label v-if="item.discount > 0" class="text-indigo"><span class="text-italic text-bold"></span>{{getRates(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} Bs
+                                       </q-item-label>
+                                    </div>
+                                    <div v-else class="col">
+                                      <q-item-label>{{item.pricerange}}
+                                      </q-item-label>
+                                    </div>
+                                 </div>
+                              </div>
+                            </q-item-section>
+                          </q-item>
+                          </q-list>
+                        </q-card-section>
+                        <q-card-actions vertical>
+                          <q-btn v-if="item.price !== undefined" :size="$q.screen.gt.xs ? 'md' : 'xs'" @click="$emit('productSelect', item)" unelevated class="text-bold no-shadow " label="Agregar" no-caps color="secondary"></q-btn>
+                        </q-card-actions>
+                     <q-tooltip :hide-delay="650" v-if="!item.checkAvail[1] && !item.checkAvail[0]">*No Disponible*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="item.checkAvail[1] && !item.checkAvail[0]">*Máx en el Carrito*</q-tooltip>
+                     </q-card>
                   <q-intersection
                   transition="scale"
                   class="cardtype4"
-                     v-for="item in filteredMenuCat" :key="item.id">
-                     <q-card  bordered class="column cardtype4"                   style="transform: scale(0.99)" :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''">
+                  :class="item.price === undefined ? 'noprice' : ''"
+                     v-for="item in filteredMenuCat2" :key="item.id">
+                     <q-card  bordered class="column cardtype4" style="transform: scale(0.99)" :class="item.price === undefined ? 'noprice' : ''" :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''">
                         <!-- <div :style="{'background-color':selectedCat ? selectedCat.color : ''}" > -->
-                          <q-img contain @click="$emit('productSelect', item)" v-ripple class="" :src="item.photo" />
+                          <div class="phototype4 column items-center">
+                            <q-img contain @click="$emit('productSelect', item)" class="col" v-ripple  :src="item.photo" />
+                          </div>
                                  <q-btn color="red" class="absolute-top-right" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
 
                         <q-card-section class="text-start col q-pa-none">
@@ -119,6 +177,12 @@ export default {
   name: 'menutype0',
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu', 'getLogo']),
+    filteredMenuCat1 () {
+      return this.filteredMenuCat.slice(0, this.size)
+    },
+    filteredMenuCat2 () {
+      return this.filteredMenuCat.slice(this.size)
+    },
     metamani () {
       let e = this.manifest
       return {
@@ -138,6 +202,22 @@ export default {
           '256x256': { rel: 'shortcut icon', type: 'image/png', href: e?.icons?.icon256x256 },
           '512x512': { rel: 'shortcut icon', type: 'image/png', href: e?.icons?.icon512x512 }
         }
+      }
+    },
+    size () {
+      switch (true) {
+        case this.$q.screen.xs:
+          return 4
+        case this.$q.screen.sm:
+          return 20
+        case this.$q.screen.md:
+          return 24
+        case this.$q.screen.lg:
+          return 36
+        case this.$q.screen.xl:
+          return 41
+        default:
+          return 4
       }
     },
     leftDrawerCatOpen: {
@@ -196,7 +276,7 @@ export default {
   }
 }
 </script>
-<style lang="stylus">
+<style lang="stylus" scopeds>
 .capitalize
   text-transform capitalize
 .descripcion
@@ -219,6 +299,8 @@ export default {
 .phototype4
   width 200px
   height 200px
+.noprice
+  height 320px
 @media (max-width: 1440px)
   .cardtype4
     height 370px
@@ -226,6 +308,8 @@ export default {
   .phototype4
     width 170px
     height 170px
+  .noprice
+    height 290px
 @media (max-width: 640px)
   .cardtype4
     height 355px
@@ -233,6 +317,8 @@ export default {
   .phototype4
     width 150px
     height 150px
+  .noprice
+    height 270px
 @media (max-width: 360px)
   .cardtype4
     height 335px
@@ -240,6 +326,8 @@ export default {
   .phototype4
     width 160px
     height 160px
+  .noprice
+    height 270px
 @media (max-width: 340px)
   .cardtype4
     width 140px
@@ -247,4 +335,6 @@ export default {
   .phototype4
     width 140px
     height 140px
+  .noprice
+    height 250px
 </style>

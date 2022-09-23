@@ -73,7 +73,7 @@
          v-model="leftDrawerOpen"
          behavior="mobile"
          >
-         <div class="bg-grey-4">
+         <div class="bg-primary">
            <div class="q-pl-xl q-pt-md">
            <q-avatar size="80px">
               <img :src="getLogo['128x128']">

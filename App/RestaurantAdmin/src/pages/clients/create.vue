@@ -5,8 +5,8 @@
        <q-card-section  class="q-cardtop  header" >
           <div class="text-h5">Agregar Clientes</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" icon="add" @click="create" />
-            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/clients/index')"/>
+            <q-btn class="header-btn" flat push label="Agregar" icon="add" @click="create" />
+            <q-btn class="header-btn-back" flat push  icon="arrow_back" @click="$router.replace('/clients/index')"/>
           </div>
        </q-card-section>
         <div class="row header-container">
