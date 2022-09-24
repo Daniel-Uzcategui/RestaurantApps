@@ -12,7 +12,7 @@ export const categorias = ({ categorias }) => {
       }
     }
   }
-  return cats.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+  return cats.sort((a, b) => (parseInt(a.priority) > parseInt(b.priority)) ? 1 : ((parseInt(b.priority) > parseInt(a.priority)) ? -1 : 0))
 }
 export const plaincategorias = ({ categorias }) => categorias
 // export const menu = ({ menu }) => {

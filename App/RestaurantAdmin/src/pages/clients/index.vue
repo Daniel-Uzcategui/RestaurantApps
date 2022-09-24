@@ -5,10 +5,12 @@
         inline-label
         :breakpoint="0"
         align="justify"
-        class="bg-primary"
+        class="bg-primary text-white"
+        dark
+        color
       >
         <q-tab name="Registrados" no-caps label="Registrados" />
-        <q-tab name="Suscritos" no-caps label="Suscritos al boletin" />
+        <q-tab name="Suscritos"  no-caps label="Suscritos al boletin" />
       </q-tabs>
     <div>
      <q-card v-show="tab ==='Registrados'">
@@ -24,8 +26,8 @@
       :selected.sync="selected"
       >
      <template v-slot:top-right>
-        <q-btn flat color="white" push label="Eliminar" no-caps icon="delete_outline" @click="deleted"/>
-        <q-btn flat color="white" push label="Exportar a csv" no-caps icon="archive" @click="exportTable"/>
+        <q-btn flat  push label="Eliminar" no-caps icon="delete_outline" @click="deleted"/>
+        <q-btn flat  push label="Exportar a csv" no-caps icon="archive" @click="exportTable"/>
       </template>
        <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click.native="$router.push({ path: '/clients/show', query: { client_Id: props.row.id } })">
@@ -65,8 +67,8 @@
       :selected.sync="selected"
       >
      <template v-slot:top-right>
-        <!-- <q-btn flat color="white" push label="Eliminar" icon="delete_outline" @click="deleted"/> -->
-        <q-btn flat color="white" push label="Exportar a csv" no-caps icon="archive" @click="exportTable2"/>
+        <!-- <q-btn flat  push label="Eliminar" icon="delete_outline" @click="deleted"/> -->
+        <q-btn flat  push label="Exportar a csv" no-caps icon="archive" @click="exportTable2"/>
       </template>
        <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer">

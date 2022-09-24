@@ -21,8 +21,8 @@
       </p>
       <!-- <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save" /> -->
         <q-btn-group flat push >
-          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="createValue()"/>
-          <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
+          <q-btn flat  no-caps push label="Agregar" icon="add" @click="createValue()"/>
+          <q-btn flat  no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
           <q-btn class="q-ml-md" @click="executeSave()" v-if="Object.keys(temp1).length" label="Guardar" color="blue" rounded no-caps icon="save" />
       </template>
@@ -236,8 +236,8 @@
     <q-footer v-if="$q.screen.lt.md && !(isDiag || isDiagView)" style="z-index: 9999" reveal>
     <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps >
       <routetabmenu></routetabmenu>
-      <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
-          <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
+      <q-tab flat  no-caps push icon="add" @click="addrow"/>
+          <q-tab flat  no-caps push icon="delete_outline" @click="delrow"/>
    </q-tabs>
    </q-footer>
   </div>

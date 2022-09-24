@@ -184,7 +184,7 @@ export default {
     ...mapGetters('client', ['clients2', 'idClientSel']),
     ...mapGetters('config', ['configs']),
     clients2Filtered () {
-      return this.clients2.filter(x => x.name.toLowerCase().includes(this.search.toLowerCase()))
+      return this.clients2.filter(x => x.name?.toLowerCase().includes(this.search.toLowerCase()))
     },
     config () {
       return this.configs.find(obj => {

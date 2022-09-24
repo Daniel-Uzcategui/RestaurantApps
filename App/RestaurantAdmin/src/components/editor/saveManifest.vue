@@ -35,23 +35,34 @@
         </q-card-section>
         <q-card-section class="column items-center relative-position">
           <div>
-        <croppa class="col" v-model="myCroppa"
-          :width="300"
-          :height="300"
-          placeholder="click aqui"
-          placeholder-color="#FFF"
-          :placeholder-font-size="16"
-          canvas-color="transparent"
-          :show-remove-button="true"
-          remove-button-color="black"
-          show-loading
-          :quality="4"
-          :loading-size="50"
-          :loading-color="'#606060'"
-          ref="croppa"
-        />
+              <croppa class="col" v-model="myCroppa"
+                :width="resizableW"
+                :height="resizableH"
+                placeholder="click aqui"
+                placeholder-color="#FFF"
+                :placeholder-font-size="16"
+                canvas-color="transparent"
+                :show-remove-button="true"
+                @file-choose="newimg"
+                remove-button-color="black"
+                show-loading
+                :quality="4"
+                :loading-size="50"
+                :loading-color="'#606060'"
+                ref="croppa"
+              />
           </div>
         <div class="col column items-center">
+          <div class="col full-width">
+            <q-badge color="secondary">
+              Ancho
+            </q-badge>
+            <q-slider v-model="resizableW" :min="10" :max="300"/>
+            <q-badge color="secondary">
+              Largo
+            </q-badge>
+            <q-slider v-model="resizableH" :min="10" :max="300"/>
+          </div>
          <q-btn-group class="col q-ma-sm" push>
         <q-btn @click="$refs.croppa.zoomIn()" color="blue" no-caps>Acercar</q-btn>
         <q-btn @click="$refs.croppa.zoomOut()" color="blue" no-caps>Alejar</q-btn>
@@ -64,6 +75,7 @@
         <q-btn @click="$refs.croppa.flipY()" color="green" no-caps>Espejo vertical</q-btn>
          </q-btn-group>
         <q-btn rounded class="col q-ma-sm" @click="croppaPic()" color="blue" no-caps>Subir Foto</q-btn>
+         <q-btn color="white" text-color="black" label="Standard" @click="newimg()" />
 
         </div>
         <fbq-uploader
@@ -105,6 +117,8 @@ export default {
   },
   data () {
     return {
+      resizableW: 300,
+      resizableH: 300,
       ambiente: localStorage.getItem('amb'),
       photoUpload: false,
       showUploader: false,
@@ -112,6 +126,7 @@ export default {
       app_name: '',
       app_short_name: '',
       app_description: '',
+      img: null,
       keywords: '',
       app_display: 'fullscreen',
       appicons: {
@@ -158,6 +173,12 @@ export default {
     }
   },
   methods: {
+    async newimg (e) {
+      let file = this.$refs.croppa.generateDataUrl()
+      this.img = new Image()
+      this.img.src = file
+      console.log('new img', e)
+    },
     conss (e, y) {
       console.log(e, y)
     },

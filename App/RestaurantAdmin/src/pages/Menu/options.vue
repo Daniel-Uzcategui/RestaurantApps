@@ -20,8 +20,8 @@
       </p>
       <q-btn v-if="Object.keys(temp1).length" @click.stop="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
         <q-btn-group flat push >
-          <q-btn flat color="white" no-caps push label="Agregar" icon="add" @click="addrow()"/>
-          <q-btn flat color="white" no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
+          <q-btn flat  no-caps push label="Agregar" icon="add" @click="addrow()"/>
+          <q-btn flat  no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
       <!-- <template v-slot:body="props">
@@ -273,8 +273,8 @@
     <q-footer style="z-index: 9999" v-if="$q.screen.lt.md && !isDiag" reveal>
     <q-tabs class="bg-primary" dense mobile-arrows indicator-color="transparent" no-caps >
       <routetabmenu></routetabmenu>
-      <q-tab flat color="white" no-caps push icon="add" @click="addrow"/>
-          <q-tab flat color="white" no-caps push icon="delete_outline" @click="delrow"/>
+      <q-tab flat  no-caps push icon="add" @click="addrow"/>
+          <q-tab flat  no-caps push icon="delete_outline" @click="delrow"/>
    </q-tabs>
    </q-footer>
   </div>

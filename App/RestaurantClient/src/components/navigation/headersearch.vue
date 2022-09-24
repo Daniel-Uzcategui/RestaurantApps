@@ -18,6 +18,7 @@
           </template>
         </q-input>
       </div>
+      <Logoutuser class="absolute-top-right"></Logoutuser>
       </div>
       <Navtabs class="desktop-only" ></Navtabs>
     </q-header>
@@ -25,6 +26,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Navtabs from './navtabs.vue'
+import Logoutuser from '../user/logoutuser.vue'
 export default {
   computed: {
     ...mapGetters('config', ['searchBarState', 'getLogo']),
@@ -40,6 +42,6 @@ export default {
   methods: {
     ...mapActions('config', ['searchBarCommit'])
   },
-  components: { Navtabs }
+  components: { Navtabs, Logoutuser }
 }
 </script>

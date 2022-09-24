@@ -12,7 +12,8 @@ export const bindClients = firestoreAction(({ bindFirestoreRef }, payload) => {
 export const bindClientBranch = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log('bindingMenu')
   try {
-    return bindFirestoreRef('branches', firestore().collection('clients').doc(payload.client).collection('branches').where('softDelete', '==', 0).where(`Vendedor.${payload.user.id}.id`, '==', payload.user.id), { reset: false, serialize: serialize, wait: true })
+    return bindFirestoreRef('branches', firestore().collection('clients').doc(payload.client).collection('branches').where('softDelete', '==', 0), { reset: false, serialize: serialize, wait: true })
+    // .where(`Vendedor.${payload.user.id}.id`, '==', payload.user.id)
   } catch (e) {
     console.error(e)
   }
