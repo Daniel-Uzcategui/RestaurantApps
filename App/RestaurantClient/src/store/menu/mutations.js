@@ -15,6 +15,10 @@ export function saveCategory (state, payload) {
   console.log(payload)
   state.categorias = payload
 }
+export function savefilterMenu (state, payload) {
+  console.log(payload)
+  state.filterMenu = payload
+}
 
 export const addCatMut = firestoreAction((state, payload) => {
   return firestore()

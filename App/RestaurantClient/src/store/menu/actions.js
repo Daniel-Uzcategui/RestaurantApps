@@ -14,6 +14,14 @@ export const setSede = async function ({ commit }, payload) {
     console.error(e)
   }
 }
+export const setFilterMenu = async function ({ commit }, payload) {
+  try {
+    console.log({ savefilterMenu: payload })
+    return commit('savefilterMenu', payload)
+  } catch (e) {
+    console.error(e)
+  }
+}
 export const modCartVal = async function ({ commit }, payload) {
   return commit('modCartVal', payload)
 }

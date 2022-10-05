@@ -222,10 +222,12 @@ import menuFilter from '../../components/menu/classic/menuFilter.vue'
 import Menutype0 from '../../components/menu/classic/menutype0.vue'
 import Menutype4 from '../../components/menu/classic/menutype4.vue'
 import Menutype5 from '../../components/menu/classic/menutype5.vue'
+import menumix from '../../mixins/menu'
 // import store from '../../store/index'
 import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
 export default {
   // store,
+  mixins: [menumix],
   props: {
     global_class: {
       type: String,
@@ -260,7 +262,7 @@ export default {
     Menutype5
   },
   computed: {
-    ...mapGetters('menu', ['categorias', 'menu', 'cart', 'sede', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
+    ...mapGetters('menu', ['categorias', 'menu', 'rewards', 'selectedFilter', 'selectedProduct', 'selCat', 'selectedProdType', 'filters']),
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('config', ['menucfg', 'paymentServ', 'configurations', 'menuDispType', 'searchBarState', 'mobileGreatView', 'bannerMenu']),
     searchBar: {
@@ -404,7 +406,6 @@ export default {
       photoType: '',
       photoUpload: false,
       quantity: 0,
-      filteredMenu: [],
       selectedCat: null,
       current: 0,
       numProducts: 7,
@@ -649,42 +650,6 @@ export default {
     //   }
     //   return [available, available2, exists]
     // },
-    checkAvail (id, type, diag) {
-      console.time('factorial test2')
-      var exists = 0
-      if (typeof id === 'undefined' || typeof type === 'undefined') { return false }
-      if (type === 0) {
-        var counter = diag ? 0 : this.quantity
-        var inCart = this.cart.filter(x => x.prodId === id)
-        var product = this.filteredMenu.find(x => x.id === id)
-        inCart.forEach(element => {
-          counter = element.quantity + counter
-        })
-        this.cart.forEach(y => {
-          if (typeof y.prods !== 'undefined') {
-            var producto = y.prods.find(j => j.id === product.id)
-            if (typeof producto === 'undefined') { producto = { quantity: 0 } }
-            counter = producto.quantity * y.quantity + counter
-          }
-        })
-        if (counter) { exists = 1 }
-        if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
-          if (counter === parseInt(product.stock[this.sede])) {
-            console.timeEnd('factorial test2')
-            return [0, exists]
-          } else if (counter > parseInt(product.stock[this.sede])) {
-            console.timeEnd('factorial test2')
-            return [2, exists]
-          } else {
-            console.timeEnd('factorial test2')
-            return [1, exists]
-          }
-        } else {
-          console.timeEnd('factorial test2')
-          return [0, exists]
-        }
-      }
-    },
     displayPermitValue () {
       let permit = this.menucfg?.priceActive ?? true
       if (permit) {

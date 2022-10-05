@@ -6,6 +6,7 @@ export default function () {
     rewards: [],
     cart: [],
     sede: null,
+    filterMenu: [],
     promos: [],
     filters: [],
     selectedFilter: '',

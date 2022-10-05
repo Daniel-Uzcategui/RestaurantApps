@@ -115,6 +115,8 @@ export const promos = ({ promos }) => {
   return arr
 }
 
+export const filterMenu = ({ filterMenu }) => filterMenu
+
 export const filters = ({ filters }) => filters
 
 export const selectedProduct = ({ selectedProduct }) => selectedProduct
