@@ -10,7 +10,7 @@
                 <!-- <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
                               /> -->
                   <q-card flat bordered class="column q-ma-md justify-between cardtype4"
-                     v-for="item in filteredMenuCat" :key="item.id" :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''">
+                     v-for="item in filteredMenuCat" :key="item.id" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''">
                         <div class="phototype4" :style="{'background-color':selectedCat ? selectedCat.color : ''}" >
                         <q-img @click="$emit('productSelect', item)" v-ripple contain :src="item.photo" />
                         </div>
@@ -34,8 +34,8 @@
 
                            </div>
                            <q-btn v-if="item.price !== undefined" :size="$q.screen.gt.xs ? 'xs' : 'xs'" @click="$emit('productSelect', item)" unelevated class="text-bold no-shadow q-ma-md" text-color="black" label="Añadir al carrito" color="grey-3" rounded></q-btn>
-                     <q-tooltip :hide-delay="650" v-if="!item.checkAvail[1] && !item.checkAvail[0]">*No Disponible*</q-tooltip>
-                     <q-tooltip :hide-delay="650" v-if="item.checkAvail[1] && !item.checkAvail[0]">*Máx en el Carrito*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
                   </q-card>
                   </div>
                </div>
@@ -44,13 +44,15 @@
 <script>
 import classictabs from './tabs/classictabs.vue'
 import { mapGetters } from 'vuex'
+import menumix from '../../../mixins/menu'
 export default {
+  mixins: [menumix],
   components: { classictabs },
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu'])
   },
   name: 'menutype0',
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede']
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat']
 }
 </script>
 <style lang="stylus" scoped>

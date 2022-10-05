@@ -1,8 +1,5 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
-  data () {
-
-  },
   computed: {
     ...mapGetters('menu', ['filterMenu', 'cart', 'sede']),
     filteredMenu: {
@@ -21,7 +18,6 @@ export default {
   methods: {
     ...mapActions('menu', ['setFilterMenu']),
     checkAvail (id, type, diag) {
-      console.time('factorial test2')
       var exists = 0
       if (typeof id === 'undefined' || typeof type === 'undefined') { return false }
       if (type === 0) {
@@ -41,17 +37,13 @@ export default {
         if (counter) { exists = 1 }
         if (typeof product !== 'undefined' && typeof product.stock !== 'undefined' && typeof product.stock[this.sede] !== 'undefined') {
           if (counter === parseInt(product.stock[this.sede])) {
-            console.timeEnd('factorial test2')
             return [0, exists]
           } else if (counter > parseInt(product.stock[this.sede])) {
-            console.timeEnd('factorial test2')
             return [2, exists]
           } else {
-            console.timeEnd('factorial test2')
             return [1, exists]
           }
         } else {
-          console.timeEnd('factorial test2')
           return [0, exists]
         }
       }

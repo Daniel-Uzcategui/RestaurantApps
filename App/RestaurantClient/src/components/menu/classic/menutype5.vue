@@ -47,14 +47,15 @@
             <div>
               <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
               />
-              <q-infinite-scroll  ref="infiniteScroll" @load="onLoad" debounce="10" :offset="1000">
+              <q-infinite-scroll ref="infiniteScroll" @load="onLoad" debounce="10" :offset="1000">
                <div class="row justify-around">
                   <q-intersection
+                  once
                   transition="scale"
                   class="cardtype4"
                   :class="item.price === undefined ? 'noprice' : ''"
                      v-for="item in filteredMenuCat2" :key="item.id">
-                     <q-card  bordered class="column cardtype4" style="transform: scale(0.99)" :class="item.price === undefined ? 'noprice' : ''" :style="!item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : item.checkAvail[1] && !item.checkAvail[0] ? 'opacity: 0.5;' : ''">
+                     <q-card  bordered class="column cardtype4" style="transform: scale(0.99)" :class="item.price === undefined ? 'noprice' : ''" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''">
                         <!-- <div :style="{'background-color':selectedCat ? selectedCat.color : ''}" > -->
                           <div class="phototype4 column items-center">
                             <q-img contain @click="$emit('productSelect', item)" class="col" v-ripple  :src="item.photo" />
@@ -106,8 +107,8 @@
                         <q-card-actions vertical>
                           <q-btn v-if="item.price !== undefined" :size="$q.screen.gt.xs ? 'md' : 'xs'" @click="$emit('productSelect', item)" unelevated class="text-bold no-shadow " label="Agregar" no-caps color="secondary"></q-btn>
                         </q-card-actions>
-                     <q-tooltip :hide-delay="650" v-if="!item.checkAvail[1] && !item.checkAvail[0]">*No Disponible*</q-tooltip>
-                     <q-tooltip :hide-delay="650" v-if="item.checkAvail[1] && !item.checkAvail[0]">*Máx en el Carrito*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
                      </q-card>
                   </q-intersection>
                 </div>
@@ -119,13 +120,15 @@
 import classictabs from './tabcolumn/classictabscolumn.vue'
 import classictabs2 from './tabs/classictabs.vue'
 import { mapActions, mapGetters } from 'vuex'
+import menumix from '../../../mixins/menu'
 export default {
+  mixins: [menumix],
   components: { classictabs, classictabs2 },
   name: 'menutype0',
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu', 'getLogo']),
     filteredMenuCat2 () {
-      return this.menuHolder
+      return this.filteredMenuCat.slice(0, this.menuSize)
     },
     metamani () {
       let e = this.manifest
@@ -190,26 +193,32 @@ export default {
   },
   data () {
     return {
-      menuHolder: [],
-      rateDefault: [],
-      loaded: false
+      menuSize: 0,
+      rateDefault: []
     }
   },
   watch: {
+    // display () {
+    //   if (this.display) {
+    //     this.$refs.infiniteScroll.stop()
+    //     return
+    //   }
+    //   this.$refs.infiniteScroll.resume()
+    // },
     filteredMenuCat () {
-      this.menuHolder = []
-      if (!this.$refs.infiniteScroll) {
-        return
-      }
-      this.$refs.infiniteScroll.trigger()
+      console.log('filtermenucat watcher')
+      // this.menuHolder = []
+      // if (!this.$refs.infiniteScroll) {
+      //   return
+      // }
+      // this.$refs.infiniteScroll.trigger()
+      // this.$refs.infiniteScroll.updateScrollTarget()
     }
   },
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail', 'sede'],
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display'],
   methods: {
     onLoad (index, done) {
-      this.loaded = true
-      console.log('Need to load', ...this.filteredMenuCat.slice(this.menuHolder.length, this.menuHolder.length + this.size))
-      this.menuHolder.push(...this.filteredMenuCat.slice(this.menuHolder.length, this.menuHolder.length + this.size))
+      this.menuSize = this.menuSize + this.size
       done()
     },
     ...mapActions('config', ['bindRates', 'leftDrawerCatOpCommit']),

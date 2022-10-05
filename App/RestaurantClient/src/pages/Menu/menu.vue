@@ -87,7 +87,7 @@
             </div>
            <div v-if="displayType == 0">
              <menutype-0
-              @tabs="(e) => {selectedCat=e; search()}"
+              @tabs="(e) => {selectedCat=e; search(); searchBarCommit('')}"
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
               :sede="sede"
@@ -98,7 +98,7 @@
             </div>
             <div v-if="displayType == 3">
               <menutype-4
-              @tabs="(e) => {selectedCat=e; search()}"
+              @tabs="(e) => {selectedCat=e; search(); searchBarCommit('')}"
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
               @hook:mounted="selectedCat=filtercat[0]"
@@ -120,7 +120,7 @@
             label="Categorías"
             :options-value="(item) => item === null ? null : item"
             :option-label="(item) => item === null ? 'Null value' : item.name"
-            @input="(e) => {selectedCat=e; search()}"
+            @input="(e) => {selectedCat=e; search(); searchBarCommit('')}"
             emit-value
             map-options
             />
@@ -193,7 +193,8 @@
             </div>
             <div v-if="displayType == 4">
             <menutype-5
-              @tabs="(e) => {selectedCat=e; search()}"
+              :display="display"
+              @tabs="(e) => {selectedCat=e; search(); searchBarCommit('')}"
               :selectedCat="selectedCat"
               :checkAvail="checkAvail"
               @hook:mounted="selectedCat=filtercat[0]"
@@ -577,6 +578,7 @@ export default {
       }
     },
     filteredMenuCat (e) {
+      console.time('start')
       let canShowPrice = this.displayPermitValue()
       let filtered = []
       const { viewRewards, rewards } = this
@@ -593,7 +595,7 @@ export default {
       if (Array.isArray(this.filteredMenu)) {
         filtered = this.filteredMenu.filter(x => filter(x))
         for (let item of filtered) {
-          item.checkAvail = this.checkAvail(item.id, item.prodType)
+          // item.checkAvail = this.checkAvail(item.id, item.prodType)
           if (!canShowPrice) {
             delete item.price
           }
@@ -601,6 +603,7 @@ export default {
       } else {
         filtered = [{ id: 'kkfkff', not: true }]
       }
+      console.timeEnd('start')
       return filtered
     },
     search () {

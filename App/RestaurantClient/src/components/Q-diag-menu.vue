@@ -24,7 +24,7 @@
          </diaginput>
          <q-card
          v-else
-          class="q-fullscreen-glassMorph"
+          class="q-fullscreen-glassMorph bg-transparent"
           style="width: 100%;
           height: 100%;
           margin: 0px;
