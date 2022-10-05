@@ -109,10 +109,11 @@
       <q-page-container>
             <component id="bs" :is="themeUser">
          <transition
+            appear
             name="transitions"
             enter-active-class="animated slideInUp"
             leave-active-class="animated slideOutDown"
-            mode="out-in">
+            >
               <router-view @setBlur="setBlur" />
          </transition>
             </component>

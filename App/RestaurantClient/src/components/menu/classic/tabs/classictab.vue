@@ -4,7 +4,7 @@
         no-caps class="wrapel fontsize-13 q-pa-none q-ma-none " content-class="wrapel  fontsize-13"
         :name="tabs.id"
         >
-      <q-btn-dropdown no-caps stretch flat class="full-height full-width text-bold  fontsize-13" :label="tabs.name"
+      <q-btn-dropdown no-caps  flat class="full-height full-width text-bold  fontsize-13" :label="tabs.name"
       >
         <q-list>
           <q-item clickable >

@@ -6,13 +6,52 @@ export const categorias = ({ categorias }) => {
       for (let subcatkey of Object.keys(cat.subCat)) {
         let subcat = cat.subCat[subcatkey]
         console.log('catname', subcat.name.length)
-        if (subcat.name === undefined || subcat.name.length === 0) {
+        if ((subcat.name === undefined || subcat.name.length === 0) || subcat.softDelete) {
           delete cats[i].subCat[subcatkey]
         }
       }
     }
   }
-  return cats.sort((a, b) => (parseInt(a.priority) > parseInt(b.priority)) ? 1 : ((parseInt(b.priority) > parseInt(a.priority)) ? -1 : 0))
+  return cats.sort((a, b) => (sorted(a.priority) > sorted(b.priority)) ? 1 : ((sorted(b.priority) > sorted(a.priority)) ? -1 : 0))
+}
+export const origMenu = ({ menu, sede }) => {
+  if (menu.length) {
+    return menu.reduce((y, x) => {
+      if (x.estatus && x.estatus[sede]) {
+        let price = { price: x.price }
+        // if (viewRewards) {
+        //   price = { price: 0, reward: true }
+        // }
+        y.push({
+          categoria: x.categoria,
+          estatus: x.estatus,
+          descripcion: x.descripcion,
+          descripcioncolor: x.descripcioncolor,
+          name: x.name,
+          photo: x.photo,
+          pricerange: x.pricerange,
+          photomulti: x.photomulti,
+          photosmall: x.photosmall,
+          ...price,
+          id: x.id,
+          stock: x.stock,
+          discount: x.discount,
+          prodType: 0,
+          disptype: x.disptype,
+          priority: parseInt(x.priority ? x.priority : 1000),
+          groupComp: typeof x.groupComp === 'undefined' ? [] : x.groupComp
+        })
+      }
+      return y.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+    }, [])
+  } else return []
+}
+function sorted (a) {
+  let num = parseInt(a)
+  if (isNaN(num)) {
+    return 0
+  }
+  return num
 }
 export const plaincategorias = ({ categorias }) => categorias
 // export const menu = ({ menu }) => {

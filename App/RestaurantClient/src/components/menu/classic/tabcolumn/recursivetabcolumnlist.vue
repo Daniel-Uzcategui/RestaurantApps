@@ -1,5 +1,5 @@
 <template>
-      <q-btn-dropdown no-caps dense flat content-class="fontsize-13 " dropdown-icon="none" :label="tab.name"
+      <q-btn-dropdown no-caps dense flat class="fontsize-13 q-pa-none q-ma-none" dropdown-icon="none" :label="tab.name"
       v-if="tab.subCat"
       >
         <q-list>
