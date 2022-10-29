@@ -64,7 +64,7 @@
            <q-td>
             <q-select options-selected-class="text-blue" filled
                 :value="props.row.rol"
-                @input="(e) => saved(e, props.row.rol, props.row.id, `rol`)"
+                @input="(e) => { saved(e, props.row.rol, props.row.id, `rol`); modifyAUser({rol: e, user: props.row.id})}"
                 @remove="(e) => removed({...e, id: props.row.id})"
                 use-input
                 use-chips
@@ -291,8 +291,9 @@ function wrapCsvValue (val, formatFn) {
 
   return `"${formatted}"`
 }
-
+import createauser from '../../mixins/createauser'
 export default {
+  mixins: [createauser],
   computed: {
     ...mapGetters('user', ['users']),
     getUsers () {

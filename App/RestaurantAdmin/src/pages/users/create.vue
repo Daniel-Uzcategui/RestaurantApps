@@ -1,17 +1,35 @@
 <template>
-  <q-page class="q-pa-lg" >
-     <div class="q-gutter-md">
+  <q-page class="" >
+     <div class="">
+      <q-form @submit="agregar" class="" >
       <q-card >
-       <q-card-section  class="q-cardtop  header" >
+       <q-card-section  class="q-cardtop header" >
           <div class="text-h5">Agregar Usuarios</div>
           <div>
-            <q-btn class="header-btn" flat color="white" push label="Agregar" @click="agregar" icon="add"/>
-            <q-btn class="header-btn-back" flat color="white" push  icon="arrow_back" @click="$router.replace('/users/index')"/>
+            <q-btn class="header-btn" flat push label="Agregar" type="submit" icon="add"/>
+            <q-btn class="header-btn-back" flat push  icon="arrow_back" @click="$router.replace('/users/index')"/>
           </div>
        </q-card-section>
        <div class='filled'></div>
-        <div class="row header-container">
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <q-card-section class="row">
+          <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4" >
+          <q-input :rules="[ (val, rules) => rules.email(val) || 'Porfavor coloque un correo electrónico valido, con su código de país ej: +584121234567' ]" filled label="Correo Electrónico"  v-model="email" outlined
+            type="email" float-label="Float Label" placeholder="Correo Electrónico" />
+         </div>
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
+          <q-input filled
+          :rules="[ (val) => validatePhoneForE164(val) || 'Porfavor coloque un teléfono valido' ]"
+          v-model="phone"
+          type="text"
+          float-label="Float Label"
+          placeholder="Telefono"
+          label="Telefono"
+          outlined
+           />
+        </div>
+          <!-- <q-btn color="white" text-color="black" label="Verificar Correo" /> -->
+         <div class="flex-break q-py-md "></div>
+        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-input filled
           v-model="nombre"
           type="text"
@@ -22,7 +40,7 @@
           outlined
           />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-input filled
           v-model="apellido"
           type="text"
@@ -33,34 +51,31 @@
           outlined
           />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <q-select options-selected-class="text-blue" filled v-model="status" map-options emit-value standout="bg-teal "
-          outlined :options="estatus_options" label="Estatus" />
+        <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3">
+          <!-- <q-select options-selected-class="text-blue" filled v-model="status" map-options emit-value standout="bg-teal "
+          outlined :options="estatus_options" label="Estatus" /> -->
         </div>
         <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-radio  dense label="Administrador" color="teal" val="Admin"  v-model="typeAccess"  class="typeAccess"/>
           <q-radio  dense label="Cliente" color="orange" val="Client" v-model="typeAccess"  class="typeAccess" />
           <q-radio  dense label="Proveedor" color="red" val="Proveedor" v-model="typeAccess"  class="typeAccess" />
           <q-radio  dense label="Delivery" color="blue" val="Delivery"  v-model="typeAccess" class="typeAccess" />
           <q-radio  dense label="Vendedor" color="yellow" val="Seller"  v-model="typeAccess" class="typeAccess" />
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
+        <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4" >
             <q-input filled label="Identificación" v-model="cedula" outlined
              type="text" float-label="Float Label" placeholder="Identificación" />
           </div>
-          <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" >
-          <q-input filled label="Correo Electrónico"  v-model="email" outlined
-            type="text" float-label="Float Label" placeholder="Correo Electrónico" />
-         </div>
+
       <div class="flex-break q-py-md "></div>
-      <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+      <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
       <q-select options-selected-class="text-blue" filled map-options emit-value standout="bg-teal "
           v-model="sexo" outlined
           :options="sexo_options"
           label="Sexo" />
       </div>
-      <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
+      <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4" >
         <q-input filled  label="Fecha de Nacimiento"  v-model="fecnac" :rules="['fecnac']" outlined>
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
@@ -71,18 +86,8 @@
         </template>
       </q-input>
       </div>
-      <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <q-input filled
-          v-model="phone"
-          type="text"
-          float-label="Float Label"
-          placeholder="Telefono"
-          label="Telefono"
-          outlined
-           />
-        </div>
       <div class="flex-break q-py-md "></div>
-      <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4">
+      <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
       <q-input filled
         square outlined
         clearable
@@ -92,7 +97,7 @@
         color="primary"
         data-cy="password"
         label="contraseña"
-        :rules="[val =&gt; !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
+        :rules="[val => !!val || '*Campo es requerido']" :type="isPwd ? 'password' : 'text'"
         @keyup.enter="onSubmit(); $event.target.blur()"
       >
         <template v-slot:append>
@@ -100,7 +105,7 @@
         </template>
       </q-input>
       </div>
-      <div class="header-cell col-xs-6 col-sm-6 col-md-4 col-lg-4" >
+      <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4" >
         <q-input filled
         square outlined
         clearable
@@ -120,7 +125,7 @@
       </q-input>
       </div> <!-- Proveedor -->
       <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >
+         <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >
           <q-input filled
           v-model="codigoDelivery"
           type="text"
@@ -130,7 +135,7 @@
           label="Codigo"
           outlined/>
         </div>
-        <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >
+        <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'" >
             <q-input filled
           v-model="razonSocial"
           type="text"
@@ -140,7 +145,7 @@
           label="Razón Social"
           outlined/>
           </div>
-          <div class="header-cell col-xs-6 col-sm-6 col-md-2 col-lg-2" v-if="typeAccess==='Proveedor'">
+          <div class="header-cell col-xs-12 col-sm-6 col-md-2 col-lg-2" v-if="typeAccess==='Proveedor'">
           <q-input filled
           v-model="RIF"
           type="text"
@@ -150,7 +155,7 @@
           label="Id Fiscal"
           outlined/>
          </div>
-         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Proveedor'">
           <q-input filled
           v-model="razonComercial"
           type="razonComercial"
@@ -161,7 +166,7 @@
          </div>
         <!-- delivery  o seller-->
        <div class="flex-break q-py-md "></div>
-         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery' ||  typeAccess==='Seller'" >
+         <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery' ||  typeAccess==='Seller'" >
           <q-input filled
           v-model="codigo"
           type="text"
@@ -172,21 +177,22 @@
           outlined/>
         </div>
         <!-- delivery -->
-        <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'" >
+        <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'" >
          <q-select options-selected-class="text-blue" filled v-model="statusUbicacion" map-options emit-value standout="bg-teal "
           outlined :options="estatus_ubicacion" label="Estatus de Ubicación" />
           </div>
-          <div class="header-cell col-xs-6 col-sm-6 col-md-2 col-lg-2" v-if="typeAccess==='Delivery'">
+          <div class="header-cell col-xs-12 col-sm-6 col-md-2 col-lg-2" v-if="typeAccess==='Delivery'">
           <q-select options-selected-class="text-blue" filled v-model="movilidad" map-options emit-value standout="bg-teal "
           outlined :options="tipo_options" label="Tipo movilidad" />
          </div>
-         <div class="header-cell col-xs-6 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'">
+         <div class="header-cell col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="typeAccess==='Delivery'">
          <q-select options-selected-class="text-blue" filled v-model="statusdelivery" map-options emit-value standout="bg-teal "
           outlined :options="estatus_delivery" label="Estatus delivery" />
          </div>
-          </div>
+          </q-card-section>
       <diV class='filled'></diV>
      </q-card>
+    </q-form>
   </div>
   <q-dialog v-model="validationError">
       <q-card>
@@ -205,13 +211,16 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import createauser from '../../mixins/createauser'
 export default {
+  mixins: [createauser],
   data () {
     return {
       validationError: false,
       codigo: '',
       codigoDelivery: '',
       razonSocial: '',
+      phone: '',
       RIF: '',
       razonComercial: '',
       nombre: '',
@@ -223,7 +232,7 @@ export default {
       movilidad: '',
       statusdelivery: '',
       isPwd: true,
-      typeAccess: '',
+      typeAccess: 'Admin',
       fecnac: '',
       sexo: '',
       password: '',
@@ -273,8 +282,12 @@ export default {
     }
   },
   methods: {
+    validatePhoneForE164 (phoneNumber) {
+      const regEx = /^\+[1-9]\d{10,14}$/
+      return regEx.test(phoneNumber)
+    },
     ...mapActions('auth', ['createUser']),
-    agregar () {
+    async agregar () {
       const { email, password, nombre, apellido, cedula, sexo,
         fecnac, codigo, razonSocial, RIF, razonComercial,
         rol, typeAccess, codigoDelivery, statusUbicacion,
@@ -283,19 +296,40 @@ export default {
       console.log(email, password, nombre, apellido, cedula,
         sexo, fecnac, codigo, razonSocial, RIF, razonComercial,
         rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery, phone)
-      this.createUser({ email, password, nombre, apellido, cedula, sexo, fecnac, codigo, razonSocial, RIF, razonComercial, rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery, phone }
-      ).then(() => this.$q.dialog({
-        title: '',
-        message: 'Se han guardo exitosamente el Usuario',
-        cancel: false,
-        persistent: true
-      })).catch(e => this.$q.dialog({
-        title: '',
-        message: 'Hubo un error al agregar el usuario, por favor contactar con el administrador',
-        cancel: false,
-        persistent: true
-      }))
-      this.$router.replace('/users/index')
+      try {
+        this.$q.loading.show()
+        await this.createAUser({ email, password, nombre, apellido, cedula, sexo, fecnac, codigo, razonSocial, RIF, razonComercial, rol, typeAccess, codigoDelivery, statusUbicacion, movilidad, statusdelivery, phone, ambiente: localStorage.getItem('amb') }).then(() => this.$q.loading.hide())
+        return this.$q.dialog({
+          title: '',
+          message: 'Se ha guardado exitosamente el Usuario',
+          cancel: false,
+          persistent: true
+        }).onOk(() => this.$router.replace('/users/index'))
+      } catch (error) {
+        this.$q.loading.hide()
+        console.error(error)
+        this.$q.dialog({
+          title: '',
+          message: 'Hubo un error al agregar el usuario, ' + error,
+          cancel: false,
+          persistent: true
+        })
+      }
+    }
+  },
+  watch: {
+    typeAccess (e) {
+      switch (e) {
+        case 'Admin':
+          this.rol = ['Admin']
+          break
+        case 'Seller':
+          this.rol = ['Vendedor']
+          break
+        default:
+          this.rol = []
+          break
+      }
     }
   },
   mounted () {
