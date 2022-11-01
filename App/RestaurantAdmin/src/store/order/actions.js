@@ -138,6 +138,8 @@ export const createAUser = function (state, payload) {
   try {
     let result
     console.log('start call')
+    if (process.env.environments.ENV_TYPE !== 'DEV') {
+    }
     fireCallable().useEmulator('localhost', 5001)
     result = fireCallable().httpsCallable('createAUser')(payload).then(result2 => {
       console.log(result2)
@@ -152,6 +154,8 @@ export const modifyAUser = function (state, payload) {
   try {
     let result
     console.log('start call', payload)
+    if (process.env.environments.ENV_TYPE !== 'DEV') {
+    }
     fireCallable().useEmulator('localhost', 5001)
     result = fireCallable().httpsCallable('modifyAUser')({ ...payload, ambiente: localStorage.getItem('amb') }).then(result2 => {
       console.log(result2)

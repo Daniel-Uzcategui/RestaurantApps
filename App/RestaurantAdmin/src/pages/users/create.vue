@@ -13,12 +13,12 @@
        <div class='filled'></div>
         <q-card-section class="row">
           <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4" >
-          <q-input :rules="[ (val, rules) => rules.email(val) || 'Porfavor coloque un correo electrónico valido, con su código de país ej: +584121234567' ]" filled label="Correo Electrónico"  v-model="email" outlined
+          <q-input debounce="1000" :rules="[ Checkmail ]" filled label="Correo Electrónico"  v-model="email" outlined
             type="email" float-label="Float Label" placeholder="Correo Electrónico" />
          </div>
          <div class="header-cell col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <q-input filled
-          :rules="[ (val) => validatePhoneForE164(val) || 'Porfavor coloque un teléfono valido' ]"
+          :rules="[ (val) => validatePhoneForE164(val) || 'Porfavor coloque un teléfono valido, con su código de país ej: +584121234567' ]"
           v-model="phone"
           type="text"
           float-label="Float Label"
@@ -282,6 +282,11 @@ export default {
     }
   },
   methods: {
+    async Checkmail (val, rules) {
+      if (!rules.email(val)) {
+        return 'Porfavor coloque un correo electrónico valido'
+      }
+    },
     validatePhoneForE164 (phoneNumber) {
       const regEx = /^\+[1-9]\d{10,14}$/
       return regEx.test(phoneNumber)
