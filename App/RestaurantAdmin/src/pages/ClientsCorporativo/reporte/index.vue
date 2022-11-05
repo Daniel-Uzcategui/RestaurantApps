@@ -64,6 +64,7 @@ export default {
   },
   async mounted () {
     let obj
+    console.log(this.ordercorporativo2, 'ordenescopr')
     if (!this.ordercorporativo2.length) { await this.bindOrderscorp() }
     for (let i = 0; i < this.ordercorporativo2.length; i++) {
       obj = this.ordercorporativo2[i]

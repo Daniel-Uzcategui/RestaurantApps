@@ -173,7 +173,7 @@ export default {
         let newSellerObj = {}
         for (let i of seller) {
           const { id, nombre, apellido, phone, email } = i
-          const user = { id, nombre, apellido, phone, email }
+          const user = { id, nombre, apellido, phone: phone || '', email }
           newSellerObj[i.id] = user
         }
         return newSellerObj
@@ -185,7 +185,7 @@ export default {
         let newSellerObj = []
         for (let i in seller) {
           const { id, nombre, apellido, phone, email } = seller[i]
-          const user = { id, nombre, apellido, phone, email }
+          const user = { id, nombre, apellido, phone: phone || '', email }
           newSellerObj.push(user)
         }
         return newSellerObj

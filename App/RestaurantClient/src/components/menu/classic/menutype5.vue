@@ -215,7 +215,7 @@ export default {
       // this.$refs.infiniteScroll.updateScrollTarget()
     }
   },
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display'],
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display', 'checkAvail'],
   methods: {
     onLoad (index, done) {
       this.menuSize = this.menuSize + this.size

@@ -32,7 +32,7 @@ export const setMultiValue = firestoreAction((state, payload) => {
   return firestore()
     .collection(payload.collection)
     .doc(payload.payload.id)
-    .set({ ...payload.payload }, { merge: true })
+    .update({ ...payload.payload })
     .then(() => {
       console.log(`${payload.collection} updated!`)
       return payload.payload.id

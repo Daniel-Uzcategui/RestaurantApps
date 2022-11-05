@@ -52,7 +52,7 @@ export default {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu'])
   },
   name: 'menutype0',
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat']
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail']
 }
 </script>
 <style lang="stylus" scoped>
