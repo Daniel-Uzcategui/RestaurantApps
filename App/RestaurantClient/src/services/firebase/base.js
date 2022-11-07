@@ -1,6 +1,5 @@
-
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 import { Notify, Loading } from 'quasar'
 
 /**
@@ -49,7 +48,8 @@ export const ensureAuthIsInitialized = (store) => {
  * @return {Object} App
  */
 export const fBInit = (config) => {
-  return firebase.initializeApp(config)
+  let initApp = firebase.initializeApp(config)
+  return initApp
 }
 export const appslength = () => {
   return firebase.apps.length

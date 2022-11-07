@@ -3,7 +3,7 @@ export const saveLocationAc = async function ({ commit }, payload) {
   return commit('saveLocationMt', payload)
 }
 import { firestoreAction } from 'vuexfire'
-import firebase from 'firebase/app'
+import firebase from 'firebase/compat/app'
 import { firestore, Timestamp } from '../../services/firebase/db.js'
 export const addOrder = firestoreAction((state, payload) => {
   console.log({ payload })

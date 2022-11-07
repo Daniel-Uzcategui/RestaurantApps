@@ -1,5 +1,5 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 /**
  * https: //firebase.google.com/docs/reference/js/firebase.auth.Auth.html#create-user-with-email-and-password

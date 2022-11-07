@@ -1,5 +1,5 @@
 import { firestoreAction } from 'vuexfire'
-// import firebase from 'firebase/app'
+// import firebase from 'firebase/compat/app'
 import { firestore } from '../../services/firebase/db.js'
 export const bindAddress = firestoreAction(({ bindFirestoreRef }, payload) => {
   console.log({ payload })
