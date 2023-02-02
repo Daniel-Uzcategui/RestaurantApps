@@ -40,125 +40,6 @@
           </q-th>
         </q-tr>
       </template>
-      <!-- <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td auto-width>
-            <q-btn size="sm" color="accent" round dense @click="props.expand = !props.expand" :icon="props.expand ? 'remove' : 'add'" />
-          </q-td>
-          <q-td auto-width>
-            <q-checkbox v-model="props.selected" />
-          </q-td>
-          <q-td key="desc" :props="props">
-              <q-input filled style="width: 150px" @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
-          </q-td>
-
-          <q-td key="descripcion" :props="props">
-              <q-editor content-class="bg-blue-6"
-                @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                :value="props.row.descripcion"
-                min-height="5rem"
-
-              />
-          </q-td>
-          <q-td key="required" :props="props">
-            <q-select options-selected-class="text-blue" filled dense
-                rounded outlined
-                :value="props.row.required"
-                @input="(e) => saved2(e, props.row.required, props.row.id, 'required')"
-                use-input
-                input-debounce="0"
-                :options="typeFree === '' ? [] : typeFree"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
-          </q-td>
-          <q-td key="estatus" :props="props">
-              <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="props.row.estatus ? true : false"
-                color="#3c8dbc"
-              />
-          </q-td>
-          <q-td key="group_id" :props="props">
-              <q-select options-selected-class="text-blue" filled dense
-                rounded outlined
-                :value="props.row.group_id"
-                @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
-                use-input
-                use-chips
-                input-debounce="0"
-                :options="filterOptions === '' ? [] : filterOptions"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.id"
-                @filter="filterFn"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
-          </q-td>
-          <q-td key="type" :props="props">
-              <q-select options-selected-class="text-blue" filled dense
-                rounded outlined
-                :value="props.row.type"
-                @input="(e) => saved2(e, props.row.type, props.row.id, 'type')"
-                use-input
-                input-debounce="0"
-                :options="typeOpts === '' ? [] : typeOpts"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
-          </q-td>
-          <q-td key="free" :props="props">
-            <q-select options-selected-class="text-blue" filled dense
-                rounded outlined
-                :value="props.row.free"
-                @input="(e) => saved2(e, props.row.free, props.row.id, 'free')"
-                use-input
-                input-debounce="0"
-                :options="typeFree === '' ? [] : typeFree"
-                :option-label="(item) => item === null || typeof item === 'undefined' ? null : item.name"
-                :option-value="(item) => item === null || typeof item === 'undefined' ? null : item.value"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
-          </q-td>
-          <q-td key="priority" :props="props">
-            <q-input filled @input="(e) => saved2(e, props.row.priority, props.row.id, 'priority')" :value="props.row.priority" dense  />
-          </q-td>
-          <q-td key="min" v-if="props.row.type !== 1" :props="props">
-            <q-input filled @input="(e) => saved2(e, props.row.min, props.row.id, 'min')" :value="props.row.min" dense  />
-          </q-td>
-          <q-td key="max" v-if="props.row.type !== 1" :props="props">
-            <q-input filled @input="(e) => saved2(e, props.row.max, props.row.id, 'max')" :value="props.row.max" dense  />
-          </q-td>
-          <q-td key="maxUnit" v-if="props.row.type == 2" :props="props">
-            <q-input filled @input="(e) => saved2(e, props.row.maxUnit, props.row.id, 'maxUnit')" :value="props.row.maxUnit" dense  />
-          </q-td>
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <q-card style="max-width: 400px" class="text-left">
-              <q-card-section>
-                <itemcomp
-                :comp="[props.row]"
-                :value="value"
-              />
-              </q-card-section>
-              </q-card>
-          </q-td>
-        </q-tr>
-      </template> -->
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">
@@ -207,7 +88,7 @@
               />
           </q-item>
           <q-item class="column items-start" key="required" :props="props">
-             <q-td><label class="label-expand">Requerido</label></q-td>
+             <q-td><label class="label-expand">La opción es obligatoria?</label></q-td>
              <div class="row">
               <q-radio color="blue" v-model="props.row.required" :val="1" label="Si" />
               <q-radio color="blue" v-model="props.row.required" :val="0" label="No" />
@@ -394,7 +275,7 @@
               </q-item>
               <q-item class="row justify-center"  >
                 <div class="col q-pa-xs">
-                  <p class="text-bold">Prioridad (menor número hará que esta configuración se muestre de primero)</p>
+                  <p class="text-bold">Prioridad (Colocar un número, esto sirve para ordenar las opciones que ve el cliente, la opción que tenga menor número será la que aparezca primero para tus clientes)</p>
                   <q-input filled dense
                   rounded
                   outlined @input="(e) => saved(e, parseInt(temp1.groupComp[tempid].priority), temp1.groupComp[tempid].id, 'priority')"

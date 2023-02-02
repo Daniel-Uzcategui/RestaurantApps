@@ -211,7 +211,7 @@ export default {
             'paid': mtoTotal,
             'productos': obj.productos,
             'dateIn': obj.dateIn,
-            'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
+            'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? date.formatDate(obj.orderWhen.orderDate.toDate(), 'MM-DD YYYY HH:mm') : obj.orderWhen === '2' ? 'Horario de la Mañana' : obj.orderWhen === '3' ? 'Horario de la Tarde' : 'De inmediato',
             'factura': obj.factura,
             'vuelto': obj?.vuelto,
             // 'table': tableOrder,
@@ -255,7 +255,7 @@ export default {
               'paid': mtoTotal,
               'productos': obj.productos,
               'dateIn': obj.dateIn,
-              'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : 'NA',
+              'dateOrd': typeof obj.orderWhen !== 'undefined' && obj.orderWhen.orderWhen === '1' ? obj.orderWhen.orderDate : obj.orderWhen === '2' ? 'Horario de la Mañana' : obj.orderWhen === '3' ? 'Horario de la Tarde' : 'NA',
               'factura': obj.factura,
               'vuelto': obj?.vuelto,
               // 'table': tableOrder,
@@ -515,7 +515,7 @@ export default {
         { name: 'status', required: true, label: 'Estatus', field: 'status', sortable: true },
         { name: 'paid', label: 'Monto($)', field: row => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'USD' }).format(row.paid), sortable: true },
         { name: 'dateIn', label: 'Fecha de solicitud', field: 'dateIn', format: val => date.formatDate(val.toDate(), 'MM-DD YYYY HH:mm'), sortable: true },
-        { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', format: val2 => val2 !== 'NA' && typeof val2 !== 'undefined' ? date.formatDate(val2.toDate(), 'MM-DD YYYY HH:mm') : 'De inmediato', sortable: true }
+        { name: 'dateOrd', label: 'Fecha de Entrega', field: 'dateOrd', sortable: true }
       ]
 
     }

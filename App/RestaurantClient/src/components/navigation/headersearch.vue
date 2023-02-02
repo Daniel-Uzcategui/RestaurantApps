@@ -4,7 +4,7 @@
       class="row bg-primary q-ma-none q-pa-none"
       >
       <div class="col-2 col-sm-2 col-xs-12">
-        <q-img contain :height="$q.screen.lt.md ? '128px' : '150px'" :src="getLogo['192x192']" />
+        <q-img contain :height="$q.screen.lt.md ? '128px' : '150px'" :src="getLogo['512x512']" />
       </div>
       <div class=" col-md-8 col-sm-8 col-xs-12 row q-pa-md">
         <q-input

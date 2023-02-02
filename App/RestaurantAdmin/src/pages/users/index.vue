@@ -79,13 +79,11 @@
               />
           </q-td>
            <q-td key="status" :props="props">
-            <div v-if="props.row.status !== undefined" >
              <q-toggle
-                @input="(e) => saved(e, props.row.status, props.row.id, 'status')"
-                :value="props.row.status"
+                @input="(e) => saved(e, props.row.status || false, props.row.id, 'status')"
+                :value="props.row.status || false"
                 color="#3c8dbc"
               />
-            </div>
           </q-td>
           <q-td key="typeAccess" :props="props">
             <q-select options-selected-class="text-blue" filled map-options emit-value standout="bg-teal "

@@ -84,11 +84,7 @@
          @show="showme()"
          >
          <q-card
-         style="width: 100%;
-          height: 100%;
-          margin: 0px;
-          padding: 0px;
-          overflow-x: hidden;"
+         style="width: 100%; height: 100%; margin: 0px; padding: 0px; overflow-x: hidden;"
           class="q-fullscreen-glassMorph full-width">
             <q-bar class="bg-transparent q-mt-sm">
               <q-btn flat ></q-btn>
@@ -128,7 +124,7 @@
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
                            <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado en la fecha</p>
                             <div class="q-gutter-sm">
-                              <q-radio v-model="orderWhen" val=0 label="Lo más pronto posible" />
+                              <q-radio v-model="orderWhen" val=0 :label="'Lo más pronto posible' + (loc === 'carnesmarket' ? '(Los pedidos después de las 2pm se entregan al día siguiente)' : '')"  />
                               <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
                             </div>
                             <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
@@ -170,7 +166,8 @@
                             </div>
                          </q-card-section>
                          <q-card-section v-else>
-                           <div class="text-h5">Escoja o agregue un cliente</div>
+                           <div v-if="loc !== 'diga.chopzi.com'" class="text-h5">Escoja o agregue un cliente</div>
+                           <div v-else class="text-h5">Escoja un cliente</div>
                            <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
                          </q-card-section>
                          <q-card-section v-show="!['0', '2', '3','4'].includes(tipEnvio)" >
@@ -192,10 +189,10 @@
                          <q-card-section>
                            </q-card-section>
                            <div class="column items-center">
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
-                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 1 && addId != null && validAddress && ( ['0','2','3'].includes(orderWhen) || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="(tipEnvio == 0 || tipEnvio == 2) && (['0','2','3'].includes(orderWhen)  || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           <q-btn rounded no-caps color="primary" v-if="tipEnvio == 3 && ordCompraClient !== null && ordCompraBranch !== null && ordCompraClient !== '' && ordCompraBranch !== ''" @click="makeOrder()" label="Registrar compra" />
-                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && continuar != false  && (orderWhen == 0 || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
+                          <q-btn rounded no-caps color="primary" v-if="tipEnvio == 4  && continuar != false  && (['0','2','3'].includes(orderWhen) || (orderWhen == 1 && orderDate !== null))" @click="step = 2" label="Continuar" />
                           </div>
                          </q-card-section>
                        </q-card>
@@ -632,6 +629,7 @@ export default {
   },
   data () {
     return {
+      loc: localStorage.getItem('amb'),
       list: true,
       ordCompraClient: null,
       ordCompraBranch: null,

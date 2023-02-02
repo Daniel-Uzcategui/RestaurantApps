@@ -258,12 +258,12 @@ export default {
           puntoRef: this.puntoRef,
           location: JSON.stringify(this.markers) })
         console.log('el valor del objeto', this.objeto)
-        let valores = this.addressSelected(this.objeto)
-        console.log('el valor del objeto', valores)
-        this.$emit('input', valores)
+        // let valores = this.addressSelected(this.objeto)
+        // console.log('el valor del objeto', valores)
+        // this.$emit('input', valores)
 
-        console.log('cual es valor de value', this.value)
-        this.value = valores
+        // console.log('cual es valor de value', this.value)
+        // this.value = valores
         this.returnValue()
       } else {
         this.updateAddress({

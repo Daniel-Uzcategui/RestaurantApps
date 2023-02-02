@@ -16,6 +16,11 @@ const argv = yargs
     description: 'Deploy to all, not recommended',
     type: 'boolean'
   })
+  .option('productionspa', {
+    alias: 'a',
+    description: 'Deploy to all, not recommended',
+    type: 'boolean'
+  })
   .option('development', {
     alias: 'd',
     description: 'Deploy to Staging servers',
@@ -69,8 +74,13 @@ const sdkdev = {
   authDomain: 'restaurant-testnet.firebaseapp.com',
   messagingSenderId: '857639385359'
 }
+var readFileFolder = 'pwa'
 switch (true) {
   case argv.production:
+    admin.initializeApp(sdkprod)
+    break
+  case argv.productionspa:
+    readFileFolder = 'spa'
     admin.initializeApp(sdkprod)
     break
   case argv.development:
@@ -79,8 +89,10 @@ switch (true) {
   default:
     process.exit(1)
 }
+
 var db = admin.firestore()
-fs.readFile('./dist/pwa/index.html', 'utf8', async (err, data) => {
+fs.readFile('./dist/' + readFileFolder + '/index.html', 'utf8', async (err, data) => {
+  console.log('./dist/' + readFileFolder + '/index.html')
   let html = data
   let $ = cheerio.load(html)
   let script = $('script')
@@ -97,7 +109,7 @@ fs.readFile('./dist/pwa/index.html', 'utf8', async (err, data) => {
   let envRef = await db.doc('environment/sources').set({ src: src, stylesheet: links })
   // let nomani = $.html()
   console.log(envRef)
-  fs.unlinkSync('./dist/pwa/index.html')
+  fs.unlinkSync('./dist/' + readFileFolder + '/index.html')
   // fs.writeFile('./dist/pwa/index.html', nomani, 'utf8', () => { console.log('getmanifest ready') })
   console.error(err)
 })

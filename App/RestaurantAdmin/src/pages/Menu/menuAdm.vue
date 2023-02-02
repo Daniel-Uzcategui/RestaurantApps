@@ -144,7 +144,7 @@
               <q-separator></q-separator>
         </q-list>
           <q-dialog class="bg-transparent" v-model="props.expand">
-            <q-card class="q-cardGlass">
+            <q-card class="q-cardGlass full-width">
               <q-list class="q-diag-glassMorph">
                 <q-item class="column items-center">
                   <q-btn v-if="Object.keys(temp1).length" @click="executeSave()" label="Guardar" rounded class="text-bold" no-caps color="blue" icon="save"></q-btn>
@@ -173,17 +173,19 @@
                         color="blue"
                       />
                 </q-item>
-            <q-item  :props="props" key="photomulti" class="column items-start">
-              <div class="row justify-start">
-                    <p class="text-bold col-6">Múltiples fotos</p>
-                    <q-btn class="col-4" flat color="white" push icon="help">
-                      <q-tooltip anchor="center right" self="center left">
-                        <strong :class="{ 'text-h5': $q.screen.gt.xs }">Las fotos que montes aqui se mostrarán en el dialogo cuando un usuario le de click a tu producto, si quieres mostrar la foto primaria también, tendras que volverla a subir aquí, luego de subirlas puedes darle click para cambiar el orden o eliminar
-                        </strong>
-                      </q-tooltip>
-                    </q-btn>
-              </div>
-                    <photomulti :row="props.row.photomulti" @updated="(e) => {saved(e, props.row.photomulti, props.row.id, 'photomulti'); props.row.photomulti = e}" />
+            <q-item  :props="props" key="photomulti" class="column items-start q-ma-none q-pa-none">
+              <q-card bordered square flat class="q-ma-none q-pa-none full-width">
+                <div class="row justify-start">
+                      <p class="text-bold col-6 q-pl-md">Múltiples fotos</p>
+                      <q-btn class="col-4" flat color="white" push icon="help">
+                        <q-tooltip anchor="center right" self="center left">
+                          <strong :class="{ 'text-h5': $q.screen.gt.xs }">Las fotos que montes aqui se mostrarán en el dialogo cuando un usuario le de click a tu producto, si quieres mostrar la foto primaria también, tendras que volverla a subir aquí, luego de subirlas puedes darle click para cambiar el orden o eliminar
+                          </strong>
+                        </q-tooltip>
+                      </q-btn>
+                </div>
+                <photomulti :row="props.row.photomulti" @updated="(e) => {saved(e, props.row.photomulti, props.row.id, 'photomulti'); props.row.photomulti = e}" />
+              </q-card>
                 </q-item>
             <q-item class="column items-start" key="name" :props="props">
               <div class="col-12 label-expand">Nombre</div>
@@ -408,7 +410,7 @@
     <q-dialog
      v-model="addopt"
       >
-      <div class="column items-start q-cardGlass q-ma-lg q-pa-lg" v-if="addopt">
+      <q-card class="column items-start q-cardGlass q-ma-lg q-pa-lg" v-if="addopt">
         <div class="text-h6 q-mb-md">Grupos Existentes</div>
       <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="tempOpt"
@@ -425,7 +427,7 @@
       <q-btn rounded label="Crear Nuevo" class="q-mr-md" @click="addopt = false; addopt2 = true" color="green" no-caps></q-btn>
       <q-btn rounded label="Agregar" color="blue" @click="tempOpt ? (addNewOpts(), addopt = false) : null" no-caps></q-btn>
       </div>
-      </div>
+      </q-card>
     </q-dialog>
     <q-dialog full-width v-model="addopt2">
       <AddOpt v-if="addopt2" :isDiag="true" @saved="(e) => {tempOpt = e; addNewOpts(); addopt = false}" class="q-diag-glassMorph" />

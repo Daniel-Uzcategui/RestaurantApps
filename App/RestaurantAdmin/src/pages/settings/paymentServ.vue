@@ -470,9 +470,15 @@ export default {
     },
     async add () {
       this.$q.loading.show()
-      const { statusZelle, statusVenmo, statusPaypalTx, apiKeyDev, apiKeyProd, statusCreditCorp, statusNovaredzelle, referencia, statusNovaredpagomovil, statusCash, statusPto, statuspagomovil, statustransfer, statusPaypal, PaypalApi, CreditCorp, venmoAcc, zelleEmail, PaypalEmail, transfer, pagomovil, statusMercantil, Mercantil, Novared, PagoMovil } = this
+      const { statusDelivery,
+        statusPickup,
+        statusInlocal,
+        statusZelle, statusVenmo, statusPaypalTx, apiKeyDev, apiKeyProd, statusCreditCorp, statusNovaredzelle, referencia, statusNovaredpagomovil, statusCash, statusPto, statuspagomovil, statustransfer, statusPaypal, PaypalApi, CreditCorp, venmoAcc, zelleEmail, PaypalEmail, transfer, pagomovil, statusMercantil, Mercantil, Novared, PagoMovil } = this
       const payload = {
         statusZelle,
+        statusDelivery,
+        statusPickup,
+        statusInlocal,
         statusVenmo,
         statusPaypalTx,
         apiKeyDev,

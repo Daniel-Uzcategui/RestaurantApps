@@ -24,68 +24,6 @@
           <q-btn flat  no-caps push label="Eliminar" icon="delete_outline" @click="delrow"/>
         </q-btn-group>
       </template>
-      <!-- <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td  auto-width>
-            <q-checkbox v-model="props.selected" />
-          </q-td>
-          <q-td key="desc" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit
-            :value="props.row.name"
-            @show="() => showPopup(props.row, 'name')"
-            >
-              <q-input filled @input="(e) => saved(e, props.row.name, props.row.id, 'name')" :value="props.row.name" dense  />
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="descripcion" :props="props">
-            <div v-html="props.row.descripcion"></div>
-              <q-editor content-class="bg-blue-6"
-                @input="(e) => saved(e, props.row.descripcion, props.row.id, 'descripcion')"
-                :value="props.row.descripcion"
-                min-height="5rem"
-
-              />
-          </q-td>
-
-          <q-td key="estatus" :props="props">
-              <q-toggle
-                @input="(e) => saved(e, props.row.estatus, props.row.id, 'estatus')"
-                :value="props.row.estatus ? true : false"
-                color="#3c8dbc"
-              />
-          </q-td>
-          <q-td key="group_id" :props="props">
-              <q-select options-selected-class="text-blue" filled
-                :value="props.row.group_id"
-                @input="(e) => saved(e, props.row.group_id, props.row.id, 'group_id')"
-                use-input
-                use-chips
-                multiple
-                input-debounce="0"
-                @new-value="createValue"
-                :options="filterOptions"
-                :option-label="(item) => item === null ? null : item.name"
-                :option-value="(item) => item === null ? null : item.id"
-                @filter="filterFn"
-                style="width: 250px"
-                stack-label
-                emit-value
-                map-options
-              />
-          </q-td>
-           <q-td key="priority" :props="props">
-              <q-input filled @input="(e) => saved(e || 0, props.row.priority, props.row.id, 'priority')" type="number" :value="props.row.priority" dense  />
-           </q-td>
-           <q-td key="price" :props="props">
-            <q-decimal style="width: 135px" :rules="[validate]"
-            outlined
-            @input="(e) => saved(e, parseFloat(props.row.price), props.row.id, 'price')"
-                :value="props.row.price" input-style="text-align: right"></q-decimal>
-          </q-td>
-        </q-tr>
-      </template> -->
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         :style="props.selected ? 'transform: scale(0.95);' : ''">

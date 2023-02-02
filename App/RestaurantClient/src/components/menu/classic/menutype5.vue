@@ -25,9 +25,7 @@
          >
          <div class="bg-primary">
            <div class="q-pl-xl q-pt-md">
-           <q-avatar size="80px">
-              <img :src="getLogo['256x256']">
-            </q-avatar>
+            <img height="50px" :src="getLogo['256x256']">
            </div>
          </div>
          <classictabs

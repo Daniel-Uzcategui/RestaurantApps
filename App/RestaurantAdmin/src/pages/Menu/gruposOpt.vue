@@ -124,64 +124,65 @@
               </q-item> -->
         </q-list>
           <q-dialog class="bg-transparent" :persistent="temp1 && Object.keys(temp1).length > 0" v-model="props.expand">
-            <q-list class="q-diag-glassMorph">
-          <q-item>
-            <div class="full-width row justify-between">
-                  <q-btn @click="execCancel" label="Cancelar" color="green" rounded no-caps />
-                  <q-btn @click="execSave" label="Guardar" color="blue" rounded no-caps icon="save" />
-                </div>
-          </q-item>
-          <q-item class="column items-start" key="desc" :props="props">
-            <q-td><label class="label-expand">Alias (para uso interno, puede ser el mismo que el nombre)</label></q-td>
-              <q-input filled
-              @input="(e) => saved(e, props.row.name, props.row.id, 'name', 'itemGroup')"
-              v-model="props.row.name"
-              rounded
-              outlined />
-          </q-item>
-           <q-item style="min-height: 100px" class="column items-start" key="groupComp" :props="props">
-             <div class="label-expand full-width row justify-between">
-               <div class="text-h6">Opciones</div>
-               <q-btn
-               rounded
-                    label="Añadir"
-                    color="blue"
-                    no-caps
-                    class="cursor-pointer"
-                    @click.stop="opciones = true; propspass = props"
-                  />
-             </div>
-             <q-list>
-               <q-item v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
-                 <div>
-                    <q-chip class="glossy" removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green"  icon="filter_frames">
-                       {{item.name}}
-                    </q-chip>
-                 </div>
-               </q-item>
-             </q-list>
-          </q-item>
-          <q-item class="column items-start q-pa-none q-ma-none">
-             <div class="label-expand full-width row justify-between">
-             <div class="text-h6 q-ml-md">Configuración</div>
-               <!-- <q-btn
-               rounded
-                    label="Añadir"
-                    color="blue"
-                    no-caps
-                    class="cursor-pointer"
-                    @click.stop="opcionesconf = true; propspass = props.row"
-                  /> -->
-             </div>
-               <div v-for="(item, index) in findConfsonGroup(props.row.id)" :key="index">
-                    <!-- <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red"  icon="tune">
-                       {{item.name}}
-                    </q-chip> -->
-                    <opcionesconf ref="opcionConf" :elitempass="elitem" class="q-pa-none q-ma-none" :isDiagEasy="true" :isDiagView="true" :itemsDiag="item" @executedSave="executeSave(); props.expand = false" @Cancel="props.expand = false; temp1 = {}; init()" @updateOpt="(e) => {opcionesconfView = false}" />
+            <q-card>
+              <q-list class="q-diag-glassMorph">
+            <q-item>
+              <div class="full-width row justify-between">
+                    <q-btn @click="execCancel" label="Cancelar" color="green" rounded no-caps />
+                    <q-btn @click="execSave" label="Guardar" color="blue" rounded no-caps icon="save" />
+                  </div>
+            </q-item>
+            <q-item class="column items-start" key="desc" :props="props">
+              <q-td><label class="label-expand">Alias (para uso interno, puede ser el mismo que el nombre)</label></q-td>
+                <q-input filled
+                @input="(e) => saved(e, props.row.name, props.row.id, 'name', 'itemGroup')"
+                v-model="props.row.name"
+                rounded
+                outlined />
+            </q-item>
+             <q-item style="min-height: 100px" class="column items-start" key="groupComp" :props="props">
+               <div class="label-expand full-width row justify-between">
+                 <div class="text-h6">Opciones</div>
+                 <q-btn
+                 rounded
+                      label="Añadir"
+                      color="blue"
+                      no-caps
+                      class="cursor-pointer"
+                      @click.stop="opciones = true; propspass = props"
+                    />
                </div>
-          </q-item>
-
-            </q-list>
+               <q-list>
+                 <q-item v-for="(item, index) in findItemsonGroup(props.row.id)" :key="index">
+                   <div>
+                      <q-chip class="glossy" removable clickable @click="propspass = item; opcionesView = true" @remove="(e) => saved3(item, findItemsonGroup(props.row.id), props.row.id, 'group_id')" color="green"  icon="filter_frames">
+                         {{item.name}}
+                      </q-chip>
+                   </div>
+                 </q-item>
+               </q-list>
+            </q-item>
+            <q-item class="column items-start q-pa-none q-ma-none">
+               <div class="label-expand full-width row justify-between">
+               <div class="text-h6 q-ml-md">Configuración</div>
+                 <!-- <q-btn
+                 rounded
+                      label="Añadir"
+                      color="blue"
+                      no-caps
+                      class="cursor-pointer"
+                      @click.stop="opcionesconf = true; propspass = props.row"
+                    /> -->
+               </div>
+                 <div v-for="(item, index) in findConfsonGroup(props.row.id)" :key="index">
+                      <!-- <q-chip removable clickable @click="propspass = item; opcionesconfView = true" @remove="(e) => saved3(item, findConfsonGroup(props.row.id), props.row.id, 'group_id', 'groupComp')" color="red"  icon="tune">
+                         {{item.name}}
+                      </q-chip> -->
+                      <opcionesconf ref="opcionConf" :elitempass="elitem" class="q-pa-none q-ma-none" :isDiagEasy="true" :isDiagView="true" :itemsDiag="item" @executedSave="executeSave(); props.expand = false" @Cancel="props.expand = false; temp1 = {}; init()" @updateOpt="(e) => {opcionesconfView = false}" />
+                 </div>
+            </q-item>
+              </q-list>
+            </q-card>
           </q-dialog>
         </div>
       </template>
@@ -189,7 +190,7 @@
     <q-dialog
      v-model="opciones"
       >
-      <div v-if="opciones" class="column items-start q-cardGlass q-ma-lg q-pa-lg">
+      <q-card v-if="opciones" class="column items-start q-cardGlass q-ma-lg q-pa-lg">
         <div class="text-h6 q-mb-md">Opciones Existentes</div>
       <q-select options-selected-class="text-blue" filled rounded dense
                 v-model="tempOpt"
@@ -206,7 +207,7 @@
       <q-btn rounded label="Crear Nuevo" class="q-mr-md" @click="opciones = false; opciones2 = true" color="green" no-caps></q-btn>
       <q-btn rounded label="Agregar" color="blue" @click="addNewOpts(); opciones = false" no-caps></q-btn>
       </div>
-      </div>
+      </q-card>
     </q-dialog>
     <q-dialog full-width v-model="opciones2">
       <opciones v-if="opciones2" :isDiagEasy="true" @updateOpt="(e) => {opciones2 = false; tempid = {id:e}}" />

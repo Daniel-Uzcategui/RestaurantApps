@@ -11,6 +11,7 @@
       label="Cliente" >
       <template v-slot:append>
           <q-icon
+            v-if="loc !== 'diga.chopzi.com'"
             class="cursor-pointer"
             name="add"
             @click.stop="addClientDialog = true"
@@ -42,6 +43,7 @@
       label="Sede o Sucursal">
             <template v-slot:append>
           <q-icon
+            v-if="loc !== 'diga.chopzi.com'"
             class="cursor-pointer"
             name="add"
             @click.stop="addBranchDialog = true"
@@ -274,6 +276,7 @@ export default {
   },
   data () {
     return {
+      loc: window.location.hostname,
       shippingAddress: '',
       adShippingDone: false,
       adShipping: false,

@@ -7,7 +7,7 @@
  class="bg-primary" style="z-index: 2" v-if="$q.screen.gt.sm && mobileGreatView == 1">
        <q-toolbar>
           <q-avatar size="80px">
-            <img :src="getLogo['128x128']">
+            <img :src="getLogo['256x256']">
           </q-avatar>
           <q-toolbar-title>{{ManiName}}</q-toolbar-title>
           <q-btn v-if="!isChopzi" @click="$router.push({ path: '/cart/index' })" flat icon="fas fa-shopping-cart" >
@@ -75,9 +75,7 @@
          >
          <div class="bg-primary">
            <div class="q-pl-xl q-pt-md">
-           <q-avatar size="80px">
-              <img :src="getLogo['128x128']">
-            </q-avatar>
+              <img height="50px" :src="getLogo['256x256']">
            </div>
          </div>
          <q-list class="q-pl-xl">
@@ -144,7 +142,7 @@
     <q-dialog v-model="promptInstall" class="bg-transparent">
       <q-card class="q-cardGlass" style="max-width: 320px" >
         <q-card-section class="column items-center bg-grey-3">
-          <q-img width="128px" height="128px" :src="getLogo['128x128']" />
+          <q-img width="128px" height="128px" :src="getLogo['256x256']" />
         </q-card-section>
         <q-card-section class="column bg-white items-center">
           <p class="text-h4 text-bold">Instala {{metamani.title}}</p>
@@ -866,27 +864,28 @@ export default {
       }
       if (Notification.permission === 'denied') {
         console.log('The user has blocked notifications.')
-        return
+        // return
       }
-      var that = this
-      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        const messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging() : firebase.messaging()
-        messaging
-          .requestPermission()
-          .then(() => {
-            // console.log('Notif allowed')
-            return messaging.getToken()
-          })
-          .then(token => {
-            // console.log('Token Is : ' + token)
-            if (!that.isAnonymous && that.currentUser && (typeof that.currentUser.fcm === 'string' || typeof that.currentUser.fcm === 'undefined' || !that.currentUser.fcm.includes(token))) {
-              that.setValue({ payload: { value: typeof that.currentUser.fcm === 'undefined' || typeof that.currentUser.fcm === 'string' ? [token] : [...that.currentUser.fcm, token], id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
-            }
-          })
-          .catch(err => {
-            console.error('No permission to send push', err)
-          })
-      })
+      // This is Deprecated need to be upgraded
+      // var that = this
+      // navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+      //   const messaging = typeof firebase.messaging === 'undefined' ? firebase.default.messaging() : firebase.messaging()
+      //   messaging
+      //     .requestPermission()
+      //     .then(() => {
+      //       // console.log('Notif allowed')
+      //       return messaging.getToken()
+      //     })
+      //     .then(token => {
+      //       // console.log('Token Is : ' + token)
+      //       if (!that.isAnonymous && that.currentUser && (typeof that.currentUser.fcm === 'string' || typeof that.currentUser.fcm === 'undefined' || !that.currentUser.fcm.includes(token))) {
+      //         that.setValue({ payload: { value: typeof that.currentUser.fcm === 'undefined' || typeof that.currentUser.fcm === 'string' ? [token] : [...that.currentUser.fcm, token], id: that.currentUser.id, key: 'fcm' }, collection: 'users' })
+      //       }
+      //     })
+      //     .catch(err => {
+      //       console.error('No permission to send push', err)
+      //     })
+      // })
     },
     navigateFill () {
       var mapping = []
