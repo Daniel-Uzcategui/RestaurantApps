@@ -348,12 +348,12 @@
                 >
                 </q-input>
               </div>
-              <div
+              <!-- <div
                 class="header-cell q-ma-sm col-3"
               >
                 <label>Comanda</label><br />
-                <i class="fa fa-search" @click="photoDiag=true"></i>
-              </div>
+                <i class="fa fa-search" @click=""></i>
+              </div> -->
               <div class="flex-break q-pa-md"></div>
               <div class="flex-break q-pa-md"></div>
               <div
@@ -454,7 +454,7 @@
                <q-btn  push
                   color="red"
                   no-caps label="Ver Detalle"
-                  @click="verorden=true"
+                  @click="photoDiag=true"
                   />
               </template>
               <template v-slot:body="props">
@@ -588,24 +588,25 @@
         </q-card-section>
         <q-dialog v-model="photoDiag">
           <q-card>
-            <q-btn
-              flat
+            <q-card-section class="row items-center q-pb-none">
+              <!-- <div class="text-h6">Comprobante de Pago</div> -->
+              <q-btn
               color="primary"
+              no-caps
               label="Descargar Factura"
               icon="fas fa-download"
               @click="downloadWithCSS"
-            >
+              >
             </q-btn>
-            <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">Comprobante de Pago</div>
               <q-space> </q-space>
               <q-btn icon="close" flat round dense v-close-popup> </q-btn>
             </q-card-section>
             <q-card-section>
               <div ref="content" class="q-pa-md">
                 <q-card
-                  style="width: 500px"
-                  class="text-uppercase"
+                  :dark="false"
+                  style="width: 400px"
+                  class="text-uppercase text-black"
                   ref="doccontext"
                 >
                   <q-card-section class="text-center text-h2 q-pa-none">
@@ -615,7 +616,7 @@
                     ------------------
                   </q-card-section>
                   <q-card-section
-                    class="text-center text-h4 q-pa-none bg-black"
+                    class="text-center text-h4 text-white q-pa-none bg-black"
                   >
                     ** {{this.getLocalization (order.sede)}} **
                   </q-card-section>
@@ -625,29 +626,33 @@
       <q-card-section class="text-center text-h6">
         ...info factura...
       </q-card-section> -->
-                  <q-card-section class="text-left text-h7">
+                  <q-card-section class="text-left text-black text-h7">
                     {{'Direccion:' + addressDelivery}}
                   </q-card-section>
-                  <q-card-section v-if="puntoRef" class="text-left text-h7">
+                  <q-card-section v-if="puntoRef" class="text-black text-left text-h7">
                     {{'Punto de referencia:' + puntoRef}}
                   </q-card-section>
-                  <q-card-section v-if="order.buyOrder" class="text-left text-h7">
+                  <q-card-section v-if="order.buyOrder" class="text-black text-left text-h7">
                     {{'Cliente:' + order.buyOrder.Client.name + ' ' + order.buyOrder.Branch.name}}
                   </q-card-section>
-                  <q-card-section class="text-h7">
+                  <q-card-section v-else class="text-black text-left text-h7">
+                    {{'Cliente:' + getClientValue('nombre') + ' ' + getClientValue('apellido') + ' ' + getClientValue('phone')}}
+                  </q-card-section>
+                  <q-card-section class="text-h7 text-black">
                     <q-item
                       ><q-item-section
+                      class="text-black"
                         >{{(new Date(order.dateIn.seconds * 1000)).toLocaleString("es-MX")}}</q-item-section
                       >
-                      <q-item-section side
+                      <q-item-section class="text-black" side
                         >TOTAL {{order.paid}}</q-item-section
                       ></q-item
                     >
                   </q-card-section>
-                  <q-card-section class="text-left text-h7">
+                  <q-card-section class="text-left text-black text-h7">
                     CANT ITEM
                   </q-card-section>
-                  <q-card-section class="text-left">
+                  <q-card-section class="text-left text-black">
                     <div v-for="(ord, index) in detailOrder" :key="index">
                       {{ord.quantity}} {{ord.name}}
                       <div
@@ -704,10 +709,7 @@
       >
       </add-payment>
     </q-dialog>
-    <q-dialog  v-if="verificarOrdenCompra" v-model="verorden" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important;
-          margin: 0px;
-          padding: 0px;
-          overflow-x: hidden;">
+    <q-dialog  v-if="verificarOrdenCompra" v-model="verorden" transition-show="rotate" transition-hide="rotate"  style="max-width: 80% !important; margin: 0px;padding: 0px;overflow-x: hidden;">
           <q-card>
             <q-card-section>
               <h6>Detalle</h6>
@@ -1222,17 +1224,17 @@ export default {
     downloadWithCSS () {
       /** WITH CSS */
       // eslint-disable-next-line no-undef
-      let ref = this.$refs
+      let node = this.$refs.doccontext.$el
       domtoimage
-        .toPng(this.$refs.content)
+        .toPng(node)
         .then(function (dataUrl) {
           var img = new Image()
           img.src = dataUrl
           // eslint-disable-next-line new-cap
           const doc = new jsPDF({
             orientation: 'portrait',
-            // unit: "pt",
-            format: [ref.doccontext.$el.clientHeight, 500]
+            unit: 'px',
+            format: [node.clientWidth, node.clientHeight]
           })
           doc.addImage(img, 'PNG', 20, 20)
           const date = new Date()

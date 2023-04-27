@@ -143,7 +143,7 @@ export default {
           link: '#/findus'
         },
         {
-          title: 'Mis Direcciones',
+          title: 'Dirección de Entrega',
           caption: '',
           icon: 'fas fa-map-marked-alt',
           link: '#/user/address'

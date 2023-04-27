@@ -10,6 +10,7 @@ export const manifest = ({ manifest }) => manifest
 export const leftDrawerOp = ({ leftDrawerOp }) => leftDrawerOp
 export const leftDrawerCatOp = ({ leftDrawerCatOp }) => leftDrawerCatOp
 export const searchBarState = ({ searchBarState }) => searchBarState
+export const support = ({ support }) => support
 export const getLogo = ({ manifest }) => {
   let e = manifest
   let obj = {

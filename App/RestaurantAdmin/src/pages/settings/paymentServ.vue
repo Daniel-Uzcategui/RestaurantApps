@@ -84,7 +84,7 @@
         <div class="row header-container">
          <div class="header-cell q-pa-sm  col-xs-12 col-sm-6 col-md-4 col-lg-4">
           <p>Pago Movil Mercantil</p>
-         <q-option-group color="blue" inline  filled rounded v-model="statuspagomovil" map-options emit-value standout="bg-teal "
+         <q-option-group color="blue" inline  filled rounded v-model="statusC2P" map-options emit-value standout="bg-teal "
           outlined :options="estatus_options" label="Pago Movil Mercantil" />
         </div>
         </div>
@@ -253,7 +253,7 @@
           outlined label="referencia" />
         </div>
         </div>
-        <div v-if="statuspagomovil"  class="row header-container">
+        <div v-if="statusC2P"  class="row header-container">
         <div class="header-cell q-pa-sm  q-pb-md col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <p>Pago Movil Mercantil</p>
 <q-option-group color="blue" inline  filled rounded v-model="PagoMovil.ambiente" map-options emit-value standout="bg-teal "
@@ -435,6 +435,7 @@ export default {
       statusCash: 0,
       statusPaypal: 0,
       statuspagomovil: 0,
+      statusC2P: 0,
       statustransfer: 0,
       PaypalApi: '',
       zelleEmail: '',
@@ -473,7 +474,7 @@ export default {
       const { statusDelivery,
         statusPickup,
         statusInlocal,
-        statusZelle, statusVenmo, statusPaypalTx, apiKeyDev, apiKeyProd, statusCreditCorp, statusNovaredzelle, referencia, statusNovaredpagomovil, statusCash, statusPto, statuspagomovil, statustransfer, statusPaypal, PaypalApi, CreditCorp, venmoAcc, zelleEmail, PaypalEmail, transfer, pagomovil, statusMercantil, Mercantil, Novared, PagoMovil } = this
+        statusZelle, statusVenmo, statusPaypalTx, apiKeyDev, apiKeyProd, statusCreditCorp, statusNovaredzelle, referencia, statusNovaredpagomovil, statusCash, statusPto, statuspagomovil, statusC2P, statustransfer, statusPaypal, PaypalApi, CreditCorp, venmoAcc, zelleEmail, PaypalEmail, transfer, pagomovil, statusMercantil, Mercantil, Novared, PagoMovil } = this
       const payload = {
         statusZelle,
         statusDelivery,
@@ -490,6 +491,7 @@ export default {
         statusCash,
         statusPto,
         statuspagomovil,
+        statusC2P,
         statustransfer,
         statusPaypal,
         PaypalApi,
@@ -552,7 +554,7 @@ export default {
     async save () {
       let value, id, arr
       id = this.config.id
-      arr = ['statusZelle', 'statusVenmo', 'statusPaypalTx', 'apiKeyDev', 'apiKeyProd', 'statusCreditCorp', 'statusCreditCorp', 'statusNovaredzelle', 'referencia', 'statusNovaredpagomovil', 'statusCash', 'statusPto', 'statuspagomovil', 'statustransfer', 'statusPaypal', 'PaypalApi', 'CreditCorp', 'venmoAcc', 'zelleEmail', 'PaypalEmail', 'transfer', 'pagomovil', 'statusMercantil', 'Mercantil', 'Novared', 'PagoMovil']
+      arr = ['statusZelle', 'statusVenmo', 'statusPaypalTx', 'apiKeyDev', 'apiKeyProd', 'statusCreditCorp', 'statusCreditCorp', 'statusNovaredzelle', 'referencia', 'statusNovaredpagomovil', 'statusCash', 'statusPto', 'statuspagomovil', 'statusC2P', 'statustransfer', 'statusPaypal', 'PaypalApi', 'CreditCorp', 'venmoAcc', 'zelleEmail', 'PaypalEmail', 'transfer', 'pagomovil', 'statusMercantil', 'Mercantil', 'Novared', 'PagoMovil']
       for (let i of arr) {
         try {
           value = this[i]

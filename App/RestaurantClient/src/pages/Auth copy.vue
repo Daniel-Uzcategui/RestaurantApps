@@ -206,7 +206,8 @@ export default {
       validarUsers: false,
       sexo_options: [
         { label: 'Masculino', value: 'M' },
-        { label: 'Femenino', value: 'F' }
+        { label: 'Femenino', value: 'F' },
+        { label: 'Otros', value: 'O' }
       ],
       Local_ES: {
         /* starting with Sunday */

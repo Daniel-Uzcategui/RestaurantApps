@@ -49,11 +49,12 @@
                <div class="row justify-around">
                   <q-intersection
                   once
+                  :style="blockStyle(item)"
                   transition="scale"
                   class="cardtype4"
                   :class="item.price === undefined ? 'noprice' : ''"
                      v-for="item in filteredMenuCat2" :key="item.id">
-                     <q-card  bordered class="column cardtype4" style="transform: scale(0.99)" :class="item.price === undefined ? 'noprice' : ''" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''">
+                     <q-card  bordered class="column cardtype4" style="transform: scale(0.99)" :class="item.price === undefined ? 'noprice' : ''" >
                         <!-- <div :style="{'background-color':selectedCat ? selectedCat.color : ''}" > -->
                           <div class="phototype4 column items-center">
                             <q-img contain @click="$emit('productSelect', item)" class="col" v-ripple  :src="item.photo" />
@@ -82,14 +83,22 @@
                               <div v-if="item.price !== undefined" class=" text-center col">
                                  <div>
                                     <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
-                                       <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false">{{parseFloat(item.price).toFixed(2)}} $
-                                       </q-item-label>
-                                       <q-item-label v-if="item.discount > 0">{{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} $
+                                       <q-item-label>
+                                        <span :class="item.discount > 0 ? 'text-strike text-caption' : ''">
+                                          {{parseFloat(item.price).toFixed(2)}}
+                                        </span>
+                                        <span v-if="item.discount > 0">{{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
+                                        </span>
+                                        $
                                        </q-item-label>
                                         <!-- Prime Static -->
-                                       <q-item-label :class="item.discount > 0 ? 'text-strike text-caption' : false" class=" text-indigo"><span class="text-italic text-bold"></span> {{parseFloat(getRates(item.price)).toFixed(2)}} Bs
-                                       </q-item-label>
-                                       <q-item-label v-if="item.discount > 0" class="text-indigo"><span class="text-italic text-bold"></span>{{getRates(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}} Bs
+                                       <q-item-label class=" text-indigo">
+                                        <span :class="item.discount > 0 ? 'text-strike text-caption' : ''">
+                                          {{parseFloat(getRates(item.price)).toFixed(2)}}
+                                        </span>
+                                        <span v-if="item.discount > 0" class="text-indigo">{{getRates(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
+                                        </span>
+                                        Bs
                                        </q-item-label>
                                     </div>
                                     <div v-else class="col">
@@ -105,8 +114,8 @@
                         <q-card-actions vertical>
                           <q-btn v-if="item.price !== undefined" :size="$q.screen.gt.xs ? 'md' : 'xs'" @click="$emit('productSelect', item)" unelevated class="text-bold no-shadow " label="Agregar" no-caps color="secondary"></q-btn>
                         </q-card-actions>
-                     <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*No Disponible*</q-tooltip>
-                     <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0]">*Máx en el Carrito*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="dispMax(item)[0]">*No Disponible*</q-tooltip>
+                     <q-tooltip :hide-delay="650" v-if="dispMax(item)[1]">*Máx en el Carrito*</q-tooltip>
                      </q-card>
                   </q-intersection>
                 </div>
@@ -191,6 +200,7 @@ export default {
   },
   data () {
     return {
+      opacity: 'opacity: 0.5;',
       menuSize: 0,
       rateDefault: []
     }
@@ -213,8 +223,21 @@ export default {
       // this.$refs.infiniteScroll.updateScrollTarget()
     }
   },
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display', 'checkAvail'],
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display'],
   methods: {
+    dispMax (item) {
+      let resolve = [false, false]
+      if (!this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0]) {
+        resolve[0] = true
+      }
+      if (this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0]) {
+        resolve[1] = true
+      }
+      return resolve
+    },
+    blockStyle (item) {
+      return !this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0] ? this.opacity : this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0] ? this.opacity : ''
+    },
     onLoad (index, done) {
       this.menuSize = this.menuSize + this.size
       done()

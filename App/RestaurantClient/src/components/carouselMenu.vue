@@ -7,8 +7,8 @@
       navigationNextLabel='<i class="fas fa-chevron-circle-right fa-2x text-primary" aria-hidden="true"></i>'
       navigationPrevLabel='<i class="fas fa-chevron-circle-left fa-2x text-primary" aria-hidden="true"></i>'
       :paginationEnabled="false" :navigationEnabled="true" :perPageCustom="[[320, 2], [375, 2], [830, 3], [1080, 4]]" >
-      <slide ref="slide" class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :key="item.id+'diag'" >
-        <div  ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" :style="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0] ? 'opacity: 0.5;' : ''" >
+      <slide ref="slide" class="row justify-center" :name="key+'diag'" v-for="(item, key) in filteredMenu" :style="blockStyle(item)" :key="item.id+'diag'" >
+        <div  ref="div3" :class="$q.screen.gt.xs ? 'item-content-md' : 'item-content-xs'" class="col" >
             <q-card ref="qcardslide" v-ripple @click="checkAvail(item.id, item.prodType, true)[0] ? (display = true, getMenuItem(item.id, 0), dgbg = {'background-color':'#393939'}) : false;" :id="key+'diag'" :class="($q.screen.gt.xs ? 'item-md' : 'item-xs') + ' ' + card_class" class="row justify-center" :style=" card_style || `background-color: #393939;color:#FFFFFF`">
               <div  ref="div4" class="container-photo">
                   <q-img img-class="clasedeimagen" :class="$q.screen.gt.xs ? 'menuphoto-md' : 'menuphoto-xs'" :src="item.photo" color="primary"  text-color="white"/>
@@ -27,8 +27,8 @@
                     </q-item-label>
                   </div>
               </div>
-              <q-tooltip :hide-delay="650" v-if="!checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0]">*No Disponible*</q-tooltip>
-              <q-tooltip :hide-delay="650" v-if="checkAvail(item.id, item.prodType, true)[1] && !checkAvail(item.id, item.prodType, true)[0]">*Máx en el Carrito*</q-tooltip>
+              <q-tooltip :hide-delay="650" v-if="dispMax(item)[0]">*No Disponible*</q-tooltip>
+              <q-tooltip :hide-delay="650" v-if="dispMax(item)[1]">*Máx en el Carrito*</q-tooltip>
             </q-card>
         </div>
       </slide>
@@ -153,6 +153,7 @@ export default {
   },
   data () {
     return {
+      opacity: 'opacity: 0.5;',
       loc: window.location.origin,
       dgbg: {},
       rewards: false,
@@ -221,6 +222,19 @@ export default {
   },
   methods: {
     ...mapActions('menu', ['bindMenu', 'addCart', 'bindCategorias', 'setSede', 'bindPromos', 'bindGroupComp', 'setFilter', 'setProduct', 'setProdType']),
+    dispMax (item) {
+      let resolve = [false, false]
+      if (!this.checkAvail(item.id, item.prodType, true)[1] && !this.checkAvail(item.id, item.prodType, true)[0]) {
+        resolve[0] = true
+      }
+      if (this.checkAvail(item.id, item.prodType, true)[1] && !this.checkAvail(item.id, item.prodType, true)[0]) {
+        resolve[1] = true
+      }
+      return resolve
+    },
+    blockStyle (item) {
+      return !this.checkAvail(item.id, item.prodType, true)[1] && !this.checkAvail(item.id, item.prodType, true)[0] ? this.opacity : this.checkAvail(item.id, item.prodType, true)[1] && !this.checkAvail(item.id, item.prodType, true)[0] ? this.opacity : ''
+    },
     click () {
       this.$emit('click-edit', {
         block_info: {

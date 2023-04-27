@@ -77,6 +77,7 @@ export const bindChat = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindChat')
   return bindFirestoreRef('chat', firestore().collection('config').doc('chat'), { reset: false, serialize: serialize, wait: true })
 })
+
 export const bindthemecfg = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindChat')
   return bindFirestoreRef('menucfg', firestore().collection('config').doc('menu'), { reset: false, serialize: serialize, wait: true })
@@ -86,8 +87,12 @@ export const bindEnv = firestoreAction(({ bindFirestoreRef }) => {
   return bindFirestoreRef('environment', firestore().collection('environment').doc('version'), { reset: false, serialize: serialize, wait: true })
 })
 export const bindManif = firestoreAction(({ bindFirestoreRef }) => {
-  console.log('bindEnv')
+  console.log('bindManifest')
   return bindFirestoreRef('manifest', firestore().collection('environment').doc('manifest'), { reset: false, serialize: serialize, wait: true })
+})
+export const bindSupport = firestoreAction(({ bindFirestoreRef }) => {
+  console.log('bindSupport')
+  return bindFirestoreRef('support', firestore().collection('support'), { reset: false, serialize: serialize, wait: true })
 })
 export const bindRates = firestoreAction(({ bindFirestoreRef }) => {
   console.log('bindRates')

@@ -2105,6 +2105,11 @@
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
 
+"@vue-a11y/focus-loop@^0.1.0":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@vue-a11y/focus-loop/-/focus-loop-0.1.2.tgz#29b79aafd761f1a27ca6c8465f1e5f89df9b2d52"
+  integrity sha512-to4AIwIOokv33nQC7yxld76rxi00/pZV1T4GD/oYooht0PQ4v6CB3ahZxag6tEmuuOJkdLTFvFbnl+xWgnlQ2w==
+
 "@vue/compiler-sfc@2.7.10":
   version "2.7.10"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-2.7.10.tgz#3fe08e780053a3bbf41328c65ae5dfdee0385206"
@@ -11335,6 +11340,13 @@ vue-server-renderer@^2.7.1:
     resolve "^1.22.0"
     serialize-javascript "^6.0.0"
     source-map "0.5.6"
+
+vue-social-chat@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/vue-social-chat/-/vue-social-chat-0.1.6.tgz#56034f37166ea82ae7fea73d868d10f955553ce4"
+  integrity sha512-SWJI97U49yFp5syUSWix6FKzDmaUxX9sxeIr55M+WnaPQDaCGK0Hy86iEgCAlgibMK4RQEPB5stzP/f4JMekxQ==
+  dependencies:
+    "@vue-a11y/focus-loop" "^0.1.0"
 
 vue-style-loader@^4.1.0:
   version "4.1.2"

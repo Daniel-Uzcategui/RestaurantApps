@@ -49,7 +49,8 @@ export default {
       fecnac: state.fecnac,
       sexo_options: [
         { label: 'Masculino', value: 'M' },
-        { label: 'Femenino', value: 'F' }
+        { label: 'Femenino', value: 'F' },
+        { label: 'Otros', value: 'O' }
       ]
     }
   },

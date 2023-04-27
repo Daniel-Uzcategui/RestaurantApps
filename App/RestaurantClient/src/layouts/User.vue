@@ -116,6 +116,22 @@
          </transition>
             </component>
       </q-page-container>
+      <SocialChat
+      v-show="support.length"
+      class="whatsapp-chat"
+      icon
+      :attendants="support"
+    >
+      <p slot="header">Haga clic en uno de nuestros asistentes a continuación para chatear en WhatsApp.</p>
+      <template v-slot:button>
+        <img
+          src="https://raw.githubusercontent.com/ktquez/vue-social-chat/master/src/icons/whatsapp.svg"
+          alt="icon whatsapp"
+          aria-hidden="true"
+        >
+      </template>
+      <small slot="footer">Abiertos desde 8am a 6pm</small>
+    </SocialChat>
       <q-ajax-bar
       ref="bar"
       position="bottom"
@@ -163,7 +179,7 @@
 
 <script>
 /* eslint-disable vue/no-side-effects-in-computed-properties */
-import Vue from 'vue'
+// import Vue from 'vue'
 import Nav from 'components/nav'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { QSpinnerGears, QSpinnerRadio, colors } from 'quasar'
@@ -171,6 +187,7 @@ import firebase from 'firebase/compat/app'
 import '@firebase/messaging'
 import Footertoolbar from '../components/menu/classic/tabcolumn/footertoolbar.vue'
 import Headersearch from '../components/navigation/headersearch.vue'
+import { SocialChat } from 'vue-social-chat'
 // import Axios from 'axios'
 export default {
   name: 'UserLayout',
@@ -190,12 +207,13 @@ export default {
     'ClassicDark': () => import('./themes/ClassicDark'),
     // eslint-disable-next-line vue/no-unused-components
     'ClassicLight': () => import('./themes/ClassicLight'),
+    SocialChat,
     Footertoolbar,
     Headersearch
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('config', ['configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp', 'metamani', 'mobileGreatView', 'getLogo']),
+    ...mapGetters('config', ['support', 'configurations', 'paymentServ', 'chat', 'menucfg', 'themecfg', 'manifest', 'leftDrawerOp', 'metamani', 'mobileGreatView', 'getLogo']),
     ...mapGetters('auth', ['isAnonymous']),
     ...mapGetters('menu', ['cart', 'filters']),
     ...mapGetters('localization', ['localizations']),
@@ -344,7 +362,7 @@ export default {
           }
         },
         {
-          title: 'Mis Direcciones',
+          title: 'Dirección de Entrega',
           caption: '',
           icon: 'fas fa-map-marked-alt',
           link: '#/user/address',
@@ -534,7 +552,7 @@ export default {
           }
         },
         {
-          title: 'Mis Direcciones',
+          title: 'Dirección de Entrega',
           caption: '',
           icon: 'fas fa-map-marked-alt',
           link: '#/user/address',
@@ -601,7 +619,7 @@ export default {
     }
   },
   async mounted () {
-    console.log({ quasar: this.$q })
+    // console.log({ quasar: this.$q })
     // if (this.blocks && (this.blocks.css || this.blocks.scopedCss)) {
     //   this.$q.loading.hide()
     //   // console.log({ bindblock: e })
@@ -671,9 +689,9 @@ export default {
     this.bindPaymentServ().then(() => {
       this.PaypalServe(this.paymentServ)
     }).catch(e => console.error('error fetching data firebase', { e }))
-    this.bindChat().then(() => {
-      this.chatServe(this.chat)
-    }).catch(e => console.error('error fetching data firebase', { e }))
+    // this.bindChat().then(() => {
+    //   this.chatServe(this.chat)
+    // }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindEnv()
     const { currentUser } = this
     if (typeof this.$router.currentRoute.meta !== 'undefined') {
@@ -713,33 +731,8 @@ export default {
     }
 
     // this.bindPromos().catch(e => console.error('error fetching data firebase', { e }))
+    this.bindSupport().catch(e => console.error('error fetching data firebase', { e }))
     this.bindManif().then(e => {
-      // if (e && e.icons && e.icons.favicon) {
-      //   const favicon = document.getElementById('favicon')
-      //   favicon.setAttribute('href', e.icons.favicon)
-      // }
-      // console.log({ e }, 'MANIFESTO')
-      // if (e && e.name) {
-      //   console.log({ e }, 'MANIFESTO')
-      //   this.metamani = {
-      //     title: e.name,
-      //     meta: {
-      //       title: { name: 'title', content: e.name },
-      //       description: { name: 'description', content: e.description },
-      //       keywords: { name: 'keywords', content: e.keywords },
-      //       robots: { name: 'robots', content: 'index, follow' },
-      //       language: { name: 'language', content: 'Spanish' },
-      //       equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
-      //     },
-      //     link: {
-      //       favicon: { rel: 'shortcut icon', type: 'image/ico', href: e.icons.favicon },
-      //       '128x128': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon128x128 },
-      //       '192x192': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon192x192 },
-      //       '256x256': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon256x256 },
-      //       '512x512': { rel: 'shortcut icon', type: 'image/png', href: e.icons.icon512x512 }
-      //     }
-      //   }
-      // }
     }).catch(e => console.error('error fetching data firebase', { e }))
     this.bindItem().finally(() => {
       if ((this.blocks === null || typeof this.blocks === 'undefined' || (typeof this.blocks !== 'undefined' && this.blocks.length === 0)) && (window.location.hash === '#/home' || window.location.hash === '#/')) {
@@ -772,7 +765,7 @@ export default {
     ...mapMutations('user', ['setEditUserDialog']),
     ...mapActions('user', ['setValue']),
     ...mapActions('localization', ['bindLocalizations']),
-    ...mapActions('config', ['bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg', 'leftDrawerOpCommit']),
+    ...mapActions('config', ['bindSupport', 'bindPaymentServ', 'bindChat', 'bindEnv', 'bindManif', 'bindMenuCfg', 'bindThemeCfg', 'leftDrawerOpCommit']),
     ...mapActions('editor', ['bindBlocks', 'bindRoutes', 'bindPage']),
     ...mapActions('menu', ['bindFilters', 'setFilter', 'bindMenu', 'bindItem', 'bindCategorias', 'bindPromos', 'bindGroupComp', 'setSede']),
     loguserout () {
@@ -965,7 +958,7 @@ export default {
         }
       },
       {
-        title: 'Mis Direcciones',
+        title: 'Dirección de Entrega',
         caption: '',
         icon: 'fas fa-map-marked-alt',
         link: '#/user/address',
@@ -1017,29 +1010,29 @@ export default {
       }
       this.primary = colors.getBrand('primary')
     },
-    async chatServe (config) {
-      var that = this
-      if (config && config.status && config.key) {
-        // eslint-disable-next-line
-        window.Tawk_API = {}, window.Tawk_LoadStart = new Date();
-        window.Tawk_API.onLoad = function () {
-          // console.log('Tawk loaded')
-          Vue.set(that, 'Tawk_API', window.Tawk_API)
-          if (that.$q.screen.lt.md) {
-            window.Tawk_API.hideWidget()
-          }
-        };
-        (async function () {
-          var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0]
-          s1.async = true
-          s1.src = `https://embed.tawk.to/${config.key}/default`
-          s1.charset = 'UTF-8'
-          s1.setAttribute('crossorigin', '*')
-          s0.parentNode.insertBefore(s1, s0)
-          return s1.src
-        })()
-      }
-    },
+    // async chatServe (config) {
+    //   var that = this
+    //   if (config && config.status && config.key) {
+    //     // eslint-disable-next-line
+    //     window.Tawk_API = {}, window.Tawk_LoadStart = new Date();
+    //     window.Tawk_API.onLoad = function () {
+    //       // console.log('Tawk loaded')
+    //       Vue.set(that, 'Tawk_API', window.Tawk_API)
+    //       if (that.$q.screen.lt.md) {
+    //         window.Tawk_API.hideWidget()
+    //       }
+    //     };
+    //     (async function () {
+    //       var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0]
+    //       s1.async = true
+    //       s1.src = `https://embed.tawk.to/${config.key}/default`
+    //       s1.charset = 'UTF-8'
+    //       s1.setAttribute('crossorigin', '*')
+    //       s0.parentNode.insertBefore(s1, s0)
+    //       return s1.src
+    //     })()
+    //   }
+    // },
     async PaypalServe (config) {
       if (config && config.statusPaypal && config.PaypalApi) {
         (async function () {
@@ -1130,5 +1123,18 @@ export default {
   -ms-filter: blur(5px);
   filter: blur(5px);
   background-color: #ccc;
+}
+.whatsapp-chat {
+  --whatsapp: #46c056;
+  --vsc-bg-header: var(--whatsapp);
+  --vsc-bg-button: var(--whatsapp);
+  --vsc-outline-color: var(--whatsapp);
+  --vsc-border-color-bottom-header: #289D37;
+}
+
+</style>
+<style>
+.vsc-popup {
+  bottom: 80px !important;
 }
 </style>

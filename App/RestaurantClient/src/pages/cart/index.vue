@@ -65,7 +65,7 @@
               Siguiente
               </q-btn>
             </div>
-            <div class="q-pt-lg" vertical v-if='!allowBuy'>
+            <div class="q-pt-lg" vertical v-if="!allowBuy && cart.length !== 0">
                 <p> En estos momentos estamos cerrados vuelve pronto</p>
             </div>
             </div>
@@ -124,8 +124,8 @@
                            <div class="text-h5">¿Para cuando quiere su pedido?</div>
                            <p v-if="checkCartType[0] > 0" class="text-caption"> * Solo aplica para los productos en los cual no se ha seleccionado en la fecha</p>
                             <div class="q-gutter-sm">
-                              <q-radio v-model="orderWhen" val=0 :label="'Lo más pronto posible' + (loc === 'carnesmarket' ? '(Los pedidos después de las 2pm se entregan al día siguiente)' : '')"  />
-                              <q-radio v-model="orderWhen" val=1 label="Fecha en específico" />
+                              <q-radio v-model="orderWhen" val=0 :label="'Lo más pronto posible' + (loc === 'carnesmarket' ? '(Los pedidos después de las 12pm se entregan al día siguiente)' : '')"  />
+                              <q-radio v-if="loc !== 'carnesmarket'" v-model="orderWhen" val=1 label="Fecha en específico" />
                             </div>
                             <div v-if="orderWhen == 1" class="q-pt-md" style="max-width: 300px">
                               <!-- <q-date :options="dateOptions" v-model="orderDate" mask="YYYY-MM-DD HH:mm">
@@ -138,9 +138,9 @@
                                           <q-btn v-if="canCloseHours" @click="canCloseHours = false; openHours = false" v-close-popup label="Close" color="primary" flat />
                                         </div>
                                       </q-time> -->
-                              <q-input filled readonly v-model="orderDate" hint="Seleccione Fecha y hora, esta hora es estimada para un mejor seguimiento contáctenos">
+                              <q-input @click="openDate = !openDate" filled readonly v-model="orderDate" hint="Seleccione Fecha y hora, esta hora es estimada para un mejor seguimiento contáctenos">
                                 <template v-slot:prepend>
-                                  <q-icon @click="openDate = !openDate" name="event" class="cursor-pointer">
+                                  <q-icon  name="event" class="cursor-pointer">
                                     <q-dialog persistent v-model="openDate" transition-show="scale" transition-hide="scale">
                                       <q-date :options="dateOptions" v-model="orderDate" mask="YYYY-MM-DD HH:mm">
                                         <div class="row items-center justify-end">
@@ -152,7 +152,8 @@
                                 </template>
 
                                 <template v-slot:append>
-                                  <q-icon @click="openHours = !openHours" name="access_time" class="cursor-pointer">
+                                  <!-- <q-icon @click="openHours = !openHours" name="access_time" class="cursor-pointer"></q-icon> -->
+                                  <q-icon  name="access_time" class="cursor-pointer">
                                     <q-dialog persistent v-model="openHours" transition-show="scale" transition-hide="scale">
                                       <q-time @input="canCloseHours = true" :disable="orderDate === null" :options="optionsFnTime2" v-model="orderDate" mask="YYYY-MM-DD HH:mm" format24h>
                                         <div class="row items-center justify-end">
@@ -171,13 +172,13 @@
                            <client-list @hook:mounted="ordCompraBranch = null; ordCompraClient = null" @branchInput="(e) => ordCompraBranch = e" @clientInput="(e) => ordCompraClient = e"/>
                          </q-card-section>
                          <q-card-section v-show="!['0', '2', '3','4'].includes(tipEnvio)" >
-                          <div class="text-h5"> Mis direcciones</div>
+                          <div class="text-h5"> Dirección de Entrega</div>
                           <p v-if="!validAddress" class="text-caption text-bold text-center text-red"> * Dirección no valida, no se encuentra dentro de las zonas permitidas</p>
                           <addresses @update-price="(e) => deliveryPrice = e"  class="q-pt-md" @invalid-address="(e) => validAddress = e" v-model="addId"/>
                          </q-card-section>
                           <q-card-section>
                              <q-card-section v-if="!['0', '1', '2','3'].includes(tipEnvio)" >
-                          <div class="text-h5"> Mis direcciones</div>
+                          <div class="text-h5"> Dirección de Entrega</div>
 
                             <Address2
                             v-if="!['0', '1', '2','3'].includes(tipEnvio)"
@@ -239,7 +240,7 @@
           <q-card-section>
                   <div align="center"><img src="../../assets/visa.png" style="width: 15%;padding-right: 2%;"><img src="../../assets/mastercard.png" style="width: 15%;padding-right: 2%;"><img src="../../assets/american.png" style="width: 15%;padding-right: 2%;"></div>
            <q-option-group
-           :options="tipoPago.filter(e => e.transf ===true)"
+           :options="tipoPago.filter(e => e.transf === 'tarjeta')"
            label="Notifications"
            type="radio"
            v-model="pagoSel"
@@ -599,20 +600,22 @@ export default {
     tipoPago () {
       // se agrega la variable de control transf: donde es true si es una transferencia  y false si es tarjeta en caso contrario efectivo
       var tip = []
-      if (this.config && this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red', transf: false }) }
-      if (this.config && this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green', transf: 'efectivo' }) }
-      if (this.config && this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue', transf: false }) }
-      if (this.config && this.config.statusPaypalTx) { tip.push({ label: 'Paypal', value: 13, color: 'blue', transf: false }) }
-      if (this.config && this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Mercantil', value: 6, color: 'blue', transf: true }) }
-      if (this.config && this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red', transf: true }) }
-      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red', transf: false }) }
-      if (this.config && this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue', transf: true }) }
-      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Dolares', value: 10, color: 'blue', transf: false }) }
-      if (this.config && this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Movil Bs', value: 11, color: 'blue', transf: false }) }
-      if (this.config && this.config.statuspagomovil) { tip.push({ label: 'Pago Movil Mercantil Bs', value: 12, color: 'blue', transf: false }) }
+      if (this.config) {
+        if (this.config.statusPto) { tip.push({ label: 'Punto de Venta', value: 0, color: 'red', transf: false }) }
+        if (this.config.statusCash) { tip.push({ label: 'Efectivo ($)', value: 1, color: 'green', transf: 'efectivo' }) }
+        if (this.config.statusZelle) { tip.push({ label: 'Zelle', value: 2, color: 'blue', transf: false }) }
+        if (this.config.statusPaypalTx) { tip.push({ label: 'Paypal', value: 13, color: 'blue', transf: false }) }
+        if (this.config.statusPaypal) { tip.push({ label: 'Tarjeta o Paypal', value: 3, color: 'blue', transf: true }) }
+        if (this.config.statusVenmo) { tip.push({ label: 'Venmo', value: 4, color: 'blue', transf: true }) }
+        if (this.config.statusCreditCorp) { tip.push({ label: 'Tarjeta de Credito', value: 5, color: 'blue', transf: true }) }
+        if (this.config.statusMercantil) { tip.push({ label: 'Tarjeta Débito Mercantil', value: 6, color: 'blue', transf: 'tarjeta' }) }
+        if (this.config.statustransfer) { tip.push({ label: 'Transferencia Bancaria', value: 7, color: 'red', transf: false }) }
+        if (this.config.statuspagomovil) { tip.push({ label: 'Pago móvil', value: 8, color: 'red', transf: false }) }
+        if (this.config.statusMercantil) { tip.push({ label: 'Tarjeta Credito', value: 9, color: 'blue', transf: 'tarjeta' }) }
+        if (this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Dolares', value: 10, color: 'blue', transf: false }) }
+        if (this.config.statusNovaredzelle) { tip.push({ label: 'Pasarela Pago Movil Bs', value: 11, color: 'blue', transf: false }) }
+        if (this.config.statusC2P) { tip.push({ label: 'Pago Movil Mercantil Bs', value: 12, color: 'blue', transf: false }) }
+      }
       return tip
     },
     meta () {

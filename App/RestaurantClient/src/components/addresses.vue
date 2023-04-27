@@ -39,7 +39,7 @@
     </div>
     <q-option-group
       :value="returnValue()"
-      @input="(e) => $emit('input', addressSelected(e))"
+      @input="(e) => addressSelected(e)"
       :options="addressRadio"
       color="primary"
     />
@@ -68,8 +68,8 @@
                </q-btn>
             </q-bar>
     <q-card-section @click.prevent class="q-pt-none q-pa-md">
+      <!-- v-if="address.length || markers.length || gActive " -->
       <google-map
-        v-if="address.length || markers.length || gActive "
         :poly="getZones()"
         @address-update="(e) => updateAddIn(e)"
         :readOnly="readAddr"
@@ -164,6 +164,11 @@ export default {
       id = this.address.find(x => x.id === e)
       console.log('registro', id)
       this.value = id
+      this.$emit('input', id)
+      // setTimeout(() => {
+      //   this.$emit('input', id)
+      //   this.value = id
+      // }, 500)
       return id
     },
     ...mapActions('address', ['bindAddress', 'addAddress', 'updateAddress', 'deleteAddress', 'addAddress2']),
@@ -185,7 +190,7 @@ export default {
         let poly = new google.maps.Polygon({ paths: this.getZones()[i] })
         // console.log({ latLng, mark: this.markers, poly })
         // eslint-disable-next-line no-undef
-        if (google.maps.geometry.poly.containsLocation(latLng, poly)) {
+        if (google.maps.geometry?.poly?.containsLocation(latLng, poly)) {
           this.$emit('update-price', this.getZonePrices()[i]['price'])
           return true
         }

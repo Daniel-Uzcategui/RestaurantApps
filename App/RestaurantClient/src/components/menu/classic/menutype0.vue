@@ -55,7 +55,7 @@ export default {
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu'])
   },
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail']
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat']
 }
 </script>
 <style lang="stylus">

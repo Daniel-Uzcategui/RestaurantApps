@@ -208,7 +208,8 @@ export default {
       validarUsers: false,
       sexo_options: [
         { label: 'Masculino', value: 'M' },
-        { label: 'Femenino', value: 'F' }
+        { label: 'Femenino', value: 'F' },
+        { label: 'Otros', value: 'O' }
       ],
       Local_ES: {
         /* starting with Sunday */
@@ -278,7 +279,12 @@ export default {
         if (window.location.hostname === 'chopzi.com') {
           this.$router.push({ path: '/dashboard' })
         } else {
-          this.$router.push({ path: '/menu/index' })
+          if (window.location.hash === '#/auth/login' || window.location.hash === '#/auth/register') {
+            this.$router.push({ path: '/menu/index' })
+          } else {
+            this.$router.go(-1)
+          }
+          // this.$router.push({ path: '/menu/index' })
         }
       } else {
         this.$q.notify({

@@ -149,14 +149,16 @@ export default {
       }
     },
     geolocalize () {
-      navigator.geolocation.getCurrentPosition(position => {
-        console.log({ position })
-        let latLng = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        this.addMark({ latLng })
-      })
+      if (navigator?.geolocation?.getCurrentPosition) {
+        navigator.geolocation.getCurrentPosition(position => {
+          console.log({ position })
+          let latLng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+          this.addMark({ latLng })
+        })
+      }
     }
   },
   watch: {

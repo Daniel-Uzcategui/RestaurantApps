@@ -10,6 +10,7 @@ export default function () {
     manifest: null,
     leftDrawerOp: false,
     leftDrawerCatOp: false,
-    searchBarState: ''
+    searchBarState: '',
+    support: []
   }
 }
