@@ -9,7 +9,7 @@
       <div class=" col-md-8 col-sm-8 col-xs-12 row q-pa-md">
         <q-input
           v-if="$route.name === 'Menu'"
-          v-model="searchBar" class="col bg-white self-end q-pl-md" style="border-radius: 8px;" borderless dense label="Hoy estoy buscando..." >
+          v-model="searchBar" debounce="500" class="col bg-white self-end q-pl-md" style="border-radius: 8px;" borderless dense label="Hoy estoy buscando..." >
           <template v-slot:append>
             <div style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;" class="bg-grey-7 q-pl-md q-pr-lg full-height">
               <q-icon  name="fas fa-search" color="white" />

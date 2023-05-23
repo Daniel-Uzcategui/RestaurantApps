@@ -10,12 +10,12 @@
                 <!-- <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
                               /> -->
                   <q-card flat bordered class="column q-ma-md justify-between cardtype4"
-                     v-for="item in filteredMenuCat" :key="item.id" :style="!checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : checkAvail(item.id, item.prodType)[1] && !checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''">
+                     v-for="item in filteredMenuCat" :key="item.id" :style="styleCard(item)">
                         <div class="phototype4" :style="{'background-color':selectedCat ? selectedCat.color : ''}" >
                         <q-img @click="$emit('productSelect', item)" v-ripple contain :src="item.photo" />
                         </div>
                                  <q-btn color="red" class="absolute-top-right" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
-                        <div class="text-h7 text-bold q-pa-md title">{{item.name}}</div>
+                        <div class="text-h7 text-bold q-pa-md title">{{item.name}} ALOHA</div>
                         <div v-if="item.price !== undefined" class="text-h5 text-grey text-center text-bold">
                            <div>
                               <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
@@ -50,6 +50,11 @@ export default {
   components: { classictabs },
   computed: {
     ...mapGetters('config', ['paymentServ', 'configurations', 'rates', 'leftDrawerCatOp', 'manifest', 'mobileGreatView', 'bannerMenu'])
+  },
+  methods: {
+    styleCard (item) {
+      return !this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0] ? 'opacity: 0.5;' : ''
+    }
   },
   name: 'menutype0',
   props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'checkAvail']

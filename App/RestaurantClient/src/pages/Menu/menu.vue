@@ -8,7 +8,7 @@
           v-if="!(typeof this.sede === 'undefined' || this.sede === null) && mobileGreatView !== 2"
       >
         <q-input filled
-          v-model="searchBar" @input="search" rounded outlined label="Buscar" >
+          v-model="searchBar" debounce="1000" rounded outlined label="Buscar" >
           <template v-slot:prepend>
               <q-icon name="fas fa-search" />
           </template>
@@ -226,6 +226,7 @@ import Menutype5 from '../../components/menu/classic/menutype5.vue'
 import menumix from '../../mixins/menu'
 // import store from '../../store/index'
 import { Carousel, Slide } from '../../components/vue-carousel/dist/vue-carousel.min.js'
+import { debounce } from 'quasar'
 export default {
   // store,
   mixins: [menumix],
@@ -607,18 +608,17 @@ export default {
       return filtered
     },
     search () {
+      debounce(this.debouncedSearch(), 1000, true)
+    },
+    debouncedSearch () {
       const options = {
         includeScore: true,
-        // Search in `author` and in `tags` array
         keys: [{ name: 'name', weight: 1 }],
         threshold: 0.4
       }
       let fuse = new Fuse(this.origMenu, options)
       this.filteredMenu = this.origMenu
       if (this.selectedCat !== null) {
-        // this.filteredMenu = this.filteredMenu.filter(x => {
-        //   return x && x.categoria && x.categoria[this.selectedCat.id]
-        // })
         fuse = new Fuse(this.filteredMenu, options)
       }
       if (this.searchBar.length) {
@@ -626,33 +626,6 @@ export default {
       }
       console.log(this.filteredMenu)
     },
-    // checkAvailReward (item) {
-    //   if (!this.rewards) { return [true, true] }
-    //   var available = 0
-    //   var available2 = 0
-    //   var quant = this.quantity ? this.quantity + 1 : 2
-    //   var counter = 1
-    //   var exists = 0
-    //   var inCart = this.cart.filter(x => x.prodId === item.id && x.reward)
-    //   inCart.forEach(element => {
-    //     counter = element.quantity + counter
-    //   })
-    //   if (counter > 1) { exists = 1 }
-    //   quant = quant + counter - 1
-    //   var categories = item.categoria
-    //   var rewardCategories = typeof this.pointsCat === 'undefined' ? [] : Object.keys(this.pointsCat)
-    //   var intersection = categories ? categories.filter(x => rewardCategories && rewardCategories.includes(x)) : []
-    //   for (var cat of intersection) {
-    //     var points = this.pointsCat[cat]
-    //     if ((points - (quant * 10)) >= 0) {
-    //       available++
-    //     }
-    //     if ((points - (counter * 10)) >= 0) {
-    //       available2++
-    //     }
-    //   }
-    //   return [available, available2, exists]
-    // },
     displayPermitValue () {
       let permit = this.menucfg?.priceActive ?? true
       if (permit) {

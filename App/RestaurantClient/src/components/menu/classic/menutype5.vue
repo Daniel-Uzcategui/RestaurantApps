@@ -43,18 +43,17 @@
             />
      </q-drawer>
             <div>
-              <q-img :height="$q.platform.mobile ? '150px' : 'auto'" :src="bannerMenu.desktopbanner"
+              <q-img :height="platformHeight()" :src="bannerMenu.desktopbanner"
               />
               <q-infinite-scroll ref="infiniteScroll" @load="onLoad" debounce="10" :offset="1000">
                <div class="row justify-around">
                   <q-intersection
                   once
-                  :style="blockStyle(item)"
                   transition="scale"
                   class="cardtype4"
-                  :class="item.price === undefined ? 'noprice' : ''"
+                  :class="itemNoPrice(item)"
                      v-for="item in filteredMenuCat2" :key="item.id">
-                     <q-card  bordered class="column cardtype4" style="transform: scale(0.99)" :class="item.price === undefined ? 'noprice' : ''" >
+                     <q-card :style="blockStyle(item)"  bordered class="column cardtype4" style="transform: scale(0.99)" :class="itemNoPrice(item)" >
                         <!-- <div :style="{'background-color':selectedCat ? selectedCat.color : ''}" > -->
                           <div class="phototype4 column items-center">
                             <q-img contain @click="$emit('productSelect', item)" class="col" v-ripple  :src="item.photo" />
@@ -85,18 +84,18 @@
                                     <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
                                        <q-item-label>
                                         <span :class="item.discount > 0 ? 'text-strike text-caption' : ''">
-                                          {{parseFloat(item.price).toFixed(2)}}
+                                          {{itemDiscount0(item)}}
                                         </span>
-                                        <span v-if="item.discount > 0">{{(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
+                                        <span v-if="item.discount > 0">{{itemDiscount1(item)}}
                                         </span>
                                         $
                                        </q-item-label>
                                         <!-- Prime Static -->
                                        <q-item-label class=" text-indigo">
                                         <span :class="item.discount > 0 ? 'text-strike text-caption' : ''">
-                                          {{parseFloat(getRates(item.price)).toFixed(2)}}
+                                          {{itemDiscount2(item)}}
                                         </span>
-                                        <span v-if="item.discount > 0" class="text-indigo">{{getRates(parseFloat(item.price).toFixed(2) * (1 - (item.discount/100))).toFixed(2)}}
+                                        <span v-if="item.discount > 0" class="text-indigo">{{itemDiscount3(item)}}
                                         </span>
                                         Bs
                                        </q-item-label>
@@ -223,8 +222,26 @@ export default {
       // this.$refs.infiniteScroll.updateScrollTarget()
     }
   },
-  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display'],
+  props: ['selectedCat', 'filtercat', 'filteredMenuCat', 'display', 'checkAvail'],
   methods: {
+    itemNoPrice (item) {
+      return item.price === undefined ? 'noprice' : ''
+    },
+    platformHeight () {
+      return this.$q.platform.mobile ? '150px' : 'auto'
+    },
+    itemDiscount0 (item) {
+      return parseFloat(item.price).toFixed(2)
+    },
+    itemDiscount1 (item) {
+      return (parseFloat(item.price).toFixed(2) * (1 - (item.discount / 100))).toFixed(2)
+    },
+    itemDiscount2 (item) {
+      return parseFloat(this.getRates(item.price)).toFixed(2)
+    },
+    itemDiscount3 (item) {
+      return this.getRates(parseFloat(item.price).toFixed(2) * (1 - (item.discount / 100))).toFixed(2)
+    },
     dispMax (item) {
       let resolve = [false, false]
       if (!this.checkAvail(item.id, item.prodType)[1] && !this.checkAvail(item.id, item.prodType)[0]) {
