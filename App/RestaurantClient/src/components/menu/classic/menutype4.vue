@@ -15,7 +15,7 @@
                         <q-img @click="$emit('productSelect', item)" v-ripple contain :src="item.photo" />
                         </div>
                                  <q-btn color="red" class="absolute-top-right" round v-if="item.discount > 0">-{{item.discount}}%</q-btn>
-                        <div class="text-h7 text-bold q-pa-md title">{{item.name}} ALOHA</div>
+                        <div class="text-h7 text-bold q-pa-md title">{{item.name}} </div>
                         <div v-if="item.price !== undefined" class="text-h5 text-grey text-center text-bold">
                            <div>
                               <div class="col" v-if="item && (typeof item.pricerange === 'undefined' || item.pricerange === '')">
